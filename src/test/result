@@ -1,0 +1,62 @@
+Begin ...
+Input sentence is: 我爱篮球。
+Begin Load CRF model!
+../../ltp_data/crfws_data/pku_all.model
+Load CRF model over!
+Result is: <?xml version="1.0" encoding="gb2312" ?>
+<xml4nlp>
+    <note sent="y" word="y" pos="n" ne="n" parser="n" wsd="n" srl="n" />
+    <doc>
+        <para id="0">
+            <sent id="0" cont="我爱篮球。">
+                <word id="0" cont="我" />
+                <word id="1" cont="爱" />
+                <word id="2" cont="篮球" />
+                <word id="3" cont="。" />
+            </sent>
+        </para>
+    </doc>
+</xml4nlp>
+
+Input sentence is: 研究中心主任是刘挺教授。研究人员包括王海峰教授（兼职）、秦兵教授、张宇副教授、车万翔博士和陈毅恒博士。
+Result is: <?xml version="1.0" encoding="gb2312" ?>
+<xml4nlp>
+    <note sent="y" word="y" pos="n" ne="n" parser="n" wsd="n" srl="n" />
+    <doc>
+        <para id="0">
+            <sent id="0" cont="研究中心主任是刘挺教授。">
+                <word id="0" cont="研究" />
+                <word id="1" cont="中心" />
+                <word id="2" cont="主任" />
+                <word id="3" cont="是" />
+                <word id="4" cont="刘挺" />
+                <word id="5" cont="教授" />
+                <word id="6" cont="。" />
+            </sent>
+            <sent id="1" cont="研究人员包括王海峰教授（兼职）、秦兵教授、张宇副教授、车万翔博士和陈毅恒博士。">
+                <word id="0" cont="研究" />
+                <word id="1" cont="人员" />
+                <word id="2" cont="包括" />
+                <word id="3" cont="王海峰" />
+                <word id="4" cont="教授" />
+                <word id="5" cont="（" />
+                <word id="6" cont="兼职" />
+                <word id="7" cont="）" />
+                <word id="8" cont="、" />
+                <word id="9" cont="秦兵" />
+                <word id="10" cont="教授" />
+                <word id="11" cont="、" />
+                <word id="12" cont="张宇" />
+                <word id="13" cont="副教授" />
+                <word id="14" cont="、" />
+                <word id="15" cont="车万翔" />
+                <word id="16" cont="博士" />
+                <word id="17" cont="和" />
+                <word id="18" cont="陈毅恒" />
+                <word id="19" cont="博士" />
+                <word id="20" cont="。" />
+            </sent>
+        </para>
+    </doc>
+</xml4nlp>
+
