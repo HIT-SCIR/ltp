@@ -1,1 +1,1 @@
-EXTRA_DIST = LTP-User-Guide-v2.1.doc
+EXTRA_DIST = ltp-document-2.1.md
