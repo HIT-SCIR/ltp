@@ -1,6 +1,6 @@
 ### 模型文件
 
-由于模型文件`ltp_data.zip`不适合进行版本控制，现已经将`ltp_data.zip`转移到[这里](http://ir.hit.edu.cn/ltp/downloads/ltp_data.zip)。
+由于模型文件`ltp_data.zip`不适合进行版本控制，现已经将`ltp_data.zip`转移到[这里](ir.hit.edu.cn/ltp/program/ltp_data.zip)。
 
 ### 编译
 
