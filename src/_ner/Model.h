@@ -1,7 +1,8 @@
 #ifndef IR_CModel_H
 #define IR_CModel_H
 
-#include "../__maxent/maxentmodel.hpp"
+#include "maxentmodel.hpp"
+//#include "../__maxent/maxentmodel.hpp"
 //#define STL_USING_ALL
 
 // #include <stl.h>

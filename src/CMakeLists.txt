@@ -1,0 +1,21 @@
+SET(util_dir            ${SOURCE}/__util/)
+SET(xml4nlp_dir         ${SOURCE}/__xml4nlp/)
+SET(crfwordseg_dir      ${SOURCE}/_crfwordsegment/)
+SET(svmtagger_dir       ${SOURCE}/_svmtagger/)
+SET(split_sentence_dir  ${SOURCE}/_split_sentence/)
+SET(ner_dir             ${SOURCE}/_ner/)
+SET(gparser_dir         ${SOURCE}/_gparser)
+SET(srl_dir             ${SOURCE}/_srl/)
+
+ADD_SUBDIRECTORY("__util")
+ADD_SUBDIRECTORY("__xml4nlp")
+ADD_SUBDIRECTORY("_split_sentence")
+ADD_SUBDIRECTORY("_crfwordsegment")
+ADD_SUBDIRECTORY("_svmtagger")
+ADD_SUBDIRECTORY("_ner")
+ADD_SUBDIRECTORY("_gparser")
+ADD_SUBDIRECTORY("_srl")
+
+ADD_SUBDIRECTORY("__ltp_dll")
+
+ADD_SUBDIRECTORY("test")
