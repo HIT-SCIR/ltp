@@ -18,8 +18,8 @@ SET(crfwordseg_source
 
 INCLUDE_DIRECTORIES(
     ./
-    ${THIRDPARTY}/crfpp
-    ${util_dir})
+    ${THIRDPARTY}/crfpp/
+    ${util_dir}/)
 
 ADD_LIBRARY(crfwordseg ${crfwordseg_source})
 

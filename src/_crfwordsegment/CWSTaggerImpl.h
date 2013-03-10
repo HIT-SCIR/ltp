@@ -1,7 +1,8 @@
 #ifndef __CWS_TAGGER_IMPL_H__
 #define __CWS_TAGGER_IMPL_H__
 
-#include "../__crf++/tagger.h"
+#include "tagger.h"
+//#include "../__crf++/tagger.h"
 //#include <param.h>
 #include <iostream>
 #include <string>
