@@ -12,9 +12,29 @@ INCLUDE_DIRECTORIES(./
     ${THIRDPARTY}/maxent
     ${THIRDPARTY}/tinyxml)
 
-SET(ltp_test_source ltp_test.cpp)
-ADD_EXECUTABLE(ltp_test ${ltp_test_source})
+SET(ltp_test_source     ltp_test.cpp)
+SET(ltp_test_xml_source ltp_test_xml.cpp)
+
+ADD_EXECUTABLE(ltp_test     ${ltp_test_source})
+ADD_EXECUTABLE(ltp_test_xml ${ltp_test_xml_source})
+
 TARGET_LINK_LIBRARIES(ltp_test
+    maxent
+    crfpp
+    util
+    ltp
+    splitsnt
+    crfwordseg
+    postagger
+    gparser
+    ner
+    srl
+    xml4nlp
+    dl
+    pthread
+    boost_regex)
+
+TARGET_LINK_LIBRARIES(ltp_test_xml
     maxent
     crfpp
     util
