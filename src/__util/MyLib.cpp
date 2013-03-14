@@ -20,31 +20,6 @@ void replace_char_by_char(string &str, char c1, char c2)
     }
 }
 
-void remove_space_gbk(string &str)
-{
-    vector<string> vecCharacter;
-    getCharacters_gbk(str, vecCharacter);
-    str.clear();
-    for (int i = 0; i < vecCharacter.size(); ++i) {
-        if (" " != vecCharacter[i] && "\t" != vecCharacter[i] && "　" != vecCharacter[i]) {
-            str += vecCharacter[i];
-        }
-    }
-}
-
-void getCharacters_gbk(const string &str, vector<string> &vecCharacter) {
-    vecCharacter.clear();
-    string::size_type pos = 0;
-    while (pos < str.size()) {
-        string::size_type char_num = 2;
-        if (str[pos] >= 0) { // not two-char-character
-            char_num = 1;
-        }
-        vecCharacter.push_back(str.substr(pos, char_num));
-        pos += char_num;
-    }
-}
-
 void split_bychars(const string& str, vector<string> & vec, const char *sep)
 {	//assert(vec.empty());
     vec.clear();
@@ -445,5 +420,30 @@ bool is_ascii_string(string& word)
         }
     }
     return true;
+}
+
+void remove_space_gbk(string &str)
+{
+    vector<string> vecCharacter;
+    getCharacters_gbk(str, vecCharacter);
+    str.clear();
+    for (int i = 0; i < vecCharacter.size(); ++i) {
+        if (" " != vecCharacter[i] && "\t" != vecCharacter[i] && "　" != vecCharacter[i]) {
+            str += vecCharacter[i];
+        }
+    }
+}
+
+void getCharacters_gbk(const string &str, vector<string> &vecCharacter) {
+    vecCharacter.clear();
+    string::size_type pos = 0;
+    while (pos < str.size()) {
+        string::size_type char_num = 2;
+        if (str[pos] >= 0) { // not two-char-character
+            char_num = 1;
+        }
+        vecCharacter.push_back(str.substr(pos, char_num));
+        pos += char_num;
+    }
 }
 

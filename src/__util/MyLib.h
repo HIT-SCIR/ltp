@@ -142,11 +142,9 @@ void split_bychars(const string& str, vector<string> & vec, const char *sep = " 
 
 void replace_char_by_char(string &str, char c1, char c2);
 
-void remove_space_gbk(string &str);
-void getCharacters_gbk(const string &str, vector<string> &vecCharacter);
-
 // remove the blanks at the begin and end of string
 void clean_str(string &str);
+
 inline void remove_beg_end_spaces(string &str) { clean_str(str); }
 
 bool my_getline(ifstream &inf, string &line);
@@ -224,6 +222,10 @@ string word(string& word_pos);
 
 //judge if a string purely consist of ASCII characters
 bool is_ascii_string(string& word);
+
+// Add to satisfy the XML4nlp
+void getCharacters_gbk(const string &str, vector<string> &vecCharacter);
+void remove_space_gbk(string &str);
 
 #endif
 
