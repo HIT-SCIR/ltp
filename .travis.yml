@@ -5,9 +5,10 @@ compiler:
     - g++
 
 before_install:
+    - sudo apt-get install cmake
     - sudo apt-get install libboost-dev
 
-install:
+script:
     - ./configure
     - make
 
