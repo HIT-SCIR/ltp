@@ -1,0 +1,13 @@
+language:
+    - cpp
+
+compiler:
+    - g++
+
+before_install:
+    - sudo apt-get install libboost-dev
+
+install:
+    - ./configure
+    - make
+
