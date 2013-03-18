@@ -1,0 +1,5 @@
+#LTP data file path
+
+LTP_dataFolder=${DATA_DIR}
+
+#--------------------------------#

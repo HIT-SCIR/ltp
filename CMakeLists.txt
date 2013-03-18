@@ -7,9 +7,12 @@ SET(LIBRARY_OUTPUT_PATH     ${PROJECT_SOURCE_DIR}/lib)
 SET(SOURCE                  ${PROJECT_SOURCE_DIR}/src)
 SET(THIRDPARTY              ${PROJECT_SOURCE_DIR}/thirdparty)
 
+SET(CONFIGURE_DIR           ${PROJECT_SOURCE_DIR}/conf)
+SET(DATA_DIR                ${PROJECT_SOURCE_DIR}/ltp_data)
+
 ADD_SUBDIRECTORY(thirdparty)
 ADD_SUBDIRECTORY(src)
 
 CONFIGURE_FILE(
-    ${SOURCE}/test/ltp_all_modules.conf
+    ${CONFIGURE_DIR}/ltp_all_modules.conf.in
     ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
