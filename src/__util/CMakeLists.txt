@@ -7,8 +7,6 @@ SET(util_source
     gbk_u16.h
     IniReader.cpp
     IniReader.h
-    Logger.cpp
-    Logger.h
     md5.cpp
     md5.h
     MyLib.cpp

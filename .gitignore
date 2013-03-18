@@ -6,3 +6,6 @@
 *.la
 *.deps
 *.libs
+build/
+lib/
+
