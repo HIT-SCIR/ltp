@@ -9,3 +9,7 @@ SET(THIRDPARTY              ${PROJECT_SOURCE_DIR}/thirdparty)
 
 ADD_SUBDIRECTORY(thirdparty)
 ADD_SUBDIRECTORY(src)
+
+CONFIGURE_FILE(
+    ${SOURCE}/test/ltp_all_modules.conf
+    ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
