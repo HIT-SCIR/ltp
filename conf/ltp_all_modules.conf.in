@@ -1,5 +1,5 @@
 #LTP data file path
 
-LTP_dataFolder=${DATA_DIR}
+LTP_dataFolder=${DATA_DIR}/
 
 #--------------------------------#

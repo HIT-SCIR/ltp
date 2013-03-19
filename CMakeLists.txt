@@ -13,6 +13,7 @@ SET(DATA_DIR                ${PROJECT_SOURCE_DIR}/ltp_data)
 ADD_SUBDIRECTORY(thirdparty)
 ADD_SUBDIRECTORY(src)
 
+# --- GENERATE CONFIGURE FILE AUTOMATICALLY ---
 CONFIGURE_FILE(
     ${CONFIGURE_DIR}/ltp_all_modules.conf.in
     ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
