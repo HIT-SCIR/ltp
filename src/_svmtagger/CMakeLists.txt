@@ -1,5 +1,4 @@
-INCLUDE_DIRECTORIES(./
-    ${util_dir})
+INCLUDE_DIRECTORIES(./ ${util_dir} ${THIRDPARTY}/boost/include)
 
 SET(postagger_source
     common.cpp

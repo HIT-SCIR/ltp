@@ -1,7 +1,4 @@
-INCLUDE_DIRECTORIES(
-    ./
-    ${util_dir}/
-    ${THIRDPARTY}/maxent)
+INCLUDE_DIRECTORIES(. ${util_dir} ${THIRDPARTY}/boost/include ${THIRDPARTY}/maxent)
 
 SET(srl_source
     Configuration.cpp

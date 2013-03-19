@@ -1,3 +1,4 @@
+INCLUDE_DIRECTORIES(. ${THIRDPARTY}/boost/include)
 SET(maxent_source
     display.cpp
     display.hpp

@@ -1,5 +1,6 @@
 INCLUDE_DIRECTORIES(
     ./
+    ${THIRDPARTY}/boost/include
     ${THIRDPARTY}/maxent)
 
 SET(ner_source
