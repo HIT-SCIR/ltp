@@ -65,6 +65,7 @@
 #include <iterator>
 #include <set>
 #include <queue>
+#include <cstddef>
 
 // HP-style construct/destroy have gone from the standard,
 // so here is a copy.

@@ -29,13 +29,13 @@ namespace CRFPP {
     return result;
   }
 
-  template <>
+  /*template <>
   //#ifdef _WIN32
 	static 
   //#endif
 	  std::string lexical_cast<std::string, std::string>(std::string arg) {
     return arg;
-  }
+  }*/
 
   struct Option {
     const char *name;
