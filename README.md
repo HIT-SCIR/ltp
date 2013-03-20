@@ -1,5 +1,7 @@
 # Ltp: Language Technology Platform
 
+[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
+
 简介
 ----
 
