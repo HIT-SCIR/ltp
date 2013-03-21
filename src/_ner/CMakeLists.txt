@@ -1,9 +1,9 @@
-INCLUDE_DIRECTORIES(
+include_directories (
     ./
-    ${THIRDPARTY}/boost/include
-    ${THIRDPARTY}/maxent)
+    ${THIRDPARTY_DIR}/boost/include
+    ${THIRDPARTY_DIR}/maxent)
 
-SET(ner_source
+set (ner_SRC
     Dictionary.cpp
     Dictionary.h
     InitDic.cpp
@@ -22,4 +22,8 @@ SET(ner_source
     RuleNErecog.cpp
     RuleNErecog.h)
 
-ADD_LIBRARY(ner ${ner_source})
+add_library (ner ${ner_SRC})
+
+configure_file (
+    NER_DLL.h
+    ${INCLUDE_OUTPUT_PATH}/ltp/NER_DLL.h)

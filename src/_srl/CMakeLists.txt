@@ -1,6 +1,10 @@
-INCLUDE_DIRECTORIES(. ${util_dir} ${THIRDPARTY}/boost/include ${THIRDPARTY}/maxent)
+include_directories (
+    .
+    ${util_DIR} 
+    ${THIRDPARTY_DIR}/boost/include
+    ${THIRDPARTY_DIR}/maxent)
 
-SET(srl_source
+set (srl_SRC
     Configuration.cpp
     Configuration.h
     ConstVar.h
@@ -25,6 +29,10 @@ SET(srl_source
     SRL_DLL_x.cpp
     tree.hh)
 
-ADD_LIBRARY(srl ${srl_source})
+add_library (srl ${srl_SRC})
 
-TARGET_LINK_LIBRARIES(srl util maxent)
+target_link_libraries (srl util maxent)
+
+configure_file (
+    SRL_DLL.h
+    ${INCLUDE_OUTPUT_PATH}/ltp/SRL_DLL.h)

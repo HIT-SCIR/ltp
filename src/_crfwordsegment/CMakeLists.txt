@@ -1,7 +1,5 @@
-MESSAGE(STATUS ${THIRDPARTY})
-
-SET(CMAKE_CXX_FLAGS "-DHAVE_CONFIG_H")
-SET(crfwordseg_source
+set (CMAKE_CXX_FLAGS "-DHAVE_CONFIG_H")
+set (crfwordseg_source
     CRFSegEngine.cpp
     CRFSegEngine.h
     CRFWS.cpp
@@ -16,11 +14,16 @@ SET(crfwordseg_source
     SegEngine.cpp
     SegEngine.h)
 
-INCLUDE_DIRECTORIES(
+include_directories (
     ./
-    ${THIRDPARTY}/crfpp/
-    ${util_dir}/)
+    ${THIRDPARTY_DIR}/crfpp/
+    ${util_DIR}/)
 
-ADD_LIBRARY(crfwordseg ${crfwordseg_source})
+add_library (crfwordseg ${crfwordseg_source})
 
-TARGET_LINK_LIBRARIES(crfwordseg util crfpp)
+target_link_libraries (crfwordseg util crfpp)
+
+configure_file (
+    CRFWS_DLL.h 
+    ${INCLUDE_OUTPUT_PATH}/ltp/CRFWS_DLL.h
+    @ONLY)

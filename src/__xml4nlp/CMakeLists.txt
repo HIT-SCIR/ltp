@@ -1,6 +1,6 @@
 INCLUDE_DIRECTORIES(./
-    ${util_dir}
-    ${THIRDPARTY}/tinyxml)
+    ${util_DIR}
+    ${THIRDPARTY_DIR}/tinyxml)
 
 SET(xml4nlp_source
     Xml4nlp.h

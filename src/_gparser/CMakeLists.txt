@@ -1,7 +1,7 @@
-INCLUDE_DIRECTORIES(./
-    ${util_dir})
+include_directories (./
+    ${util_DIR})
 
-SET(gparser_source
+set (gparser_SRC
     Alphabet.cpp
     Alphabet.h
     CONLLReader.cpp
@@ -42,6 +42,10 @@ SET(gparser_source
     ParserOptions.cpp
     ParserOptions.h)
 
-ADD_LIBRARY(gparser ${gparser_source})
+add_library (gparser ${gparser_SRC})
+
+configure_file (
+    gparser_dll.h
+    ${INCLUDE_OUTPUT_PATH}/ltp/gparser_dll.h)
 
 TARGET_LINK_LIBRARIES(gparser util)

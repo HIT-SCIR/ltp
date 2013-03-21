@@ -1,19 +1,38 @@
-PROJECT ("LTP - Language Technology Platform")
+cmake_minimum_required (VERSION 2.8.0)
+project ("LTP - Language Technology Platform")
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
+# project attributes section
+# -- config cmake modules path
+set (CMAKE_MODULE_PATH      ${PROJECT_SOURCE_DIR}/cmake)
 
-SET(EXECUTABLE_OUTPUT_PATH  ${PROJECT_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH     ${PROJECT_SOURCE_DIR}/lib)
-SET(SOURCE                  ${PROJECT_SOURCE_DIR}/src)
-SET(THIRDPARTY              ${PROJECT_SOURCE_DIR}/thirdparty)
+# -- config output directories
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set (LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
+set (INCLUDE_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/include)
 
-SET(CONFIGURE_DIR           ${PROJECT_SOURCE_DIR}/conf)
-SET(DATA_DIR                ${PROJECT_SOURCE_DIR}/ltp_data)
+# -- config source directories
+set (SOURCE_DIR             ${PROJECT_SOURCE_DIR}/src)
+set (THIRDPARTY_DIR         ${PROJECT_SOURCE_DIR}/thirdparty)
 
-ADD_SUBDIRECTORY(thirdparty)
-ADD_SUBDIRECTORY(src)
+# -- config resource directories
+set (CONFIGURE_DIR          ${PROJECT_SOURCE_DIR}/conf)
+set (DATA_DIR               ${PROJECT_SOURCE_DIR}/ltp_data)
 
-# --- GENERATE CONFIGURE FILE AUTOMATICALLY ---
-CONFIGURE_FILE(
+# compiling section
+# -- compile shipped libraries
+add_subdirectory (thirdparty)
+
+# -- compile source code
+add_subdirectory (src)
+
+# testing section
+# -- generate configure file for ltp_test
+configure_file (
     ${CONFIGURE_DIR}/ltp_all_modules.conf.in
     ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
+
+# enable test
+enable_testing()
+
+# compile testing
+add_subdirectory (test)

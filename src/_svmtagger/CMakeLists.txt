@@ -1,6 +1,8 @@
-INCLUDE_DIRECTORIES(./ ${util_dir} ${THIRDPARTY}/boost/include)
+include_directories (./ 
+    ${util_DIR}
+    ${THIRDPARTY_DIR}/boost/include)
 
-SET(postagger_source
+set (postagger_SRC
     common.cpp
     common.h
     dict.cpp
@@ -25,4 +27,8 @@ SET(postagger_source
     weight.cpp
     weight.h)
 
-ADD_LIBRARY(postagger ${postagger_source})
+add_library (postagger ${postagger_SRC})
+
+configure_file (
+    svmtagger_dll.h
+    ${INCLUDE_OUTPUT_PATH}/ltp/svmtagger_dll.h)
