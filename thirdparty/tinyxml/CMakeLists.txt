@@ -1,4 +1,4 @@
-SET(tinyxml_source
+set (tinyxml_SRC
     tinystr.h
     tinyxml.h
     tinystr.cpp
@@ -6,4 +6,4 @@ SET(tinyxml_source
     tinyxmlerror.cpp
     tinyxmlparser.cpp)
 
-ADD_LIBRARY(tinyxml ${tinyxml_source})
+add_library (tinyxml ${tinyxml_SRC})

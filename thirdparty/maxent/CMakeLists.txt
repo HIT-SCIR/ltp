@@ -1,5 +1,6 @@
-INCLUDE_DIRECTORIES(. ${THIRDPARTY}/boost/include)
-SET(maxent_source
+include_directories (. ${THIRDPARTY_DIR}/boost/include)
+
+set (maxent_SRC
     display.cpp
     display.hpp
     eventspace.hpp
@@ -21,7 +22,6 @@ SET(maxent_source
     trainer.cpp
     trainer.hpp)
 
-INCLUDE_DIRECTORIES(./)
-ADD_LIBRARY(maxent ${maxent_source})
+add_library (maxent ${maxent_SRC})
 
 

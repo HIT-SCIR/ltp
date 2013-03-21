@@ -1,5 +1,5 @@
 INCLUDE_DIRECTORIES( ./
-    ${THIRDPARTY}/boost/include/ )
+    ${THIRDPARTY_DIR}/boost/include/ )
 
 add_library(boost_regex
   src/c_regex_traits.cpp

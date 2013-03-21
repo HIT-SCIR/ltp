@@ -1,5 +1,5 @@
-ADD_SUBDIRECTORY(boost)
-ADD_SUBDIRECTORY(crfpp)
-ADD_SUBDIRECTORY(maxent)
-ADD_SUBDIRECTORY(tinyxml)
+add_subdirectory (boost)
+add_subdirectory (crfpp)
+add_subdirectory (maxent)
+add_subdirectory (tinyxml)
 
