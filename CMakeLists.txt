@@ -13,6 +13,7 @@ set (INCLUDE_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/include)
 # -- config source directories
 set (SOURCE_DIR             ${PROJECT_SOURCE_DIR}/src)
 set (THIRDPARTY_DIR         ${PROJECT_SOURCE_DIR}/thirdparty)
+set (SCRIPT_DIR             ${PROJECT_SOURCE_DIR}/script)
 
 # -- config resource directories
 set (CONFIGURE_DIR          ${PROJECT_SOURCE_DIR}/conf)
@@ -30,6 +31,10 @@ add_subdirectory (src)
 configure_file (
     ${CONFIGURE_DIR}/ltp_all_modules.conf.in
     ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
+
+configure_file (
+    ${SCRIPT_DIR}/auto-test.sh.in
+    ${EXECUTABLE_OUTPUT_PATH}/auto-test.sh)
 
 # enable test
 enable_testing()
