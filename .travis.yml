@@ -6,8 +6,6 @@ compiler:
 
 before_install:
     - sudo apt-get install cmake
-    - sudo apt-get install libboost-dev
-    - mkdir build
 
 script:
     - ./configure
