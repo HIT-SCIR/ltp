@@ -34,7 +34,7 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 
 set (CMAKE_CXX_FLAGS "-DHAVE_CONFIG_H")
-set (crfpp_source
+set (crfpp_SRC
     common.h
     config.h
     config-win32.h
@@ -65,4 +65,15 @@ set (crfpp_source
     path.cpp
     tagger.cpp)
 
-add_library (crfpp ${crfpp_source})
+add_library (crfpp ${crfpp_SRC})
+
+# -----------------------------------------------
+# add executables
+# -----------------------------------------------
+set (crf_learn_SRC  crf_learn.cpp)
+add_executable (crf_learn   ${crf_learn_SRC})
+target_link_libraries (crf_learn crfpp pthread)
+
+set (crf_test_SRC   crf_test.cpp)
+add_executable (crf_test    ${crf_test_SRC})
+target_link_libraries (crf_test crfpp pthread)
