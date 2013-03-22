@@ -17,6 +17,7 @@ set (TOOLS_DIR              ${PROJECT_SOURCE_DIR}/tools)
 
 # -- config resource directories
 set (CONFIGURE_DIR          ${PROJECT_SOURCE_DIR}/conf)
+set (MODEL_DIR              ${PROJECT_SOURCE_DIR}/ltp_data)
 set (DATA_DIR               ${PROJECT_SOURCE_DIR}/test_data)
 
 # compiling section
