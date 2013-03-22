@@ -15,10 +15,10 @@ include_directories (./
 set (ltp_test_SRC           ltp_test.cpp)
 set (ltp_test_xml_SRC       ltp_test_xml.cpp)
 
+link_directories ( ${LIBRARY_OUTPUT_PATH} )
+
 add_executable (ltp_test     ${ltp_test_SRC})
 add_executable (ltp_test_xml ${ltp_test_xml_SRC})
-
-link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 target_link_libraries (ltp_test
     maxent
