@@ -1,0 +1,306 @@
+#!/usr/bin/env python
+
+# a python wrapper for training process in ltp
+#
+# author: Yijia Liu
+# date: 2013-3-23
+import sys, os
+import hashlib
+import subprocess
+import time
+import shutil
+
+# import py-corpusproc modules
+try:
+    # module has been installed
+    from corpusproc.io import PlainReader, SegmentReader, PostagReader
+    from corpusproc.io import PlainWriter, SegmentWriter, PostagWriter
+except:
+    # module not installed
+    bin_path = os.path.realpath(__file__)
+    bin_dir  = os.path.split(bin_path)[0]
+    root_dir = os.path.join(bin_dir, "corpusproc")
+    sys.path.append(root_dir)
+
+    from corpusproc.io import PlainReader, SegmentReader, PostagReader
+    from corpusproc.io import PlainWriter, SegmentWriter, PostagWriter
+
+from optparse import OptionParser, make_option
+
+VALID_TARGETS = {
+        "ws":   "Wordseg",
+        "pos":  "POSTag",
+        "srl":  "SRL"}
+
+# attention here, cmake should replace this
+ROOT="${TOOLS_DIR}/train/"
+CRF_LEARN_EXE="${TOOLS_DIR}/train/crf_learn"
+MAXENT_EXE="${TOOLS_DIR}/train/maxent"
+
+def MD5(fp, block_size = 2**20):
+    md5 = hashlib.md5()
+    while True:
+        data = fp.read(block_size)
+        if not data:
+            break
+        md5.update(data)
+    return md5.hexdigest()
+
+# basic class for trainer
+class Trainer(object):
+
+    def __init__(self):
+        pass
+
+    # method for executing training process
+    # this method should be overwrite
+    def train(self):
+        pass
+
+    # method for showing help
+    # this method should be overwrite
+    def help(self):
+        pass
+
+# word segment trainer
+class WordsegTrainer(Trainer):
+
+    def __init__(self):
+        self.parser = self._opt_parser()
+        try:
+            self.opts, self.args = self.parser.parse_args()
+        except:
+            raise Exception("Parsing option error")
+
+        if self.opts.trainfile is None:
+            raise Exception("Import file is not set.")
+
+    def train(self):
+        # make directory
+        os.chdir(ROOT)
+
+        if not os.path.isdir("build"):
+            os.mkdir("build")
+
+        try:
+            fp=open(self.opts.trainfile, "r")
+        except:
+            err = "ERROR: Failed to open file %s" % self.opts.trainfile
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        # check if exist in build
+        # hash the file with md5 and encode the hash code into filename
+        # the rest is too check the md5 value
+        md5_code = MD5(fp)[:10]
+        model_name = "WS.%s.model" % md5_code
+        model_path = os.path.join("build", model_name)
+
+        # model has been trained
+        if os.path.isfile(model_path):
+            trace = "TRACE: This file has been trained"
+            print >> sys.stderr, trace
+            return
+
+        train_name = "WS.%s.train" % md5_code
+        train_path = os.path.join("build", train_name)
+        try:
+            fpo=open(train_path, "w")
+        except:
+            err = "ERROR: Failed to open file %s" % train_file
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        # read corpus and generate train file
+        reader = SegmentReader(fp)
+        reader.seek(0)
+
+        inst = reader.get()
+        while inst is not None:
+            for word in inst.forms:
+                chars = word.decode(self.opts.encoding)
+
+                for i in xrange(len(chars)):
+                    if i == 0:
+                        print >> fpo, "%s\t%s" % (chars[i].encode(self.opts.encoding), "B")
+                    else:
+                        print >> fpo, "%s\t%s" % (chars[i].encode(self.opts.encoding), "I")
+
+            print >> fpo
+            inst = reader.get()
+
+        fp.close()
+        fpo.close()
+
+        args_list = [CRF_LEARN_EXE]
+
+        i = 3
+        while i < len(sys.argv):
+            if (sys.argv[i].startswith("--encoding=") or 
+                    sys.argv[i].startswith("--train=")):
+                i += 1
+                continue
+
+            if sys.argv[i] == "-i":
+                i += 2
+                continue
+
+            args_list.append(sys.argv[i])
+            i += 1
+
+        args_list.append( os.path.join("assets", "crfpp.template") )
+        args_list.append( train_path )
+        args_list.append( model_path )
+
+        p = subprocess.Popen(args_list, stdout=sys.stdout)
+
+
+    def help(self):
+        self.parser.print_help()
+
+    # initialize option parser for word segment trainer
+    def _opt_parser(self):
+        usage = ""
+        opt_list = [
+                make_option("-f", "--freq",
+                    type="int", default=3, dest="freq",
+                    help="use features that occuer no less than INT(default 3)"),
+                make_option("-m", "--maxiter",
+                    type="int", default=10000, dest="maxiter",
+                    help="set INT for max iterations in LBFGS routine(default 10k)"),
+                make_option("-c", "--cost",
+                    type="float", default=1.0, dest="cost",
+                    help="set FLOAT for cost parameter(default 1.0)"),
+                make_option("-e", "--eta",
+                    type="float", default=0.0001, dest="eta",
+                    help="set FLOAT for termination criterion(default 0.0001)"),
+                make_option("-C", "--convert",
+                    action="store_true", dest="convert",
+                    help="convert text model to binary model"),
+                make_option("--textmodel",
+                    action="store_true", dest="textmodel",
+                    help="build also text model file for debugging"),
+                make_option("-a", "--algorithm",
+                    dest="algorithm",
+                    help="select training algorithm(CRF|MIRA)"),
+                make_option("-p", "--thread",
+                    type="int", dest="thread", default=1,
+                    help="number of threads(default 1)"),
+                make_option("-H", "--shrinking-size",
+                    type="int", dest="shrinking", default=20,
+                    help="set INT for number of iterations variable needs to "
+                    "be optimal before considered for shrinking. (default 20)"),
+                make_option("-i", "--train",
+                    dest="trainfile",
+                    help="set training corpus path"),
+                make_option("--encoding",
+                    dest="encoding", default="utf8",
+                    help="set corpus encoding")]
+
+        opt_parser = OptionParser(usage=usage, option_list=opt_list)
+
+        return opt_parser
+
+
+class POSTagTrainer(Trainer):
+    def __init__(self):
+        pass
+
+    def train(self):
+        pass
+
+    def help(self):
+        pass
+
+    def _opt_parser(self):
+        usage = ""
+
+
+class SRLTrainer(Trainer):
+
+    def __init__(self):
+        pass
+
+    def train(self):
+        pass
+
+    def help(self):
+        pass
+
+
+def build(target):
+    # a meta function for create class
+    def createObject(className):
+        cls = globals()[className]
+
+        if isinstance(cls, type):
+            return cls()
+        else:
+            raise Exception("No such class")
+
+    # create a trainer
+    trainer = createObject(VALID_TARGETS[target] + "Trainer")
+
+    # execute training process
+    trainer.train()
+    """
+    try:
+        trainer.train()
+        print >> sys.stderr, "training is done."
+    except:
+        err = "training failed"
+        print >> sys.stderr, err
+    """
+
+def install():
+    pass
+
+def clean():
+    os.chdir(ROOT)
+
+    if os.path.isdir("build"):
+        shutil.rmtree("build")
+
+
+def main():
+    # specify usage
+    usage =     "LTP (Language Technology Platform) Training Wrapper\n"
+    usage +=    "Copyright (c) 2013 HIT-SCIR"
+    usage +=    "\n%s\n"
+    usage +=    "USAGE: ./train <COMMAND> [OPTIONS]\n"
+    usage +=    "    COMMAND        Command name to specify the training process\n"
+    usage +=    "    OPTIONS        Arguments for the command (command-specific)\n"
+    usage +=    "\n"
+    usage +=    "COMMAND:\n"
+    usage +=    "    build [TARGET] Build model specified by [TARGET]\n"
+    usage +=    "    install        Install model into ltp\n"
+    usage +=    "    clean          Clean the model\n"
+
+    if len(sys.argv) < 2 or (len(sys.argv) == 2 and (sys.argv[1] == "-h" or sys.argv[1] == "--help")):
+        print >> sys.stderr, usage % ""
+        return
+
+    if sys.argv[1] not in ["build", "install", "clean"]:
+        err = "\nERROR: Unknown command [%s]\n" % sys.argv[1]
+        print >> sys.stderr, usage % err
+        return
+
+    if sys.argv[1] == "build" and (len(sys.argv) < 3 or sys.argv[2] not in VALID_TARGETS):
+        err = "\nERROR: Build target should be [ws|pos|srl]\n"
+        print >> sys.stderr, usage % err
+        return
+
+    if sys.argv[1] == "build":
+        build(sys.argv[2])
+
+    elif sys.argv[1] == "install":
+        install()
+
+    elif sys.argv[1] == "clean":
+        clean()
+
+    else:
+        raise Exception("Something must went wrong =(");
+
+if __name__=="__main__":
+    main()

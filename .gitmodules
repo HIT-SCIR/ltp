@@ -1,0 +1,3 @@
+[submodule "tools/train/corpusproc"]
+	path = tools/train/corpusproc
+	url = git@github.com:Oneplus/py-corpusproc.git
