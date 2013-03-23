@@ -28,14 +28,19 @@ except:
 from optparse import OptionParser, make_option
 
 VALID_TARGETS = {
-        "ws":   "Wordseg",
-        "pos":  "POSTag",
-        "srl":  "SRL"}
+        "ws":   ("Wordseg", "crfws_data",   "pku_all.model"),
+        #"pos":  ("POSTag", "svmtagger_data")
+        "srl":  ("SRL",     "srl_data",     "binary_model"),}
 
 # attention here, cmake should replace this
-ROOT="${TOOLS_DIR}/train/"
-CRF_LEARN_EXE="${TOOLS_DIR}/train/crf_learn"
-MAXENT_EXE="${TOOLS_DIR}/train/maxent"
+ROOT            = "${TOOLS_DIR}/train/"
+CRFLEARN_EXE    = "${TOOLS_DIR}/train/crf_learn"
+MAXENT_EXE      = "${TOOLS_DIR}/train/maxent"
+SRLEXT_EXE      = "${TOOLS_DIR}/train/SRLExtract"
+SRLGET_EXE      = "${TOOLS_DIR}/train/SRLGetInstance"
+CONF_DIR        = "${TOOLS_DIR}/train/assets"
+
+MODEL_DIR       = "${MODEL_DIR}-sandbox/"
 
 def MD5(fp, block_size = 2**20):
     md5 = hashlib.md5()
@@ -45,6 +50,27 @@ def MD5(fp, block_size = 2**20):
             break
         md5.update(data)
     return md5.hexdigest()
+
+
+import threading
+
+class TimeoutCommand(threading.Thread):
+    def __init__(self, args, timeout = None):
+        threading.Thread.__init__(self)
+        self.args = args
+        self.timeout = timeout
+
+    def run(self):
+        self.p = subprocess.Popen(self.args)
+        self.p.wait()
+
+    def exe(self):
+        self.start()
+        self.join(self.timeout)
+
+        if self.is_alive():
+            self.p.terminate()
+            self.join()
 
 # basic class for trainer
 class Trainer(object):
@@ -62,6 +88,18 @@ class Trainer(object):
     def help(self):
         pass
 
+    def _check_and_build(self, data_id):
+        if not os.path.isdir("build"):
+            os.mkdir("build")
+
+        data_root=os.path.join("build", data_id)
+
+        if not os.path.isdir(data_root):
+            os.mkdir(data_root)
+
+        return data_root
+
+
 # word segment trainer
 class WordsegTrainer(Trainer):
 
@@ -73,14 +111,13 @@ class WordsegTrainer(Trainer):
             raise Exception("Parsing option error")
 
         if self.opts.trainfile is None:
+            self.help()
             raise Exception("Import file is not set.")
 
     def train(self):
         # make directory
         os.chdir(ROOT)
-
-        if not os.path.isdir("build"):
-            os.mkdir("build")
+        data_root = self._check_and_build( VALID_TARGETS["ws"][1] )
 
         try:
             fp=open(self.opts.trainfile, "r")
@@ -93,17 +130,18 @@ class WordsegTrainer(Trainer):
         # hash the file with md5 and encode the hash code into filename
         # the rest is too check the md5 value
         md5_code = MD5(fp)[:10]
-        model_name = "WS.%s.model" % md5_code
-        model_path = os.path.join("build", model_name)
+        model_name = "ws.%s.model" % md5_code
+        model_path = os.path.join(data_root, model_name)
 
         # model has been trained
+        train_name = "ws.%s.train" % md5_code
+        train_path = os.path.join(data_root, train_name)
+
         if os.path.isfile(model_path):
             trace = "TRACE: This file has been trained"
             print >> sys.stderr, trace
             return
 
-        train_name = "WS.%s.train" % md5_code
-        train_path = os.path.join("build", train_name)
         try:
             fpo=open(train_path, "w")
         except:
@@ -132,7 +170,7 @@ class WordsegTrainer(Trainer):
         fp.close()
         fpo.close()
 
-        args_list = [CRF_LEARN_EXE]
+        args_list = [CRFLEARN_EXE]
 
         i = 3
         while i < len(sys.argv):
@@ -148,19 +186,22 @@ class WordsegTrainer(Trainer):
             args_list.append(sys.argv[i])
             i += 1
 
-        args_list.append( os.path.join("assets", "crfpp.template") )
+        args_list.append( os.path.join(CONF_DIR, "crfpp.template") )
         args_list.append( train_path )
         args_list.append( model_path )
 
-        p = subprocess.Popen(args_list, stdout=sys.stdout)
-
+        TimeoutCommand( args_list ).exe()
 
     def help(self):
         self.parser.print_help()
 
     # initialize option parser for word segment trainer
     def _opt_parser(self):
-        usage = ""
+        usage =     "LTP (Language Technology Platform) Training Wrapper: Chinese Word Segmentation Trainer\n"
+        usage +=    "\n"
+        usage +=    "Author: Yijia Liu, Copyright (c) 2013 HIT-SCIR\n"
+        usage +=    "\n"
+        usage +=    "USAGE: ./ltp-model build ws [OPTIONS]"
         opt_list = [
                 make_option("-f", "--freq",
                     type="int", default=3, dest="freq",
@@ -219,14 +260,90 @@ class POSTagTrainer(Trainer):
 class SRLTrainer(Trainer):
 
     def __init__(self):
-        pass
+        self.parser = self._opt_parser()
+        try:
+            self.opts, self.args = self.parser.parse_args()
+        except:
+            raise Exception("Parsing arguments error")
+
+        if self.opts.trainfile == None:
+            self.help()
+            raise Exception("Corpus, template and configure file is must")
 
     def train(self):
-        pass
+        os.chdir(ROOT)
+        data_root = self._check_and_build( VALID_TARGETS["srl"][1] )
+        tmp_root  = os.path.join(data_root, "tmp")
+
+        if not os.path.isdir(tmp_root):
+            os.mkdir(tmp_root)
+
+        try:
+            fp=open(self.opts.trainfile, "r")
+        except:
+            err = "ERROR: Failed to open file %s" % self.opts.trainfile
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        md5_code = MD5(fp)[:10]
+        model_name = "srl.%s.model" % md5_code
+        model_path = os.path.join(data_root, model_name)
+
+        # model has been trained
+        train_name = "srl.%s.train" % md5_code
+        train_path = os.path.join(data_root, train_name)
+
+        if os.path.isfile(model_path):
+            trace = "TRACE: This file has been trained"
+            print >> sys.stderr, trace
+            return
+
+        # srl extract
+        args_list = [SRLEXT_EXE]
+        args_list.append( os.path.join(CONF_DIR, "Chinese.xml") )
+        args_list.append( self.opts.trainfile )
+        args_list.append( tmp_root )
+
+        TimeoutCommand( args_list ).exe()
+
+        args_list = [SRLGET_EXE]
+        args_list.append( os.path.join(CONF_DIR, "Chinese.xml") )
+        args_list.append( tmp_root )
+        args_list.append( os.path.join(CONF_DIR, "conll2009-arg.conf") )
+        args_list.append( train_path )
+
+        TimeoutCommand( args_list ).exe()
+
+        args_list = [MAXENT_EXE, 
+                "-g", "2",
+                "-i", "100",
+                "-v",
+                "-b",
+                "-m", train_path + ".verb.model"]
+        args_list.append( train_path + ".verb" )
+
+        TimeoutCommand( args_list ).exe()
 
     def help(self):
-        pass
+        self.parser.print_help()
 
+    def _opt_parser(self):
+        usage =     "LTP (Language Technology Platform) Training Wrapper: Semantic Role Labeling Trainer\n"
+        usage +=    "\n"
+        usage +=    "Author: Yijia Liu, Copyright (c) 2013 HIT-SCIR\n"
+        usage +=    "\n"
+        usage +=    "USAGE: ./ltp-model build srl [OPTIONS]"
+        opt_list = [
+                make_option("-i", "--train",
+                    dest="trainfile",
+                    help="set training corpus path"),
+                make_option("--encoding",
+                    dest="encoding", default="utf8",
+                    help="set corpus encoding")]
+
+        opt_parser = OptionParser(usage=usage, option_list=opt_list)
+
+        return opt_parser
 
 def build(target):
     # a meta function for create class
@@ -239,21 +356,56 @@ def build(target):
             raise Exception("No such class")
 
     # create a trainer
-    trainer = createObject(VALID_TARGETS[target] + "Trainer")
+    try:
+        trainer = createObject(VALID_TARGETS[target][0] + "Trainer")
+    except:
+        return
 
     # execute training process
-    trainer.train()
-    """
     try:
         trainer.train()
         print >> sys.stderr, "training is done."
     except:
         err = "training failed"
         print >> sys.stderr, err
-    """
 
 def install():
-    pass
+    os.chdir(ROOT)
+
+    def get_model_files(target):
+        target_dir = os.path.join("build", VALID_TARGETS[target][1])
+        if not os.path.isdir(target_dir):
+            return []
+
+        files = [f for f in os.listdir(target_dir)
+                if f.startswith(target + ".") and f.endswith(".model")]
+
+        return files
+
+    if not os.path.isdir(MODEL_DIR):
+        os.mkdir(MODEL_DIR)
+
+    for target in VALID_TARGETS:
+
+        model_files = get_model_files(target)
+        if len(model_files) == 0:
+            build(target)
+
+        output_dir = os.path.join(MODEL_DIR, VALID_TARGETS[target][1])
+        if not os.path.isdir(output_dir):
+            os.mkdir(output_dir)
+
+        model_file = os.path.join("build", VALID_TARGETS[target][1])
+        model_file = os.path.join(model_file, model_files[0])
+        shutil.copyfile(model_file,
+                os.path.join(output_dir, VALID_TARGETS[target][2]))
+
+    srl_data_dir = os.path.join(MODEL_DIR, "srl_data")
+    shutil.copyfile(os.path.join(CONF_DIR, "Chinese.xml"),
+            os.path.join(srl_data_dir, "Chinese.xml"))
+    shutil.copyfile(os.path.join(CONF_DIR, "conll2009-arg.conf"),
+            os.path.join(srl_data_dir, "conll2009-arg.conf"))
+
 
 def clean():
     os.chdir(ROOT)
@@ -261,11 +413,14 @@ def clean():
     if os.path.isdir("build"):
         shutil.rmtree("build")
 
+    trace = "TRACE: clean build"
+    print >> sys.stderr, trace
+
 
 def main():
     # specify usage
     usage =     "LTP (Language Technology Platform) Training Wrapper\n"
-    usage +=    "Copyright (c) 2013 HIT-SCIR"
+    usage +=    "Author: Yijia Liu, Copyright (c) 2013 HIT-SCIR"
     usage +=    "\n%s\n"
     usage +=    "USAGE: ./train <COMMAND> [OPTIONS]\n"
     usage +=    "    COMMAND        Command name to specify the training process\n"
