@@ -36,3 +36,18 @@ target_link_libraries (srl util maxent)
 configure_file (
     SRL_DLL.h
     ${INCLUDE_OUTPUT_PATH}/ltp/SRL_DLL.h)
+
+set (SRLExtract_SRC SRLExtract.cpp Corpus.cpp)
+add_executable (SRLExtract  ${SRLExtract_SRC})
+target_link_libraries (SRLExtract   srl)
+set_target_properties (SRLExtract
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+
+set (SRLGetInstance_SRC SRLGetInstance.cpp GetInstance.cpp)
+add_executable (SRLGetInstance ${SRLGetInstance_SRC})
+target_link_libraries (SRLGetInstance   srl)
+set_target_properties (SRLGetInstance
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+
