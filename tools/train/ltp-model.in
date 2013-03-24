@@ -40,7 +40,7 @@ SRLEXT_EXE      = "${TOOLS_DIR}/train/SRLExtract"
 SRLGET_EXE      = "${TOOLS_DIR}/train/SRLGetInstance"
 CONF_DIR        = "${TOOLS_DIR}/train/assets"
 
-MODEL_DIR       = "${MODEL_DIR}-sandbox/"
+MODEL_DIR       = "${MODEL_DIR}"
 
 def MD5(fp, block_size = 2**20):
     md5 = hashlib.md5()
