@@ -33,7 +33,6 @@ set (gparser_SRC
     KBestParseForest2O.h
     KBestParseForest.cpp
     KBestParseForest.h
-    main.cpp
     MultiArray.h
     Parameter.cpp
     Parameter.h
@@ -42,10 +41,22 @@ set (gparser_SRC
     ParserOptions.cpp
     ParserOptions.h)
 
-add_library (gparser ${gparser_SRC})
+add_library (gparser_lib ${gparser_SRC})
 
 configure_file (
     gparser_dll.h
     ${INCLUDE_OUTPUT_PATH}/ltp/gparser_dll.h)
 
-TARGET_LINK_LIBRARIES(gparser util)
+target_link_libraries (gparser_lib util)
+set_target_properties (gparser_lib PROPERTIES OUTPUT_NAME gparser)
+
+set (gparser_exe_SRC main.cpp)
+
+link_directories (${LIBRARY_OUTPUT_PATH})
+add_executable (gparser_exe ${gparser_exe_SRC})
+target_link_libraries (gparser_exe gparser)
+set_target_properties (gparser_exe
+    PROPERTIES
+    OUTPUT_NAME gparser
+    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+
