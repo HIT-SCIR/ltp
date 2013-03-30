@@ -1,3 +1,4 @@
+link_directories (${LIBRARY_OUTPUT_PATH})
 include_directories (./
     ${util_DIR})
 
@@ -52,9 +53,8 @@ set_target_properties (gparser_lib PROPERTIES OUTPUT_NAME gparser)
 
 set (gparser_exe_SRC main.cpp)
 
-link_directories (${LIBRARY_OUTPUT_PATH})
 add_executable (gparser_exe ${gparser_exe_SRC})
-target_link_libraries (gparser_exe gparser)
+target_link_libraries (gparser_exe gparser_lib)
 set_target_properties (gparser_exe
     PROPERTIES
     OUTPUT_NAME gparser
