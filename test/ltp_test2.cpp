@@ -15,16 +15,17 @@ static LTP ltp(xml4nlp);
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        cerr << "Usage: ./ltp_test <type> <test_file>" << endl;
+        cerr << "Usage: ./ltp_test <type> <test_file> <result_file>" << endl;
         exit(1);
     }
 
     string type(argv[1]);
-    string in(argv[2]);
+    string in_file(argv[2]);
+    string res_file(argv[3]);
 
-    xml4nlp.CreateDOMFromFile(in.c_str());
+    xml4nlp.CreateDOMFromFile(in_file.c_str());
 
     if (type == "ws") {
         ltp.crfWordSeg();
@@ -42,9 +43,10 @@ int main(int argc, char *argv[])
 
     string result;
     xml4nlp.SaveDOM(result);
-    ofstream out((in + ".xml").c_str());
+
+    ofstream out(res_file.c_str());
     out << result << endl;
-    cerr << "Results saved to " << (in + ".xml") << endl;
+    cerr << "Results saved to " << res_file << endl;
 
     xml4nlp.ClearDOM();
 
