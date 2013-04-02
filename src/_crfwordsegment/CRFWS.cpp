@@ -12,7 +12,7 @@ CRFWS::~CRFWS(void)
 
 int CRFWS::CreateEngine(const char *path)
 {
-	cout << "Begin Load CRF model!" << endl;
+	cerr << "Begin Load CRF model!" << endl;
 	if (engine) delete engine;
 	string strModel = path;
 	strModel += "pku_all.model";
@@ -21,7 +21,7 @@ int CRFWS::CreateEngine(const char *path)
 		cerr << "crf-ws load model err: " << strModel << endl;	
 		return -1;
 	}
-	cout << "Load CRF model over!" << endl;
+	cerr << "Load CRF model over!" << endl;
 	return 0;
 }
 

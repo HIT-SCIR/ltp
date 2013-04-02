@@ -14,13 +14,31 @@ include_directories (./
 
 set (ltp_test_SRC           ltp_test.cpp)
 set (ltp_test_xml_SRC       ltp_test_xml.cpp)
+set (ltp_test2_SRC          ltp_test2.cpp)
 
 add_executable (ltp_test     ${ltp_test_SRC})
 add_executable (ltp_test_xml ${ltp_test_xml_SRC})
+add_executable (ltp_test2    ${ltp_test2_SRC})
 
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 target_link_libraries (ltp_test
+    maxent
+    crfpp
+    util
+    ltp
+    splitsnt
+    crfwordseg
+    postagger
+    gparser
+    ner
+    srl
+    xml4nlp
+    dl
+    pthread
+    boost_regex)
+
+target_link_libraries (ltp_test2
     maxent
     crfpp
     util

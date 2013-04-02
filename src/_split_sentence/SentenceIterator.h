@@ -79,9 +79,9 @@ public:
 		m_vecSeparator.push_back(coder(string("¡£")));
 		m_vecSeparator.push_back(coder(string("£¡")));
 		m_vecSeparator.push_back(coder(string("£¿")));
-		m_vecSeparator.push_back(coder(string("£»")));
-		m_vecSeparator.push_back(coder(string("£º")));
-		//		m_vecSeparator.push_back(coder(string("¡±")));
+		// m_vecSeparator.push_back(coder(string("£»")));
+		// m_vecSeparator.push_back(coder(string("£º")));
+		// m_vecSeparator.push_back(coder(string("¡±")));
 		m_vecSeparator.push_back(coder(string("¡¡")));
 		m_vecSeparator.push_back( '\r' );
 		m_vecSeparator.push_back( '\n' );
