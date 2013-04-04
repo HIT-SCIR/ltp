@@ -442,6 +442,7 @@ class POSTagTrainer(Trainer):
                 "CHINES.UNKP":          os.path.join(data_root, "%s.UNKP" % md5_code),
                 "CHINES.WIN":           os.path.join(data_root, "%s.WIN" % md5_code),}
 
+        os.chdir(ROOT)
         return
 
     def help(self):
