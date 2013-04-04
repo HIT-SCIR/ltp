@@ -62,15 +62,22 @@ except:
                     "pku_all.model": None,},
                 "ConfigFiles":  {},
                 },
-            "srl": {
-                "ClassName":    "SRL",
-                "BuildSubdir":  "srl_data",
+            "pos": {
+                "ClassName":    "POSTag",
+                "BuildSubdir":  "svmtagger_data",
                 "ConfigModels": {
-                    "binary_model": None,},
-                "ConfigFiles":  {
-                    "Chinese.xml":  os.path.join(CONF_DIR, "Chinese.xml"),
-                    "conll2009-arg.conf":   os.path.join(CONF_DIR, "conll2009-arg.conf"),
+                    "CHINES.A4": None,
+                    "CHINES.A4.UNK" : None,
+                    "CHINES.AMBP": None,
+                    "CHINES.DICT": None,
+                    "CHINES.M4.LR.MRG": None,
+                    "CHINES.UNK.M4.LR.MRG": None,
+                    "CHINES.UNKP": None,
+                    "CHINES.WIN": None,
                     },
+                "ConfigFiles": {
+                    "bushou.txt": os.path.join(CONF_DIR, "bushou.txt"),
+                    "result.txt": os.path.join(CONF_DIR, "result.txt")},
                 },
             "dp": {
                 "ClassName":    "DP",
@@ -81,7 +88,18 @@ except:
                 "ConfigFiles":  {
                     "config.ircdt_10k.txt": os.path.join(CONF_DIR, "gparser.test.conf"),
                     },
-                }}
+                },
+            "srl": {
+                "ClassName":    "SRL",
+                "BuildSubdir":  "srl_data",
+                "ConfigModels": {
+                    "binary_model": None,},
+                "ConfigFiles":  {
+                    "Chinese.xml":  os.path.join(CONF_DIR, "Chinese.xml"),
+                    "conll2009-arg.conf":   os.path.join(CONF_DIR, "conll2009-arg.conf"),
+                    },
+                },}
+
 
 # hash file with MD5, return MD5 code of this file
 #
@@ -293,16 +311,158 @@ class WordsegTrainer(Trainer):
 
 class POSTagTrainer(Trainer):
     def __init__(self):
-        pass
+        self.parser = self._opt_parser()
+        self.opts, self.args = self.parser.parse_args()
+        try:
+            self.opts, self.args = self.parser.parse_args()
+        except:
+            raise Exception("Parsing option error")
+
 
     def train(self):
-        pass
+        if self.opts.trainfile is None:
+            err = "ERROR: Training file is not set"
+            print >> sys.stderr, err
+            return
+
+        # make directory
+        os.chdir(ROOT)
+        data_root = self._check_and_build( VALID_TARGETS["pos"]["BuildSubdir"] )
+
+        try:
+            fp=open(self.opts.trainfile, "r")
+        except:
+            err = "ERROR: Failed to open file %s" % self.opts.trainfile
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        md5_code = MD5(fp)[:10]
+        model_name = "%s.M4.LR.MRG" % md5_code
+        model_path = os.path.join(data_root, model_name)
+
+        train_name = "%s.pos.train" % md5_code
+        train_path = os.path.join(data_root, train_name)
+
+        if os.path.isfile(model_path):
+            trace = "TRACE: This file has been trained"
+            print >> sys.stderr, trace
+            VALID_TARGETS["pos"]["ConfigModels"] = {
+                    "CHINES.A4":            os.path.join(data_root, "%s.A4" % md5_code),
+                    "CHINES.A4.UNK" :       os.path.join(data_root, "%s.A4.UNK" % md5_code),
+                    "CHINES.AMBP":          os.path.join(data_root, "%s.AMBP" % md5_code),
+                    "CHINES.DICT":          os.path.join(data_root, "%s.DICT" % md5_code),
+                    "CHINES.M4.LR.MRG":     os.path.join(data_root, "%s.M4.LR.MRG" % md5_code),
+                    "CHINES.UNK.M4.LR.MRG": os.path.join(data_root, "%s.UNK.M4.LR.MRG" % md5_code),
+                    "CHINES.UNKP":          os.path.join(data_root, "%s.UNKP" % md5_code),
+                    "CHINES.WIN":           os.path.join(data_root, "%s.WIN" % md5_code),}
+            return
+
+        try:
+            fpo=open(train_path, "w")
+        except:
+            err = "ERROR: Failed to open file %s" % train_file
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        reader = PostagReader(fp)
+        reader.seek(0)
+
+        inst = reader.get()
+        while inst is not None:
+            for idx, word in enumerate(inst.forms):
+                print >> fpo, word, inst.postags[idx]
+
+            inst = reader.get()
+
+        os.chdir(os.path.join(ROOT, "svmtools"))
+
+        try:
+            fpc=open("config.svmt.in", "r")
+        except:
+            err = "ERROR: Failed to open config template"
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        try:
+            fpco=open("config.svmt", "w")
+        except:
+            err = "ERROR: Failed to open config output"
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        for line in fpc:
+            if line.startswith("TRAINSET"):
+                line = line.strip().split("=")[0] + "=" + train_path
+            elif line.startswith("SVMDIR"):
+                line = line.strip().split("=")[0] + "=" + ROOT
+            elif line.startswith("NAME"):
+                line = line.strip().split("=")[0] + "=" + md5_code
+            else:
+                line = line.strip()
+            print >> fpco, line
+
+        arg_list = ["perl",
+                "SVMTlearn",
+                "config.svmt"]
+
+        TimeoutCommand( arg_list ).exe()
+
+        shutil.move(
+                "%s.A4" % md5_code,
+                os.path.join(data_root, "%s.A4" % md5_code))
+        shutil.move(
+                "%s.A4.UNK" % md5_code,
+                os.path.join(data_root, "%s.A4.UNK" % md5_code))
+        shutil.move(
+                "%s.AMBP" % md5_code,
+                os.path.join(data_root, "%s.AMBP" % md5_code))
+        shutil.move(
+                "%s.DICT" % md5_code,
+                os.path.join(data_root, "%s.DICT" % md5_code))
+        shutil.move(
+                "%s.M4.LR.MRG" % md5_code,
+                os.path.join(data_root, "%s.M4.LR.MRG" % md5_code))
+        shutil.move(
+                "%s.UNK.M4.LR.MRG" % md5_code,
+                os.path.join(data_root, "%s.UNK.M4.LR.MRG" % md5_code))
+        shutil.move(
+                "%s.UNKP" % md5_code,
+                os.path.join(data_root, "%s.UNKP" % md5_code))
+        shutil.move(
+                "%s.WIN" % md5_code,
+                os.path.join(data_root, "%s.WIN" % md5_code))
+
+        VALID_TARGETS["pos"]["ConfigModels"] = {
+                "CHINES.A4":            os.path.join(data_root, "%s.A4" % md5_code),
+                "CHINES.A4.UNK" :       os.path.join(data_root, "%s.A4.UNK" % md5_code),
+                "CHINES.AMBP":          os.path.join(data_root, "%s.AMBP" % md5_code),
+                "CHINES.DICT":          os.path.join(data_root, "%s.DICT" % md5_code),
+                "CHINES.M4.LR.MRG":     os.path.join(data_root, "%s.M4.LR.MRG" % md5_code),
+                "CHINES.UNK.M4.LR.MRG": os.path.join(data_root, "%s.UNK.M4.LR.MRG" % md5_code),
+                "CHINES.UNKP":          os.path.join(data_root, "%s.UNKP" % md5_code),
+                "CHINES.WIN":           os.path.join(data_root, "%s.WIN" % md5_code),}
+
+        return
 
     def help(self):
-        pass
+        self.parser.print_help()
 
     def _opt_parser(self):
-        usage = ""
+        usage =     "LTP (Language Technology Platform) Training Wrapper: Postagging Trainer\n"
+        usage +=    "\n"
+        usage +=    "Author: Yijia Liu, Copyright (c) 2013 HIT-SCIR\n"
+        usage +=    "\n"
+        usage +=    "USAGE: ./ltp-model build pos [OPTIONS]"
+
+        opt_list = [
+                make_option("-t", "--train",
+                    dest="trainfile",
+                    help="set training file"),
+                make_option("--encoding",
+                    dest="encoding", default="utf8",
+                    help="set corpus encoding")]
+        opt_parser = OptionParser(usage=usage, option_list=opt_list)
+        return opt_parser
 
 
 class DPTrainer(Trainer):
@@ -544,11 +704,6 @@ def install():
         #shutil.copyfile(model_file,
         #        os.path.join(output_dir, VALID_TARGETS[target][2]))
 
-    srl_data_dir = os.path.join(MODEL_DIR, "srl_data")
-    shutil.copyfile(os.path.join(CONF_DIR, "Chinese.xml"),
-            os.path.join(srl_data_dir, "Chinese.xml"))
-    shutil.copyfile(os.path.join(CONF_DIR, "conll2009-arg.conf"),
-            os.path.join(srl_data_dir, "conll2009-arg.conf"))
 
 
 def clean():
@@ -556,9 +711,13 @@ def clean():
 
     if os.path.isdir("build"):
         shutil.rmtree("build")
+        trace = "TRACE: clean build"
+        print >> sys.stderr, trace
 
-    trace = "TRACE: clean build"
-    print >> sys.stderr, trace
+    if os.path.isfile("ltp-model.json"):
+        os.remove("ltp-model.json")
+        trace = "TRACE: clean ltp-model.json"
+        print >> sys.stderr, trace
 
 
 def main():
@@ -598,11 +757,14 @@ def main():
     else:
         raise Exception("Something must went wrong =(");
 
+    if sys.argv[1] == "build" or sys.argv[1] == "install":
+        try:
+            fpo=open("ltp-model.json", "w")
+            print >> fpo, json.dumps(VALID_TARGETS, indent=4)
+        except:
+            print >> sys.stderr, "Failed to write ltp-model.json"
+
 if __name__=="__main__":
     main()
 
-    try:
-        fpo=open("ltp-model.json", "w")
-        print >> fpo, json.dumps(VALID_TARGETS, indent=4)
-    except:
-        print >> sys.stderr, "Failed to write ltp-model.json"
+
