@@ -474,7 +474,7 @@ class DPTrainer(Trainer):
         except:
             raise Exception("Parsing arguments error")
 
-        if self.opts.configfile == None:
+        if self.opts.trainfile == None:
             self.help()
             raise Exception("Configure file is must.")
 
@@ -483,27 +483,15 @@ class DPTrainer(Trainer):
         data_root = self._check_and_build( VALID_TARGETS["dp"]["BuildSubdir"] )
 
         try:
-            fp=open(self.opts.configfile, "r")
-        except:
-            err = "ERROR: Failed to open config file %s" % self.opts.configfile
-            print >> sys.stderr, err
-            raise Exception(err)
-
-        trainfile = ""
-        for line in fp:
-            if line.startswith("train-file"):
-                trainfile=line.strip().split(":", 1)[1]
-        fp.close()
-
-        try:
-            fp=open(trainfile, "r")
+            fp=open(self.opts.trainfile, "r")
         except:
             err = "ERROR: Failed to open config file %s" % trainfile
             print >> sys.stderr, err
 
         md5_code = MD5(fp)[:10]
-        model_alpha_path = os.path.join(data_root, "%s.alphabet.gparser.model" % md5_code)
-        model_param_path = os.path.join(data_root, "%s.parameter..gparser.model" % md5_code)
+        model_alpha_path = os.path.join(data_root, "alphabet.%s.model" % md5_code)
+        model_param_path = os.path.join(data_root, "parameter..%s.model" % md5_code)
+        fp.close()
 
         if os.path.isfile(model_alpha_path) and os.path.isfile(model_param_path):
             trace = "TRACE: model has be trained"
@@ -512,14 +500,34 @@ class DPTrainer(Trainer):
             VALID_TARGETS["dp"]["ConfigModels"]["parameter..ircdt10k.model"] = model_param_path
             return 
 
+        try:
+            fp=open(os.path.join(CONF_DIR, "gparser.conf.in"), "r")
+            fpo=open(os.path.join(CONF_DIR, "gparser.conf"), "w")
+        except:
+            err = "ERROR: Failed to open config template"
+            print >> sys.stderr, err
+            raise Exception(err)
+
+        for line in fp:
+            if line.startswith("train-file"):
+                line=line.strip().split(":")[0]+":"+self.opts.trainfile
+            elif line.startswith("model-name"):
+                line=line.strip().split(":")[0]+":"+("%s.model" % md5_code)
+            else:
+                line=line.strip()
+            print >> fpo, line
+        fp.close()
+        fpo.close()
+
+
         args_list = [GPARSER_EXE,
-                self.opts.configfile]
+                os.path.join(CONF_DIR, "gparser.conf")]
 
         TimeoutCommand( args_list ).exe()
 
-        shutil.move(os.path.join(ROOT, "alphabet.ltp.gparser.model"),
+        shutil.move(os.path.join(ROOT, "alphabet.%s.model" % md5_code),
                 model_alpha_path)
-        shutil.move(os.path.join(ROOT, "parameter..ltp.gparser.model"),
+        shutil.move(os.path.join(ROOT, "parameter..%s.model" % md5_code),
                 model_param_path)
 
         VALID_TARGETS["dp"]["ConfigModels"]["alphabet.ircdt10k.model"] = model_alpha_path
@@ -537,10 +545,9 @@ class DPTrainer(Trainer):
         usage +=    "USAGE: ./ltp-model build dp [OPTIONS]"
 
         opt_list = [
-                make_option("-c", "--config",
-                    dest="configfile",
-                    default=os.path.join(CONF_DIR, "gparser.conf"),
-                    help="set configure file"),
+                make_option("-i", "--train",
+                    dest="trainfile",
+                    help="set training corpus path"),
                 make_option("--encoding",
                     dest="encoding", default="utf8",
                     help="set corpus encoding")]

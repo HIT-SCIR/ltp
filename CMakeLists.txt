@@ -41,10 +41,6 @@ configure_file (
     ${TOOLS_DIR}/train/ltp-model.in
     ${TOOLS_DIR}/train/ltp-model)
 
-configure_file (
-    ${TOOLS_DIR}/train/assets/gparser.conf.in
-    ${TOOLS_DIR}/train/assets/gparser.conf)
-
 # enable test
 enable_testing()
 
