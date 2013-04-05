@@ -56,7 +56,7 @@
 ### 部署
 
 为了避免直接覆盖已有模型，在install之后，模型文件被指定生成在`ltp_data-sandbox`中。
-用户可以手动将`ltp_data-sandbox`重命名为`ltp-data`，或者在`bin/ltp_all_modules.conf`文件中制定模型文件路径。
+用户可以手动将`ltp_data-sandbox`重命名为`ltp-data`，或者在`bin/ltp_all_modules.conf`文件中指定模型文件路径。
 
 构建分词模型
 ------------
