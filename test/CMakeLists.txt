@@ -16,11 +16,11 @@ set (ltp_test_SRC           ltp_test.cpp)
 set (ltp_test_xml_SRC       ltp_test_xml.cpp)
 set (ltp_test2_SRC          ltp_test2.cpp)
 
+link_directories ( ${LIBRARY_OUTPUT_PATH} )
+
 add_executable (ltp_test     ${ltp_test_SRC})
 add_executable (ltp_test_xml ${ltp_test_xml_SRC})
 add_executable (ltp_test2    ${ltp_test2_SRC})
-
-link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 target_link_libraries (ltp_test
     maxent

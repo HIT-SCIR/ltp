@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<head>
+<language>
+    Chinese
+</language>
+<noun_features>
+	PredicateSiblingsRELNoDup
+	HeadwordLemma
+	RelationPath
+	UpRelationPath
+	Path
+	Predicate
+	PredicateFamilyship
+	DepwordLemma
+	DepRelation
+	PathLength
+	Position
+	UpPath
+	PredicateLemma
+	LastLemma
+	FirstLemma
+	ConstituentPOSPattern
+</noun_features>
+<verb_features>
+	PredicateSiblingsRELNoDup
+	HeadwordLemma
+	RelationPath
+	UpRelationPath
+	ConstituentPOSPattern
+	Path
+	Predicate
+	PredicateFamilyship
+	DepwordLemma
+	DepRelation
+	PathLength
+	Position
+	UpPath
+	PredicateLemma
+	LastLemma
+	FirstLemma
+</verb_features>
+<features_pred_cl>
+    Predicate
+    PredicateLemma
+    PredicateBagOfWords
+    PredicateBagOfWordsOrdered
+    PredicateBagOfPOSOrdered
+    PredicateBagOfPOSNumbered
+    PredicateWindow5Bigram
+    PredicateChildrenPOS
+    PredicateChildrenPOSNoDup
+    PredicateChildrenREL
+    PredicateChildrenRELNoDup
+    PredicateSiblingsPOS
+    PredicateSiblingsPOSNoDup
+    PredicateSiblingsREL
+    PredicateSiblingsRELNoDup
+    HeadwordPOS
+    DepRelation
+    Headword
+    DepwordPOS
+    HeadwordLemma
+    PredicateWindow5BigramPOS
+    PredicateBagOfPOSWindow5
+    PredicateBagOfPOSorderedWindow5
+    PredicateBagOfPOSNumberedWindow5
+    PredicateBagOfWordsAndIsDesOfPRED
+</features_pred_cl>
+<predicate>
+    <noun>
+        n   
+        nd  
+        nh  
+        ni  
+        nl  
+        ns  
+        nt  
+        nz
+    </noun>
+    <verb>
+        a   
+        b   
+        c   
+        d   
+        h   
+        i   
+        j   
+        m   
+        o   
+        p   
+        q   
+        r   
+        u   
+        v
+    </verb>
+</predicate>
+</head>

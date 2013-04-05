@@ -17,7 +17,8 @@ set (TOOLS_DIR              ${PROJECT_SOURCE_DIR}/tools)
 
 # -- config resource directories
 set (CONFIGURE_DIR          ${PROJECT_SOURCE_DIR}/conf)
-set (DATA_DIR               ${PROJECT_SOURCE_DIR}/ltp_data)
+set (MODEL_DIR              ${PROJECT_SOURCE_DIR}/ltp_data)
+set (DATA_DIR               ${PROJECT_SOURCE_DIR}/test_data)
 
 # compiling section
 # -- compile shipped libraries
@@ -33,8 +34,12 @@ configure_file (
     ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
 
 configure_file (
-    ${TOOLS_DIR}/auto-test.sh.in
-    ${EXECUTABLE_OUTPUT_PATH}/auto-test.sh)
+    ${TOOLS_DIR}/testing/auto-test.sh.in
+    ${TOOLS_DIR}/testing/auto-test.sh)
+
+configure_file (
+    ${TOOLS_DIR}/train/ltp-model.in
+    ${TOOLS_DIR}/train/ltp-model)
 
 # enable test
 enable_testing()
