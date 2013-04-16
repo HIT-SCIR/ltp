@@ -6,6 +6,28 @@
 *.la
 *.deps
 *.libs
-build/
-lib/
 
+###############
+# build       #
+###############
+build
+config.h
+
+###############
+# output      #
+###############
+include/
+lib/
+bin/
+crf_learn
+crf_test
+gparser
+ltp-model
+maxent
+svm_learn
+auto-test.sh
+SRLExtract
+SRLGetInstance
+ltp-model.json
+config.svmt
+gparser.conf
