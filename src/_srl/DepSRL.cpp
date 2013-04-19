@@ -89,12 +89,8 @@ int DepSRL::GetSRLResult(
      }
 
      if ( !predicates.size() ) {
-         cerr << "no predicates" << endl;
          // skip all processing if no predicate
          return 1;
-     }
-     else {
-        cerr << "predicates: " << predicates.size() << endl;
      }
 
      VecFeatForSent vecAllFeatures;   //the features interface for SRLBaseline
