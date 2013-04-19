@@ -89,8 +89,12 @@ int DepSRL::GetSRLResult(
      }
 
      if ( !predicates.size() ) {
+         cerr << "no predicates" << endl;
          // skip all processing if no predicate
          return 1;
+     }
+     else {
+        cerr << "predicates: " << predicates.size() << endl;
      }
 
      VecFeatForSent vecAllFeatures;   //the features interface for SRLBaseline
@@ -495,10 +499,15 @@ void DepSRL::GetPredicateFromSentence(const vector<string>& vecPos,
 	itPos = vecPos.begin();
 	while (itPos != vecPos.end())
 	{	//all the postag is "v"		
-		if (!(*itPos).compare(S_VERB_POS))
-		{
-			vecPredicate.push_back(index);
-		}
+		// if (!(*itPos).compare(S_VERB_POS))
+		// {
+			// vecPredicate.push_back(index);
+		// }
+
+        if (m_srlBaseline->isVerbPOS(*itPos))
+        {
+            vecPredicate.push_back(index);
+        }
 
 		index++;
 		itPos++;

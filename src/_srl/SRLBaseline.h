@@ -21,6 +21,7 @@ public:
 	//for now used
 	void setDataPreProc(const DataPreProcess* dataPreProc);
 	void SetPredicate(const vector<int>& vecPred);
+    bool isVerbPOS(const string& POS) const;
 
 protected:
 	bool IsFilter(int nodeID, 

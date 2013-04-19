@@ -84,3 +84,8 @@ void SRLBaseline::setDataPreProc(const DataPreProcess* dataPreProc)
 {
 	m_dataPreProc = dataPreProc;
 }
+
+bool SRLBaseline::isVerbPOS(const string& POS) const
+{
+    return m_configuration.is_verbPOS(POS);
+}
