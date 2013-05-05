@@ -1,15 +1,23 @@
 #ifndef __IRNE7TYPERECOG_H__
 #define __IRNE7TYPERECOG_H__
 
+#include "crfpp.h"
+#include <string>
+#include <string.h>
+#include <stdlib.h>
+using std::string;
+
+/* old version
 #include "Model.h"
 #include "MyNLPlib.h"
 #include "InitDic.h"
 #include "RuleNErecog.h"
+*/
 
 //using namespace maxent;
 
 /*
- *	ÊµÏÖNEÊ¶±ğµÄÕû¸ö¹ı³Ì£¬°üÀ¨ÌØÕ÷³éÈ¡£¬Àà±ğÔ¤²â£¬×îÓÅËÑË÷
+ *	å®ç°NEè¯†åˆ«çš„æ•´ä¸ªè¿‡ç¨‹ï¼ŒåŒ…æ‹¬ç‰¹å¾æŠ½å–ï¼Œç±»åˆ«é¢„æµ‹ï¼Œæœ€ä¼˜æœç´¢
  */
 
 class IRNErecog
@@ -17,17 +25,20 @@ class IRNErecog
 public:
 	IRNErecog();
 	~IRNErecog();
-	void setObject(InitDic *pdic, CModel* model);
+	/* old version:
+	   void setObject(InitDic *pdic, CModel* model); */
+	void crf_set(char *model_path);
 	void IRNE7TypeRecog(const string& strSen, string& StrOut, int tagForm, bool* isNEtypeFlag);
 
+/* old version:
 private:
 	struct SearchNode
 	{
-		int preNode;  //Ç°Ò»¸ö´Ê¶ÔÓ¦µÄnodeNum
-		string NEtype;  //NEÀà±ğ
-		double prob;  //ÀÛ»ı¸ÅÂÊ
+		int preNode;  //å‰ä¸€ä¸ªè¯å¯¹åº”çš„nodeNum
+		string NEtype;  //NEç±»åˆ«
+		double prob;  //ç´¯ç§¯æ¦‚ç‡
 	};
-	typedef struct SearchNode SEARCHNODE; //´æ·ÅÔ¤²âËÑË÷µÄ×îÓÅ½á¹û
+	typedef struct SearchNode SEARCHNODE; //å­˜æ”¾é¢„æµ‹æœç´¢çš„æœ€ä¼˜ç»“æœ
 
 	typedef vector<SEARCHNODE> SEARCHVECTOR;
 
@@ -40,10 +51,12 @@ private:
 		FormBracket = 1,
 		FormBIESO = 2,
 		FormMerge = 3
-	};
+	}; */
 
 
+/* old version: 
 private:
+
 	void NEtaggingNormal(string& NEResult);
 	void getNEResult(string& result, int tagform);
 	void NEtaggingBasedOnBIOForm1(string& NEResult);
@@ -76,21 +89,26 @@ private:
 	void cutSingleNE(vector<string>& vecNE);
 
 	void getNEstring(int& senBegpos, int& NEBegpos, string& strOut);
-	string getNEPOS(string& NEtype);
+	string getNEPOS(string& NEtype); */
 
 private:
-	vector<SEARCHVECTOR> vecList;  //´ÊµÄĞòÁĞ
-	//vector<FEATURE> vecTemplate[TEMPLATE_NUM];  //ÌØÕ÷Ä£°å
-	CModel* Cmodel;
+	/* old version:
+	vector<SEARCHVECTOR> vecList;  //è¯çš„åºåˆ—
+	//vector<FEATURE> vecTemplate[TEMPLATE_NUM];  //ç‰¹å¾æ¨¡æ¿ */
 
+	/* old version: replace next line
+	   CModel* Cmodel; */
+	CRFPP::Tagger *tagger;
+
+	/* old version 
 	InitDic* pdic;
-	Ruletest ruletest;
+	Ruletest ruletest; */
 
-
+	/* old version
 	//MaxentModel MEmodel;
-	vector<string> vecContext;  //´æ·ÅÌØÕ÷
-	vector< pair<string, double> > vecOutcome;  //´æ·ÅNEÔ¤²âºóµÄÀà±ğºÍ¸ÅÂÊĞÅÏ¢
-	vector< pair<string, string> > vec2paSen;  //´æ·Å¾ä×ÓµÄÔ¤´¦Àí½á¹û
+	vector<string> vecContext;  //å­˜æ”¾ç‰¹å¾
+	vector< pair<string, double> > vecOutcome;  //å­˜æ”¾NEé¢„æµ‹åçš„ç±»åˆ«å’Œæ¦‚ç‡ä¿¡æ¯
+	vector< pair<string, string> > vec2paSen;  //å­˜æ”¾å¥å­çš„é¢„å¤„ç†ç»“æœ
 	vector<string> vecNEResult;
 
 
@@ -101,10 +119,10 @@ private:
 	map<string, int> map_preNh;
 
 	bool* bIsNEtypeFlag;
-
+	*/
 
 	/*
-	 *	ÒÔÏÂfor debug
+	 *	ä»¥ä¸‹for debug
 	 */
 	//ofstream temp; //for debug
 	//ofstream tempProb;
@@ -113,19 +131,3 @@ private:
 
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

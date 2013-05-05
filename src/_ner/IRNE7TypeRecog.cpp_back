@@ -1,10 +1,11 @@
 #include "IRNE7TypeRecog.h"
 #include <math.h>
-/* debug 
+/* debug */
 #include <iostream>
-using namespace std; */
+using namespace std;
+/* debug */
 
-#define MAX 2048
+#define MAX 256
 
 //#include <string.h>
 //using std::string;
@@ -50,7 +51,9 @@ void IRNErecog::crf_set(char *model_path)
 
     this->tagger = CRFPP::createTagger(cmd);
 
-    if (!this->tagger)
+    if (this->tagger)
+	fprintf(stderr, "crf_set: create success.\n");
+    else
 	fprintf(stderr, "crf_set: create failed.\n");
 }
 
@@ -246,44 +249,18 @@ void IRNErecog::IRNE7TypeRecog(const string& strSen, string& StrOut, int tagForm
 		ltp_result[j++] = crf_result[i];
 		ltp_result[j++] = crf_result[i + 1];
 	    }
-	    /* print '/' */
+	    /* print '\' */
 	    ltp_result[j++] = '/'; 
 	    /* print x(k, 1) */
 	    crf_result = this->tagger->x(k, 1);
-	    for (i = 0; crf_result[i]; ++i)
-		ltp_result[j++] = crf_result[i];
-	    /* print '#' */
-	    ltp_result[j++] = '#';
-	    /* print 'O' */
-	    ltp_result[j++] = 'O';
-	    /* print ' ' */
-	    ltp_result[j++] = ' ';
-	    break;
-	case 'S':
-	    /* print x(k, 0) */
-	    crf_result = this->tagger->x(k, 0);
-	    for (i = 0; crf_result[i]; i += 2) {
-		ltp_result[j++] = crf_result[i];
-		ltp_result[j++] = crf_result[i + 1];
-	    }
-	    /* print '/' */
-	    ltp_result[j++] = '/'; 
-	    /* print x(k, 1) */
-	    crf_result = this->tagger->x(k, 1);
-	    for (i = 0; crf_result[i]; ++i)
-		ltp_result[j++] = crf_result[i];
-	    /* print '#S-' */
-	    ltp_result[j++] = '#'; 
-	    ltp_result[j++] = 'S'; 
-	    ltp_result[j++] = '-'; 
-	    /* print y2(k) */
-	    crf_result = this->tagger->y2(k) + 2;
 	    for (i = 0; crf_result[i]; ++i)
 		ltp_result[j++] = crf_result[i];
 	    /* print ' ' */
 	    ltp_result[j++] = ' ';
 	    break;
-	case 'B':
+	case 'S':
+	    /* print '[' */
+	    ltp_result[j++] = '['; 
 	    /* print x(k, 0) */
 	    crf_result = this->tagger->x(k, 0);
 	    for (i = 0; crf_result[i]; i += 2) {
@@ -296,12 +273,28 @@ void IRNErecog::IRNE7TypeRecog(const string& strSen, string& StrOut, int tagForm
 	    crf_result = this->tagger->x(k, 1);
 	    for (i = 0; crf_result[i]; ++i)
 		ltp_result[j++] = crf_result[i];
-	    /* print '#B-' */
-	    ltp_result[j++] = '#';
-	    ltp_result[j++] = 'B';
-	    ltp_result[j++] = '-';
+	    /* print ']' */
+	    ltp_result[j++] = ']'; 
 	    /* print y2(k) */
 	    crf_result = this->tagger->y2(k) + 2;
+	    for (i = 0; crf_result[i]; ++i)
+		ltp_result[j++] = crf_result[i];
+	    /* print ' ' */
+	    ltp_result[j++] = ' ';
+	    break;
+	case 'B':
+	    /* print '[' */
+	    ltp_result[j++] = '['; 
+	    /* print x(k, 0) */
+	    crf_result = this->tagger->x(k, 0);
+	    for (i = 0; crf_result[i]; i += 2) {
+		ltp_result[j++] = crf_result[i];
+		ltp_result[j++] = crf_result[i + 1];
+	    }
+	    /* print '\' */
+	    ltp_result[j++] = '/'; 
+	    /* print x(k, 1) */
+	    crf_result = this->tagger->x(k, 1);
 	    for (i = 0; crf_result[i]; ++i)
 		ltp_result[j++] = crf_result[i];
 	    /* print ' ' */
@@ -320,14 +313,6 @@ void IRNErecog::IRNE7TypeRecog(const string& strSen, string& StrOut, int tagForm
 	    crf_result = this->tagger->x(k, 1);
 	    for (i = 0; crf_result[i]; ++i)
 		ltp_result[j++] = crf_result[i];
-	    /* print '#I-' */
-	    ltp_result[j++] = '#';
-	    ltp_result[j++] = 'I';
-	    ltp_result[j++] = '-';
-	    /* print y2(k) */
-	    crf_result = this->tagger->y2(k) + 2;
-	    for (i = 0; crf_result[i]; ++i)
-		ltp_result[j++] = crf_result[i];
 	    /* print ' ' */
 	    ltp_result[j++] = ' ';
 	    break;
@@ -344,10 +329,8 @@ void IRNErecog::IRNE7TypeRecog(const string& strSen, string& StrOut, int tagForm
 	    crf_result = this->tagger->x(k, 1);
 	    for (i = 0; crf_result[i]; ++i)
 		ltp_result[j++] = crf_result[i];
-	    /* print '#E-' */
-	    ltp_result[j++] = '#';
-	    ltp_result[j++] = 'E';
-	    ltp_result[j++] = '-';
+	    /* print ']' */
+	    ltp_result[j++] = ']'; 
 	    /* print y2(k) */
 	    crf_result = this->tagger->y2(k) + 2;
 	    for (i = 0; crf_result[i]; ++i)
@@ -364,12 +347,13 @@ void IRNErecog::IRNE7TypeRecog(const string& strSen, string& StrOut, int tagForm
     }
     ltp_result[j++] = '\0';
 
-    /* debug: print result in char 
-       fprintf(stderr, "IRNE7TypeRecog: result is %s\n", ltp_result); */
+    /* debug: print result in char */
+       fprintf(stderr, "IRNE7TypeRecog: result is %s\n", ltp_result); /**/
 
     StrOut.assign(ltp_result);
-    /* debug: print result in string 
-       fprintf(stdout, "final result: %s\n", StrOut.c_str()); */
+    /* debug: print result in string */
+    fprintf(stdout, "final result: %s\n", StrOut.c_str());
+    /* debug */
 
     /* free(to); */
     /* free(ner_result); */
