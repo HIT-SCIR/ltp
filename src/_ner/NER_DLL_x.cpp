@@ -38,21 +38,22 @@ int NER(void* NETagger, const vector<string>& vecWord, const vector<string>& vec
 	char* presult = new char[SZ];
 	memset(presult, 0, SZ);
 /*
-Ò²/d ÊÇ/v ¹úÄÚ/nl SVM/ws ×îºÃ/d µÄ/u Ñ§Õß/n Ö®/u 
-Ò»  /m 4/m ¡¢/wp Êı¾İ/n ÍÚ¾ò/v ÖĞ/nd µÄ/u ĞÂ/a ·½·¨/n £º/wp 
+ä¹Ÿ/d æ˜¯/v å›½å†…/nl SVM/ws æœ€å¥½/d çš„/u å­¦è€…/n ä¹‹/u 
+ä¸€  /m 4/m ã€/wp æ•°æ®/n æŒ–æ˜/v ä¸­/nd çš„/u æ–°/a æ–¹æ³•/n ï¼š/wp 
 */
 
-	NERtesting(NETagger, (char *)strin.c_str(), presult, 2); //½øĞĞNEÊ¶±ğ
+	NERtesting(NETagger, (char *)strin.c_str(), presult, 2); //è¿›è¡ŒNEè¯†åˆ«
 	string NEresult = presult;
+	
 	delete [] presult;
 	
 	//cout << NEresult << "||||";
 
 /*
-Ò²/d#O ÊÇ/v#O ¹úÄÚ/nl#O SVM/ws#O ×îºÃ/d#O 
-µÄ/u#O Ñ§Õß/n#O Ö®/u#O Ò»  /m 4/m ¡¢/wp Êı¾İ/n ÍÚ¾ò/v ÖĞ/nd µÄ/u ĞÂ/a ·½·¨/n £º/wp /u 
-Ò»#O  /m 4/m ¡¢/wp Êı¾İ/n ÍÚ¾ò/v ÖĞ/nd µÄ/u ĞÂ/a ·½·¨/n £º/wp /u Ò» #O 
-/m#B-Nm 4/m#E-Nm ¡¢/wp#O Êı¾İ/n#O ÍÚ¾ò/v#O ÖĞ/nd#O µÄ/u#O ĞÂ/a#O ·½·¨/n#O £º/wp#O
+ä¹Ÿ/d#O æ˜¯/v#O å›½å†…/nl#O SVM/ws#O æœ€å¥½/d#O 
+çš„/u#O å­¦è€…/n#O ä¹‹/u#O ä¸€  /m 4/m ã€/wp æ•°æ®/n æŒ–æ˜/v ä¸­/nd çš„/u æ–°/a æ–¹æ³•/n ï¼š/wp /u 
+ä¸€#O  /m 4/m ã€/wp æ•°æ®/n æŒ–æ˜/v ä¸­/nd çš„/u æ–°/a æ–¹æ³•/n ï¼š/wp /u ä¸€ #O 
+/m#B-Nm 4/m#E-Nm ã€/wp#O æ•°æ®/n#O æŒ–æ˜/v#O ä¸­/nd#O çš„/u#O æ–°/a#O æ–¹æ³•/n#O ï¼š/wp#O
 */
 	vector<string> vecTmp;
 	split_bychar(NEresult, vecTmp, ' ');
@@ -75,5 +76,3 @@ int NER(void* NETagger, const vector<string>& vecWord, const vector<string>& vec
 
 	return 0;
 }
-
-
