@@ -1,23 +1,9 @@
 include_directories (
     ./
-#    ${THIRDPARTY_DIR}/boost/include
-#    ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/crfpp/
     ${util_DIR}/)
 
 set (ner_SRC
-#    Dictionary.cpp
-#    Dictionary.h
-#    InitDic.cpp
-#    InitDic.h
-#    Model.cpp
-#    Model.h
-#    MyNLPlib.cpp
-#    MyNLPlib.h
-#    NBestHMM.cpp
-#    NBestHMM.h
-#    RuleNErecog.cpp
-#    RuleNErecog.h
     IRNE7TypeRecog.cpp
     IRNE7TypeRecog.h
     NER_DLL.cpp

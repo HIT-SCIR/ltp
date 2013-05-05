@@ -3,19 +3,6 @@
 #include "IRNE7TypeRecog.h"
 #include <string.h>
 
-/* old version:
-   #include "Model.h"
-   #include "InitDic.h"
-*/
-
-/* old version
-   CModel pmodel;
-*/
-
-/* old version:
-   InitDic dic;
-*/
-
 char *model_path;
 int g_isEntity = 1;
 int g_isTime = 1;
@@ -25,13 +12,6 @@ bool* NEtypeFlag;
 
 int NER_LoadResource(char* path)
 {
-    /* old version:
-	string pathname = path;
-	dic.loadRule(path);
-	cout << "loadRule over" << endl;
-	pmodel.LoadMEModel(pathname);
-	cout << "LoadMEModel over" << endl; */
-
     model_path = path;
     return 1;
 }
@@ -39,8 +19,6 @@ int NER_LoadResource(char* path)
 void* NER_CreateNErecoger()
 {
 	IRNErecog *pNER = new IRNErecog;
-	/* old version: replace next line
-	   pNER->setObject(&dic, &pmodel); */
 	if (!pNER)
 	    fprintf(stderr, "NER_CreateNErecoger: create failed.\n");
 	pNER->crf_set(model_path);
@@ -50,18 +28,11 @@ void* NER_CreateNErecoger()
 
 void NER_ReleaseResource()
 {
-    /* old version:
-	dic.releaseRes();
-    */
-    //delete pNer->tagger;
 }
 
 void NER_ReleaseNErecoger(void* pNer)
 {
 	delete pNer;
-	/* old version:
-	  delete[] NEtypeFlag;
-	*/
 }
 
 
@@ -80,8 +51,6 @@ void NERtesting(void* pNer, char* pstrIn,
 	pner->IRNE7TypeRecog(strIn, strOut, tagform, NEtypeFlag);
 
 	strcpy(pstrOut, strOut.c_str());
-	/* debug
-	fprintf(stderr, "NERtesting: %s\n", pstrOut); */
 }
 
 void NER_SetOption(int isEntity, int isTime, int isNum)
