@@ -681,8 +681,8 @@ int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > &vecParse, 
 		return -1;
 	}
 
-	vecParent.resize(wordNum);
-	vecRelate.resize(wordNum);
+	// vecParent.resize(wordNum);
+	// vecRelate.resize(wordNum);
 	if (0 != GetInfoFromSentence(vecParent, paragraphIdx, sentenceIdx, TAG_PSR_PARENT))
 	{
 		return -1;
