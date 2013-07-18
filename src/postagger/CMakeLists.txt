@@ -1,7 +1,7 @@
 include_directories (./
     ${SOURCE_DIR}/postagger
     ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/math)
+    ${SOURCE_DIR}/utils/math)
 
 set (postagger_SRC
     options.cpp
@@ -9,7 +9,7 @@ set (postagger_SRC
     featurespace.cpp
     model.cpp
     extractor.cpp
-    postagger.cpp
-    otpos.cpp)
+    postagger.cpp)
 
-add_executable (otpos ${postagger_SRC})
+add_executable (otpos otpos.cpp ${postagger_SRC})
+add_library (postagger postag_dll.cpp ${postagger_SRC})

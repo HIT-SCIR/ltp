@@ -10,6 +10,7 @@ namespace postagger {
 
 class Postagger {
 public:
+    Postagger();
     Postagger(ltp::utility::ConfigParser & cfg);
     ~Postagger() {}
 
@@ -40,6 +41,30 @@ private:
     void build_feature_space(void);
 
     /*
+     * the training process
+     */
+    void train(void);
+
+    /*
+     * the evaluating process
+     */
+    void evaluate(void);
+
+    /*
+     * the testing process
+     */
+    void test(void);
+
+protected:
+    /*
+     * build labels string for the instance
+     *
+     *  @param[in]  inst        the instance
+     *  @param[out] tags        the list of tags string
+     */
+    void build_labels(Instance * inst, std::vector<std::string> & tags);
+
+    /*
      * extract feature from the instance. If create handler is configured,
      *
      *  @param[in]  inst        the instance
@@ -66,26 +91,14 @@ private:
             const std::vector<int> & tagsidx, 
             ltp::math::SparseVec & vec);
 
-    /*
-     * the training process
-     */
-    void train(void);
-
-    /*
-     * the evaluating process
-     */
-    void evaluate(void);
-
-    /*
-     * the testing process
-     */
-    void test(void);
 private:
     bool    __TRAIN__;
     bool    __TEST__;
 
 private:
     std::vector< Instance * > train_dat;
+
+protected:
     Model * model;
     Decoder * decoder;
 };

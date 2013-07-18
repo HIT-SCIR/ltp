@@ -14,6 +14,9 @@
 namespace ltp {
 namespace postagger {
 
+Postagger::Postagger() {
+}
+
 Postagger::Postagger(ltp::utility::ConfigParser & cfg) {
     parse_cfg(cfg);
 }
@@ -134,6 +137,18 @@ void Postagger::build_configuration(void) {
         for (int j = 0; j < len; ++ j) {
             inst->tagsidx[j] = model->labels.push( inst->tags[j] );
         }
+    }
+}
+
+void Postagger::build_labels(Instance * inst, std::vector<std::string> & tags) {
+    int len = inst->size();
+    if (inst->predicted_tagsidx.size() != len) {
+        return;
+    }
+
+    tags.resize(len);
+    for (int i = 0; i < len; ++ i) {
+        tags[i] = model->labels.at(inst->predicted_tagsidx[i]);
     }
 }
 
@@ -443,6 +458,7 @@ void Postagger::test(void) {
 
     decoder = new Decoder(model->num_labels());
     PostaggerReader reader(ifs, true);
+    PostaggerWriter writer(cout);
     Instance * inst = NULL;
 
     int num_recalled_tags = 0;
@@ -461,6 +477,8 @@ void Postagger::test(void) {
         calculate_scores(inst, true);
         decoder->decode(inst);
 
+        build_labels(inst, inst->predicted_tags);
+        writer.write(inst);
         num_recalled_tags += inst->num_corrected_predicted_tags();
         num_tags += inst->size();
 

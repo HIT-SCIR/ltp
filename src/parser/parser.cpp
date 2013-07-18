@@ -10,20 +10,56 @@
 namespace ltp {
 namespace parser {
 
-// display option
-void Parser::display_opt() {
-    cerr << "Train-File : "    << train_opt.train_file     << "\n"
-        << "Holdout-File : "   << train_opt.holdout_file   << "\n"
-        << "Max-Iteration : "  << train_opt.max_iter       << endl;
+Parser::Parser() {
+    init_opt();
+}
+
+Parser::Parser(ConfigParser & cfg) {
+    init_opt();
+    parse_cfg(cfg);
+}
+
+void Parser::init_opt() {
+    model_opt.labeled           = false;
+    model_opt.decoder_name      = "1o";
+    model_opt.display_interval  = 1000;
+
+    train_opt.train_file        = "";
+    train_opt.holdout_file      = "";
+    train_opt.max_iter          = 10;
+    train_opt.algorithm         = "pa";
+    train_opt.model_name        = "";
+
+    test_opt.test_file  = "";
+    test_opt.model_file = "";
+
+    feat_opt.use_postag                 =   false;
+    feat_opt.use_postag_unigram         =   false;
+    feat_opt.use_postag_bigram          =   false;
+
+    feat_opt.use_dependency             =   false;
+    feat_opt.use_dependency_unigram     =   false;
+    feat_opt.use_dependency_bigram      =   false;
+    feat_opt.use_dependency_surrounding =   false;
+    feat_opt.use_dependency_between     =   false;
+
+    feat_opt.use_sibling                =   false;
+    feat_opt.use_sibling_basic          =   false;
+    feat_opt.use_sibling_linear         =   false;
+
+    feat_opt.use_grand                  =   false;
+    feat_opt.use_grand_basic            =   false;
+    feat_opt.use_grand_linear           =   false;
+
+    feat_opt.use_last_sibling           =   false;
+    feat_opt.use_no_grand               =   false;
+    feat_opt.use_distance_in_features   =   true;
+
 }
 
 bool Parser::parse_cfg(utility::ConfigParser & cfg) {
     string  strbuf;
     int     intbuf;
-
-    model_opt.labeled           = false;
-    model_opt.decoder_name      = "1o";
-    model_opt.display_interval  = 1000;
 
     if (cfg.has_section("model")) {
         if (cfg.get_integer("model", "labeled", intbuf)) {
@@ -37,12 +73,6 @@ bool Parser::parse_cfg(utility::ConfigParser & cfg) {
     }
 
     __TRAIN__ = false;
-
-    train_opt.train_file        = "";
-    train_opt.holdout_file      = "";
-    train_opt.max_iter          = 10;
-    train_opt.algorithm         = "pa";
-    train_opt.model_name        = "";
 
     if (cfg.has_section("train")) {
         TRACE_LOG("train model specified.");
@@ -85,9 +115,6 @@ bool Parser::parse_cfg(utility::ConfigParser & cfg) {
 
     __TEST__ = false;
 
-    test_opt.test_file  = "";
-    test_opt.model_file = "";
-
     if (cfg.has_section("test")) {
         __TEST__ = true;
 
@@ -105,29 +132,6 @@ bool Parser::parse_cfg(utility::ConfigParser & cfg) {
             return false;
         }
     }
-
-    feat_opt.use_postag                 =   false;
-    feat_opt.use_postag_unigram         =   false;
-    feat_opt.use_postag_bigram          =   false;
-
-    feat_opt.use_dependency             =   false;
-    feat_opt.use_dependency_unigram     =   false;
-    feat_opt.use_dependency_bigram      =   false;
-    feat_opt.use_dependency_surrounding =   false;
-    feat_opt.use_dependency_between     =   false;
-
-    feat_opt.use_sibling                =   false;
-    feat_opt.use_sibling_basic          =   false;
-    feat_opt.use_sibling_linear         =   false;
-
-    feat_opt.use_grand                  =   false;
-    feat_opt.use_grand_basic            =   false;
-    feat_opt.use_grand_linear           =   false;
-
-    feat_opt.use_last_sibling           =   false;
-    feat_opt.use_no_grand               =   false;
-    feat_opt.use_distance_in_features   =   true;
-    // feat_opt.use_distance_in_features = false;
 
     if (cfg.has_section("feature")) {
         if (cfg.get_integer("feature", "use-postag", intbuf)) {

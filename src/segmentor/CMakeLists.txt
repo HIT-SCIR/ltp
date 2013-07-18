@@ -1,7 +1,7 @@
 include_directories (./
     ${SOURCE_DIR}/segmentor
     ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/math)
+    ${SOURCE_DIR}/utils/math)
 
 set (segment_SRC
     options.cpp
@@ -13,3 +13,9 @@ set (segment_SRC
     otcws.cpp)
 
 add_executable (otcws ${segment_SRC})
+
+set (segment_dll_SRC
+    segment_dll.cpp
+    ${segment_SRC})
+
+add_library (segmentor ${segment_dll_SRC})

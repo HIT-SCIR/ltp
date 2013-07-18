@@ -15,6 +15,11 @@
 namespace ltp {
 namespace segmentor {
 
+Segmentor::Segmentor() :
+   model(0),
+   decoder(0) {
+}
+
 Segmentor::Segmentor(ltp::utility::ConfigParser & cfg) {
     parse_cfg(cfg);
 }

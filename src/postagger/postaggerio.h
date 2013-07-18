@@ -63,7 +63,15 @@ public:
     PostaggerWriter(std::ostream & _ofs) : ofs(_ofs) {}
 
     void write(const Instance * inst) {
+        int len = inst->size();
+        if (inst->predicted_tags.size() != len) {
+            return;
+        }
 
+        for (int i = 0; i < len; ++ i) {
+            ofs << inst->forms[i] << "/" << inst->predicted_tags[i];
+            ofs << (i + 1 < len ? "\t" : "\n");
+        }
     }
 
     void debug(const Instance * inst, bool show_feat = false) {

@@ -3,7 +3,7 @@
 include_directories (./ 
     ${SOURCE_DIR}/parser 
     ${SOURCE_DIR}/utils 
-    ${SOURCE_DIR}/math)
+    ${SOURCE_DIR}/utils/math)
 
 message(STATUS ${SOURCE_DIR})
 
@@ -14,8 +14,8 @@ set (lgdpj_SRC collections.cpp
     options.cpp
     decoder1o.cpp
     decoder2o.cpp
-    parser.cpp
-    lgdpj.cpp)
+    parser.cpp)
 
-add_executable(lgdpj ${lgdpj_SRC})
+add_executable(lgdpj lgdpj.cpp ${lgdpj_SRC})
+add_library(parser parser_dll.cpp ${lgdpj_SRC})
 

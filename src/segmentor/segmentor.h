@@ -10,6 +10,7 @@ namespace segmentor {
 
 class Segmentor {
 public:
+    Segmentor();
     Segmentor(ltp::utility::ConfigParser & cfg);
     ~Segmentor() {}
 
@@ -20,7 +21,23 @@ private:
     bool read_instance( const char * file_name );
     void build_configuration(void);
     void build_feature_space(void);
- 
+
+    /*
+     * the training process
+     */
+    void train(void);
+
+    /*
+     * the evaluating process
+     */
+    void evaluate(void);
+
+    /*
+     * the testing process
+     */
+    void test(void);
+
+protected:
     void extract_features(Instance * inst, bool create = false);
     /*
      * build words from tags for certain instance
@@ -56,26 +73,14 @@ private:
             const std::vector<int> & tagsidx, 
             ltp::math::SparseVec & vec);
 
-    /*
-     * the training process
-     */
-    void train(void);
-
-    /*
-     * the evaluating process
-     */
-    void evaluate(void);
-
-    /*
-     * the testing process
-     */
-    void test(void);
 private:
     bool    __TRAIN__;
     bool    __TEST__;
 
 private:
     std::vector< Instance * > train_dat;
+
+protected:
     Model * model;
     Decoder * decoder;
 };
