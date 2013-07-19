@@ -33,8 +33,7 @@ public:
 
     Parser( ConfigParser& cfg );
 
-    ~Parser() {
-    }
+    ~Parser();
 
     bool operator! () const {
         return _valid;

@@ -12,6 +12,11 @@
 #include <iostream>
 #include <fstream>
 
+#if _WIN32
+#include <Windows.h>
+#define sleep Sleep
+#endif	//	end for _WIN32
+
 namespace ltp {
 namespace segmentor {
 
@@ -20,8 +25,20 @@ Segmentor::Segmentor() :
    decoder(0) {
 }
 
-Segmentor::Segmentor(ltp::utility::ConfigParser & cfg) {
+Segmentor::Segmentor(ltp::utility::ConfigParser & cfg) :
+    model(0),
+    decoder(0) {
     parse_cfg(cfg);
+}
+
+Segmentor::~Segmentor() {
+    if (model) {
+        delete model;
+    }
+
+    if (decoder) {
+        delete decoder;
+    }
 }
 
 void Segmentor::run(void) {
@@ -108,6 +125,8 @@ bool Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
             return false;
         }
     }
+
+	return true;
 }
 
 bool Segmentor::read_instance(const char * train_file) {

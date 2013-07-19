@@ -1,21 +1,21 @@
 #ifndef __LTP_STRUTILS_CHARTYPES_TAB__
 #define __LTP_STRUTILS_CHARTYPES_TAB__
-const int __chartype_dbc_chinese_punc_utf8_size__ = 18;
-char      __chartype_dbc_chinese_punc_utf8_buff__[71] = {
+const int   __chartype_dbc_chinese_punc_utf8_size__ = 18;
+static char __chartype_dbc_chinese_punc_utf8_buff__[71] = {
 227, 128, 130,   0, 227, 128, 129,   0, 226, 128, 156,   0, 226, 128, 157,
   0, 239, 185, 131,   0, 239, 185, 132,   0, 226, 128, 152,   0, 226, 128,
 153,   0, 239, 185, 129,   0, 239, 185, 130,   0, 226, 128, 166,   0, 227,
 128, 144,   0, 227, 128, 145,   0, 227, 128, 138,   0, 227, 128, 139,   0,
 227, 128, 136,   0, 227, 128, 137,   0, 194, 183,   0, };
 
-const int __chartype_dbc_digit_utf8_size__ = 10;
-char      __chartype_dbc_digit_utf8_buff__[40] = {
+const int   __chartype_dbc_digit_utf8_size__ = 10;
+static char __chartype_dbc_digit_utf8_buff__[40] = {
 239, 188, 144,   0, 239, 188, 145,   0, 239, 188, 146,   0, 239, 188, 147,
   0, 239, 188, 148,   0, 239, 188, 149,   0, 239, 188, 150,   0, 239, 188,
 151,   0, 239, 188, 152,   0, 239, 188, 153,   0, };
 
-const int __chartype_dbc_punc_utf8_size__ = 33;
-char      __chartype_dbc_punc_utf8_buff__[132] = {
+const int   __chartype_dbc_punc_utf8_size__ = 33;
+static char __chartype_dbc_punc_utf8_buff__[132] = {
 227, 128, 128,   0, 239, 188, 129,   0, 239, 188, 130,   0, 239, 188, 131,
   0, 239, 188, 132,   0, 239, 188, 133,   0, 239, 188, 134,   0, 239, 188,
 135,   0, 239, 188, 136,   0, 239, 188, 137,   0, 239, 188, 138,   0, 239,
@@ -26,8 +26,8 @@ char      __chartype_dbc_punc_utf8_buff__[132] = {
 188, 190,   0, 239, 188, 191,   0, 239, 189, 128,   0, 239, 189, 155,   0,
 239, 189, 156,   0, 239, 189, 157,   0, 239, 189, 158,   0, };
 
-const int __chartype_dbc_uppercase_utf8_size__ = 26;
-char      __chartype_dbc_uppercase_utf8_buff__[104] = {
+const int   __chartype_dbc_uppercase_utf8_size__ = 26;
+static char __chartype_dbc_uppercase_utf8_buff__[104] = {
 239, 188, 161,   0, 239, 188, 162,   0, 239, 188, 163,   0, 239, 188, 164,
   0, 239, 188, 165,   0, 239, 188, 166,   0, 239, 188, 167,   0, 239, 188,
 168,   0, 239, 188, 169,   0, 239, 188, 170,   0, 239, 188, 171,   0, 239,
@@ -36,8 +36,8 @@ char      __chartype_dbc_uppercase_utf8_buff__[104] = {
   0, 239, 188, 180,   0, 239, 188, 181,   0, 239, 188, 182,   0, 239, 188,
 183,   0, 239, 188, 184,   0, 239, 188, 185,   0, 239, 188, 186,   0, };
 
-const int __chartype_dbc_punc_ext_utf8_size__ = 757;
-char      __chartype_dbc_punc_ext_utf8_buff__[2857] = {
+const int   __chartype_dbc_punc_ext_utf8_size__ = 757;
+static char __chartype_dbc_punc_ext_utf8_buff__[2857] = {
   0, 226, 133, 170,   0, 195, 168,   0, 195, 169,   0, 195, 172,   0, 195,
 173,   0, 195, 160,   0, 199, 148,   0, 195, 186,   0, 195, 185,   0, 195,
 188,   0, 195, 178,   0, 195, 179,   0, 208, 188,   0, 195, 183,   0, 226,
@@ -230,8 +230,8 @@ char      __chartype_dbc_punc_ext_utf8_buff__[2857] = {
 142,   0, 239, 189, 143,   0, 239, 189, 136,   0, 239, 189, 137,   0, 239,
 189, 138,   0, 239, 189, 139,   0, };
 
-const int __chartype_dbc_lowercase_utf8_size__ = 26;
-char      __chartype_dbc_lowercase_utf8_buff__[104] = {
+const int   __chartype_dbc_lowercase_utf8_size__ = 26;
+static char __chartype_dbc_lowercase_utf8_buff__[104] = {
 239, 189, 129,   0, 239, 189, 130,   0, 239, 189, 131,   0, 239, 189, 132,
   0, 239, 189, 133,   0, 239, 189, 134,   0, 239, 189, 135,   0, 239, 189,
 136,   0, 239, 189, 137,   0, 239, 189, 138,   0, 239, 189, 139,   0, 239,
@@ -240,28 +240,28 @@ char      __chartype_dbc_lowercase_utf8_buff__[104] = {
   0, 239, 189, 148,   0, 239, 189, 149,   0, 239, 189, 150,   0, 239, 189,
 151,   0, 239, 189, 152,   0, 239, 189, 153,   0, 239, 189, 154,   0, };
 
-const int __chartype_sbc_uppercase_utf8_size__ = 26;
-char      __chartype_sbc_uppercase_utf8_buff__[52] = {
+const int   __chartype_sbc_uppercase_utf8_size__ = 26;
+static char __chartype_sbc_uppercase_utf8_buff__[52] = {
  65,   0,  66,   0,  67,   0,  68,   0,  69,   0,  70,   0,  71,   0,  72,
   0,  73,   0,  74,   0,  75,   0,  76,   0,  77,   0,  78,   0,  79,   0,
  80,   0,  81,   0,  82,   0,  83,   0,  84,   0,  85,   0,  86,   0,  87,
   0,  88,   0,  89,   0,  90,   0, };
 
-const int __chartype_sbc_digit_utf8_size__ = 10;
-char      __chartype_sbc_digit_utf8_buff__[20] = {
+const int   __chartype_sbc_digit_utf8_size__ = 10;
+static char __chartype_sbc_digit_utf8_buff__[20] = {
  48,   0,  49,   0,  50,   0,  51,   0,  52,   0,  53,   0,  54,   0,  55,
   0,  56,   0,  57,   0, };
 
 const int __chartype_sbc_punc_utf8_size__ = 33;
-char      __chartype_sbc_punc_utf8_buff__[66] = {
+static char __chartype_sbc_punc_utf8_buff__[66] = {
  32,   0,  33,   0,  34,   0,  35,   0,  36,   0,  37,   0,  38,   0,  39,
   0,  40,   0,  41,   0,  42,   0,  43,   0,  44,   0,  45,   0,  46,   0,
  47,   0,  58,   0,  59,   0,  60,   0,  61,   0,  62,   0,  63,   0,  64,
   0,  91,   0,  92,   0,  93,   0,  94,   0,  95,   0,  96,   0, 123,   0,
 124,   0, 125,   0, 126,   0, };
 
-const int __chartype_sbc_lowercase_utf8_size__ = 26;
-char      __chartype_sbc_lowercase_utf8_buff__[52] = {
+const int   __chartype_sbc_lowercase_utf8_size__ = 26;
+static char __chartype_sbc_lowercase_utf8_buff__[52] = {
  97,   0,  98,   0,  99,   0, 100,   0, 101,   0, 102,   0, 103,   0, 104,
   0, 105,   0, 106,   0, 107,   0, 108,   0, 109,   0, 110,   0, 111,   0,
 112,   0, 113,   0, 114,   0, 115,   0, 116,   0, 117,   0, 118,   0, 119,

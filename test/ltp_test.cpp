@@ -9,25 +9,22 @@
 
 using namespace std;
 
-static XML4NLP xml4nlp;
-static LTP ltp(xml4nlp);
-
-int main(int argc, char *argv[])
-{
-    if (argc != 3)
-    {
-        cerr << "Usage: ./ltp_test <type> <test_file>" << endl;
+int main(int argc, char *argv[]) {
+    if (argc != 4) {
+        cerr << "Usage: ./ltp_test <config_file> <type> <test_file>" << endl;
         exit(1);
     }
 
-    cout << "Begin ..." << endl;
     string sentence;
-    string type(argv[1]);
-    ifstream in(argv[2]);
-    ofstream log_file("test.log");
+    // ofstream log_file("test.log");
 
-    if (!in.is_open())
-    {
+    XML4NLP xml4nlp;
+    LTP ltp(argv[1], xml4nlp);
+
+    string type(argv[2]);
+    ifstream in(argv[3]);
+ 
+    if (!in.is_open()) {
         cerr << "Cann't open file!" << endl;
         exit(1);
     }
@@ -37,22 +34,13 @@ int main(int argc, char *argv[])
 
         xml4nlp.CreateDOMFromString(sentence);
         if(type == "ws"){
-            ltp.crfWordSeg();
-            int wordNum = xml4nlp.CountWordInDocument();
-            for (int i = 0; i < wordNum; ++i)
-            {
-                const char* word = xml4nlp.GetWord(i);
-                if (word != NULL)
-                {
-                    log_file << word << " ";
-                }
-            }
+            ltp.wordseg();
         } else if(type == "pos"){
             ltp.postag();
         } else if(type == "ner"){
             ltp.ner();
         } else if(type == "dp"){
-            ltp.gparser();
+            ltp.parser();
         } else if(type == "srl"){
             ltp.srl();
         } else {
@@ -68,4 +56,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-

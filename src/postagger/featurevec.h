@@ -10,14 +10,20 @@ public:
     }
 
     ~FeatureVector() {
+    }
+
+    void clear() {
         if (idx) {
             delete [](idx);
+            idx = 0;
         }
 
         if (val) {
             delete [](val);
+            val = 0;
         }
     }
+
 
 public:
     int      n;

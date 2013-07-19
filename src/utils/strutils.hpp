@@ -320,7 +320,7 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
  */
 inline std::string join(std::vector<std::string> sep) {
     std::string ret = "";
-    for (int i = 0; i < sep.size(); ++ i) {
+    for (unsigned int i = 0; i < sep.size(); ++ i) {
         ret = ret + sep[i];
     }
     return ret;
@@ -337,7 +337,7 @@ inline std::string join(std::vector<std::string> sep) {
 inline std::string join(std::vector<std::string> sep, std::string separator) {
     if (sep.size() == 0) return "";
     std::string ret = sep[0];
-    for (int i = 1; i < sep.size(); ++ i) {
+    for (unsigned int i = 1; i < sep.size(); ++ i) {
         ret = ret + separator + sep[i];
     }
     return ret;
@@ -376,7 +376,7 @@ inline bool endswith(const std::string &str, const std::string &suffix) {
  *                                          otherwise false
  */
 inline bool is_int(const std::string &str) {
-    int i = 0;
+    unsigned int i = 0;
     if (str[0] == '-')
         i = 1;
 
@@ -396,7 +396,7 @@ inline bool is_int(const std::string &str) {
  *                                          otherwise false
  */
 inline bool is_double(const std::string &str) {
-    int i = 0;
+    unsigned int i = 0;
     int state = 0;
     if (str[0] == '-')
         i = 1;
@@ -422,7 +422,7 @@ inline bool is_double(const std::string &str) {
 inline int to_int(const std::string &str) {
     int ret = 0;
     int sign = 1;
-    int i = 0;
+    unsigned int i = 0;
     if ('-' == str[0]) {
         sign = -1;
         i = 1;
@@ -443,7 +443,7 @@ inline int to_int(const std::string &str) {
 inline double to_double(const std::string &str) {
     double x = 0.0, y = 1.0;
     double sign = 1.0;
-    int i = 0;
+    unsigned int i = 0;
     if ('-' == str[0]) {
         sign = -1.0;
         i = 1;

@@ -508,6 +508,8 @@ int SIBExtractor::extract3o(Instance * inst, int hid, int cid, int sid, vector< 
         templates[i]->render(data, feat);
         cache[i].push_back(feat);
     }
+
+	return 0;
 }
 
 // ================================================================ //
@@ -621,6 +623,8 @@ int GRDExtractor::extract3o(Instance * inst, int hid, int cid, int gid, vector< 
         templates[i]->render(data, feat);
         cache[i].push_back(feat);
     }
+
+	return 0;
 }
 
 }       //  end for namespace parser

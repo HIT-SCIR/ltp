@@ -12,7 +12,7 @@ class Postagger {
 public:
     Postagger();
     Postagger(ltp::utility::ConfigParser & cfg);
-    ~Postagger() {}
+    ~Postagger();
 
     /*
      * main function of running postagging.

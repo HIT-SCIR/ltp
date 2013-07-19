@@ -431,6 +431,8 @@ public:
                 }
             }
         }
+
+		return (*this);
     }
 
     explicit Mat4(const int n, const int m, const int k, const int l) {

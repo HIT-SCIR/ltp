@@ -11,6 +11,11 @@
 #include <iostream>
 #include <fstream>
 
+#if _WIN32
+#include <Windows.h>
+#define sleep Sleep
+#endif	//	end for _WIN32
+
 namespace ltp {
 namespace postagger {
 
@@ -19,6 +24,16 @@ Postagger::Postagger() {
 
 Postagger::Postagger(ltp::utility::ConfigParser & cfg) {
     parse_cfg(cfg);
+}
+
+Postagger::~Postagger() {
+    if (model) {
+        delete model;
+    }
+
+    if (decoder) {
+        delete decoder;
+    }
 }
 
 void Postagger::run(void) {
@@ -105,6 +120,8 @@ bool Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
             return false;
         }
     }
+
+	return true;
 }
 
 bool Postagger::read_instance(const char * train_file) {

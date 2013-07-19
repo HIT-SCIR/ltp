@@ -24,7 +24,7 @@ class Dictionary;
 class DictionaryCollections {
 public:
     DictionaryCollections(int num_dicts);
-    ~DictionaryCollections() {}
+    ~DictionaryCollections();
 
     /*
      * Dump the dictionary collections into output stream

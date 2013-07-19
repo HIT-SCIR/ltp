@@ -7,6 +7,11 @@
 
 #include "treeutils.hpp"
 
+#if _WIN32
+#include <Windows.h>
+#define sleep Sleep
+#endif	//	end for _WIN32
+
 namespace ltp {
 namespace parser {
 
@@ -17,6 +22,16 @@ Parser::Parser() {
 Parser::Parser(ConfigParser & cfg) {
     init_opt();
     parse_cfg(cfg);
+}
+
+Parser::~Parser() {
+    if (decoder) {
+        delete decoder;
+    }
+
+    if (model) {
+        delete model;
+    }
 }
 
 void Parser::init_opt() {
@@ -234,6 +249,8 @@ bool Parser::parse_cfg(utility::ConfigParser & cfg) {
 
     feat_opt.use_labeled_grand = (model_opt.labeled == true &&
             feat_opt.use_grand);
+
+	return true;
 }
 
 void Parser::build_configuration(void) {

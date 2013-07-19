@@ -21,7 +21,7 @@
 /*
  * A library for mapping string to user specified type.
  * Modify from @file CharArrayHashFunc.h and @file CharArrayEqualFunc.h
- *  
+ *
  *  @author:    Mihai Surdeanu
  *  @modifier:  LI, Zhenhua
  *  @modifier:  LIU, Yijia
@@ -48,10 +48,11 @@ typedef struct CharArrayEqualFunc {
     }
 } char_array_equal;
 
-typedef struct CharArrayHashFunc {
+typedef struct CharArrayHashFunc
 #ifdef _WIN32
     : public stdext::hash_compare<const char *>
 #endif
+{
     /*
      * hash function from Mihai
      */

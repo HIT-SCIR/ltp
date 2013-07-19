@@ -19,18 +19,19 @@ set (ltp_test2_SRC          ltp_test2.cpp)
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 add_executable (ltp_test     ${ltp_test_SRC})
-add_executable (ltp_test_xml ${ltp_test_xml_SRC})
-add_executable (ltp_test2    ${ltp_test2_SRC})
+#add_executable (ltp_test_xml ${ltp_test_xml_SRC})
+#add_executable (ltp_test2    ${ltp_test2_SRC})
 
 target_link_libraries (ltp_test
     maxent
-    crfpp
+    #crfpp
     util
     ltp
     splitsnt
-    crfwordseg
+    segmentor
+    #crfwordseg
     postagger
-    gparser
+    parser
     ner
     srl
     xml4nlp
@@ -38,37 +39,37 @@ target_link_libraries (ltp_test
     pthread
     boost_regex)
 
-target_link_libraries (ltp_test2
-    maxent
-    crfpp
-    util
-    ltp
-    splitsnt
-    crfwordseg
-    postagger
-    gparser
-    ner
-    srl
-    xml4nlp
-    dl
-    pthread
-    boost_regex)
+#target_link_libraries (ltp_test2
+#    maxent
+#    crfpp
+#    util
+#    ltp
+#    splitsnt
+#    crfwordseg
+#    postagger
+#    gparser
+#    ner
+#    srl
+#    xml4nlp
+#    dl
+#    pthread
+#    boost_regex)
 
-target_link_libraries (ltp_test_xml
-    maxent
-    crfpp
-    util
-    ltp
-    splitsnt
-    crfwordseg
-    postagger
-    gparser
-    ner
-    srl
-    xml4nlp
-    dl
-    pthread
-    boost_regex)
+#target_link_libraries (ltp_test_xml
+#    maxent
+#    crfpp
+#    util
+#    ltp
+#    splitsnt
+#    crfwordseg
+#    postagger
+#    gparser
+#    ner
+#    srl
+#    xml4nlp
+#    dl
+#    pthread
+#    boost_regex)
 
 #add_test (NAME ltp_test
 #    COMMAND "${CMAKE_COMMAND}"

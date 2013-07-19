@@ -11,6 +11,7 @@
 class ParserWrapper : public ltp::parser::Parser {
 public:
     ParserWrapper() {}
+    ~ParserWrapper() {}
 
     bool load(const char * model_file) {
         std::ifstream mfs(model_file, std::ifstream::binary);

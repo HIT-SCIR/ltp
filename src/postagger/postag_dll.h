@@ -1,4 +1,4 @@
-#ifndef __LTP_POSTAG_DLL_H__
+#ifndef __LTP_POSTAGGER_DLL_H__
 #define __LTP_POSTAG_DLL_H__
 
 #include <iostream>

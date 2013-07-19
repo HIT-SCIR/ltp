@@ -57,6 +57,11 @@ public:
         _num_buckets(0),
         _cap_buckets_idx(0),
         _len_key_buffer(0),
+        _hash_buckets(0),
+        _hash_buffer(0),
+        _key_buffer(0),
+        _val_buffer(0),
+        _hash_buckets_volumn(0),
         _cap_key_buffer(INIT_CAP_KEY_BUFFER) {
 
         _cap_buckets    = PRIMES[_cap_buckets_idx];
@@ -70,7 +75,7 @@ public:
         _hash_buckets_volumn = new int[ _cap_buckets ];
 
         // set the hash_table to be empty
-        for (int i = 0; i < _cap_buckets; ++ i) {
+        for (unsigned i = 0; i < _cap_buckets; ++ i) {
             _hash_buckets[i] = -1;
             _hash_buckets_volumn[i] = 0;
         }
@@ -146,12 +151,12 @@ public:
             // allocate a new bucket
             int * new_hash_buckets_volumn = new int[_cap_buckets];
             int * new_hash_buckets = new int[_cap_buckets];
-            for (int i = 0; i < _cap_buckets; ++ i) {
+            for (unsigned i = 0; i < _cap_buckets; ++ i) {
                 new_hash_buckets[i] = -1;
                 new_hash_buckets_volumn[i] = 0;
             }
 
-            for (int i = 0; i < _num_entries; ++ i) {
+            for (unsigned i = 0; i < _num_entries; ++ i) {
                 unsigned int hash_val = _hash_buffer[i].__hash_val;
                 unsigned int bucket_id = (hash_val % _cap_buckets);
                 int freq = _hash_buffer[i].__freq;
@@ -275,6 +280,10 @@ public:
             delete [](_val_buffer);
             _val_buffer = 0;
         }
+
+        if (_hash_buckets_volumn) {
+           delete _hash_buckets_volumn;
+        }
     }
 
     /*
@@ -335,6 +344,7 @@ public:
         _hash_buffer    = new hash_node_t[_num_entries];
         _key_buffer     = new char[_len_key_buffer];
         _val_buffer     = new T[_num_entries];
+
 
         in.read(reinterpret_cast<char *>(_hash_buckets),    sizeof(int) * _cap_buckets);
         in.read(reinterpret_cast<char *>(_hash_buffer),     sizeof(hash_node_t) * _num_entries);

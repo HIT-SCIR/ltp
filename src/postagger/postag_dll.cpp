@@ -11,6 +11,7 @@
 class PostaggerWrapper : public ltp::postagger::Postagger {
 public:
     PostaggerWrapper() {}
+    ~PostaggerWrapper() {}
 
     bool load(const char * model_file) {
         std::ifstream mfs(model_file, std::ifstream::binary);

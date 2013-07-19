@@ -2,6 +2,7 @@
 #define __INSTANCE_H__
 
 #include <iostream>
+#include <string>
 #include <set>
 
 #include "mat.h"
@@ -140,7 +141,7 @@ public:
         return -1;
     }
 
-    int cleanup() {
+    void cleanup() {
         free_features();
         features.zero();
         predicted_features.zero();
@@ -175,8 +176,8 @@ public:
     SparseVec               features;
 
     /* features group */
-    Vec<FeatureVector *>    posu_features;
-    Vec<double>             posu_scores;
+    //Vec<FeatureVector *>    posu_features;
+    //Vec<double>             posu_scores;
 
     Mat<FeatureVector *>    depu_features;
     Mat<double>             depu_scores;

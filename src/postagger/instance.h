@@ -14,6 +14,22 @@ public:
     Instance() {}
 
     ~Instance() {
+        int len = 0;
+        if ((len = uni_features.total_size()) > 0) {
+            int d1 = uni_features.nrows();
+            int d2 = uni_features.ncols();
+
+            for (int i = 0; i < d1; ++ i) {
+                if (uni_features[i][0]) {
+                    uni_features[i][0]->clear();
+                }
+                for (int j = 0; j < d2; ++ j) {
+                    if (uni_features[i][j]) {
+                        delete uni_features[i][j];
+                    }
+                }
+            }
+        }
     }
 
     inline size_t size() const {

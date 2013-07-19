@@ -12,6 +12,12 @@ DictionaryCollections::DictionaryCollections(int num_dicts) :
     }
 }
 
+DictionaryCollections::~DictionaryCollections() {
+    for (int i = 0; i < dicts.size(); ++ i) {
+        delete dicts[i];
+    }
+}
+
 int DictionaryCollections::retrieve(int tid, const char * key, bool create) {
     return dicts[tid]->retrieve(key, create);
 }

@@ -124,6 +124,8 @@ int FeatureSpace::build_feature_space(int num_deprels, const std::vector<Instanc
     if (feat_opt.use_grandsibling) {
         offset += groups[GRDSIB]->dim() * _num_deprels;
     }*/
+
+	return _offset;
 }
 
 int FeatureSpace::allocate_dictionary_groups() {

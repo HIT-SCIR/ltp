@@ -3,7 +3,7 @@
  *
  *  @author: CHEN, Xin {xchen@ir.hit.edu.cn}
  *  @author: LI, Zhenghua {lzh@ir.hit.edu.cn}
- *  @modifier: 
+ *  @modifier:
  */
 #ifndef __SPTHREAD_HPP__
 #define __SPTHREAD_HPP__
@@ -73,32 +73,32 @@ typedef DWORD   spthread_attr_t;
 #define SP_THREAD_CREATE_DETACHED 1
 #define spsleep(x) Sleep(1000*x)
 
-int spthread_mutex_init( spthread_mutex_t * mutex, void * attr ) {
+inline int spthread_mutex_init( spthread_mutex_t * mutex, void * attr ) {
     *mutex = CreateMutex( NULL, FALSE, NULL );
     return NULL == * mutex ? GetLastError() : 0;
 }
 
-int spthread_mutex_destroy( spthread_mutex_t * mutex ){
+inline int spthread_mutex_destroy( spthread_mutex_t * mutex ){
     int ret = CloseHandle( *mutex );
     return 0 == ret ? GetLastError() : 0;
 }
 
-int spthread_mutex_lock( spthread_mutex_t * mutex ) {
+inline int spthread_mutex_lock( spthread_mutex_t * mutex ) {
     int ret = WaitForSingleObject( *mutex, INFINITE );
     return WAIT_OBJECT_0 == ret ? 0 : GetLastError();
 }
 
-int spthread_mutex_unlock( spthread_mutex_t * mutex ) {
+inline int spthread_mutex_unlock( spthread_mutex_t * mutex ) {
     int ret = ReleaseMutex( *mutex );
     return 0 != ret ? 0 : GetLastError();
 }
 
-int spthread_cond_init( spthread_cond_t * cond, void * attr ) {
+inline int spthread_cond_init( spthread_cond_t * cond, void * attr ) {
     *cond = CreateEvent( NULL, FALSE, FALSE, NULL );
     return NULL == *cond ? GetLastError() : 0;
 }
 
-int spthread_cond_destroy( spthread_cond_t * cond ) {
+inline int spthread_cond_destroy( spthread_cond_t * cond ) {
     int ret = CloseHandle( *cond );
     return 0 == ret ? GetLastError() : 0;
 }
@@ -109,36 +109,36 @@ int spthread_cond_destroy( spthread_cond_t * cond ) {
    on 'cond'. When 'cond' is signaled, the mutex
    is re-acquired before returning to the caller.
    */
-int spthread_cond_wait( spthread_cond_t * cond, spthread_mutex_t * mutex ) {
+inline int spthread_cond_wait( spthread_cond_t * cond, spthread_mutex_t * mutex ) {
     int ret = 0;
 
-    sp_thread_mutex_unlock( mutex );
+    spthread_mutex_unlock( mutex );
     ret = WaitForSingleObject( *cond, INFINITE );
-    sp_thread_mutex_lock( mutex );
+    spthread_mutex_lock( mutex );
     return WAIT_OBJECT_0 == ret ? 0 : GetLastError();
 }
 
 
-int spthread_cond_signal( spthread_cond_t * cond ) {
+inline int spthread_cond_signal( spthread_cond_t * cond ) {
     int ret = SetEvent( *cond );
     return 0 == ret ? GetLastError() : 0;
 }
 
-spthread_t spthread_self() {
+inline spthread_t spthread_self() {
     return GetCurrentThreadId();
 }
 
-int spthread_attr_init( spthread_attr_t * attr ) {
+inline int spthread_attr_init( spthread_attr_t * attr ) {
     *attr = 0;
     return 0;
 }
 
-int spthread_attr_setdetachstate( spthread_attr_t * attr, int detachstate ) {
+inline int spthread_attr_setdetachstate( spthread_attr_t * attr, int detachstate ) {
     *attr |= detachstate;
     return 0;
 }
 
-int spthread_create( spthread_t * thread, spthread_attr_t * attr,
+inline int spthread_create( spthread_t * thread, spthread_attr_t * attr,
         sp_thread_func_t myfunc, void * args ) {
     // _beginthreadex returns 0 on an error
     HANDLE h = (HANDLE)_beginthreadex( NULL, 0, myfunc, args, 0, thread );

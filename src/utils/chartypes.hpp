@@ -168,7 +168,7 @@ private:
 template<typename T> __chartype_collections<T> * __chartype_collections<T>::instance_ = 0;
 //template<typename T> internal_collection_t __chartype_collections<T>::collections;
 
-int chartype(const std::string & ch) {
+inline int chartype(const std::string & ch) {
     return __chartype_collections<void>::get_collections()->chartype(ch.c_str());
 }
 

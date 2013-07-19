@@ -12,7 +12,7 @@ class Segmentor {
 public:
     Segmentor();
     Segmentor(ltp::utility::ConfigParser & cfg);
-    ~Segmentor() {}
+    ~Segmentor();
 
     void run();
 

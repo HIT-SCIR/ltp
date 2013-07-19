@@ -3,6 +3,7 @@
 
 #include "featurevec.h"
 #include <iostream>
+#include <string>
 
 #ifdef _WIN32
 #include <hash_map>
@@ -135,7 +136,7 @@ public:
             ++ i;
 
             if (i % 10 == 0) {
-                out << "\n" << prefix;
+				out << "\n" << prefix;
             }
         }
         out << "}" << std::endl;

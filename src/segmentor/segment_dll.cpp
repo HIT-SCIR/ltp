@@ -15,6 +15,8 @@ public:
         beg_tag0(-1),
         beg_tag1(-1) {}
 
+    ~SegmentorWrapper() {}
+
     bool load(const char * model_file) {
         std::ifstream mfs(model_file, std::ifstream::binary);
 
@@ -74,7 +76,7 @@ int segmentor_release_segmentor(void * segmentor) {
     if (!segmentor) {
         return -1;
     }
-    delete reinterpret_cast<ltp::segmentor::Segmentor *>(segmentor);
+    delete reinterpret_cast<SegmentorWrapper *>(segmentor);
     return 0;
 }
 

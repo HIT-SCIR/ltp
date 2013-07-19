@@ -49,7 +49,7 @@ struct FeatureVectorDB : public FeatureVector {
      *  @param[in]  ofs     the output filestream
      *  @return     int     offset of the feature.
      */
-    int write(std::ostream & ofs) {
+    long long write(std::ostream & ofs) {
         // 
         if (n <= 0 || idx == 0) {
             offset = -1;
