@@ -22,14 +22,9 @@ public:
     LTP(const char * cfg_file, XML4NLP & xml4nlp);
     ~LTP();
 
-    int CreateDOMFromTxt(const char *cszTxtFileName); 
+    int CreateDOMFromTxt(const char *cszTxtFileName);
     int CreateDOMFromXml(const char *cszXmlFileName);
-    int SaveDOM(const char *cszSaveFileName); 
-
-#ifdef _WIN32 
-    int main2(const char *cszFileName, const char *cszSaveFileName, unsigned int flag);
-    int splitSentence();
-#endif
+    int SaveDOM(const char *cszSaveFileName);
 
     int wordseg();
     int postag();

@@ -39,6 +39,8 @@ configure_file (
 
 link_directories (${LIBRARY_OUTPUT_PATH})
 
+# Training suite is not supported in windows
+if (NOT WIN32)
 set (SRLExtract_SRC SRLExtract.cpp Corpus.cpp)
 add_executable (SRLExtract  ${SRLExtract_SRC})
 target_link_libraries (SRLExtract   srl)
@@ -53,3 +55,4 @@ set_target_properties (SRLGetInstance
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
+endif()
