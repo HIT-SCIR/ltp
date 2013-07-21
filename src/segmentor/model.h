@@ -43,6 +43,8 @@ public:
     FeatureSpace        space;
     Parameters          param;
 
+    SmartMap<bool>      internal_lexicon;
+    SmartMap<bool>      external_lexicon;
 private:
     void write_uint(std::ostream & out, unsigned int val) {
         out.write(reinterpret_cast<const char *>(&val), sizeof(unsigned int));

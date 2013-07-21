@@ -11,6 +11,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>    //  std::sort
+#include <functional>   //  std::greater
 
 #if _WIN32
 #include <Windows.h>
@@ -48,6 +50,12 @@ void Segmentor::run(void) {
 
     if (__TEST__) {
         test();
+    }
+
+    for (int i = 0; i < train_dat.size(); ++ i) {
+        if (train_dat[i]) {
+            delete train_dat[i];
+        }
     }
 }
 
@@ -126,7 +134,7 @@ bool Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
         }
     }
 
-	return true;
+    return true;
 }
 
 bool Segmentor::read_instance(const char * train_file) {
@@ -157,9 +165,59 @@ void Segmentor::build_configuration(void) {
 
         inst->tagsidx.resize(len);
         for (int j = 0; j < len; ++ j) {
+            // build labels dictionary
             inst->tagsidx[j] = model->labels.push( inst->tags[j] );
         }
+
     }
+    TRACE_LOG("Label sets is built");
+
+    SmartMap<bool> wordfreq;
+    long long total_freq = 0;
+    for (int i = 0; i < train_dat.size(); ++ i) {
+        //
+        Instance * inst = train_dat[i];
+        int len = inst->size();
+        int buff = 0;
+
+        for (int j = 0; j < inst->words.size(); ++ j) {
+            wordfreq.set(inst->words[j].c_str(), true);
+        }
+        total_freq += inst->words.size();
+    }
+
+    std::vector<int> freqs;
+    for (SmartMap<bool>::const_iterator itx = wordfreq.begin(); 
+            itx != wordfreq.end(); 
+            ++ itx) {
+        freqs.push_back(itx.frequency());
+    }
+
+    long long accumulate_freq = 0;
+    std::sort(freqs.begin(), freqs.end(), std::greater<int>());
+    int target = freqs[int(freqs.size() * 0.2)];
+    for (int i = 0; i < freqs.size(); ++ i) {
+        accumulate_freq += freqs[i];
+        if (accumulate_freq > total_freq * 0.9) {
+            target = freqs[i];
+            break;
+        }
+    }
+
+    for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
+            itx != wordfreq.end();
+            ++ itx) {
+        //if (itx.frequency() >= target && strutils::codecs::length(itx.key()) > 1) {
+        if (itx.frequency() >= target) {
+            model->internal_lexicon.set(itx.key(), true);
+        }
+    }
+
+    TRACE_LOG("Collecting interanl lexicon is done.");
+    TRACE_LOG("Total word frequency : %ld", total_freq);
+    TRACE_LOG("Vocabulary size: %d", wordfreq.size());
+    TRACE_LOG("Trancation word frequency : %d", target);
+    TRACE_LOG("Internal lexicon size : %d", model->internal_lexicon.size());
 }
 
 void Segmentor::extract_features(Instance * inst, bool create) {
@@ -176,6 +234,43 @@ void Segmentor::extract_features(Instance * inst, bool create) {
     inst->uni_features.resize(len, L);  inst->uni_features = 0;
     inst->uni_scores.resize(len, L);    inst->uni_scores = NEG_INF;
     inst->bi_scores.resize(L, L);       inst->bi_scores = NEG_INF;
+
+    // cache lexicon features.
+    if (0 == inst->lexicon_match_state.size()) {
+        inst->lexicon_match_state.resize(len, 0);
+
+        for (int i = 0; i < len; ++ i) {
+            std::string word; word.reserve(32);
+            for (int j = i; j<i+5 && j < len; ++ j) {
+                word = word + inst->forms[j];
+
+                // it's not a lexicon word
+                if (!model->internal_lexicon.get(word.c_str()) 
+                        && !model->external_lexicon.get(word.c_str())) {
+                    continue;
+                }
+
+                int l = j+1-i;
+
+                if (l > (inst->lexicon_match_state[i] & 0x0F)) {
+                    inst->lexicon_match_state[i] &= 0xfff0;
+                    inst->lexicon_match_state[i] |= l;
+                }
+
+                if (l > ((inst->lexicon_match_state[j]>>4) & 0x0F)) {
+                    inst->lexicon_match_state[j] &= 0xff0f;
+                    inst->lexicon_match_state[j] |= (l<<4);
+                }
+
+                for (int k = i+1; k < j; ++k) {
+                    if (l>((inst->lexicon_match_state[k]>>8) & 0x0F)) {
+                        inst->lexicon_match_state[k] &= 0xf0ff;
+                        inst->lexicon_match_state[k] |= (l<<8);
+                    }
+                }
+            }
+        }
+    }
 
     for (int pos = 0; pos < len; ++ pos) {
         for (int n = 0; n < N; ++ n) {
@@ -415,8 +510,6 @@ void Segmentor::train(void) {
                     saved_model_file.c_str());
         }
     }
-
-    delete model;
 }
 
 void Segmentor::evaluate(void) {
@@ -450,7 +543,9 @@ void Segmentor::evaluate(void) {
         calculate_scores(inst, true);
         decoder->decode(inst);
 
-        build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
+        if (inst->words.size() == 0) {
+            build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
+        }
         build_words(inst, inst->predicted_tagsidx, inst->predicted_words, beg_tag0, beg_tag1);
 
         num_recalled_words += inst->num_recalled_words();
@@ -522,7 +617,9 @@ void Segmentor::test(void) {
         calculate_scores(inst, true);
         decoder->decode(inst);
 
-        build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
+        if (inst->words.size() == 0) {
+            build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
+        }
         build_words(inst, inst->predicted_tagsidx, inst->predicted_words, beg_tag0, beg_tag1);
 
         num_recalled_words += inst->num_recalled_words();

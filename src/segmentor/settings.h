@@ -19,6 +19,9 @@ const std::string __i__         = "i";
 const std::string __e__         = "e";
 const std::string __s__         = "s";
 
+const std::string __eng__       = "_eng_";
+const std::string __uri__       = "_uri_";
+
 const double EPS        = 1e-8;
 const double NEG_INF    = -1e20;
 

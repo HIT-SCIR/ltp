@@ -40,6 +40,7 @@ public:
                     inst->forms.push_back(sep[0]);
                     inst->tags.push_back(sep[1]);
                 } else {
+                    std::cerr << words[i] << std::endl;
                     delete inst;
                     return 0;
                 }

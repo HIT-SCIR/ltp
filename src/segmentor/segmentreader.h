@@ -36,6 +36,7 @@ public:
         }
 
         std::vector<std::string> words = split(line);
+        inst->words = words;
 
         for (int i = 0; i < words.size(); ++ i) {
             std::vector<std::string> chars;

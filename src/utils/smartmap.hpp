@@ -45,10 +45,61 @@ struct __SmartMap_Default_StringEqual {
     }
 };
 
+struct __SmartMap_Hash_Node {
+public:
+    unsigned int    __key_off;
+    unsigned int    __val_off;
+    unsigned int    __freq;
+    unsigned int    __hash_val;
+    int             __next_off;
+
+    __SmartMap_Hash_Node & operator = (const __SmartMap_Hash_Node & other) {
+        __key_off  = other.__key_off;
+        __val_off  = other.__val_off;
+        __freq     = other.__freq;
+        __hash_val = other.__hash_val;
+        __next_off = other.__next_off;
+
+        return (*this);
+    }
+};
+
+template <class T = int>
+struct __SmartMap_Const_Iterator {
+    typedef __SmartMap_Hash_Node hash_node_t;
+
+    __SmartMap_Const_Iterator(
+            const hash_node_t * _ptr,
+            const char *        _key_buffer,
+            const T *           _val_buffer) :
+        ptr(_ptr),
+        key_buffer(_key_buffer),
+        val_buffer(_val_buffer) {}
+
+    __SmartMap_Const_Iterator() : 
+        ptr(0), 
+        key_buffer(0), 
+        val_buffer(0) {}
+
+    const char * key() { return key_buffer + ptr->__key_off; }
+    const T * value() { return val_buffer + ptr->__val_off; }
+    int frequency() { return ptr->__freq; }
+    bool operator ==(const __SmartMap_Const_Iterator & other) const { return ptr == other.ptr; }
+    bool operator !=(const __SmartMap_Const_Iterator & other) const { return ptr != other.ptr; }
+    void operator ++() { ++ ptr; }
+
+    const hash_node_t * ptr;
+    const char *        key_buffer;
+    const T *           val_buffer;
+};
+
 template <class T = int, 
          class HashFunction = __SmartMap_Default_HashFunction, 
          class StringEqual  = __SmartMap_Default_StringEqual>
 class SmartMap {
+public:
+    typedef __SmartMap_Hash_Node            hash_node_t;
+    typedef __SmartMap_Const_Iterator<T>    const_iterator;
 
 public:
     explicit SmartMap() :
@@ -242,6 +293,26 @@ public:
     }
 
     /*
+     * Get the frequency of the key. Return the key's frequency
+     * It is a special usage of smartmap as a key, frequency
+     * counter. If the key is not contained, return -1.
+     *
+     *  @param[in]  key     the key
+     *  @return     int     the frequency
+     */
+    int frequency(const char * key) {
+        unsigned hv = HashFunction()(key);
+        unsigned idx = (hv % _cap_buckets);
+        int p = _find(key, hv, idx, false);
+
+        if (-1 == p) {
+            return -1;
+        }
+
+        return _hash_buffer[p].__freq;
+    }
+
+    /*
      * Return whether the key exist.
      *
      *  @param[in]  key         the key
@@ -282,7 +353,7 @@ public:
         }
 
         if (_hash_buckets_volumn) {
-           delete _hash_buckets_volumn;
+            delete [](_hash_buckets_volumn);
         }
     }
 
@@ -294,6 +365,15 @@ public:
     inline size_t size() const {
         return _num_entries;
     }
+
+    const_iterator begin() {
+        return const_iterator(_hash_buffer, _key_buffer, _val_buffer);
+    }
+
+    const_iterator end() {
+        return const_iterator(_hash_buffer + _num_entries, _key_buffer, _val_buffer);
+    }
+
 
     /*
      * Dump out SmartMap
@@ -393,30 +473,12 @@ protected:
     static const unsigned int PRIMES[100]; 
 
 protected:
-    struct hash_node_t {
-    public:
-        unsigned int    __key_off;
-        unsigned int    __val_off;
-        unsigned int    __freq;
-        unsigned int    __hash_val;
-        int             __next_off;
-
-        hash_node_t & operator = (const hash_node_t & other) {
-            __key_off  = other.__key_off;
-            __val_off  = other.__val_off;
-            __freq     = other.__freq;
-            __hash_val = other.__hash_val;
-            __next_off = other.__next_off;
-
-            return (*this);
-        }
-    };
-
     int *           _hash_buckets;
     int *           _hash_buckets_volumn;
     hash_node_t *   _hash_buffer;
     char *          _key_buffer;    /*< the buffer of key */
     T *             _val_buffer;    /*< the buffer of value */
+
 
 protected:
     /*< buckets related counter */

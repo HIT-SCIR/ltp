@@ -43,6 +43,9 @@ Extractor::Extractor() {
     templates.push_back(new Template("14={ct-1}"));
     templates.push_back(new Template("15={ct-0}"));
     templates.push_back(new Template("16={ct+1}"));
+    templates.push_back(new Template("17={lex1}"));
+    templates.push_back(new Template("18={lex2}"));
+    templates.push_back(new Template("19={lex3}"));
     //templates.push_back(new Template("17={dup-1}"));
     //templates.push_back(new Template("18={dup-0}"));
     //templates.push_back(new Template("19={dup2-2}"));
@@ -77,6 +80,9 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
     data.set( "dup2-2", (idx-2 > 0 && EQU(idx-2, idx) ? "1" : "0") );
     data.set( "dup2-1", (idx-1 > 0 && idx+1 < len && EQU(idx-1, idx+1) ? "1" : "0") );
     data.set( "dup2-0", (idx+2 < len && EQU(idx, idx+2) ? "1" : "0") );
+    data.set( "lex1",   strutils::to_str(inst->lexicon_match_state[idx] & 0x0f));
+    data.set( "lex2",   strutils::to_str((inst->lexicon_match_state[idx]>>4) & 0x0f));
+    data.set( "lex3",   strutils::to_str((inst->lexicon_match_state[idx]>>8) & 0x0f));
 
 #undef TYPE
 #undef EQU

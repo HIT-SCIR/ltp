@@ -1,32 +1,27 @@
 /*
  * Graph Based Parser
  *
- * Author: Li, Zhenhua
- * Refactor:
+ * Author: LI, Zhenghua
+ * Author: LIU, Yijia
  */
-
 #include <iostream>
-// #include "config.h"
 #include "cfgparser.hpp"
 #include "logging.hpp"
 #include "parser.h"
 
-using namespace std;
 using namespace ltp::parser;
 
-void usage(const char * msg) {
-    // cerr << "lgdpj(lightweight)" << VERSION << " --- {lzh}@ir.hit.edu.cn" << endl;
-    cerr << endl;
-    cerr << msg << endl;
-
-    cerr << "Usage: " << endl;
-    cerr << endl;
-    cerr << "  $./lgdpj config.txt" << endl;
+void usage(void) {
+    std::cerr << "lgdpj - Training and testing suite for Chinese Dependency Parsering" << std::endl;
+    std::cerr << "Copyright (C) 2012-2013 HIT-SCIR" << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "Usage: $./lgdpj <config_file>" << std::endl;
+    std::cerr << std::endl;
 }
 
 int main(int argc, char ** argv) {
     if (argc < 2) {
-        usage("");
+        usage();
         return -1;
     }
 

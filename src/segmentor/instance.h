@@ -14,22 +14,7 @@ public:
     Instance() {}
 
     ~Instance() {
-        int len = 0;
-        if ((len = uni_features.total_size()) > 0) {
-            int d1 = uni_features.nrows();
-            int d2 = uni_features.ncols();
-
-            for (int i = 0; i < d1; ++ i) {
-                if (uni_features[i][0]) {
-                    uni_features[i][0]->clear();
-                }
-                for (int j = 0; j < d2; ++ j) {
-                    if (uni_features[i][j]) {
-                        delete uni_features[i][j];
-                    }
-                }
-            }
-        }
+        cleanup();
     }
 
     inline size_t size() const {
@@ -101,21 +86,49 @@ public:
         return ret;
     }
 
+    int cleanup() {
+        int len = 0;
+        if ((len = uni_features.total_size()) > 0) {
+            int d1 = uni_features.nrows();
+            int d2 = uni_features.ncols();
+
+            for (int i = 0; i < d1; ++ i) {
+                if (uni_features[i][0]) {
+                    uni_features[i][0]->clear();
+                }
+                for (int j = 0; j < d2; ++ j) {
+                    if (uni_features[i][j]) {
+                        delete uni_features[i][j];
+                    }
+                }
+            }
+        }
+
+        uni_features.dealloc();
+        uni_scores.dealloc();
+        bi_scores.dealloc();
+
+        features.zero();
+        predicted_features.zero();
+    }
 public:
-    std::vector< std::string > forms;
-    std::vector< std::string > tags;
-    std::vector< int >         tagsidx;
-    std::vector< std::string > predicted_tags;
-    std::vector< int >         predicted_tagsidx;
-    std::vector< std::string > words;
-    std::vector< std::string > predicted_words;
+    std::vector< std::string >  raw_forms;
+    std::vector< std::string >  forms;
+    std::vector< int >          chartypes;
+    std::vector< std::string >  tags;
+    std::vector< int >          tagsidx;
+    std::vector< std::string >  predicted_tags;
+    std::vector< int >          predicted_tagsidx;
+    std::vector< std::string >  words;
+    std::vector< std::string >  predicted_words;
+    std::vector< int >          lexicon_match_state;
 
     math::SparseVec             features;                   /*< the gold features */
     math::SparseVec             predicted_features;         /*< the predicted features */
 
     math::Mat< FeatureVector *> uni_features;
-    math::Mat< double > uni_scores;
-    math::Mat< double > bi_scores;
+    math::Mat< double >         uni_scores;
+    math::Mat< double >         bi_scores;
 };
 
 }       //  end for namespace segmentor

@@ -22,6 +22,7 @@ struct TrainOptions {
 struct TestOptions {
     std::string     test_file;
     std::string     model_file;
+    std::string     lexicon_file;
 };
 
 extern ModelOptions model_opt;

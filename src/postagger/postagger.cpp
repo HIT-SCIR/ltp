@@ -402,8 +402,6 @@ void Postagger::train(void) {
                     saved_model_file.c_str());
         }
     }
-
-    delete model;
 }
 
 void Postagger::evaluate(void) {

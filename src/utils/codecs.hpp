@@ -65,6 +65,49 @@ inline int decode(const std::string & s,
     return len;
 }
 
+inline int length(const std::string & s, int encoding=UTF8) {
+    unsigned int idx = 0;
+    unsigned int len = 0;
+
+    if (encoding == UTF8) {
+        while (idx<s.length()) {
+            if ((s[idx]&0x80)==0) {
+                ++len;
+                ++idx;
+            } else if ((s[idx]&0xE0)==0xC0) {
+                ++len;
+                idx+=2;
+            } else if ((s[idx]&0xF0)==0xE0) {
+                ++len;
+                idx+=3;
+            } else {
+                std::cerr << "Warning: " 
+                    << "in utf.h "
+                    << "getCharactersFromUTF8String: string '" 
+                    << s 
+                    << "' not encoded in unicode utf-8" 
+                    << std::endl;
+                 ++len;
+                 ++idx;
+            }
+        }
+    } else if (encoding == GBK) {
+        while (idx<s.length()) {
+            if ((s[idx]&0x80)==0) {
+                ++ len;
+                ++ idx;
+            } else {
+                ++ len;
+                idx += 2;
+            }
+        }
+    } else {
+        return 0;
+    }
+
+    return len;
+}
+
 inline bool initial(const std::string & s, 
         std::string & ch, int encoding=UTF8) {
     if (s=="") {
