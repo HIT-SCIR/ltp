@@ -39,7 +39,7 @@ public:
 
 private:
     int splitSentence_dummy();
-    int ReadConfFile(const char *confFileName = "ltp_all_modules.conf");
+    int ReadConfFile(const char *confFileName = "conf/ltp.cnf");
 
 private:
     LTPResource m_ltpResource;

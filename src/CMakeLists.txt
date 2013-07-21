@@ -12,6 +12,8 @@ set (ner_DIR             ${SOURCE_DIR}/_ner/)
 set (srl_DIR             ${SOURCE_DIR}/_srl/)
 set (ltp_dll_DIR         ${SOURCE_DIR}/__ltp_dll/)
 
+set (server_DIR             ${SOURCE_DIR}/server/)
+
 add_subdirectory ("__util")
 add_subdirectory ("__xml4nlp")
 add_subdirectory ("_split_sentence")
@@ -23,6 +25,8 @@ add_subdirectory ("parser")
 add_subdirectory ("_ner")
 #add_subdirectory ("_gparser")
 add_subdirectory ("_srl")
+
+add_subdirectory ("server")
 
 add_subdirectory ("__ltp_dll")
 
