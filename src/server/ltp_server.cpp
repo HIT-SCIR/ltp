@@ -61,14 +61,22 @@ static int Service(struct mg_connection *conn)
     const struct mg_request_info *ri = mg_get_request_info(conn);
 
     if (!strcmp(ri->uri, "/ltp")) {
-        const char *qs = ri->query_string;
+        post_data_len = mg_read(conn, post_data, sizeof(post_data));
+        cout << post_data_len << " " << post_data << endl;
+
+        /*const char *qs = ri->query_string;
+        cout << "query_string: " << qs << endl;
 
         mg_get_var(qs, strlen(qs == NULL ? "" : qs), "s", sentence, sizeof(sentence));
         cout << "sentence: " << sentence << endl;
 
         mg_get_var(qs, strlen(qs == NULL ? "" : qs), "t", type, sizeof(type));
         mg_get_var(qs, strlen(qs == NULL ? "" : qs), "x", xml, sizeof(xml));
-	
+	*/
+        mg_get_var(post_data, post_data_len, "s", sentence, sizeof(sentence));
+        mg_get_var(post_data, post_data_len, "t", type, sizeof(type));
+        mg_get_var(post_data, post_data_len, "x", xml, sizeof(xml));
+
         if (strcmp(sentence, "") == 0)
             return 0;
 

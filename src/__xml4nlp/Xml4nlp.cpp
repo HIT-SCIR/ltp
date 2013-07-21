@@ -1556,7 +1556,8 @@ int XML4NLP::InitXmlWord(vector<Word_t> &vecWord_t, TiXmlElement *wordPtr)
 /////////////////////////////////////////////////////////////////////////////////////
 int XML4NLP::BuildDOMFrame()
 {
-	TiXmlDeclaration* xmlDeclaration = new TiXmlDeclaration("1.0", "gb2312", "");
+	// TiXmlDeclaration* xmlDeclaration = new TiXmlDeclaration("1.0", "gb2312", "");
+	TiXmlDeclaration* xmlDeclaration = new TiXmlDeclaration("1.0", "utf-8", "");
 	m_tiXmlDoc.LinkEndChild(xmlDeclaration);
 	// TiXmlXSLDeclaration* xslDeclaration = new TiXmlXSLDeclaration("text/xsl", "nlp_style_v2.0.xsl");
 	// TiXmlDeclaration* xslDeclaration = new TiXmlDeclaration("text/xsl", "http://ir.hit.edu.cn/demo/ltp/nlp_style_v2.0.xsl", "");
