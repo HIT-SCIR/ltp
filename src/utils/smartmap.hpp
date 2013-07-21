@@ -354,6 +354,7 @@ public:
 
         if (_hash_buckets_volumn) {
             delete [](_hash_buckets_volumn);
+            _hash_buckets_volumn = 0;
         }
     }
 

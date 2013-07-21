@@ -45,14 +45,19 @@ public:
     }
 
     void dealloc() {
-        if (_W) {
+        if (_W && _W == _W_sum) {
             delete [](_W);
             _W = 0;
-        }
-
-        if (_W_sum) {
-            delete [](_W_sum);
             _W_sum = 0;
+        } else {
+            if (_W) {
+                delete [](_W);
+                _W = 0;
+            }
+            if (_W_sum) {
+                delete [](_W_sum);
+                _W_sum = 0;
+            }
         }
 
         if (_W_time) {
