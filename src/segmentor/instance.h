@@ -110,6 +110,8 @@ public:
 
         features.zero();
         predicted_features.zero();
+
+		return 0;
     }
 public:
     std::vector< std::string >  raw_forms;

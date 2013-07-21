@@ -180,7 +180,8 @@ NewPath CNBestHMM::InsertPathToTop(PathNode *prePtr,
 								   int state,
 								   int &curPathNum)
 {
-	NewPath returnPath(NULL, NULL);
+	NewPath returnPath(reinterpret_cast<PathNode *>(NULL), 
+		reinterpret_cast<PathNode *>(NULL));
 	
 	if(newLast != NULL && curPathNum >= MAX_N && newLast->accuProb < weight)
 		return returnPath;

@@ -76,10 +76,12 @@ set (maxent_exe_SRC
     f77_dummy_main.cpp
     ${GETOPT_FILES})
 
-
+# Training suite is not supported in windows
+if (NOT WIN32)
 add_executable (maxent_exe ${maxent_exe_SRC})
 set_target_properties (maxent_exe 
     PROPERTIES 
     OUTPUT_NAME maxent
     RUNTIME_OUTPUT_DIRECTORY  ${TOOLS_DIR}/train/)
 target_link_libraries (maxent_exe maxent_lib z m)
+endif ()

@@ -33,9 +33,9 @@ const unsigned int LTP::DO_PARSER = 1 << 4;
 const unsigned int LTP::DO_SRL = 1 << 6;
 
 // create a platform
-LTP::LTP(XML4NLP &xml4nlp) : 
-    m_ltpResource(), 
-    m_ltpOption(), 
+LTP::LTP(XML4NLP &xml4nlp) :
+    m_ltpResource(),
+    m_ltpOption(),
     m_xml4nlp(xml4nlp) {
     ReadConfFile();
 }
@@ -134,7 +134,7 @@ int LTP::ReadConfFile(const char * config_file) {
     return 0;
 }
 
-// If you do NOT split sentence explicitly, 
+// If you do NOT split sentence explicitly,
 // this will be called according to dependencies among modules
 int LTP::splitSentence_dummy() {
     if ( m_xml4nlp.QueryNote(NOTE_SENT) ) {
@@ -155,7 +155,7 @@ int LTP::splitSentence_dummy() {
         m_xml4nlp.GetParagraph(i, para);
         if (0 == SplitSentence( para, vecSentences )) {
             ERROR_LOG("in LTP::splitsent, failed to split sentence");
-            return -1; 
+            return -1;
         }
         // dummy
         // vecSentences.push_back(para);
@@ -175,7 +175,7 @@ int LTP::wordseg() {
         return 0;
     }
 
-    // 
+    //
     if (0 != splitSentence_dummy()) {
         ERROR_LOG("in LTP::wordseg, failed to perform split sentence preprocess.");
         return -1;
@@ -261,7 +261,7 @@ int LTP::postag() {
         }
 
         if (m_xml4nlp.SetPOSsToSentence(vecPOS, i) != 0) {
-            ERROR_LOG("in LTP::postag, failed to write postag result to xml"); 
+            ERROR_LOG("in LTP::postag, failed to write postag result to xml");
             return -1;
         }
     }
@@ -295,8 +295,8 @@ int LTP::ner() {
         return -1;
     }
 
-    NER_SetOption(m_ltpOption.neOpt.isEntity, 
-            m_ltpOption.neOpt.isTime, 
+    NER_SetOption(m_ltpOption.neOpt.isEntity,
+            m_ltpOption.neOpt.isTime,
             m_ltpOption.neOpt.isNum);
 
     int stnsNum = m_xml4nlp.CountSentenceInDocument();
@@ -469,83 +469,3 @@ int LTP::srl() {
     return 0;
 }
 
-#ifdef _WIN32
-
-int LTP::main2(const char *cszFileName, const char *cszSaveFileName, unsigned int flag)
-{	
-    if (flag & DO_XML)
-    {
-        if (CreateDOMFromXml(cszFileName) != 0) return -11;
-    }
-    else
-    {
-        if (CreateDOMFromTxt(cszFileName) != 0) return -12;
-    }
-
-    if (flag & DO_SPLITSENTENCE) {
-        if (splitSentence() != 0) return -1;
-    }
-    /*
-       if (flag & DO_IRLAS) {
-       if (postag() != 0) return -2;
-       }
-       */
-    if (flag & DO_NER) {
-        if (ner() != 0) return -3;
-    }
-    /*
-       if (flag & DO_WSD) {
-       if (wsd() != 0) return -4;
-       }
-       */
-    if (flag & DO_PARSER) {
-        if (gparser() != 0) return -5;
-    }
-    if (flag & DO_SRL) {
-        if (srl() != 0) return -6;
-    }
-    if (SaveDOM(cszSaveFileName) != 0) return -10;
-
-    return 0;
-}
-
-// Need to split sentence explicitly.
-int LTP::splitSentence() {
-    if ( m_xml4nlp.QueryNote(NOTE_SENT) ) return 0;
-
-    int paraNum = m_xml4nlp.CountParagraphInDocument();
-
-    if (paraNum == 0)
-    {
-        cerr << "There is no paragraph in doc," << endl
-            << "you may have loaded a blank file or have not loaded a file yet" << endl;
-        return -1;
-    }
-
-    for (int i = 0; i < paraNum; ++i)
-    {
-        vector<string> vecSentences;
-        string para;
-        m_xml4nlp.GetParagraph(i, para);
-        if (0 == SplitSentence( para, vecSentences )) return -1; // func SplitSentence's return val is vecSentence.size() 
-        //vecSentences.push_back(para);
-        if (0 != m_xml4nlp.SetSentencesToParagraph(vecSentences, i)) return -1;
-    }
-
-    m_xml4nlp.SetNote(NOTE_SENT);
-    return 0;
-}
-
-void SplitWordPOS(const vector<string> &vecWordPOS, vector<string> &vecWord,
-        vector<string> &vecPOS)
-{
-    vector< pair<string, string> > vecPair;
-    convert_to_pair(vecWordPOS, vecPair);
-    for (int i=0; i<vecPair.size(); ++i)
-    {
-        vecWord.push_back(vecPair[i].first);
-        vecPOS.push_back(vecPair[i].second);
-    }
-}
-
-#endif
