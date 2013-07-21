@@ -5,10 +5,11 @@ compiler:
     - g++
 
 before_install:
+    - sudo apt-get install gfortran g77
     - sudo apt-get install cmake
     - git submodule update --init --recursive
 
 script:
-    - cmake CMakeLists.txt
+    - ./configure
     - make
 
