@@ -10,7 +10,7 @@
 #ifdef _WIN32
 #undef POSTAGGER_DLL_API
 #ifdef POSTAGGER_DLL_API_EXPORT
-    #define POSTAGGER_DLL_API extern "C" _declspec(dllimport)
+    #define POSTAGGER_DLL_API extern "C" _declspec(dllexport)
 #else
     #define POSTAGGER_DLL_API extern "C" _deslspec(dllimport)
     #pragma comment(lib, "postagger.lib")

@@ -10,6 +10,7 @@
 using namespace std;
 
 #define SRL_DLL_API
+#define SRL_DLL_API_EXPORT
 
 #ifdef _WIN32
 		#undef SRL_DLL_API
@@ -17,7 +18,7 @@ using namespace std;
 			#define SRL_DLL_API extern "C" _declspec(dllexport) 
 		#else
 			#define SRL_DLL_API extern "C" _declspec(dllimport)
-			#pragma comment(lib, "_srl.lib")
+			#pragma comment(lib, "srl.lib")
 		#endif
 #endif
 

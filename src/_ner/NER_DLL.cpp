@@ -1,4 +1,3 @@
-#define NER_DLL_API_EXPORT
 #include "NER_DLL.h"
 
 #include "Model.h"

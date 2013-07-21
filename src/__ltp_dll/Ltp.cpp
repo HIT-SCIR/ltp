@@ -17,8 +17,8 @@
 #pragma comment(lib, "segmentor.lib")
 #pragma comment(lib, "postagger.lib")
 #pragma comment(lib, "parser.lib")
-#pragma comment(lib, "_ner.lib")
-#pragma comment(lib, "_srl.lib")
+#pragma comment(lib, "ner.lib")
+#pragma comment(lib, "srl.lib")
 #endif
 
 #include "logging.hpp"

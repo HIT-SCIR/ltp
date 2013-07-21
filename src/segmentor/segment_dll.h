@@ -10,7 +10,7 @@
 #ifdef _WIN32
 #undef SEGMENTOR_DLL_API
 #ifdef SEGMENTOR_DLL_API_EXPORT
-    #define SEGMENTOR_DLL_API extern "C" _declspec(dllimport)
+    #define SEGMENTOR_DLL_API extern "C" _declspec(dllexport)
 #else
     #define SEGMENTOR_DLL_API extern "C" _deslspec(dllimport)
     #pragma comment(lib, "segmentor.lib")

@@ -2,6 +2,7 @@
 #define __NER_DLL_H__
 
 #define NER_DLL_API
+#define NER_DLL_API_EXPORT
 
 #ifdef _WIN32 	
 		#undef NER_DLL_API
@@ -9,7 +10,7 @@
 			#define NER_DLL_API extern "C" _declspec(dllexport) 
 		#else
 			#define NER_DLL_API extern "C" _declspec(dllimport)
-			#pragma comment(lib, "_ner.lib")
+			#pragma comment(lib, "ner.lib")
 		#endif
 #endif
 

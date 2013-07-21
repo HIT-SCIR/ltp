@@ -2,9 +2,6 @@ include_directories (./
     ${xml4nlp_DIR}
     ${util_DIR}
     ${utils_DIR}
-    #${crfwordseg_DIR}
-    #${svmtagger_DIR}
-    #${gparser_DIR}
     ${splitsnt_DIR}
     ${segmentor_DIR}
     ${postagger_DIR}

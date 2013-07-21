@@ -1,18 +1,14 @@
 set (util_DIR            ${SOURCE_DIR}/__util/)
 set (utils_DIR           ${SOURCE_DIR}/utils)
 set (xml4nlp_DIR         ${SOURCE_DIR}/__xml4nlp/)
-#set (crfwordseg_DIR      ${SOURCE_DIR}/_crfwordsegment/)
 set (segmentor_DIR       ${SOURCE_DIR}/segmentor)
 set (postagger_DIR       ${SOURCE_DIR}/postagger)
 set (parser_DIR          ${SOURCE_DIR}/parser)
-#set (svmtagger_DIR       ${SOURCE_DIR}/_svmtagger/)
 set (splitsnt_DIR        ${SOURCE_DIR}/_split_sentence/)
 set (ner_DIR             ${SOURCE_DIR}/_ner/)
-#set (gparser_DIR         ${SOURCE_DIR}/_gparser)
 set (srl_DIR             ${SOURCE_DIR}/_srl/)
 set (ltp_dll_DIR         ${SOURCE_DIR}/__ltp_dll/)
-
-set (server_DIR             ${SOURCE_DIR}/server/)
+set (server_DIR          ${SOURCE_DIR}/server/)
 
 add_subdirectory ("__util")
 add_subdirectory ("__xml4nlp")
@@ -20,14 +16,13 @@ add_subdirectory ("_split_sentence")
 add_subdirectory ("segmentor")
 add_subdirectory ("postagger")
 add_subdirectory ("parser")
-#add_subdirectory ("_crfwordsegment")
-#add_subdirectory ("_svmtagger")
 add_subdirectory ("_ner")
-#add_subdirectory ("_gparser")
 add_subdirectory ("_srl")
-
-add_subdirectory ("server")
-
 add_subdirectory ("__ltp_dll")
 
-#add_subdirectory ("test")
+# mongoose server is not supported in windows
+if (NOT WIN32)
+add_subdirectory ("server")
+endif()
+
+

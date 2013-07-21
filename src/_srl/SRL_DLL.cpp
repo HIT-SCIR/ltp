@@ -1,4 +1,3 @@
-#define SRL_DLL_API_EXPORT
 #include "SRL_DLL.h"
 #include "DepSRL.h"
 #include <vector>

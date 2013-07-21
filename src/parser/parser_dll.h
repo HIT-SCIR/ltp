@@ -10,7 +10,7 @@
 #ifdef _WIN32
 #undef PARSER_DLL_API
 #ifdef PARSER_DLL_API_EXPORT
-    #define PARSER_DLL_API extern "C" _declspec(dllimport)
+    #define PARSER_DLL_API extern "C" _declspec(dllexport)
 #else
     #define PARSER_DLL_API extern "C" _deslspec(dllimport)
     #pragma comment(lib, "parser.lib")
