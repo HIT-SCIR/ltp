@@ -31,3 +31,9 @@ SRLGetInstance
 ltp-model.json
 config.svmt
 gparser.conf
+*.cmake
+CMakeFiles/
+Makefile
+CMakeCache.txt
+new_ltp_data/
+ltp_data/

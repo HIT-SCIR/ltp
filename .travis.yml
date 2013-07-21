@@ -9,6 +9,6 @@ before_install:
     - git submodule update --init --recursive
 
 script:
-    - ./configure
+    - cmake CMakeLists.txt
     - make
 
