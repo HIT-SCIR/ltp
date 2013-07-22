@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>             /* For pause() */
 #include <stdlib.h>
+#include <signal.h>
 
 #include <iostream>
 
@@ -23,13 +24,21 @@ using namespace std;
 static XML4NLP xml4nlp;
 static LTP ltp(xml4nlp);
 
+static int exit_flag;
 
 static int Service(struct mg_connection *conn);
 
+static void signal_handler(int sig_num) {
+        exit_flag = sig_num;
+}
+
 int main(int argc, char *argv[])
 {
+        signal(SIGTERM, signal_handler);
+        signal(SIGINT, signal_handler);
         struct mg_context *ctx;
-        const char *options[] = {"listening_ports", LISTENING_PORT, NULL};
+        const char *options[] = {"listening_ports", LISTENING_PORT, 
+                                 "num_threads", "1", NULL};
         struct mg_callbacks callbacks;
         
         memset(&callbacks, 0, sizeof(callbacks));
@@ -40,8 +49,10 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
         }
 
-        getchar();
-
+        // getchar();
+        while (exit_flag == 0) {
+                sleep(100000);
+        }
 	mg_stop(ctx);
 
 	return 0;
