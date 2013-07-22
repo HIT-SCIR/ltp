@@ -130,11 +130,7 @@ static int Service(struct mg_connection *conn)
 	strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;
 
 	// cout << "Result is: " << strResult << endl;
-	int max_len = POST_LEN - 1;
-	int split_num = strResult.size() / max_len + 1;
-	for(int i = 0; i < split_num; i++){
-		mg_printf(conn, "%s", strResult.substr(i * max_len, max_len).c_str());
-	}
+        mg_printf(conn, "%s", strResult.c_str());
 
 	xml4nlp.ClearDOM();
     }
