@@ -153,10 +153,12 @@ int LTP::splitSentence_dummy() {
         vector<string> vecSentences;
         string para;
         m_xml4nlp.GetParagraph(i, para);
+
         if (0 == SplitSentence( para, vecSentences )) {
             ERROR_LOG("in LTP::splitsent, failed to split sentence");
             return -1;
         }
+
         // dummy
         // vecSentences.push_back(para);
         if (0 != m_xml4nlp.SetSentencesToParagraph(vecSentences, i)) {

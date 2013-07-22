@@ -16,6 +16,13 @@ set (lgdpj_SRC collections.cpp
     decoder2o.cpp
     parser.cpp)
 
-add_executable(lgdpj lgdpj.cpp ${lgdpj_SRC})
 add_library(parser parser_dll.cpp ${lgdpj_SRC})
+
+# redirect output binary to tools/train
+add_executable(lgdpj lgdpj.cpp ${lgdpj_SRC})
+set_target_properties (lgdpj
+    PROPERTIES
+    OUTPUT_NAME lgdpj
+    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+
 

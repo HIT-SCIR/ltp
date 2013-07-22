@@ -1,0 +1,63 @@
+#ifndef __LTP_SPLIT_SENTENCE_TAB__
+#define __LTP_SPLIT_SENTENCE_TAB__
+const int __double_peridos_utf8_size_x__ = 6;
+static int __double_periods_utf8_buff_x__[12] = {
+14909570 , 14844061 ,
+15711361 , 14844061 ,
+15711391 , 14844061 ,
+15711387 , 14844061 ,
+14844070 , 14844070 ,
+15711391 , 15711361 ,
+};
+
+const int __single_periods_utf8_size_x__ = 4;
+static int __single_periods_utf8_buff_x__[8] = {
+14909570 ,
+15711361 ,
+15711391 ,
+15711387 ,
+};
+
+const int __double_periods_utf8_size__ = 42;
+static char __double_periods_utf8_buff__[42] = {
+227, 128, 130, 226, 128, 157, 0, 239, 188, 129,
+226, 128, 157, 0, 239, 188, 159, 226, 128, 157,
+0, 239, 188, 155, 226, 128, 157, 0, 226, 128,
+166, 226, 128, 166, 0, 239, 188, 159, 239, 188,
+129, 0, };
+
+const int __single_periods_utf8_size__ = 16;
+static char __single_periods_utf8_buff__[16] = {
+227, 128, 130, 0, 239, 188, 129, 0, 239, 188,
+159, 0, 239, 188, 155, 0, };
+const int __double_peridos_gbk_size_x__ = 6;
+static int __double_periods_gbk_buff_x__[12] = {
+41379 , 41393 ,
+41889 , 41393 ,
+41919 , 41393 ,
+41915 , 41393 ,
+41389 , 41389 ,
+41919 , 41889 ,
+};
+
+const int __single_periods_gbk_size_x__ = 4;
+static int __single_periods_gbk_buff_x__[8] = {
+41379 ,
+41889 ,
+41919 ,
+41915 ,
+};
+
+const int __double_periods_gbk_size__ = 42;
+static char __double_periods_gbk_buff__[42] = {
+227, 128, 130, 226, 128, 157, 0, 239, 188, 129,
+226, 128, 157, 0, 239, 188, 159, 226, 128, 157,
+0, 239, 188, 155, 226, 128, 157, 0, 226, 128,
+166, 226, 128, 166, 0, 239, 188, 159, 239, 188,
+129, 0, };
+
+const int __single_periods_gbk_size__ = 12;
+static char __single_periods_gbk_buff__[12] = {
+161, 163, 0, 163, 161, 0, 163, 191, 0, 163,
+187, 0, };
+#endif   //  end for __LTP_SPLIT_SENTENCE_TAB__

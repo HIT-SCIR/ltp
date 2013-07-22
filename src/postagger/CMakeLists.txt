@@ -11,5 +11,12 @@ set (postagger_SRC
     extractor.cpp
     postagger.cpp)
 
-add_executable (otpos otpos.cpp ${postagger_SRC})
 add_library (postagger postag_dll.cpp ${postagger_SRC})
+
+add_executable (otpos otpos.cpp ${postagger_SRC})
+# redirect the output binary to tools/train
+set_target_properties (otpos
+    PROPERTIES
+    OUTPUT_NAME otpos
+    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+
