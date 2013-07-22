@@ -74,6 +74,7 @@ static int Service(struct mg_connection *conn)
     if (!strcmp(ri->uri, "/ltp")) {
         int len;
         while((len = mg_read(conn, buffer, sizeof(buffer) - 1)) > 0){
+            buffer[len] = 0;
             str_post_data += buffer;
         }
         cout << str_post_data.size() << " " << str_post_data << endl;
