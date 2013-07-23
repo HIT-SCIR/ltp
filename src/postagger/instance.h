@@ -57,6 +57,7 @@ public:
     }
 
 public:
+    std::vector< std::string > raw_forms;
     std::vector< std::string > forms;
     std::vector< std::string > tags;
     std::vector< int >         tagsidx;

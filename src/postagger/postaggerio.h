@@ -4,6 +4,7 @@
 #include <iostream>
 #include "settings.h"
 #include "instance.h"
+#include "sbcdbc.hpp"
 #include "strutils.hpp"
 
 namespace ltp {
@@ -37,7 +38,8 @@ public:
             if (train) {
                 std::vector<std::string> sep = strutils::rsplit_by_sep(words[i], "_", 1);
                 if (sep.size() == 2) {
-                    inst->forms.push_back(sep[0]);
+                    inst->raw_forms.push_back(sep[0]);
+                    inst->forms.push_back(strutils::chartypes::sbc2dbc_x(sep[0]));
                     inst->tags.push_back(sep[1]);
                 } else {
                     std::cerr << words[i] << std::endl;
@@ -45,7 +47,8 @@ public:
                     return 0;
                 }
             } else {
-                inst->forms.push_back(words[i]);
+                inst->raw_forms.push_back(words[i]);
+                inst->forms.push_back(strutils::chartypes::sbc2dbc_x(words[i]));
             }
         }
 

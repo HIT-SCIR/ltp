@@ -12,7 +12,12 @@ public:
     SegmentWriter(std::ostream & _ofs) : ofs(_ofs) {}
 
     void write(const Instance * inst) {
-
+        int len = inst->predicted_words.size();
+        for (int i = 0; i < len; ++ i) {
+            ofs << inst->predicted_words[i];
+            if (i+1==len) ofs << std::endl;
+            else ofs << "\t";
+        }
     }
 
     void debug(const Instance * inst, bool show_feat = false) {

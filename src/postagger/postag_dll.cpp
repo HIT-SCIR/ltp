@@ -5,6 +5,7 @@
 
 #include "logging.hpp"
 #include "codecs.hpp"
+#include "sbcdbc.hpp"
 
 #include <iostream>
 
@@ -35,7 +36,7 @@ public:
             std::vector<std::string> & tags) {
         ltp::postagger::Instance * inst = new ltp::postagger::Instance;
         for (int i = 0; i < words.size(); ++ i) {
-            inst->forms.push_back(words[i]);
+            inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
         }
 
         ltp::postagger::Postagger::extract_features(inst);

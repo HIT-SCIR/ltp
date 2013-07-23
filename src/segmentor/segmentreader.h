@@ -4,6 +4,7 @@
 #include <iostream>
 #include "settings.h"
 #include "instance.h"
+#include "rulebase.h"
 #include "strutils.hpp"
 #include "codecs.hpp"
 
@@ -14,8 +15,9 @@ using namespace ltp::strutils;
 
 class SegmentReader {
 public:
-    SegmentReader(istream & _ifs, int _style = 4) : 
+    SegmentReader(istream & _ifs, bool _segmented = false, int _style = 4) : 
         ifs(_ifs),
+        segmented(_segmented),
         style(_style) {}
 
     Instance * next() {
@@ -28,66 +30,76 @@ public:
 
         std::getline(ifs, line);
 
-        chomp(line);
-
+        line = chomp(line);
         if (line.size() == 0) {
             delete inst;
             return 0;
         }
 
-        std::vector<std::string> words = split(line);
-        inst->words = words;
+        if (segmented) {
+            std::vector<std::string> words = split(line);
+            inst->words = words;
 
-        for (int i = 0; i < words.size(); ++ i) {
-            std::vector<std::string> chars;
-            int num_chars = codecs::decode(words[i], chars);
+            for (int i = 0; i < words.size(); ++ i) {
+                // std::vector<std::string> chars;
+                // int num_chars = codecs::decode(words[i], chars);
+                int num_chars = rulebase::preprocess(words[i],
+                        inst->raw_forms,
+                        inst->forms,
+                        inst->chartypes);
 
-            // support different style
-            if (style == 2) {
-                for (int j = 0; j < num_chars; ++ j) {
-                    inst->forms.push_back(chars[j]);
-                    if (j == 0) {
-                        inst->tags.push_back( __b__ );
-                    } else {
-                        inst->tags.push_back( __i__ );
-                    }
-                }
-            } else if (style == 4) {
-                for(int j = 0; j < num_chars; ++ j) {
-                    inst->forms.push_back(chars[j]);
-                    if (1 == num_chars) {
-                        inst->tags.push_back( __s__ );
-                    } else {
-                        if (0 == j) {
+                // support different style
+                if (style == 2) {
+                    for (int j = 0; j < num_chars; ++ j) {
+                        // inst->forms.push_back(chars[j]);
+                        if (j == 0) {
                             inst->tags.push_back( __b__ );
-                        } else if (num_chars - 1 == j) {
-                            inst->tags.push_back( __e__ );
                         } else {
                             inst->tags.push_back( __i__ );
                         }
                     }
-                }
-            } else if (style == 6) {
-                for (int j = 0; j < num_chars; ++ j) {
-                    inst->forms.push_back(chars[j]);
-
-                    if (1 == num_chars) {
-                        inst->tags.push_back( __s__ );
-                    } else {
-                        if (0 == j) {
-                            inst->tags.push_back( __b__ );
-                        } else if (1 == j) {
-                            inst->tags.push_back( __b2__ );
-                        } else if (2 == j) {
-                            inst->tags.push_back( __b3__ );
-                        } else if (num_chars - 1 == j) {
-                            inst->tags.push_back( __e__ );
+                } else if (style == 4) {
+                    for(int j = 0; j < num_chars; ++ j) {
+                        // inst->forms.push_back(chars[j]);
+                        if (1 == num_chars) {
+                            inst->tags.push_back( __s__ );
                         } else {
-                            inst->tags.push_back( __i__ );
+                            if (0 == j) {
+                                inst->tags.push_back( __b__ );
+                            } else if (num_chars - 1 == j) {
+                                inst->tags.push_back( __e__ );
+                            } else {
+                                inst->tags.push_back( __i__ );
+                            }
+                        }
+                    }
+                } else if (style == 6) {
+                    for (int j = 0; j < num_chars; ++ j) {
+                        // inst->forms.push_back(chars[j]);
+
+                        if (1 == num_chars) {
+                            inst->tags.push_back( __s__ );
+                        } else {
+                            if (0 == j) {
+                                inst->tags.push_back( __b__ );
+                            } else if (1 == j) {
+                                inst->tags.push_back( __b2__ );
+                            } else if (2 == j) {
+                                inst->tags.push_back( __b3__ );
+                            } else if (num_chars - 1 == j) {
+                                inst->tags.push_back( __e__ );
+                            } else {
+                                inst->tags.push_back( __i__ );
+                            }
                         }
                     }
                 }
             }
+        } else {
+            rulebase::preprocess(line,
+                    inst->raw_forms,
+                    inst->forms,
+                    inst->chartypes);
         }
 
         return inst;
@@ -95,6 +107,7 @@ public:
 private:
     istream &   ifs;
     int         style;
+    bool        segmented;
 };
 
 }           //  end for namespace segmentor

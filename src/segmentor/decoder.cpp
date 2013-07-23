@@ -21,11 +21,19 @@ void Decoder::viterbi_decode(const Instance * inst) {
     int len = inst->size();
     for (int i = 0; i < len; ++ i) {
         for (int l = 0; l < L; ++ l) {
+            if (false == base.legal_emit(inst->chartypes[i], l)) {
+                continue;
+            }
+
             if (i == 0) {
                 LatticeItem * item = new LatticeItem(i, l, inst->uni_scores[i][l], NULL);
                 lattice_insert(lattice[i][l], item);
             } else {
                 for (int pl = 0; pl < L; ++ pl) {
+                    if (false == base.legal_trans(pl, l)) {
+                        continue;
+                    }
+
                     double score = 0.;
                     const LatticeItem * prev = lattice[i-1][pl];
 
@@ -33,6 +41,7 @@ void Decoder::viterbi_decode(const Instance * inst) {
                         continue;
                     }
 
+                    // std::cout << i << " " << pl << " " << l << std::endl;
                     score = inst->uni_scores[i][l] + inst->bi_scores[pl][l] + prev->score;
                     const LatticeItem * item = new LatticeItem(i, l, score, prev);
                     lattice_insert(lattice[i][l], item);
@@ -46,7 +55,10 @@ void Decoder::get_result(Instance * inst) {
     int len = inst->size();
     const LatticeItem * best_item = NULL;
     for (int l = 0; l < L; ++ l) {
-        if (best_item == NULL || lattice[len - 1][l]->score > best_item->score) {
+        if (!lattice[len-1][l]) {
+            continue;
+        }
+        if (best_item == NULL || (lattice[len-1][l]->score > best_item->score)) {
             best_item = lattice[len - 1][l];
         }
     }

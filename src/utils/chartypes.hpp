@@ -19,7 +19,7 @@ enum{
     CHAR_LETTER = 1,
     CHAR_DIGIT = 2,
     CHAR_PUNC = 3,
-    CHAR_OTHER = -1, 
+    CHAR_OTHER = 0, 
     // level 2
     CHAR_LETTER_SBC = 11, 
     CHAR_LETTER_DBC = 12,
@@ -83,13 +83,19 @@ public:
         if (itx != collections.end()) {
             return itx->second;
         }
-        return -1;
+        return CHAR_OTHER; 
     }
 
 protected:
     __chartype_collections() {
         const char * buff = 0;
-        buff = __chartype_dbc_chinese_punc_utf8_buff__;
+        buff = __chartype_dbc_punc_ext_utf8_buff__;
+        for (int i = 0; i < __chartype_dbc_punc_ext_utf8_size__; ++ i) {
+            collections[buff] = CHAR_PUNC;
+            do { ++ buff; } while (*(buff - 1));
+        }
+
+       buff = __chartype_dbc_chinese_punc_utf8_buff__;
         for (int i = 0; i < __chartype_dbc_chinese_punc_utf8_size__; ++ i) {
             collections[buff] = CHAR_PUNC;
             do {++ buff; } while (*(buff - 1));
@@ -111,12 +117,6 @@ protected:
         for (int i = 0; i < __chartype_dbc_uppercase_utf8_size__; ++ i) {
             collections[buff] = CHAR_LETTER;
             do {++ buff; } while (*(buff - 1));
-        }
-
-        buff = __chartype_dbc_punc_ext_utf8_buff__;
-        for (int i = 0; i < __chartype_dbc_punc_ext_utf8_size__; ++ i) {
-            collections[buff] = CHAR_PUNC;
-            do { ++ buff; } while (*(buff - 1));
         }
 
         buff = __chartype_dbc_lowercase_utf8_buff__;

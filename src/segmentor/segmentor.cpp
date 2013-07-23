@@ -115,6 +115,7 @@ bool Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
 
     test_opt.test_file = "";
     test_opt.model_file = "";
+    test_opt.lexicon_file = "";
 
     if (cfg.has_section("test")) {
         __TEST__ = true;
@@ -132,6 +133,10 @@ bool Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
             ERROR_LOG("model-file is not configed. ");
             return false;
         }
+
+        if (cfg.get("test", "lexicon-file", strbuf)) {
+            test_opt.lexicon_file = strbuf;
+        }
     }
 
     return true;
@@ -144,7 +149,7 @@ bool Segmentor::read_instance(const char * train_file) {
         return false;
     }
 
-    SegmentReader reader(ifs);
+    SegmentReader reader(ifs, true);
     train_dat.clear();
 
     Instance * inst = NULL;
@@ -330,14 +335,14 @@ void Segmentor::build_words(Instance * inst,
     int len = inst->size();
 
     // should check the tagsidx size
-    word = inst->forms[0];
+    word = inst->raw_forms[0];
     for (int i = 1; i < len; ++ i) {
         int tag = tagsidx[i];
         if (tag == beg_tag0 || tag == beg_tag1) {
             words.push_back(word);
-            word = inst->forms[i];
+            word = inst->raw_forms[i];
         } else {
-            word += inst->forms[i];
+            word += inst->raw_forms[i];
         }
     }
 
@@ -443,7 +448,8 @@ void Segmentor::train(void) {
         }*/
     } else {
         // use pa or average perceptron algorithm
-        decoder = new Decoder(model->num_labels());
+        rulebase::RuleBase base(model->labels);
+        decoder = new Decoder(model->num_labels(), base);
         TRACE_LOG("Allocated plain decoder");
 
         for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
@@ -522,7 +528,7 @@ void Segmentor::evaluate(void) {
         return;
     }
 
-    SegmentReader reader(ifs);
+    SegmentReader reader(ifs, true);
     Instance * inst = NULL;
 
     int num_recalled_words = 0;
@@ -566,6 +572,7 @@ void Segmentor::evaluate(void) {
 }
 
 void Segmentor::test(void) {
+    // load model
     const char * model_file = test_opt.model_file.c_str();
     ifstream mfs(model_file, std::ifstream::binary);
 
@@ -584,6 +591,19 @@ void Segmentor::test(void) {
     TRACE_LOG("Number of features               [%d]", model->space.num_features());
     TRACE_LOG("Number of dimension              [%d]", model->space.dim());
 
+    // load exteranl lexicon
+    const char * lexicon_file =test_opt.lexicon_file.c_str();
+    ifstream lfs(lexicon_file);
+    std::string buffer;
+    while (std::getline(lfs, buffer)) {
+        buffer = strutils::chomp(buffer);
+        if (buffer.size() == 0) {
+            continue;
+        }
+
+        model->external_lexicon.set(buffer.c_str(), true);
+    }
+
     const char * test_file = test_opt.test_file.c_str();
 
     ifstream ifs(test_file);
@@ -593,13 +613,11 @@ void Segmentor::test(void) {
         return;
     }
 
-    decoder = new Decoder(model->num_labels());
+    rulebase::RuleBase base(model->labels);
+    decoder = new Decoder(model->num_labels(), base);
     SegmentReader reader(ifs);
+    SegmentWriter writer(cout);
     Instance * inst = NULL;
-
-    int num_recalled_words = 0;
-    int num_predicted_words = 0;
-    int num_gold_words = 0;
 
     int beg_tag0 = model->labels.index( __b__ );
     int beg_tag1 = model->labels.index( __s__ );
@@ -609,35 +627,18 @@ void Segmentor::test(void) {
     while ((inst = reader.next())) {
         int len = inst->size();
         inst->tagsidx.resize(len);
-        for (int i = 0; i < len; ++ i) {
-            inst->tagsidx[i] = model->labels.index(inst->tags[i]);
-        }
 
         extract_features(inst);
         calculate_scores(inst, true);
         decoder->decode(inst);
 
-        if (inst->words.size() == 0) {
-            build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
-        }
         build_words(inst, inst->predicted_tagsidx, inst->predicted_words, beg_tag0, beg_tag1);
 
-        num_recalled_words += inst->num_recalled_words();
-        num_predicted_words += inst->num_predicted_words();
-        num_gold_words += inst->num_gold_words();
-
+        writer.write(inst);
         delete inst;
     }
 
     double after = get_time();
-
-    double p = (double)num_recalled_words / num_predicted_words;
-    double r = (double)num_recalled_words / num_gold_words;
-    double f = 2 * p * r / (p + r);
-
-    TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
-    TRACE_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
-    TRACE_LOG("F: %lf" , f);
     TRACE_LOG("Eclipse time %lf", after - before);
 
     sleep(1000000);

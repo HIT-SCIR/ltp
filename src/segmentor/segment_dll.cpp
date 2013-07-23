@@ -30,7 +30,8 @@ public:
             return false;
         }
 
-        decoder = new ltp::segmentor::Decoder(model->num_labels());
+        ltp::segmentor::rulebase::RuleBase base(model->labels);
+        decoder = new ltp::segmentor::Decoder(model->num_labels(), base);
 
         beg_tag0 = model->labels.index( ltp::segmentor::__b__ );
         beg_tag1 = model->labels.index( ltp::segmentor::__s__ );
@@ -41,7 +42,11 @@ public:
     int segment(const char * str,
             std::vector<std::string> & words) {
         ltp::segmentor::Instance * inst = new ltp::segmentor::Instance;
-        ltp::strutils::codecs::decode(str, inst->forms);
+        // ltp::strutils::codecs::decode(str, inst->forms);
+        ltp::segmentor::rulebase::preprocess(str,
+                inst->raw_forms,
+                inst->forms,
+                inst->chartypes);
 
         ltp::segmentor::Segmentor::extract_features(inst);
         ltp::segmentor::Segmentor::calculate_scores(inst, true);

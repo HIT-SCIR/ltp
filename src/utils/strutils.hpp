@@ -44,12 +44,15 @@ inline std::string chomp(std::string str) {
         return "";
     }
 
-    while (str[len - 1] == ' ' ||
-            str[len - 1] == '\r' ||
-            str[len - 1] == '\n' ) {
+    while (str[len-1] == ' ' ||
+            str[len-1]=='\t' ||
+            str[len-1] == '\r' ||
+            str[len-1] == '\n' ) {
         str = str.substr(0, -- len);
     }
+
     while (str[0] == ' ' ||
+            str[0] == '\t' ||
             str[0] == '\r' ||
             str[0] == '\n') {
         str = str.substr(1, -- len);

@@ -5,6 +5,7 @@
 #include <vector>
 #include "instance.h"
 #include "mat.h"
+#include "rulebase.h"
 
 namespace ltp {
 namespace segmentor {
@@ -33,7 +34,7 @@ public:
 
 class Decoder {
 public:
-    Decoder (int _L) : L(_L) {}
+    Decoder (int _L, rulebase::RuleBase & _base) : L(_L), base(_base) {}
     void decode(Instance * inst);
 
 private:
@@ -46,6 +47,7 @@ private:
     int L;
 
     math::Mat< const LatticeItem * > lattice;
+    rulebase::RuleBase base;
 
     void lattice_insert(const LatticeItem * &position, const LatticeItem * const item) {
         if (position == NULL) {

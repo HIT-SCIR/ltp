@@ -1,6 +1,7 @@
 #ifndef __LTP_STRUTILS_SBC_DBC_HPP__
 #define __LTP_STRUTILS_SBC_DBC_HPP__
 
+#include "codecs.hpp"
 #include "chartypes.tab"
 
 namespace ltp {
@@ -30,6 +31,43 @@ inline void sbc2dbc(const std::string & x, std::string & y) {
     } else {
         y = x;
     }
+}
+
+inline std::string sbc2dbc(const std::string & x) {
+    std::string y; y.reserve(x.size()* 3);
+    sbc2dbc(x, y);
+    return y;
+}
+
+inline void sbc2dbc_x(const std::string & x, std::string & y, int encoding=strutils::codecs::UTF8) {
+    int len = x.size();
+    int i = 0;
+
+    y.clear();
+    while (i<len) {
+        if (encoding==strutils::codecs::UTF8) {
+            if ((x[i]&0x80)==0) {
+                y.append(sbc2dbc(x.substr(i, 1)));
+                ++i;
+            } else if ((x[i]&0xE0)==0xC0) {
+                y.append(sbc2dbc(x.substr(i, 2)));
+                i+=2;
+            } else if ((x[i]&0xF0)==0xE0) {
+                y.append(sbc2dbc(x.substr(i, 3)));
+                i+=3;
+            } else {
+                y = x;
+            }
+        } else if (encoding==strutils::codecs::GBK) {
+            // not implemented
+        }
+    }
+}
+
+inline std::string sbc2dbc_x(const std::string & x, int encoding=strutils::codecs::UTF8) {
+    std::string y;
+    sbc2dbc_x(x, y, encoding);
+    return y;
 }
 
 inline void dbc2sbc(const std::string & x, std::string & y) {
