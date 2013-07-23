@@ -17,7 +17,7 @@ public:
 
     ~SegmentorWrapper() {}
 
-    bool load(const char * model_file) {
+    bool load(const char * model_file, const char * lexicon_file = NULL) {
         std::ifstream mfs(model_file, std::ifstream::binary);
 
         if (!mfs) {
@@ -29,6 +29,22 @@ public:
             delete model;
             return false;
         }
+
+        if (NULL != lexicon_file) {
+            std::ifstream lfs(lexicon_file);
+
+            if (lfs) {
+                std::string buffer;
+                while (std::getline(lfs, buffer)) {
+                    buffer = ltp::strutils::chomp(buffer);
+                    if (buffer.size() == 0) {
+                        continue;
+                    }
+                    model->external_lexicon.set(buffer.c_str(), true);
+                }
+            }
+        }
+
 
         ltp::segmentor::rulebase::RuleBase base(model->labels);
         decoder = new ltp::segmentor::Decoder(model->num_labels(), base);
@@ -67,10 +83,10 @@ private:
     int beg_tag1;
 };
 
-void * segmentor_create_segmentor(const char * path) {
+void * segmentor_create_segmentor(const char * path, const char * lexicon_file) {
     SegmentorWrapper * wrapper = new SegmentorWrapper();
 
-    if (!wrapper->load(path)) {
+    if (!wrapper->load(path, lexicon_file)) {
         return 0;
     }
 

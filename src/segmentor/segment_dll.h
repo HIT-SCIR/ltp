@@ -23,7 +23,7 @@
  *  @param[in]  path    the path of the model
  *  @return     void *  the pointer to the segmentor
  */
-SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path);
+SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path, const char * lexicon_file = NULL);
 
 /*
  * release the segmentor resources

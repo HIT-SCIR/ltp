@@ -593,15 +593,20 @@ void Segmentor::test(void) {
 
     // load exteranl lexicon
     const char * lexicon_file =test_opt.lexicon_file.c_str();
-    ifstream lfs(lexicon_file);
-    std::string buffer;
-    while (std::getline(lfs, buffer)) {
-        buffer = strutils::chomp(buffer);
-        if (buffer.size() == 0) {
-            continue;
-        }
 
-        model->external_lexicon.set(buffer.c_str(), true);
+    if (NULL != lexicon_file) {
+        ifstream lfs(lexicon_file);
+
+        if (lfs) {
+            std::string buffer;
+            while (std::getline(lfs, buffer)) {
+                buffer = strutils::chomp(buffer);
+                if (buffer.size() == 0) {
+                    continue;
+                }
+                model->external_lexicon.set(buffer.c_str(), true);
+            }
+        }
     }
 
     const char * test_file = test_opt.test_file.c_str();
