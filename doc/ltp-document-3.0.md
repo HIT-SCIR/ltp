@@ -48,7 +48,7 @@ LTP提供了一系列中文自然语言处理工具，用户可以使用这些�
 
 ## 安装CMake
 
-LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安装CMake。CMake的网站在这里(http://www.cmake.org)。如果你是Windows用户，请下载CMake的二进制安装包；如果你是Linux，Mac OS或Cygwin的用户，可以通过编译源码的方式安装CMake，当然，你也可以使用Linux的软件源来安装。
+LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安装CMake。CMake的网站在[这里](http://www.cmake.org)。如果你是Windows用户，请下载CMake的二进制安装包；如果你是Linux，Mac OS或Cygwin的用户，可以通过编译源码的方式安装CMake，当然，你也可以使用Linux的软件源来安装。
 
 ## Windows(MSVC)编译
 
@@ -410,6 +410,8 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
 
 对于模型参数，我们采用在线机器学习算法框架从标注数据中学习参数。对于分词模型，我们使用的基本模型特征有：
 
+| 类别 | 特征 |
+| --- | --- |
 | char-unigram | ch[-2], ch[-1], ch[0], ch[1], ch[2] |
 | char-bigram | ch[-2]ch[-1], ch[-1]ch[0],ch[0]ch[1],ch[1]ch[2] |
 | dulchar | ch[-1]=ch[0]? |
@@ -424,8 +426,10 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
 
 在统计模型中融合词典的方法是将最大正向匹配得到的词特征
 
+| 类别 | 特征 |
+| --- | --- 
 | begin-of-lexicon-word | ch[0] is preffix of words in lexicon? |
-| middle-of-lexicon-word	 | ch[0] is middle of words in lexicon? |
+| middle-of-lexicon-word | ch[0] is middle of words in lexicon? |
 | end-of-lexicon-word | ch[0] is suffix of words in lexicon? |
 
 基础模型在几种数据集上的性能如下：
@@ -478,13 +482,15 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 对于模型参数，我们采用在线机器学习算法框架从标注数据中学习参数。对于词性标注模型，我们使用的模型特征有：
 
-|word-unigram |w[-2], w[-1], w[0], w[1], w[2] |
-|word-bigram	 | w[-2]w[-1],w[-1]w[0],w[0]w[1],w[1]w[2] |
-|word-trigram | w[-1]w[0]w[1] |
-|last-first-character |ch[0,0]ch[0,n],ch[-1,n]ch[0,0],ch[0,-1]ch[1,0] |
-|length |length |
-|prefix |ch[0,0],ch[0,0:1],ch[0,0:2]|
-|suffix |ch[0,n-2:n],ch[0,n-1:n],ch[0,n]|
+| 类别 | 特征 |
+| --- | --- |
+| word-unigram |w[-2], w[-1], w[0], w[1], w[2] |
+| word-bigram | w[-2]w[-1],w[-1]w[0],w[0]w[1],w[1]w[2] |
+| word-trigram | w[-1]w[0]w[1] |
+| last-first-character |ch[0,0]ch[0,n],ch[-1,n]ch[0,0],ch[0,-1]ch[1,0] |
+| length | length |
+| prefix | ch[0,0],ch[0,0:1],ch[0,0:2]|
+| suffix | ch[0,n-2:n],ch[0,n-1:n],ch[0,n]|
 
 基础模型在几种数据集上的性能如下：
 
@@ -494,8 +500,8 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 * 准确率为：
 
-| | P |
-| -- | - |
+|  | P |
+| --- | --- |
 |开发集 | 0.979621 |
 |测试集 | 0.978337 |
 
@@ -509,7 +515,7 @@ CTB5数据来源于，训练集和测试集按照官方文档中建议的划分�
 * 准确率为：
 
 | | P |
-| -- | - |
+| --- | --- |
 |开发集 | 0.953819 |
 |测试集 | 0.946179 |
 
@@ -523,7 +529,7 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 * 准确率为：
 
 | | P |
-| -- | - |
+| --- | --- |
 |开发集 | 0.939930 |
 |测试集 | 0.938439 |
 
@@ -546,13 +552,71 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 在LDC数据集上，三种不同解码方式对应的性能如下表所示。
 
 | model | 1o | | 2o-sib | | 2o-carreras | |
-| ----- | -- | -| ----- |-| ---------- |--|
+| ----- | --- | ---| ----- |---| ---------- |---|
 | | Uas | Las | Uas | Las | Uas | Las |
 |Dev | 0.8190 | 0.7893 | 0.8501 | 0.8213 | 0.8582 | 0.8294 |
 |Test | 0.8118 | 0.7813 | 0.8421 | 0.8106 | 0.8447 | 0.8138 |
-|Speed | 49.4 sent./s | 9.4 sent./s | 3.3 sent./s |
-|Mem. | 0.825g | 1.3g | 1.6g |
+|Speed | 49.4 sent./s | | 9.4 sent./s | | 3.3 sent./s |
+|Mem. | 0.825g | | 1.3g | | 1.6g |
 
 ## 语义角色标注模块
 
+# 使用训练套件
 
+## 分词训练套件otcws用法
+
+otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp的分词模型。
+
+编译之后，在tools/train下面会产生名为otcws的二进制程序。调用方法是
+
+	./otcws [config_file]。
+
+otcws分别支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
+
+	对外		，	他们		代表		国家		。
+	
+otcws主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+
+训练配置的配置文件样例如下所示。
+
+	[train]
+	train-file = data/ctb5-train.seg
+	holdout-file = data/ctb5-holdout.seg
+	algorithm = pa 
+	model-name = model/ctb5-seg
+	max-iter = 5
+
+其中，
+
+* [train] 配置组指定执行训练
+	* Ttain-file 配置项指定训练集文件
+	* Holdout-file 配置项指定开发集文件
+	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* Model-name 指定输出模型文件名
+	* Max-iter 指定最大迭代次数
+
+测试配置的配置文件样例如下所示。
+
+	[test]
+	test-file = data/ctb5-test.seg
+	model-file = model/ctb5-seg.4.model
+
+其中，
+
+* [test] 配置组指定执行测试
+	* Test-file 指定测试文件
+	* Model-file 指定模型文件位置
+	
+切分结果将输入到标准io中。
+
+（*[train]与[test]两个配置组不能同时存在）
+
+## 词性标注训练套件otpos用法
+
+otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp的分词模型。
+
+编译之后，在tools/train下面会产生名为otpos的二进制程序。调用方法是
+
+	./otpos [config_file]
+
+otpos分别支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下：
