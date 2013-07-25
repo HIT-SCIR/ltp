@@ -101,12 +101,13 @@ int XML4NLP::CreateDOMFromString(const string& str) {
     string strTmp = str;
     replace_char_by_char(strTmp, '\r', '\n');
 
+    std::cout << strTmp << std::endl;
     istringstream in(strTmp);	// How to use istringstream?
     string line;
     int i = 0;
     while (getline(in, strTmp)) {
         clean_str(strTmp);
-        remove_space_gbk(strTmp);
+        // remove_space_gbk(strTmp);
 
         if (strTmp.empty()) {
             continue;
