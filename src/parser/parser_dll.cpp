@@ -56,7 +56,7 @@ public:
         heads.resize(len - 1);
         deprels.resize(len - 1);
         for (int i = 1; i < len; ++ i) {
-            heads[i - 1] = inst->predicted_heads[i];
+            heads[i - 1] = inst->predicted_heads[i] - 1;
             deprels[i - 1] = ltp::parser::Parser::model->deprels.at(
                     inst->predicted_deprelsidx[i]);
         }

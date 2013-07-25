@@ -212,8 +212,8 @@ void Segmentor::build_configuration(void) {
     for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
             itx != wordfreq.end();
             ++ itx) {
-        //if (itx.frequency() >= target && strutils::codecs::length(itx.key()) > 1) {
-        if (itx.frequency() >= target) {
+        if (itx.frequency() >= target && strutils::codecs::length(itx.key()) > 1) {
+        // if (itx.frequency() >= target) {
             model->internal_lexicon.set(itx.key(), true);
         }
     }
@@ -292,7 +292,7 @@ void Segmentor::extract_features(Instance * inst, bool create) {
                 }
 
                 int idx = model->space.index(tid, cache[tid][itx]);
-                // std::cout << "key: " << cache[tid][itx] << " " << idx << std::endl;
+
                 if (idx >= 0) {
                     cache_again.push_back(idx);
                 }

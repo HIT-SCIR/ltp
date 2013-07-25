@@ -89,6 +89,7 @@ bool FeatureSpace::load(int num_labels, std::istream & ifs) {
     ifs.read(reinterpret_cast<char *>(&_offset), sizeof(int));
     ifs.read(reinterpret_cast<char *>(&sz), sizeof(unsigned int));
 
+    // std::cerr << sz << std::endl;
     if (sz != dicts.size()) {
         return false;
     }

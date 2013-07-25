@@ -36,9 +36,9 @@ Extractor::Extractor() {
     templates.push_back(new Template("7={c-1}-{c-0}"));
     templates.push_back(new Template("8={c-0}-{c+1}"));
     templates.push_back(new Template("9={c+1}-{c+2}"));
-    templates.push_back(new Template("10={c-2}-{c-0}"));
-    templates.push_back(new Template("11={c-1}-{c+1}"));
-    templates.push_back(new Template("12={c-0}-{c+2}"));
+    //templates.push_back(new Template("10={c-2}-{c-0}"));
+    //templates.push_back(new Template("11={c-1}-{c+1}"));
+    //templates.push_back(new Template("12={c-0}-{c+2}"));
     //templates.push_back(new Template("13={c-1}-{c-0}-{c+1}"));
     templates.push_back(new Template("14={ct-1}"));
     templates.push_back(new Template("15={ct-0}"));
