@@ -859,7 +859,14 @@ int XML4NLP::SetParsesToSentence(const vector<int> &vecHead, const vector<string
 
 int XML4NLP::SetParsesToSentence(const vector<int> &vecHead, const vector<string> &vecRel, int sentenceIdx)
 {
-    if (0 != SetInfoToSentence(vecHead, sentenceIdx, TAG_PSR_PARENT)) return -1;
+    // decreasing vecHead index
+    vector<int> d_vecHead;
+    for (int i = 0; i < vecHead.size(); i++)
+    {
+        d_vecHead.push_back(vecHead[i] - 1);
+    }
+
+    if (0 != SetInfoToSentence(d_vecHead, sentenceIdx, TAG_PSR_PARENT)) return -1;
     if (0 != SetInfoToSentence(vecRel, sentenceIdx, TAG_PSR_RELATE)) return -1;
     return 0;
 }
