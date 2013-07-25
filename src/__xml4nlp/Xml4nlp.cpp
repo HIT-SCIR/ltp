@@ -76,7 +76,7 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
     int i = 0;
     while (getline(in, line)) {
         clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
-        remove_space_gbk(line);
+        // remove_space_gbk(line);
         if (line.empty()) {
             continue; // Blank line. Is this the best way?
         }
@@ -106,7 +106,7 @@ int XML4NLP::CreateDOMFromString(const string& str) {
     int i = 0;
     while (getline(in, strTmp)) {
         clean_str(strTmp);
-        remove_space_gbk(strTmp);
+        // remove_space_gbk(strTmp);
 
         if (strTmp.empty()) {
             continue;
