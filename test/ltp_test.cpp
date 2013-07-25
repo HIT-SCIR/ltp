@@ -29,10 +29,20 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    while(in >> sentence){
+    while(std::getline(in, sentence)){
+        int len = sentence.size();
+        while ( sentence[len-1]=='\n' || sentence[len-1]=='\r' ) {
+            -- len;
+        }
+        if (len == 0) {
+            continue;
+        }
+        sentence = sentence.substr(0, len);
+
         cout << "Input sentence is: " << sentence << endl;
 
         xml4nlp.CreateDOMFromString(sentence);
+
         if(type == "ws"){
             ltp.wordseg();
         } else if(type == "pos"){
