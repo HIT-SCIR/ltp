@@ -12,7 +12,7 @@ LTP使用文档v3.0
 
 # 简介
 
-语言技术平台（Language Technology Platform，LTP）是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块（包括词法、句法、语义等6项中文处理核心技术），以及基于动态链接库（Dynamic Link Library, DLL）的应用程序接口，可视化工具，并且能够以网络服务（Web Service）的形式进行使用。
+语言技术平台(Language Technology Platform，LTP)是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块(包括词法、句法、语义等6项中文处理核心技术)，以及基于动态链接库(Dynamic Link Library, DLL)的应用程序接口，可视化工具，并且能够以网络服务(Web Service)的形式进行使用。
 
 从2006年9月5日开始该平台对外免费共享目标代码，截止目前，已经有国内外400多家研究单位共享了LTP，也有国内外多家商业公司购买了LTP，用于实际的商业项目中。2010年12月获得中国中文信息学会颁发的行业最高奖项：“钱伟长中文信息处理科学技术奖”一等奖。
 
@@ -64,7 +64,7 @@ LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安
 
 构建后得到ALL_BUILD、RUN_TESTS、ZERO_CHECK三个VC Project。使用VS打开ALL_BUILD项目，选择Release方式构建项目。
 
-（注：由于boost::multi_array与VS2010不兼容，并不能使用Debug方式构建项目。）
+(注：由于boost::multi_array与VS2010不兼容，并不能使用Debug方式构建项目。)
 
 ## Linux，Mac OSX和Cygwin编译
 
@@ -108,7 +108,7 @@ Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命�
 | SRLExtract* | 语义角色标注训练程序 |
 | SRLGetInstance* | |
 
-（注*：在window版本中ltp_server、Maxent、SRLExtract、SRLGetInstance并不被编译。）
+(注*：在window版本中ltp_server、Maxent、SRLExtract、SRLGetInstance并不被编译。)
 
 # 使用ltp_test以及模型
 
@@ -150,7 +150,7 @@ ltp_test的使用方法如下：
 
 下面的文档将介绍使用LTP编译产生的静态链接库编写程序的方法。
 
-（注：2.30以后，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式）
+(注：2.30以后，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式)
 
 ## 分词接口
 
@@ -197,7 +197,7 @@ ltp_test的使用方法如下：
 	    return 0;
 	}
 
-调用分词接口的程序在编译的时，需要链接segmentor.a（MSVC下需链接segmentor.lib）。
+调用分词接口的程序在编译的时，需要链接segmentor.a(MSVC下需链接segmentor.lib)。
 
 ## 词性标注接口
 
@@ -255,7 +255,7 @@ ltp_test的使用方法如下：
 	    return 0;
 	}
 
-调用词性标注接口的程序在编译的时，需要链接postagger.a（MSVC下需链接postagger.lib）。
+调用词性标注接口的程序在编译的时，需要链接postagger.a(MSVC下需链接postagger.lib)。
 
 ## 命名实体识别接口
 
@@ -316,7 +316,7 @@ ltp_test的使用方法如下：
 	    return 0;
 	}
 
-调用依存句法分析接口的程序在编译的时，需要链接parser.a（MSVC下需链接parser.lib）。
+调用依存句法分析接口的程序在编译的时，需要链接parser.a(MSVC下需链接parser.lib)。
 
 ## 语义角色标注接口
 
@@ -388,13 +388,13 @@ LTML 标准要求如下：结点标签分别为 xml4nlp, note, doc, para, sent, 
 	2. 如果 ne=”y”则分词结点中必须包含ne 属性；
 	3. 如果 parser=”y”则分词结点中必须包含parent 及relate 属性；
 	4. 如果 wsd=”y”则分词结点中必须包含wsd 及wsdexp 属性；
-	5. 如果 srl=”y”则凡是谓词（predicate）的分词会包含若干个arg 结点；
+	5. 如果 srl=”y”则凡是谓词(predicate)的分词会包含若干个arg 结点；
 
 # 搭建一个私人的LTP Server
 
-LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行LTP Server就可以启动LTP Server。LTP Server启动后，将会监听12345（*）端口的HTTP请求。
+LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行LTP Server就可以启动LTP Server。LTP Server启动后，将会监听12345(*)端口的HTTP请求。
 
-（注*：如需指定监听其他端口，请在src/server/ltp_server.cpp中将宏LISTENING_PORT “12345”设置为其他整数即可。）
+(注*：如需指定监听其他端口，请在src/server/ltp_server.cpp中将宏LISTENING_PORT “12345”设置为其他整数即可。)
 
 # 实现原理与性能
 
@@ -436,7 +436,7 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
 
 ### 人民日报
 
-语料信息：人民日报1998年2月-6月（后10%数据作为开发集）作为训练数据，1月作为测试数据。
+语料信息：人民日报1998年2月-6月(后10%数据作为开发集)作为训练数据，1月作为测试数据。
 
 * 准确率为：
 
@@ -496,7 +496,7 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 ### 人民日报
 
-语料信息：人民日报1998年2月-6月（后10%数据作为开发集）作为训练数据，1月作为测试数据。
+语料信息：人民日报1998年2月-6月(后10%数据作为开发集)作为训练数据，1月作为测试数据。
 
 * 准确率为：
 
@@ -540,7 +540,7 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 ## 依存句法分析模块
 
-基于图的依存分析方法由McDonald首先提出，他将依存分析问题归结为在一个有向图中寻找最大生成树（Maximum Spanning Tree）的问题。
+基于图的依存分析方法由McDonald首先提出，他将依存分析问题归结为在一个有向图中寻找最大生成树(Maximum Spanning Tree)的问题。
 在依存句法分析模块中，LTP分别实现了
 
 * 一阶解码(1o)
@@ -591,7 +591,7 @@ otcws主要通过配置文件指定执行的工作，其中主要有两类配置
 * [train] 配置组指定执行训练
 	* Ttain-file 配置项指定训练集文件
 	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 	* Model-name 指定输出模型文件名
 	* Max-iter 指定最大迭代次数
 
@@ -609,7 +609,7 @@ otcws主要通过配置文件指定执行的工作，其中主要有两类配置
 	
 切分结果将输入到标准io中。
 
-（*[train]与[test]两个配置组不能同时存在）
+(*[train]与[test]两个配置组不能同时存在)
 
 ## 词性标注训练套件otpos用法
 
@@ -639,7 +639,7 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 * [train] 配置组指定执行训练
 	* Ttain-file 配置项指定训练集文件
 	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 	* Model-name 指定输出模型文件名
 	* Max-iter 指定最大迭代次数
 
@@ -653,7 +653,7 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 
 词性标注结果将输入到标准io中。
 
-（*[train]与[test]两个配置组不能同时存在）
+(*[train]与[test]两个配置组不能同时存在)
 
 ## 依存句法分析训练套件lgdpj用法
 
@@ -710,7 +710,7 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 * [train] 配置组指定执行训练
 	* Train-file 配置项指定训练集文件
 	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 	* Model-name 指定输出模型文件名
 	* Max-iter 指定最大迭代次数
 
@@ -761,3 +761,23 @@ LTP 使用的是863 词性标注集，其各个词性含义如下表。
 | n   | general noun        | 苹果       | wp  | punctuation       | ，。！     |
 | nd  | direction noun      | 右侧       | ws  | foreign words     | CPU        |
 | nh  | person name         | 杜甫, 汤姆 | x   | non-lexeme        | 萄, 翱     |
+
+## 依存句法关系
+
+| 关系类型   | Tag | Description                   | Example                    |
+| ---------- | --- | ----------------------------- | -------------------------- |
+| 主谓关系   | SBV | (subject-verb)               | 我送她一束花 (我 <-- 送)   |
+| 动宾关系   | VOB | (直接宾语，verb-object)      | 我送她一束花 (送 --> 花)   |
+| 间宾关系   | IOB | (间接宾语，indirect-object)  | 我送她一束花 (送 --> 她)   |
+| 前置宾语   | FOB | (前置宾语，fronting-object)  | 他什么书都读 (书 <-- 读)   |
+| 兼语       | DBL | (double)                     | 他请我吃饭 (请 --> 我)     |
+| 定中关系   | ATT | (attribute)                  | 红苹果 (红 <-- 苹果)       |
+| 状中结构   | ADV | (adverbial)                  | 非常美丽 (非常 <-- 美丽)   |
+| 动补结构   | CMP | (complement)                 | 做完了作业 (做 --> 完)     |
+| 并列关系   | COO | (coordinate)                 | 大山和大海 (大山 --> 大海) |
+| 介宾关系   | POB | (preposition-object)         | 在贸易区内 (在 --> 内)     |
+| 左附加关系 | LAD | (left adjunct)               | 大山和大海 (和 <-- 大海)   |
+| 右附加关系 | RAD | (right adjunct)              | 孩子们 (孩子 --> 们)       |
+| 独立结构   | IS  | (independent structure)      | 两个单句在结构上彼此独立   |
+| 核心关系   | HED | (head)                       | 指整个句子的核心           |
+
