@@ -465,7 +465,6 @@ Model * Segmentor::truncate(void) {
     new_model->param.realloc(new_model->space.dim());
     TRACE_LOG("Parameter dimension of new model is [%d]", new_model->space.dim());
 
-    num_added_features = 0;
     for (FeatureSpaceIterator itx = new_model->space.begin();
             itx != new_model->space.end();
             ++ itx) {
