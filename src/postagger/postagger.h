@@ -55,6 +55,18 @@ private:
      */
     void test(void);
 
+    /*
+     * the dump model process
+     */
+    void dump(void);
+
+    /*
+     * do feature trauncation on the model. create a model duplation
+     * on the model and return their
+     *
+     *  @return Model the duplication of the model
+     */
+    Model * truncate(void);
 protected:
     /*
      * build labels string for the instance
@@ -94,6 +106,7 @@ protected:
 private:
     bool    __TRAIN__;
     bool    __TEST__;
+    bool    __DUMP__;
 
 private:
     std::vector< Instance * > train_dat;

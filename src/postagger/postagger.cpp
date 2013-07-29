@@ -14,15 +14,19 @@
 #if _WIN32
 #include <Windows.h>
 #define sleep Sleep
-#endif	//	end for _WIN32
+#endif    //    end for _WIN32
 
 namespace ltp {
 namespace postagger {
 
-Postagger::Postagger() {
+Postagger::Postagger() : 
+    model(0),
+    decoder(0) {
 }
 
-Postagger::Postagger(ltp::utility::ConfigParser & cfg) {
+Postagger::Postagger(ltp::utility::ConfigParser & cfg) :
+    model(0), 
+    decoder(0) {
     parse_cfg(cfg);
 }
 
@@ -43,6 +47,10 @@ void Postagger::run(void) {
 
     if (__TEST__) {
         test();
+    }
+
+    if (__DUMP__) {
+        dump();
     }
 }
 
@@ -121,7 +129,21 @@ bool Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
         }
     }
 
-	return true;
+    __DUMP__ = false;
+    dump_opt.model_file = "";
+
+    if (cfg.has_section("dump")) {
+        __DUMP__ = true;
+
+        if (cfg.get("dump", "model-file", strbuf)) {
+            dump_opt.model_file = strbuf;
+        } else {
+            ERROR_LOG("model-file is not configed. ");
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool Postagger::read_instance(const char * train_file) {
@@ -294,6 +316,79 @@ void Postagger::collect_features(Instance * inst, const std::vector<int> & tagsi
     }
 }
 
+Model * Postagger::truncate(void) {
+    Model * new_model = new Model;
+    // copy the label indexable map to the new model
+    for (int i = 0; i < model->labels.size(); ++ i) {
+        const char * key = model->labels.at(i);
+        new_model->labels.push(key);
+    }
+    TRACE_LOG("building labels map is done");
+
+    int L = new_model->num_labels();
+    new_model->space.set_num_labels(L);
+
+    // iterate over the feature space and see if the parameter value equals to zero
+
+    for (FeatureSpaceIterator itx = model->space.begin();
+            itx != model->space.end();
+            ++ itx) {
+        const char * key = itx.key();
+        int tid = itx.tid();
+        int id = model->space.index(tid, key);
+        bool flag = false;
+
+        for (int l = 0; l < L; ++ l) {
+            double p = model->param.dot(id + l);
+            if (p != 0.) {
+                flag = true;
+            }
+        }
+
+        if (!flag) {
+            continue;
+        }
+
+        new_model->space.retrieve(tid, key, true);
+    }
+
+    TRACE_LOG("Scanning old features space, building new feature space is done");
+    new_model->param.realloc(new_model->space.dim());
+    TRACE_LOG("Parameter dimension of new model is [%d]", new_model->space.dim());
+
+    for (FeatureSpaceIterator itx = new_model->space.begin();
+            itx != new_model->space.end();
+            ++ itx) {
+        const char * key = itx.key();
+        int tid = itx.tid();
+
+        int old_id = model->space.index(tid, key);
+        int new_id = new_model->space.index(tid, key);
+
+        for (int l = 0; l < L; ++ l) {
+            // pay attention to this place, use average should be set true
+            // some dirty code
+            new_model->param._W[new_id + l] = model->param._W[old_id + l];
+            new_model->param._W_sum[new_id + l] = model->param._W_sum[old_id + l];
+            new_model->param._W_time[new_id + l] = model->param._W_time[old_id + l];
+        }
+    }
+
+    for (int pl = 0; pl < L; ++ pl) {
+        for (int l = 0; l < L; ++ l) {
+            int old_id = model->space.index(pl, l);
+            int new_id = new_model->space.index(pl, l);
+
+            new_model->param._W[new_id] = model->param._W[old_id];
+            new_model->param._W_sum[new_id] = model->param._W_sum[old_id];
+            new_model->param._W_time[new_id] = model->param._W_time[old_id];
+        }
+    }
+    TRACE_LOG("Building new model is done");
+
+    return new_model;
+}
+
 void Postagger::train(void) {
     const char * train_file = train_opt.train_file.c_str();
 
@@ -391,11 +486,17 @@ void Postagger::train(void) {
             TRACE_LOG("[%d] instances is trained.", train_dat.size());
 
             model->param.flush( train_dat.size() * (iter + 1) );
+            Model * new_model = truncate();
+            swap(model, new_model);
             evaluate();
 
             std::string saved_model_file = (train_opt.model_name + "." + strutils::to_str(iter) + ".model");
             std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
-            model->save(ofs);
+
+            swap(model, new_model);
+            new_model->save(ofs);
+            delete new_model;
+            // model->save(ofs);
 
             TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                     iter + 1,
@@ -511,5 +612,47 @@ void Postagger::test(void) {
     return;
 }
 
-}       //. end for namespace postagger
+void Postagger::dump() {
+    // load model
+    const char * model_file = dump_opt.model_file.c_str();
+    ifstream mfs(model_file, std::ifstream::binary);
+
+    if (!mfs) {
+        ERROR_LOG("Failed to load model");
+        return;
+    }
+
+    model = new Model;
+    if (!model->load(mfs)) {
+        ERROR_LOG("Failed to load model");
+        return;
+    }
+
+    int L = model->num_labels();
+    TRACE_LOG("Number of labels                 [%d]", model->num_labels());
+    TRACE_LOG("Number of features               [%d]", model->space.num_features());
+    TRACE_LOG("Number of dimension              [%d]", model->space.dim());
+
+    for (FeatureSpaceIterator itx = model->space.begin(); itx != model->space.end(); ++ itx) {
+        const char * key = itx.key();
+        int tid = itx.tid();
+        int id = model->space.index(tid, key);
+
+        for (int l = 0; l < L; ++ l) {
+            std::cout << key << " ( " << id + l << " ) "
+                << " --> "
+                << model->param.dot(id + l)
+                << std::endl;
+        }
+    }
+
+    for (int pl = 0; pl < L; ++ pl) {
+        for (int l = 0; l < L; ++ l) {
+            int id = model->space.index(pl, l);
+            std::cout << pl << " --> " << l << " " << model->param.dot(id) << std::endl;
+        }
+    }
+}
+
+}       //  end for namespace postagger
 }       //  end for namespace ltp

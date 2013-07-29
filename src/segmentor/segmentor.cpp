@@ -779,6 +779,13 @@ void Segmentor::dump() {
         const char * key = itx.key();
         int tid = itx.tid();
         int id = model->space.index(tid, key);
+
+        for (int l = 0; l < L; ++ l) {
+            std::cout << key << " ( " << id + l << " ) "
+                << " --> "
+                << model->param.dot(id + l)
+                << std::endl;
+        }
     }
 
     for (int pl = 0; pl < L; ++ pl) {
