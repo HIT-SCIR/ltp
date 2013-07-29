@@ -8,28 +8,26 @@ namespace segmentor {
 FeatureSpace::FeatureSpace(int num_labels) : 
     _num_labels(num_labels), 
     _offset(0) {
-    dicts.resize(Extractor::num_templates());
 
-    for (int i = 0; i < dicts.size(); ++ i) {
-        dicts[i] = new utility::SmartMap<int>();
-    }
+    // allocate dictionary according to number of templates
+    _num_dicts = Extractor::num_templates();
+
+    dicts = new utility::SmartMap<int>[ _num_dicts ];
 }
 
 FeatureSpace::~FeatureSpace(void) {
-    for (int i = 0; i < dicts.size(); ++ i) {
-        delete dicts[i];
-    }
+    delete [](dicts);
 }
 
 int FeatureSpace::retrieve(int tid, const char * key, bool create) {
     int val;
 
-    if (dicts[tid]->get(key, val)) {
+    if (dicts[tid].get(key, val)) {
         return val;
     } else {
         if (create) {
             val = _offset;
-            dicts[tid]->set(key, val);
+            dicts[tid].set(key, val);
             ++ _offset;
 
             return val;
@@ -65,15 +63,15 @@ void FeatureSpace::set_num_labels(int num_labels) {
 }
 void FeatureSpace::dump(std::ostream & ofs) {
     char chunk[16];
-    unsigned int sz = dicts.size();
+    unsigned sz = _num_dicts;
     strncpy(chunk, "featurespace", 16);
 
     ofs.write(chunk, 16);
     ofs.write(reinterpret_cast<const char *>(&_offset), sizeof(int));
     ofs.write(reinterpret_cast<const char *>(&sz), sizeof(unsigned int));
 
-    for (int i = 0; i < dicts.size(); ++ i) {
-        dicts[i]->dump(ofs);
+    for (int i = 0; i < _num_dicts; ++ i) {
+        dicts[i].dump(ofs);
     }
 }
 
@@ -89,13 +87,12 @@ bool FeatureSpace::load(int num_labels, std::istream & ifs) {
     ifs.read(reinterpret_cast<char *>(&_offset), sizeof(int));
     ifs.read(reinterpret_cast<char *>(&sz), sizeof(unsigned int));
 
-    // std::cerr << sz << std::endl;
-    if (sz != dicts.size()) {
+    if (sz != _num_dicts) {
         return false;
     }
 
     for (unsigned i = 0; i < sz; ++ i) {
-        if (!dicts[i]->load(ifs)) {
+        if (!dicts[i].load(ifs)) {
             return false;
         }
     }

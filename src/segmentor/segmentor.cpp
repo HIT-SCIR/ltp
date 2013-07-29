@@ -52,6 +52,10 @@ void Segmentor::run(void) {
         test();
     }
 
+    if (__DUMP__) {
+        dump();
+    }
+
     for (int i = 0; i < train_dat.size(); ++ i) {
         if (train_dat[i]) {
             delete train_dat[i];
@@ -136,6 +140,20 @@ bool Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
 
         if (cfg.get("test", "lexicon-file", strbuf)) {
             test_opt.lexicon_file = strbuf;
+        }
+    }
+
+    __DUMP__ = false;
+
+    dump_opt.model_file = "";
+    if (cfg.has_section("dump")) {
+        __DUMP__ = true;
+
+        if (cfg.get("dump", "model-file", strbuf)) {
+            dump_opt.model_file = strbuf;
+        } else {
+            ERROR_LOG("model-file is not configed.");
+            return false;
         }
     }
 
@@ -323,7 +341,6 @@ void Segmentor::extract_features(Instance * inst, bool create) {
             }
         }
     }
-
 }
 
 void Segmentor::build_words(Instance * inst,
@@ -406,6 +423,86 @@ void Segmentor::collect_features(Instance * inst, const std::vector<int> & tagsi
             vec.add(idx, 1.);
         }
     }
+}
+
+Model * Segmentor::truncate(void) {
+    Model * new_model = new Model;
+    // copy the label indexable map to the new model
+    for (int i = 0; i < model->labels.size(); ++ i) {
+        const char * key = model->labels.at(i);
+        new_model->labels.push(key);
+    }
+
+    TRACE_LOG("building labels map is done");
+
+    int L = new_model->num_labels();
+    new_model->space.set_num_labels(L);
+
+    // iterate over the feature space and see if the parameter value equals to zero
+    for (FeatureSpaceIterator itx = model->space.begin(); 
+            itx != model->space.end(); 
+            ++ itx) {
+        const char * key = itx.key();
+        int tid = itx.tid();
+        int id = model->space.index(tid, key);
+
+        bool flag = false;
+        for (int l = 0; l < L; ++ l) {
+            double p = model->param.dot(id + l);
+            if (p != 0.) {
+                flag = true;
+            }
+        }
+
+        if (!flag) {
+            continue;
+        }
+
+        new_model->space.retrieve(tid, key, true);
+    }
+    TRACE_LOG("Scanning old features space, building new feature space is done");
+
+    new_model->param.realloc(new_model->space.dim());
+    TRACE_LOG("Parameter dimension of new model is [%d]", new_model->space.dim());
+
+    num_added_features = 0;
+    for (FeatureSpaceIterator itx = new_model->space.begin();
+            itx != new_model->space.end();
+            ++ itx) {
+        const char * key = itx.key();
+        int tid = itx.tid();
+
+        int old_id = model->space.index(tid, key);
+        int new_id = new_model->space.index(tid, key);
+
+        for (int l = 0; l < L; ++ l) {
+            // pay attention to this place, use average should be set true
+            // some dirty code
+            new_model->param._W[new_id + l]         = model->param._W[old_id + l];
+            new_model->param._W_sum[new_id + l]     = model->param._W_sum[old_id + l];
+            new_model->param._W_time[new_id + l]    = model->param._W_time[old_id + l];
+        }
+    }
+
+    for (int pl = 0; pl < L; ++ pl) {
+        for (int l = 0; l < L; ++ l) {
+            int old_id = model->space.index(pl, l);
+            int new_id = new_model->space.index(pl, l);
+
+            new_model->param._W[new_id]         = model->param._W[old_id];
+            new_model->param._W_sum[new_id]     = model->param._W_sum[old_id];
+            new_model->param._W_time[new_id]    = model->param._W_time[old_id];
+        }
+    }
+    TRACE_LOG("Building new model is done");
+
+    for (SmartMap<bool>::const_iterator itx = model->internal_lexicon.begin();
+            itx != model->internal_lexicon.end();
+            ++ itx) {
+        new_model->internal_lexicon.set(itx.key(), true);
+    }
+
+    return new_model;
 }
 
 void Segmentor::train(void) {
@@ -503,13 +600,18 @@ void Segmentor::train(void) {
                     TRACE_LOG("[%d] instances is trained.", i+1);
                 }
             }
-
             model->param.flush( train_dat.size() * (iter + 1) );
+
+            Model * new_model = truncate();
+            swap(model, new_model);
             evaluate();
 
             std::string saved_model_file = (train_opt.model_name + "." + strutils::to_str(iter) + ".model");
             std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
-            model->save(ofs);
+
+            swap(model, new_model);
+            new_model->save(ofs);
+            delete new_model;
 
             TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                     iter + 1,
@@ -538,6 +640,8 @@ void Segmentor::evaluate(void) {
     int beg_tag0 = model->labels.index( __b__ );
     int beg_tag1 = model->labels.index( __s__ );
 
+    int L = model->num_labels();
+
     while ((inst = reader.next())) {
         int len = inst->size();
         inst->tagsidx.resize(len);
@@ -547,6 +651,7 @@ void Segmentor::evaluate(void) {
 
         extract_features(inst);
         calculate_scores(inst, true);
+
         decoder->decode(inst);
 
         if (inst->words.size() == 0) {
@@ -650,5 +755,40 @@ void Segmentor::test(void) {
     return;
 }
 
-}       //. end for namespace segmentor
+void Segmentor::dump() {
+    // load model
+    const char * model_file = dump_opt.model_file.c_str();
+    ifstream mfs(model_file, std::ifstream::binary);
+
+    if (!mfs) {
+        ERROR_LOG("Failed to load model");
+        return;
+    }
+
+    model = new Model;
+    if (!model->load(mfs)) {
+        ERROR_LOG("Failed to load model");
+        return;
+    }
+
+    int L = model->num_labels();
+    TRACE_LOG("Number of labels                 [%d]", model->num_labels());
+    TRACE_LOG("Number of features               [%d]", model->space.num_features());
+    TRACE_LOG("Number of dimension              [%d]", model->space.dim());
+
+    for (FeatureSpaceIterator itx = model->space.begin(); itx != model->space.end(); ++ itx) {
+        const char * key = itx.key();
+        int tid = itx.tid();
+        int id = model->space.index(tid, key);
+    }
+
+    for (int pl = 0; pl < L; ++ pl) {
+        for (int l = 0; l < L; ++ l) {
+            int id = model->space.index(pl, l);
+            std::cout << pl << " --> " << l << " " << model->param.dot(id) << std::endl;
+        }
+    }
+}
+
+}       //  end for namespace segmentor
 }       //  end for namespace ltp

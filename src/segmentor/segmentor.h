@@ -17,7 +17,20 @@ public:
     void run();
 
 private:
+    /*
+     * parse the configuration, return true on success, otherwise false
+     *
+     *  @param[in]  cfg     the config class
+     *  @return     bool    return true on success, otherwise false
+     */
     bool parse_cfg(ltp::utility::ConfigParser & cfg);
+
+    /*
+     * read instances from file and store them in train_dat
+     *
+     *  @param[in]  file_name   the filename
+     *  @return     bool        true on success, otherwise false
+     */
     bool read_instance( const char * file_name );
     void build_configuration(void);
     void build_feature_space(void);
@@ -37,8 +50,25 @@ private:
      */
     void test(void);
 
+    /*
+     * the dumping model process
+     */
+    void dump(void);
+
+    /*
+     * do feature trauncation on the model. create a model duplation
+     * on the model and return their
+     *
+     *  @return Model   the duplication of the model
+     */
+    Model * truncate(void);
 protected:
+    /*
+     * extract features from one instance,
+     *
+     */
     void extract_features(Instance * inst, bool create = false);
+
     /*
      * build words from tags for certain instance
      *
@@ -76,6 +106,7 @@ protected:
 private:
     bool    __TRAIN__;
     bool    __TEST__;
+    bool    __DUMP__;
 
 private:
     std::vector< Instance * > train_dat;

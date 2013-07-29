@@ -25,9 +25,14 @@ struct TestOptions {
     std::string     lexicon_file;
 };
 
+struct DumpOptions {
+    std::string     model_file;
+};
+
 extern ModelOptions model_opt;
 extern TrainOptions train_opt;
 extern TestOptions  test_opt;
+extern DumpOptions  dump_opt;
 
 }           //  end for namespace segmentor
 }           //  end for namespace ltp

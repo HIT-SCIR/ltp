@@ -66,6 +66,16 @@ public:
         }
     }
 
+    void add(int idx, int now, double scale = 1.) {
+        int elapsed = now - _W_time[idx];
+        double upd = scale;
+        double cur_val = _W[idx];
+
+        _W[idx]         = cur_val + upd;
+        _W_sum[idx]    += elapsed * cur_val + upd;
+        _W_time[idx]    = now;
+    }
+
     void add(const SparseVec & vec, int now, double scale = 1.) {
         for (SparseVec::const_iterator itx = vec.begin();
                 itx != vec.end();
