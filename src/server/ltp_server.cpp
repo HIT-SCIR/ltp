@@ -114,14 +114,10 @@ static int Service(struct mg_connection *conn)
 		ltp.wordseg();
 	} else if(str_type == "pos"){
 		ltp.postag();
-	} else if(str_type == "ner"){
-		ltp.ner();
 	} else if(str_type == "dp"){
 		ltp.parser();
-	} else if(str_type == "srl"){
-		ltp.srl();
 	} else {
-		ltp.srl();
+		ltp.parser();
 	}
 
 	string strResult;
