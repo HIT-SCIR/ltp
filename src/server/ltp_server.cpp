@@ -29,37 +29,35 @@ static int exit_flag;
 static int Service(struct mg_connection *conn);
 
 static void signal_handler(int sig_num) {
-        exit_flag = sig_num;
+    exit_flag = sig_num;
 }
 
-int main(int argc, char *argv[])
-{
-        signal(SIGTERM, signal_handler);
-        signal(SIGINT, signal_handler);
-        struct mg_context *ctx;
-        const char *options[] = {"listening_ports", LISTENING_PORT, 
-                                 "num_threads", "1", NULL};
-        struct mg_callbacks callbacks;
-        
-        memset(&callbacks, 0, sizeof(callbacks));
-        callbacks.begin_request = Service;
+int main(int argc, char *argv[]) {
+    signal(SIGTERM, signal_handler);
+    signal(SIGINT, signal_handler);
+    struct mg_context *ctx;
+    const char *options[] = {"listening_ports", LISTENING_PORT, 
+        "num_threads", "1", NULL};
+    struct mg_callbacks callbacks;
 
-        if ((ctx = mg_start(&callbacks, NULL, options)) == NULL) {
-                (void) printf("%s\n", "Cannot initialize Mongoose context");
-                exit(EXIT_FAILURE);
-        }
+    memset(&callbacks, 0, sizeof(callbacks));
+    callbacks.begin_request = Service;
 
-        // getchar();
-        while (exit_flag == 0) {
-                sleep(100000);
-        }
-	mg_stop(ctx);
+    if ((ctx = mg_start(&callbacks, NULL, options)) == NULL) {
+        (void) printf("%s\n", "Cannot initialize Mongoose context");
+        exit(EXIT_FAILURE);
+    }
 
-	return 0;
+    // getchar();
+    while (exit_flag == 0) {
+        sleep(100000);
+    }
+    mg_stop(ctx);
+
+    return 0;
 }
 
-static int Service(struct mg_connection *conn)
-{
+static int Service(struct mg_connection *conn) {
     char *sentence;
     char type[10];
     char xml[10];
@@ -87,52 +85,52 @@ static int Service(struct mg_connection *conn)
         if (strcmp(sentence, "") == 0)
             return 0;
 
-	if(strcmp(type, "") == 0){
+        if(strcmp(type, "") == 0){
             str_type = "";
-	}else{
-	    str_type = type;
-	}
+        }else{
+            str_type = type;
+        }
 
-	if(strcmp(xml, "") == 0){
-		str_xml = "";
-	} else {
-		str_xml = xml;
-	}
-	
-	string strSentence = sentence;
+        if(strcmp(xml, "") == 0){
+            str_xml = "";
+        } else {
+            str_xml = xml;
+        }
+
+        string strSentence = sentence;
         delete []sentence;
 
-	cout << "Input sentence is: " << strSentence << endl;
-	
-	if(str_xml == "y"){
-		xml4nlp.LoadXMLFromString(strSentence);
-	} else {
-		xml4nlp.CreateDOMFromString(strSentence);
-	}
+        cout << "Input sentence is: " << strSentence << endl;
 
-	if(str_type == "ws"){
-		ltp.wordseg();
-	} else if(str_type == "pos"){
-		ltp.postag();
-	} else if(str_type == "ner"){
-		ltp.ner();
-	} else if(str_type == "dp"){
-		ltp.parser();
-	} else if(str_type == "srl"){
-		ltp.srl();
-	} else {
-		ltp.srl();
-	}
+        if(str_xml == "y"){
+            xml4nlp.LoadXMLFromString(strSentence);
+        } else {
+            xml4nlp.CreateDOMFromString(strSentence);
+        }
 
-	string strResult;
-	xml4nlp.SaveDOM(strResult);
-	
-	strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;
+        if(str_type == "ws"){
+            ltp.wordseg();
+        } else if(str_type == "pos"){
+            ltp.postag();
+        } else if(str_type == "ner"){
+            ltp.ner();
+        } else if(str_type == "dp"){
+            ltp.parser();
+        } else if(str_type == "srl"){
+            ltp.srl();
+        } else {
+            ltp.srl();
+        }
 
-	// cout << "Result is: " << strResult << endl;
+        string strResult;
+        xml4nlp.SaveDOM(strResult);
+
+        strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;
+
+        // cout << "Result is: " << strResult << endl;
         mg_printf(conn, "%s", strResult.c_str());
 
-	xml4nlp.ClearDOM();
+        xml4nlp.ClearDOM();
     }
     return 1;
 }

@@ -45,12 +45,12 @@ public:
      *  @param[in]  model_file
      *  @return     int             0 on success, otherwise -1
      */
-    int LoadNEResource(const char * data_folder);
+    int LoadNEResource(const char * model_file);
 
     /*
      * std::string wrapper for LoadNEResource(const char *)
      */
-    int LoadNEResource(const std::string & data_folder);
+    int LoadNEResource(const std::string & model_file);
 
     /*
      * load parser resource from model file. Return 0 on success,

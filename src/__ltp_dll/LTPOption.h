@@ -36,7 +36,7 @@ struct tagLTPOption {
     std::string segmentor_model_path;
     std::string postagger_model_path;
     std::string parser_model_path;
-    std::string ner_data_dir;
+    std::string ner_model_path;
     std::string srl_data_dir;
 
     NEOption neOpt;

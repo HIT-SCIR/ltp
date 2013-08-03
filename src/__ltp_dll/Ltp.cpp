@@ -9,7 +9,7 @@
 #include "segment_dll.h"
 #include "postag_dll.h"
 #include "parser_dll.h"
-#include "NER_DLL.h"
+#include "ner_dll.h"
 #include "SRL_DLL.h"
 
 #if _WIN32
@@ -74,7 +74,7 @@ int LTP::ReadConfFile(const char * config_file) {
     m_ltpOption.segmentor_model_path = "";
     m_ltpOption.postagger_model_path = "";
     m_ltpOption.parser_model_path    = "";
-    m_ltpOption.ner_data_dir         = "";
+    m_ltpOption.ner_model_path       = "";
     m_ltpOption.srl_data_dir         = "";
 
     string buffer;
@@ -97,10 +97,10 @@ int LTP::ReadConfFile(const char * config_file) {
         WARNING_LOG("No \"parser-model\" config is found");
     }
 
-    if (cfg.get("ner-data", buffer)) {
-        m_ltpOption.ner_data_dir = buffer;
+    if (cfg.get("ner-model", buffer)) {
+        m_ltpOption.ner_model_path = buffer;
     } else {
-        WARNING_LOG("No \"ner-data\" config is found");
+        WARNING_LOG("No \"ner-model\" config is found");
     }
 
     if (cfg.get("srl-data", buffer)) {
@@ -285,7 +285,7 @@ int LTP::ner() {
         return -1;
     }
 
-    if (0 != m_ltpResource.LoadNEResource(m_ltpOption.ner_data_dir)) {
+    if (0 != m_ltpResource.LoadNEResource(m_ltpOption.ner_model_path)) {
         ERROR_LOG("in LTP::ner, failed to load ner resource");
         return -1;
     }
@@ -296,10 +296,6 @@ int LTP::ner() {
         ERROR_LOG("in LTP::ner, failed to init a ner.");
         return -1;
     }
-
-    NER_SetOption(m_ltpOption.neOpt.isEntity,
-            m_ltpOption.neOpt.isTime,
-            m_ltpOption.neOpt.isNum);
 
     int stnsNum = m_xml4nlp.CountSentenceInDocument();
 
@@ -323,7 +319,7 @@ int LTP::ner() {
             return -1;
         }
 
-        if (0 != NER(ner, vecWord, vecPOS, vecNETag)) {
+        if (0 != ner_recognize(ner, vecWord, vecPOS, vecNETag)) {
             ERROR_LOG("in LTP::ner, failed to perform ner on sent. #%d", i+1);
             return -1;
         }

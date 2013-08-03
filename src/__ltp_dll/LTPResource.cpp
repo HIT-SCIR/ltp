@@ -6,7 +6,7 @@
 #include "segment_dll.h"
 #include "postag_dll.h"
 #include "parser_dll.h"
-#include "NER_DLL.h"
+#include "ner_dll.h"
 #include "SRL_DLL.h"
 
 #if _WIN32
@@ -132,29 +132,27 @@ void * LTPResource::GetPostagger() {
 /* ======================================================== *
  * NER related resource management                          *
  * ======================================================== */
-int LTPResource::LoadNEResource(const char *data_folder) {
+int LTPResource::LoadNEResource(const char * model_file) {
     if (m_isNEResourceLoaded) {
         return 0;
     }
 
-    TRACE_LOG("Loading NER resource from \"%s\"", data_folder);
+    TRACE_LOG("Loading NER resource from \"%s\"", model_file);
 
-    if ( !NER_LoadResource(const_cast<char *>(data_folder)) ) {
-        //加载资源
-        ERROR_LOG("Failed to load NER resource");
+    m_ner = ner_create_recognizer(model_file);
+
+    if (0 == m_ner) {
+        ERROR_LOG("Failed to load ner model");
         return -1;
     }
-
-    m_ner = NER_CreateNErecoger();
-    //创建NE识别器
 
     m_isNEResourceLoaded = true;
     TRACE_LOG("NER resource is loaded.");
     return 0;
 }
 
-int LTPResource::LoadNEResource(const std::string & data_folder) {
-    return LoadNEResource(data_folder.c_str());
+int LTPResource::LoadNEResource(const std::string & model_file) {
+    return LoadNEResource(model_file.c_str());
 }
 
 void LTPResource::ReleaseNEResource() {
@@ -162,8 +160,7 @@ void LTPResource::ReleaseNEResource() {
         return;
     }
 
-    NER_ReleaseNErecoger(m_ner); //销毁NE识别器
-    NER_ReleaseResource();	    //释放资源
+    ner_release_recognizer(m_ner);
 
     m_ner = NULL;
     m_isNEResourceLoaded = false;
