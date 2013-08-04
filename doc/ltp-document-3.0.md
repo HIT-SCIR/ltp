@@ -56,6 +56,8 @@ LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安
 
 在项目文件夹下新建一个名为build的文件夹，使用CMake Gui，在source code中填入项目文件夹，在binaries中填入build文件夹。然后Configure -> Generate。
 
+![win-cmake](http://ir.hit.edu.cn/~yjliu/image/2013-7-12-cmake-win-setup.png)
+
 或者在命令行build 路径下运行
 
 	cmake ..
@@ -120,7 +122,7 @@ ltp提供一整套算法逻辑以及模型，其中的模型包括：
 | ----- | ---- |
 | cws.model | 分词模型，单文件 |
 | pos.model | 词性标注模型，单文件 |
-| ner_data/ | 命名实体识别模型，多文件 |
+| ner.model | 命名实体识别模型，单文件 |
 | parser.model | 依存句法分析模型，单文件 |
 | srl_data/ | 语义角色标注模型，多文件 |
 
@@ -129,7 +131,7 @@ ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型
     segmentor-model = new_ltp_data/cws.model
 	postagger-model = new_ltp_data/pos.model
 	parser-model = new_ltp_data/parser.model
-	ner-data = ltp_data/ne_data
+	ner-model = ltp_data/ner.model
 	srl-data = ltp_data/srl_data
 
 其中，
@@ -137,7 +139,7 @@ ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型
 * segmentor-model项指定分词模型
 * postagger-model项指定词性标注模型
 * parser-model项指定依存句法分析模型
-* ner-data项指定命名实体识别模型
+* ner-model项指定命名实体识别模型
 * srl-data项指定语言角色标注模型
 
 ltp_test的使用方法如下：
@@ -259,6 +261,67 @@ ltp_test的使用方法如下：
 
 ## 命名实体识别接口
 
+命名实体识别主要提供三个接口
+
+* `void * ner_create_recognizer(const char * path);`
+
+读取模型文件，初始化词性标注器。Path指定模型文件的路径。返回一个指向分词器的指针。
+
+* `int ner_release_recognizer(void * recognizer);`
+
+释放模型文件，销毁词性标注器。传入待销毁的词性标注器的指针postagger。
+
+* `int ner_recognize(void * recognizer, const std::vector< std::string > & words, std::vector<std::string> & tags);`
+
+调用命名实体识别接口。recognizer指定分析器，words为输入词序列，postags为输入词性序列。标注结果存储在tags中，返回结果中词的个数。
+
+### 示例程序
+
+	#include <iostream>
+	#include <vector>
+	
+	#include "ner_dll.h"
+	
+	int main(int argc, char * argv[]) {
+	    if (argc < 2) {
+	        std::cerr << "usage: ./ner [model_path]" << std::endl;
+	        return -1;
+	    }
+	
+	    void * engine = ner_create_recognizer(argv[1]);
+	    if (!engine) {
+	        std::cerr << "failed to load model" << std::endl;
+	        return -1;
+	    }
+	
+	    std::vector<std::string> words;
+	    std::vector<std::string> postags;
+	
+	    words.push_back("中国");    postags.push_back("ns");
+	    words.push_back("国际");    postags.push_back("n");
+	    words.push_back("广播");    postags.push_back("n");
+	    words.push_back("电台");    postags.push_back("n");
+	    words.push_back("创办");    postags.push_back("v");
+	    words.push_back("于");      postags.push_back("p");
+	    words.push_back("1941年");  postags.push_back("m");
+	    words.push_back("12月");    postags.push_back("m");
+	    words.push_back("3日");     postags.push_back("m");
+	    words.push_back("。");      postags.push_back("wp");
+	
+	    std::vector<std::string>    tags;
+	
+	    ner_recognize(engine, words, postags, tags);
+	
+	    for (int i = 0; i < tags.size(); ++ i) {
+	        std::cout << words[i] << "\t" << postags[i] << "\t" << tags[i] << std::endl;
+	    }
+	
+	    ner_release_recognizer(engine);
+	    return 0;
+	}
+
+调用命名实体识别接口的程序在编译的时，需要链接ner.a（MSVC下需链接ner.lib）。
+
 ## 依存句法分析接口
 
 依存句法分析主要提供三个接口：
@@ -339,11 +402,39 @@ ltp_test的使用方法如下：
 
 ## 利用Web Service Client获得分析结果
 
-### C++
+### 原理
 
-### Java
+在ltp web service中，client与server之间采用http协议通信。client以post方式提交的数据到server，server将数据以xml的方式返回给client。
 
-### C#
+client在提交数据时，首先需要在http请求头部中添加用户名密码以做验证。
+
+client提交的post请求主要有以下几个字段。
+
+| 字段名 | 含义 |
+|-------|------|
+| s | 输入字符串，在xml选项x为n的时候，代表输入句子；为y时代表输入xml |
+| x | 用以指明是否使用xml |
+| c | 用以指明输入编码方式 |
+| t | 用以指明分析目标，t可以为分词（ws）,词性标注（pos），命名实体识别（ner），依存句法分析（dp），语义角色标注（srl）或者全部任务（all） |
+
+### Python例子
+
+下面这个python版client的例子将介绍如何利用client获得分析结果。
+
+#### 示例程序
+
+	# -*- coding:utf8 -*-
+	import ltpservice
+	from account import username, password
+	
+	client = ltpservice.LTPService("%s:%s" % (username, password))
+	result = client.analysis("我爱北京天安门。天安门上太阳伞。", ltpservice.LTPOption.WS)
+	
+	pid = 0
+	for sid in xrange(result.count_sentence(pid)):
+	    print "|".join([word.encode("utf8") for word in result.get_words(pid, sid)])
+
+首先，import ltpservice这个package，然后实例化一个新的Service Client对象，用户名和密码被保存在这个对象中。然后，client发起一个请求，并指明分析目标位分词。请求结果返回并保存在一个LTML对象中。
 
 ## 理解Web Service Client结果
 
@@ -390,9 +481,13 @@ LTML 标准要求如下：结点标签分别为 xml4nlp, note, doc, para, sent, 
 	4. 如果 wsd=”y”则分词结点中必须包含wsd 及wsdexp 属性；
 	5. 如果 srl=”y”则凡是谓词(predicate)的分词会包含若干个arg 结点；
 
+关于web service client更多的信息请参考[https://github.com/HIT-SCIR/ltp-service](https://github.com/HIT-SCIR/ltp-service)
+
 # 搭建一个私人的LTP Server
 
 LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行LTP Server就可以启动LTP Server。LTP Server启动后，将会监听12345(*)端口的HTTP请求。
+
+在搭建好私人LTPServer后，请将client程序的目标主机地址改为你的LTPServer的地址。
 
 (注*：如需指定监听其他端口，请在src/server/ltp_server.cpp中将宏LISTENING_PORT “12345”设置为其他整数即可。)
 
@@ -401,6 +496,8 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
 ## 在线学习算法框架
 
 在机器学习领域，在线学习(Online learning)指每次通过一个训练实例学习模型的学习方法。在线学习的目的是正确预测训练实例的标注。在线学习最重要的一个特点是，当一次预测完成时，其正确结果便被获得，这一结果可直接用来修正模型。
+
+![framework](http://ir.hit.edu.cn/~yjliu/image/2013-7-12-ot-framework.jpg)
 
 在自然语言处理领域，在线学习已经被广泛地应用在分词、词性标注、依存句法分析等结构化学习任务中。
 
@@ -538,6 +635,31 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 ## 命名实体识别模块
 
+与分词模块相同，我们将命名实体识别建模为基于词的序列标注问题。对于输入句子的词序列，模型给句子中的每个词标注一个标识命名实体边界和实体类别的标记。在LTP中，我们支持人名、地名、机构名三类命名实体的识别。关于LTP使用的标记参考附录。
+
+对于模型参数，我们采用在线机器学习算法框架从标注数据中学习参数。对于词性标注模型，我们使用的模型特征有：
+
+|word-unigram | w[-2], w[-1], w[0], w[1], w[2] |
+|---|---|
+|word-bigram	 | w[-2]w[-1],w[-1]w[0],w[0]w[1],w[1]w[2] |
+|postag-unigram | p[-2],p[-1],p[0],p[1],p[2] |
+|postag-bigram | p[-1]p[0],p[0]p[1] |
+
+基础模型在几种数据集上的性能如下：
+
+### 人民日报
+
+语料信息：人民日报1998年1月做训练（后10%数据作为开发集），6月前10000句做测试作为训练数据。
+
+* 准确率
+
+| P | R | F |
+|---|---|---|
+|开发集|0.924149 | 0.909323 | 0.916676 |
+|测试集|0.939552 | 0.936372 | 0.937959 |
+
+* 运行时内存：33M
+
 ## 依存句法分析模块
 
 基于图的依存分析方法由McDonald首先提出，他将依存分析问题归结为在一个有向图中寻找最大生成树(Maximum Spanning Tree)的问题。
@@ -645,6 +767,10 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 
 测试配置的配置文件样例如下所示。
 
+	[test]
+	test-file = data/ctb5-test.pos
+	model-file = model/ctb5-pos.3.model
+
 其中，
 
 * [test] 配置组指定执行测试
@@ -654,6 +780,54 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 词性标注结果将输入到标准io中。
 
 (*[train]与[test]两个配置组不能同时存在)
+
+## 命名实体识别训练套件otner用法
+
+otner是ltp命名实体识别模型的训练套件，用户可以使用otner训练获得ltp的命名实体识别模型。
+
+编译之后，在tools/train下面会产生名为otner的二进制程序。调用方法是
+
+	./otner [config_file]
+
+otner分别支持从人工标注的数据中训练命名实体识别模型和调用命名实体识别模型对句子进行标注。人工标注的句子的样例如下：
+
+	党中央/ni#B-Ni 国务院/ni#E-Ni 要求/v#O ，/wp#O 动员/v#O 全党/n#O 和/c#O 全/a#O社会/n#O 的/u#O 力量/n#O
+
+Otner主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+
+训练配置的配置文件样例如下所示。
+
+	[train]
+	train-file = data/ctb5-train.ner
+	holdout-file = data/ctb5-holdout.ner
+	algorithm = pa 
+	model-name = model/ctb5-ner
+	max-iter = 5
+
+其中，
+
+* [train] 配置组指定执行训练
+	* Train-file 配置项指定训练集文件
+	* Holdout-file 配置项指定开发集文件
+	* Algorithm 指定参数学习方法，现在otner支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* Model-name 指定输出模型文件名
+	* Max-iter 指定最大迭代次数
+
+测试配置的配置文件样例如下所示。
+
+	[test]
+	test-file = data/ctb5-test.ner
+	model-file = model/ctb5-ner.4.model
+
+其中，
+
+* [test] 配置组指定执行测试
+	* Test-file 指定测试文件
+	* Model-file 指定模型文件位置
+
+命名实体识别结果将输入到标准io中。
+
+（*[train]与[test]两个配置组不能同时存在）
 
 ## 依存句法分析训练套件lgdpj用法
 
@@ -730,6 +904,15 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 
 # 发表论文
 
+* Meishan Zhang, Zhilong Deng，Wanxiang Che, Ting Liu. [Combining Statistical Model and Dictionary for Domain Adaption of Chinese Word Segmentation](http://ir.hit.edu.cn/~mszhang/Conll06Tolgdpj.jar). Journal of Chinese Information Processing. 2012, 26 (2) : 8-12 (in Chinese)
+* Zhenghua Li, Min Zhang, Wanxiang Che, Ting Liu, Wenliang Chen, Haizhou Li. [Joint Models for Chinese POS Tagging and Dependency Parsing](http://ir.hit.edu.cn/~lzh/papers/zhenghua-D11-joint%20pos%20and%20dp.pdf). In Proceedings of the 2011Conference on Empirical Methods in Natural Language Processing (EMNLP 2011). 2011.07, pp. 1180-1191. Edinburgh, Scotland, UK.
+* Wanxiang Che, Zhenghua Li, Ting Liu. [LTP: A Chinese Language Technology Platform](http://www.aclweb.org/anthology/C/C10/C10-3.pdf#page=16). In Proceedings of the Coling 2010:Demonstrations. 2010.08, pp13-16, Beijing, China.
+* Che. Wanxiang, Zhenghua Li, Yongqiang Li, Yuhang Guo, Bing Qin, Ting Liu. 2009. [Multilingual dependency-based syntactic and semantic parsing](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.165.1686&rep=rep1&type=pdf#page=61). In CoNLL 2009, pages 49-54, Boulder, Colorado, June. 
+* Guo, Yuhang, Wanxiang Che, Yuxuan Hu, Wei Zhang, and Ting Liu. 2007. [Hit-ir-wsd: A wsd system for english lexical sample task](http://acl.ldc.upenn.edu/W/W07/W07-2034.pdf). In SemEval-2007, pages 165–168.
+* Liu, Ting, Jinshan Ma, and Sheng Li. 2006. [Building a dependency treebank for improving Chinese parser](http://ir.hit.edu.cn/phpwebsite/index.php?module=documents&JAS_DocumentManager_op=downloadFile&JAS_File_id=255#page=43). Journal of Chinese Language and Computing, 16(4):207–224.
+* Lijie Wang, Wanxiang Che, and Ting Liu. 2009. An SVMTool-based Chinese POS Tagger. Journal of Chinese Information Processing, 23(4):16–22.
+
+
 # 附录
 
 ## 分词标注集
@@ -761,6 +944,26 @@ LTP 使用的是863 词性标注集，其各个词性含义如下表。
 | n   | general noun        | 苹果       | wp  | punctuation       | ，。！     |
 | nd  | direction noun      | 右侧       | ws  | foreign words     | CPU        |
 | nh  | person name         | 杜甫, 汤姆 | x   | non-lexeme        | 萄, 翱     |
+
+## 命名实体识别标注集
+
+NE识别模块的标注结果采用O-S-B-I-E标注形式，其含义为
+
+| 标记 | 含义 |
+|------|-----|
+| O | 这个词不是NE |
+| S | 这个词单独构成一个NE |
+| B | 这个词为一个NE的开始 |
+| I | 这个词为一个NE的中间 |
+| E | 这个词位一个NE的结尾 |
+
+LTP中的NE 模块识别三种NE，分别如下：
+
+| 标记 | 含义 |
+|------|-----|
+| Nh | 人名 |
+| Ni | 机构名 |
+| Ns | 地名 |
 
 ## 依存句法关系
 
