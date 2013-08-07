@@ -9,7 +9,6 @@ LTP使用文档v3.0
 
 ## 目录
 
-
 # 简介
 
 语言技术平台(Language Technology Platform，LTP)是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块(包括词法、句法、语义等6项中文处理核心技术)，以及基于动态链接库(Dynamic Link Library, DLL)的应用程序接口，可视化工具，并且能够以网络服务(Web Service)的形式进行使用。
@@ -158,17 +157,56 @@ ltp_test的使用方法如下：
 
 分词主要提供三个接口：
 
-* `void * segmentor_create_segmentor(const char * path, const char * lexicon_path);`
+**void * segmentor_create_segmentor**
 
-读取模型文件，初始化分词器。Path指定模型文件的路径。返回一个指向分词器的指针。lexicon_path指定外部词典路径。如果为空，则不加载外部词典。
+功能：
 
-* `int segmentor_release_segmentor(void * segmentor);`
+读取模型文件，初始化分词器。
 
-释放模型文件，销毁分词器。传入待销毁的分词器的指针segmentor。
+参数：
 
-* `int segmentor_segment(void * segmentor, const std::string & line, std::vector<std::string> & words);`
+| 参数名 | 参数描述 |
+|--------|----------|
+|const char * path | 指定模型文件的路径 |
+|const char * lexicon_path | 指定外部词典路径。如果lexicon_path为NULL，则不加载外部词典 |
 
-调用分词接口。Segmentor指定分词器，line为待分词句子，结果词序列存储在words中。返回结果中词的个数。
+返回值：
+
+返回一个指向分词器的指针。
+
+**int segmentor_release_segmentor**
+
+功能：
+
+释放模型文件，销毁分词器。
+
+参数：
+
+| 参数名 | 参数描述 |
+|--------|----------|
+|void * segmentor | 待销毁分词器的指针 |
+
+返回值：
+
+销毁成功时返回0，否则返回-1
+
+**int segmentor_segment**
+
+功能：
+
+调用分词接口。
+
+参数：
+
+| 参数名 | 参数描述 |
+|--------|----------|
+|void * segmentor | 分词器的指针 |
+|const std::string & line | 待分词句子 |
+|std::vector<std::string> & words| 结果分词序列 |
+
+返回值：
+
+返回结果中词的个数。
 
 ### 示例程序
 
@@ -199,23 +237,63 @@ ltp_test的使用方法如下：
 	    return 0;
 	}
 
+实例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将分词器指针存储在engine中。第16行运行分词逻辑，并将结果存储在名为words的std::vector<std::string>中。第22行释放分词模型。
+
 调用分词接口的程序在编译的时，需要链接segmentor.a(MSVC下需链接segmentor.lib)。
 
 ## 词性标注接口
 
 词性标注主要提供三个接口
 
-* `void * postagger_create_postagger(const char * path);`
+**void * postagger_create_postagger**
 
-读取模型文件，初始化词性标注器。Path指定模型文件的路径。返回一个指向分词器的指针。
+功能：
 
-* `int postagger_release_postagger(void * postagger);`
+读取模型文件，初始化词性标注器
 
-释放模型文件，销毁词性标注器。传入待销毁的词性标注器的指针postagger。
+参数：
 
-* `int postagger_postag(void * postagger, const std::vector< std::string > & words, std::vector<std::string> & tags);`
+|参数名 | 参数描述 |
+|-------|----------|
+|const char * path | 词性标注模型路径 |
 
-调用词性标注接口。指定分词器，words为待标注的词序列，标注结果存储在tags中。返回结果中词的个数。
+返回值：
+
+返回一个指向词性标注器的指针。
+
+**int postagger_release_postagger**
+
+功能：
+
+释放模型文件，销毁分词器。
+
+参数：
+
+|参数名 | 参数描述 |
+|-------|----------|
+| void * postagger | 待销毁的词性标注器的指针|
+
+返回值：
+
+销毁成功时返回0，否则返回-1
+
+**int postagger_postag**
+
+功能：
+
+调用词性标注接口
+
+参数：
+
+|参数名 | 参数描述 |
+|-------|----------|
+|void * postagger | 词性标注器的指针 |
+|const std::vector< std::string > & words | 待标注的词序列 |
+|std::vector<std::string> & tags | 词性标注结果，序列中的第i个元素是第i个词的词性 |
+
+返回值：
+
+返回结果中词的个数
 
 ### 示例程序
 
@@ -257,23 +335,66 @@ ltp_test的使用方法如下：
 	    return 0;
 	}
 
+实例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将词性标注器指针存储在engine中。第18至20行构造分词序列，第24行运行词性标注逻辑，并将结果存储在名为tags的std::vector<std::string>中。第33行释放分词模型。
+
 调用词性标注接口的程序在编译的时，需要链接postagger.a(MSVC下需链接postagger.lib)。
 
 ## 命名实体识别接口
 
-命名实体识别主要提供三个接口
+命名实体识别主要提供三个接口：
 
-* `void * ner_create_recognizer(const char * path);`
+**void * ner_create_recognizer**
 
-读取模型文件，初始化词性标注器。Path指定模型文件的路径。返回一个指向分词器的指针。
+功能：
 
-* `int ner_release_recognizer(void * recognizer);`
+读取模型文件，初始化命名实体识别器
+
+参数：
+
+| 参数名 | 参数描述 |
+|-------|----------|
+| const char * path | 命名实体识别模型路径 |
+
+返回值：
+
+返回一个指向词性标注器的指针。
+
+**int ner_release_recognizer**
+
+功能：
+
+释放模型文件，销毁命名实体识别器。
+
+参数：
+
+|参数名 | 参数描述 |
+|-------|----------|
+|void * recognizer | 待销毁的命名实体识别器的指针 |
+
+返回值：
+
+销毁成功时返回0，否则返回-1
 
 释放模型文件，销毁词性标注器。传入待销毁的词性标注器的指针postagger。
 
-* `int ner_recognize(void * recognizer, const std::vector< std::string > & words, std::vector<std::string> & tags);`
+**int ner_recognize**
 
-调用命名实体识别接口。recognizer指定分析器，words为输入词序列，postags为输入词性序列。标注结果存储在tags中，返回结果中词的个数。
+功能：
+
+调用命名实体识别接口
+
+参数：
+
+|参数名 | 参数描述 |
+|-------|----------|
+|void * recognizer | 命名实体识别器的指针 |
+|const std::vector< std::string > & words | 待识别的词序列 |
+|const std::vector< std::string > & postags | 待识别的词的词性序列 |
+|std::vector<std::string> & tags | 命名实体识别结果，命名实体识别的结果为O时表示这个词不是命名实体，否则为{POS}-{TYPE}形式的标记，POS代表这个词在命名实体中的位置，TYPE表示命名实体类型|
+
+返回值：
+
+返回结果中词的个数
 
 ### 示例程序
 
@@ -320,23 +441,65 @@ ltp_test的使用方法如下：
 	    return 0;
 	}
 
+示例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将命名实体识别器指针存储在engine中。第21至30行构造分词序列words和词性标注序列postags，第34行运行词性标注逻辑，并将结果存储在名为tags的std::vector<std::string>中。第40行释放分词模型。
+
 调用命名实体识别接口的程序在编译的时，需要链接ner.a（MSVC下需链接ner.lib）。
 
 ## 依存句法分析接口
 
 依存句法分析主要提供三个接口：
 
-* `void * parser_create_parser(const char * path);`
+**void * parser_create_parser**
 
-读取模型文件，初始化词性标注器。Path指定模型文件的路径。返回一个指向分词器的指针。
+功能：
 
-* `int parser_release_parser(void * parser);`
+读取模型文件，初始化依存句法分析器
 
-释放模型文件，销毁词性标注器。传入待销毁的依存句法分析器的指针parser。
+参数：
 
-* `int parser_parse(void * parser, const std::vector< std::string > & words, const std::vector< std::string > & postags, std::vector<int> & heads, std::vector<std::string> & deprels);`
+|参数名 | 参数描述 |
+|---|---|
+|const char * path | 依存句法分析模型路径 |
 
-调用依存句法分析接口。指定依存句法分析器，words为待分析的词序列，postags为词序列对应的词性序列。依存句法树结构存储在heads中，依存弧关系存储在deprels中。
+返回值：
+
+返回一个指向依存句法分析器的指针。
+
+**int parser_release_parser**
+
+功能：
+
+释放模型文件，销毁依存句法分析器。
+
+参数：
+
+|参数名 | 参数描述 |
+|---|---|
+|void * parser | 待销毁的依存句法分析器的指针 |
+
+返回值：
+
+销毁成功时返回0，否则返回-1
+
+**int parser_parse**
+
+功能：
+
+调用依存句法分析接口
+
+参数：
+
+|参数名 | 参数描述 |
+|---|---|
+|void * parser | 依存句法分析器的指针 |
+|const std::vector< std::string > & words | 待分析的词序列 |
+|const std::vector< std::string > & postags | 待分析的词的词性序列 |
+|std::vector<int> & heads | 结果依存弧，heads[i]代表第i个词的父亲节点的编号 |
+|std::vector<std::string> & deprels | 结果依存弧关系类型 |
+
+返回值：
+
+返回结果中词的个数
 
 ### 示例程序
 
@@ -378,6 +541,8 @@ ltp_test的使用方法如下：
 	    parser_release_parser(engine);
 	    return 0;
 	}
+
+示例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将依存句法分析器指针存储在engine中。第19至22行构造分词序列words和词性标注序列postags，第27行运行词性标注逻辑，并将依存弧关系存储在heads中，将依存弧关系类型存储在deprels中。第34行释放依存句法分析模型。
 
 调用依存句法分析接口的程序在编译的时，需要链接parser.a(MSVC下需链接parser.lib)。
 
@@ -434,7 +599,7 @@ client提交的post请求主要有以下几个字段。
 	for sid in xrange(result.count_sentence(pid)):
 	    print "|".join([word.encode("utf8") for word in result.get_words(pid, sid)])
 
-首先，import ltpservice这个package，然后实例化一个新的Service Client对象，用户名和密码被保存在这个对象中。然后，client发起一个请求，并指明分析目标位分词。请求结果返回并保存在一个LTML对象中。
+首先，第2行import ltpservice这个package，然后第5行实例化一个新的Service Client对象，用户名和密码被保存在这个对象中。然后第6行client发起一个请求，并指明分析目标位分词。请求结果返回并保存在一个LTML对象result中。9到10行解析这个结果。
 
 ## 理解Web Service Client结果
 
