@@ -319,7 +319,7 @@ int LTP::ner() {
             return -1;
         }
 
-        if (0 != ner_recognize(ner, vecWord, vecPOS, vecNETag)) {
+        if (0 == ner_recognize(ner, vecWord, vecPOS, vecNETag)) {
             ERROR_LOG("in LTP::ner, failed to perform ner on sent. #%d", i+1);
             return -1;
         }
