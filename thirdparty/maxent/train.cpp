@@ -35,7 +35,7 @@ void train(ME_Model & model, const string & input, const string & model_path)
     while (getline(ifile, line))
     {
         vector<string> vs = split(line);
-        ME_Sample mes(vs);
+        ME_Sample mes(vs, true);
         model.add_training_sample(mes);
     }
 

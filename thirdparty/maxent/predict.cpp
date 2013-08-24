@@ -9,20 +9,7 @@
 using namespace std;
 using namespace maxent;
 
-ME_Sample sample(const vector<string> & vt)
-{
-    ME_Sample sample;
-
-    sample.label = vt[0];
-    for (size_t j = 1; j < vt.size(); ++j)
-    {
-        sample.add_feature(vt[j]);
-    }
-
-    return sample;
-}
-
-vector<string> read_line(const string & line) 
+vector<string> split(const string & line) 
 {
     vector<string> vs;
     istringstream is(line);
@@ -58,8 +45,8 @@ void validate(const ME_Model & model,
     string line;
     while (getline(ifile, line))
     {
-        vector<string> vs = read_line(line);
-        ME_Sample mes = sample(vs);
+        vector<string> vs = split(line);
+        ME_Sample mes(vs, true);
         model.predict(mes);
 
         ofile << mes.label << endl;
