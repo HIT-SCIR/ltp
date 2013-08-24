@@ -3,42 +3,30 @@
 <language>
     Chinese
 </language>
-<noun_features>
-	PredicateSiblingsRELNoDup
-	HeadwordLemma
-	RelationPath
-	UpRelationPath
-	Path
-	Predicate
-	PredicateFamilyship
-	DepwordLemma
-	DepRelation
-	PathLength
-	Position
-	UpPath
-	PredicateLemma
-	LastLemma
-	FirstLemma
-	ConstituentPOSPattern
-</noun_features>
-<verb_features>
-	PredicateSiblingsRELNoDup
-	HeadwordLemma
-	RelationPath
-	UpRelationPath
-	ConstituentPOSPattern
-	Path
-	Predicate
-	PredicateFamilyship
-	DepwordLemma
-	DepRelation
-	PathLength
-	Position
-	UpPath
-	PredicateLemma
-	LastLemma
-	FirstLemma
-</verb_features>
+<features_pred_rg>
+    DepRelation
+    HeadwordPOS
+    DepwordPOS
+    Headword
+    Depword
+    HeadwordLemma
+    DepwordLemma
+    FirstWord
+    LastWord
+    FirstPOS
+    LastPOS
+    FirstLemma
+    LastLemma
+    ConstituentPOSPattern
+    ChildrenPOS
+    ChildrenPOSNoDup
+    ChildrenREL
+    ChildrenRELNoDup
+    SiblingsPOS
+    SiblingsPOSNoDup
+    SiblingsREL
+    SiblingsRELNoDup
+</features_pred_rg>
 <features_pred_cl>
     Predicate
     PredicateLemma
@@ -66,32 +54,63 @@
     PredicateBagOfPOSNumberedWindow5
     PredicateBagOfWordsAndIsDesOfPRED
 </features_pred_cl>
+<features_role_cl>
+    DepRelation
+    HeadwordPOS
+    DepwordPOS
+    Headword
+    Depword
+    HeadwordLemma
+    DepwordLemma
+    FirstWord
+    LastWord
+    FirstPOS
+    LastPOS
+    FirstLemma
+    LastLemma
+    ConstituentPOSPattern
+    ChildrenPOS
+    ChildrenPOSNoDup
+    ChildrenREL
+    ChildrenRELNoDup
+    SiblingsPOS
+    SiblingsPOSNoDup
+    SiblingsREL
+    SiblingsRELNoDup
+    PredicateChildrenPOS
+    PredicateChildrenPOSNoDup
+    PredicateChildrenREL
+    PredicateChildrenRELNoDup
+    PredicateSiblingsPOS
+    PredicateSiblingsPOSNoDup
+    PredicateSiblingsREL
+    PredicateSiblingsRELNoDup
+    PredicateLemma
+    Predicate
+    PredicateSense
+    Path
+    UpPath
+    RelationPath
+    UpRelationPath
+    PathLength
+    UpPathLength
+    DownPathLength
+    DescendantOfPredicate
+    Position
+    PredicateFamilyship
+    PredicateWindow5Bigram
+</features_role_cl>
 <predicate>
     <noun>
-        n   
-        nd  
-        nh  
-        ni  
-        nl  
-        ns  
-        nt  
-        nz
+        NN
+        NR
+        NT
     </noun>
     <verb>
-        a   
-        b   
-        c   
-        d   
-        h   
-        i   
-        j   
-        m   
-        o   
-        p   
-        q   
-        r   
-        u   
-        v
+        VA
+        VC
+        VE
+        VV
     </verb>
 </predicate>
 </head>

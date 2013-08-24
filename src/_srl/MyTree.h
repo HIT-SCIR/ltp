@@ -1,13 +1,11 @@
-///////////////////////////////////////////////////////////////
-//	File Name     :MyTree.h
-//	File Function :
-//	Author 	      : Frumes
-//	Create Time   : 2006年12月31日
-//	Project Name  ：NewSRLBaseLine
-//	Operate System : the dependency tree class
-//	Remark        :
-//	History：     : 
-///////////////////////////////////////////////////////////////
+/*
+ * File Name     : MyTree.h
+ * Author        : Frumes, hjliu
+ *
+ * Create Time   : 2006年12月31日
+ * Project Name  ：NewSRLBaseLine
+ *
+ */
 
 #ifndef _MY_TREE_
 #define _MY_TREE_
@@ -20,65 +18,58 @@
 
 class MyTree
 {
-public:
-	MyTree(const LTPData* ltpData);
-	~MyTree();    
+    public:
+        MyTree(const LTPData* ltpData);
+        ~MyTree();
 
-	//---------------------- the public interface --------------------------
-	int	  GetRootID() const;
-	void  GetNodeValue(DepNode& depNode, int nodeID) const;	
-	int	  GetLeftChild(int nodeID) const;
-	int	  GetRightChild(int nodeID) const;
-	int   GetLeftSib(int nodeID) const;
-	int   GetRightSib(int nodeID) const;
-	void  GetAllSibs(int nodeID, 
-					 deque<int>& dequeSibs) const;
-	void  GetAllNodePath(int intCurPdID, 
-					     vector<string>& vecPath) const;
-	void  GetFamilyShip(string& strFSship,
-					   int nodeID1, 
-					   int nodeID2) const;
-	int   GetRCParent(int nodeID1, 
-					  int nodeID2) const;
-	bool  IsRoot(int nodeID) const;
-	bool  IsLeaf(int nodeID) const;
+        int  GetRootID() const;
+        void GetNodeValue(DepNode& depNode, int nodeID) const;
+        int  GetLeftChild(int nodeID) const;
+        int  GetRightChild(int nodeID) const;
+        int  GetLeftSib(int nodeID) const;
+        int  GetRightSib(int nodeID) const;
+        void GetAllSibs(int nodeID, deque<int>& dequeSibs) const;
+        void GetAllNodePath(int intCurPdID, vector<string>& vecPath) const;
+        void GetFamilyShip(string& strFSship, int nodeID1, int nodeID2) const;
+        int  GetRCParent(int nodeID1, int nodeID2) const;
+        bool IsRoot(int nodeID) const;
+        bool IsLeaf(int nodeID) const;
 
-private:
-	//-------------------- the function used only in the class ----------------
-	//build and destroy the the tree
-	bool  BuildDepTree(const LTPData* ltpData);
-	void  InitTree(const LTPData* ltpData);
-	bool  UpdateTree();
-	void  ClearTree();
+    private:
+        // build and destroy the the tree
+        bool BuildDepTree(const LTPData* ltpData);
+        void InitTree(const LTPData* ltpData);
+        bool UpdateTree();
+        void ClearTree();
 
-	//the family members relationship
-	bool  IsParent(int parentID, 
-				   int childID) const;
-	bool  IsChild(int childID, 
-				  int parentID) const;
-	bool  IsSibling(int nodeID1, 
-				    int nodeID2) const;	
-	bool  IsAncestor(int anceID, 
-					 int postID) const;
-	bool  IsPosterity(int postID, 
-					  int anceID) const;
+        // the family members relationship
+        bool IsParent(int parentID, int childID) const;
+        bool IsChild(int childID, int parentID) const;
+        bool IsSibling(int nodeID1, int nodeID2) const;
+        bool IsAncestor(int anceID, int postID) const;
+        bool IsPosterity(int postID, int anceID) const;
 
 
-	//other operation
-	void	 GetNodeValue(DepNode& depNode,
-						  const DepTree& depTree, 
-						  int nodeID) const;
-	bool     IsLeaf(const DepTree& depTree, 
-					int rootID) const;
-	void     UpdateNodePS(DepTree& depTree, 
-						  int nodeID, 
-						  int childNodeID);
-	void     CopyAllNodePS(const DepTree& depTree);
+        // other operation
+        void GetNodeValue(
+                DepNode& depNode,
+                const DepTree& depTree,
+                int nodeID) const;
+        bool IsLeaf(
+                const DepTree& depTree,
+                int rootID) const;
+        void UpdateNodePS(
+                DepTree& depTree,
+                int nodeID,
+                int childNodeID);
+        void CopyAllNodePS(const DepTree& depTree);
 
-public:
-	DepTree m_depTree;
-private:
-	int m_rootID;
+    public:
+        DepTree m_depTree;
+
+    private:
+        int m_rootID;
 };
 
 #endif
+

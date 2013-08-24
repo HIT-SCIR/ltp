@@ -1,3 +1,13 @@
+/*
+ * File Name     : Corpus.cpp
+ * Author        : msmouse
+ *
+ * Updated by    : jiangfeng
+ * Update Time   : 2013-08-21
+ *
+ */
+
+
 #include "Corpus.h"
 #include <stdexcept>
 
@@ -5,11 +15,9 @@ using namespace std;
 
 void Corpus::open_corpus(const string &filename) 
 {
-    //close
     m_corpus.close();
     m_corpus.clear();
-    
-    // open the corpus file
+
     m_corpus.open(filename.c_str());
     if (!m_corpus)
     {
@@ -21,10 +29,12 @@ bool Corpus::get_next_block(vector<string> &lines)
 {
     lines.clear();
 
-    // if the file has already been read through, return false
+    /* if the file has already been read through,
+     * return false
+     */
     if (m_corpus.eof())
         return false;
-    
+
     string line;
     while (getline(m_corpus, line))
     {
@@ -40,8 +50,7 @@ bool Corpus::get_next_block(vector<string> &lines)
             lines.push_back(line);
         }
     }
-    
-    // if the last line of file is not blank, read EOF
+
     if (lines.size() > 0)
     {
         return true;
@@ -51,3 +60,4 @@ bool Corpus::get_next_block(vector<string> &lines)
         return false;
     }
 }
+

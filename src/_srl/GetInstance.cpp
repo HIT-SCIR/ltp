@@ -1,3 +1,14 @@
+/*
+ * File Name     : GetInstance.cpp
+ * Author        : msmouse
+ * Create Time   : 2006-12-31
+ * Project Name  : NewSRLBaseLine
+ *
+ * Updated by    : jiangfeng
+ * Update Time   : 2013-08-21
+ */
+
+
 #include "GetInstance.h"
 
 using namespace std;
@@ -10,16 +21,12 @@ void GetInstance::generate_argu_instance(
 {
     open_select_config(select_config);
     close_();
-    test_noun_set_(feature_folder);
-    test_verb_set_(feature_folder);
+    test_feature_set_(feature_folder);
 
     // open
-    string noun_instance_file = instance_file + ".noun";
-    string verb_instance_file = instance_file + ".verb";
-    ofstream noun_stream(noun_instance_file.c_str());
-    ofstream verb_stream(verb_instance_file.c_str());
+    ofstream inst_stream(instance_file.c_str());
 
-    if (!noun_stream || !verb_stream)
+    if (!inst_stream)
     {
         throw runtime_error("instance file cannot open");
     }
@@ -33,53 +40,31 @@ void GetInstance::generate_argu_instance(
     {
         throw runtime_error(feature_folder+"/labels cannot open");
     }
-    
+
     // output
-    bool is_noun;
     while ( getline(m_label_stream, tmp) )
     {
-        if (tmp == "[VERB]")
-        {
-            is_noun = false;
-        }
-        else if (tmp == "[NOUN]")
-        {
-            is_noun = true;
-        }
-        else if (tmp == "")
+        if (tmp == "")
         {
             read_line_(values);
         }
         else
         {
             read_line_(values);
-
-            if (is_noun)
+            if (! is_devel)
             {
-                if (! is_devel)
-                {
-                    noun_stream<<tmp<<" ";
-                }
-                output_(noun_stream, values, m_noun_select_features);
+                inst_stream << tmp << " ";
             }
-            else
-            {
-                if (! is_devel)
-                {
-                    verb_stream<<tmp<<" ";
-                }
-                output_(verb_stream, values, m_verb_select_features);
-            }
+            output_(inst_stream, values, m_select_features);
         }
     }
-    
-    noun_stream.close();
-    verb_stream.close();
+
+    inst_stream.close();
 }
 
 void GetInstance::output_(ofstream& out_stream,
-    const vector<string>& values,
-    const vector<vector<string> >& select_features)
+        const vector<string>& values,
+        const vector<vector<string> >& select_features)
 {
     for (size_t i=0; i<select_features.size(); i++)
     {
@@ -108,24 +93,17 @@ void GetInstance::open_select_config(const string& select_config)
     {
         throw runtime_error("Select_config file cannot open!");
     }
-    m_noun_select_features.clear();
-    m_verb_select_features.clear();
+
+    m_select_features.clear();
     string line;
-    bool is_noun = false;
+
     while (getline(conf_input, line))
     {
-        if (line == "[NOUN]")
-        {
-            is_noun = true;
-        }
-        else if (line == "[VERB]")
-        {
-            is_noun = false;
-        }
-        else if ("" != line)
+        if ("" != line)
         {
             if (line[0] == '#')
                 continue;
+
             vector<string> vec_str;
             replace(line.begin(), line.end(), '+', ' ');
             istringstream istr(line);
@@ -134,14 +112,8 @@ void GetInstance::open_select_config(const string& select_config)
             {
                 vec_str.push_back(temp_str);
             }
-            if (is_noun)
-            {
-                m_noun_select_features.push_back(vec_str);
-            }
-            else
-            {
-                m_verb_select_features.push_back(vec_str);
-            }
+
+            m_select_features.push_back(vec_str);
         }
     }
     conf_input.close();
@@ -175,8 +147,8 @@ void GetInstance::read_line_(vector<string> &values)
 }
 
 void GetInstance::test_and_open_(const vector<vector<string> >& select_features,
-    const vector<string>& features,
-    const string& feature_folder)
+        const vector<string>& features,
+        const string& feature_folder)
 {
     // test the feature in select_config file exist in the language configruation
     m_opened_flags.resize(TOTAL_FEATURE, false);
@@ -206,3 +178,4 @@ void GetInstance::test_and_open_(const vector<vector<string> >& select_features,
         }
     }
 }
+

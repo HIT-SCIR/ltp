@@ -1,6 +1,18 @@
+/*
+ * File Name     : Configuration.cpp
+ * Author        : msmouse
+ *
+ * Updated by    : jiangfeng
+ * Update Time   : 2013-08-21
+ *
+ */
+
+
 #include "Configuration.h"
 #include <stdexcept>
 #include <fstream>
+#include <iostream>
+
 using namespace std;
 
 void Configuration::load_xml(const string& filename)
@@ -45,43 +57,41 @@ size_t Configuration::find(
 
 void Configuration::parse(const vector<string>& lines)
 {
-    size_t row_begin_language=0, row_end_language=0;
-    size_t row_begin_features=0, row_end_features=0;
-    size_t row_begin_pred_cl=0, row_end_pred_cl=0;
-    size_t row_begin_noun=0, row_end_noun=0, row_begin_verb=0, row_end_verb=0;
-
     size_t language_begin  = find(lines, "<language>");
     size_t language_end    = find(lines, "</language>");
-    size_t noun_feat_begin = find(lines, "<noun_features>");
-    size_t noun_feat_end   = find(lines, "</noun_features>");
-    size_t verb_feat_begin = find(lines, "<verb_features>");
-    size_t verb_feat_end   = find(lines, "</verb_features>");
+
+    size_t pred_rg_begin   = find(lines, "<features_pred_rg>");
+    size_t pred_rg_end     = find(lines, "</features_pred_rg>");
     size_t pred_cl_begin   = find(lines, "<features_pred_cl>");
     size_t pred_cl_end     = find(lines, "</features_pred_cl>");
+
+    size_t feat_begin      = find(lines, "<features_role_cl>");
+    size_t feat_end        = find(lines, "</features_role_cl>");
+
     size_t noun_POS_begin  = find(lines, "<noun>");
     size_t noun_POS_end    = find(lines, "</noun>");
     size_t verb_POS_begin  = find(lines, "<verb>");
     size_t verb_POS_end    = find(lines, "</verb>");
 
     m_language = lines[language_begin+1];
-    
+
     static vector<string> vec;
     vec.clear();
-    for (size_t i=noun_feat_begin+1; i<noun_feat_end; i++)
+    for (size_t i = feat_begin+1; i < feat_end; i++)
     {
         vec.push_back(lines[i]);
     }
-    m_argu_config.set_noun_feature_names(vec);
-    
+    m_argu_config.set_feature_names(vec);
+
     vec.clear();
-    for (size_t i=verb_feat_begin+1; i<verb_feat_end; ++i)
+    for (size_t i = pred_rg_begin+1; i < pred_rg_end; i++)
     {
         vec.push_back(lines[i]);
     }
-    m_argu_config.set_verb_feature_names(vec);
-    
+    m_pred_recog_config.set_feature_names(vec);
+
     vec.clear();
-    for (size_t i=pred_cl_begin+1; i<pred_cl_end; i++)
+    for (size_t i = pred_cl_begin+1; i < pred_cl_end; i++)
     {
         vec.push_back(lines[i]);
     }
@@ -122,3 +132,4 @@ bool Configuration::is_nounPOS(const string& POS) const
     }
     return false;
 }
+

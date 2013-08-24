@@ -1,3 +1,14 @@
+/*
+ * File Name     : Sentence.cpp
+ * Author        : msmouse
+ * Create Time   : 2006-12-31
+ * Project Name  : NewSRLBaseLine
+ *
+ * Updated by    : jiangfeng
+ * Update Time   : 2013-08-21
+ */
+
+
 #include "Sentence.h"
 #include <queue>
 #include <sstream>
@@ -13,14 +24,14 @@
 using namespace std;
 
 void Sentence::from_corpus_block(
-    const std::vector<std::string> &corpus_block,
-    const Configuration& config)
+    const std::vector<std::string> &corpus_block)
+    // const Configuration& config)
 {
     size_t row_count = corpus_block.size();
 
     // make room for data storage
     resize_(row_count);
-    
+
     vector<vector<size_t> > children_of_node(row_count+1);
 
     // loop for each line
@@ -65,7 +76,8 @@ void Sentence::from_corpus_block(
         // predicate
         if ("Y" == m_fields[row][FIELD_FILLPRED])
         {
-            m_predicates.push_back(Predicate(row, get_predicate_type_try_hard_(config,row)));
+            // m_predicates.push_back(Predicate(row, get_predicate_type_try_hard_(config,row)));
+            m_predicates.push_back(Predicate(row));
         }
 
         // parent and child relationship
@@ -74,11 +86,14 @@ void Sentence::from_corpus_block(
         children_of_node[parent].push_back(row);
     }
 
-/*    if (m_predicates.size() != m_argument_columns.size())
+    /*
+    if (m_predicates.size() != m_argument_columns.size())
     {
         m_argument_columns.resize(m_predicates.size()); //proinsight
-//        cout<<m_fields[1][FIELD_FORM]<<endl;
-    }*/
+        // cout<<m_fields[1][FIELD_FORM]<<endl;
+    }
+    */
+
     assert(m_predicates.size() == m_argument_columns.size());
 
     // build parse_tree
@@ -151,7 +166,7 @@ const std::string Sentence::to_corpus_block() const
     return output_stream.str();
 }
 
-/*void Sentence::set_predicates(const std::vector<size_t> &predicate_rows)
+void Sentence::set_predicates(const std::vector<size_t> &predicate_rows)
 {
     m_predicates.clear();
 
@@ -163,9 +178,7 @@ const std::string Sentence::to_corpus_block() const
     for (size_t i=0; i<predicate_rows.size(); ++i)
     {
         const size_t row = predicate_rows[i];
-        m_predicates.push_back(
-            Predicate(row, get_predicate_type_try_hard_(row))
-            );
+        m_predicates.push_back(Predicate(row));
 
         m_fields[row][FIELD_FILLPRED] = "Y";
         m_fields[row][FIELD_PRED] = get_PLEMMA(row)+".01";
@@ -173,7 +186,7 @@ const std::string Sentence::to_corpus_block() const
 
     m_argument_columns.clear();
     m_argument_columns.resize(predicate_rows.size());
-}*/
+}
 
 
 void Sentence::set_PRED(const size_t row, const std::string &PRED) // proinsght
@@ -228,37 +241,7 @@ void Sentence::resize_(const size_t row_count)
     // row ID starts at 1
     m_fields.resize(boost::extents[row_count+1][FIELD_NUMBER]);
     m_HEADs.push_back(static_cast<size_t>(-1));
-    
+
     m_row_count = row_count;
 }
 
-Predicate::PRED_TYPE Sentence::get_predicate_type_(
-    const Configuration& config,
-    const size_t row)
-{
-    string PPOS = get_PPOS(row);
-
-    if (config.is_verbPOS(PPOS))
-    {
-        return Predicate::PRED_VERB;
-    }
-    else if (config.is_nounPOS(PPOS))
-    {
-        return Predicate::PRED_NOUN;
-    }
-    return Predicate::PRED_UNKNOWN;
-}
-
-Predicate::PRED_TYPE Sentence::get_predicate_type_try_hard_(
-    const Configuration& config,
-    const size_t row)
-{
-    string PPOS = get_PPOS(row);
-
-    if (config.is_verbPOS(PPOS))
-    {
-        return Predicate::PRED_VERB;
-    }
-
-    return Predicate::PRED_NOUN;
-}

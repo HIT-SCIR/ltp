@@ -1,3 +1,14 @@
+/*
+ * File Name     : FeatureExtractor.cpp
+ * Author        : msmouse
+ * Create Time   : 2006-12-31
+ * Project Name  : NewSRLBaseLine
+ *
+ * Updated by    : jiangfeng
+ * Update Time   : 2013-08-21
+ */
+
+
 #include "FeatureExtractor.h"
 
 #include <iostream>
@@ -76,10 +87,10 @@ FeatureCollection::FeatureCollection()
 
 
     // not addd  verb_voice
-    //add_feature_(FEAT_VERB_VOICE,       FEAT_TYPE_NODE,             "VerbVoice",                "VOICE",    &FeatureExtractor::fg_verb_voice_);
-    //add_feature_(FEAT_PRED_VOICE,       FEAT_TYPE_PRED,             "PredicateVoice",           "PREDVOICE",&FeatureExtractor::fg_predicate_voice_);
-    add_feature_(FEAT_NODE_V_PRED,       FEAT_TYPE_NODE_VS_PRED,      "VerbBetweenPredicate",       "N_V_PRED",  &FeatureExtractor::fg_has_verb_between_predicate_);
-    add_feature_(FEAT_HAS_SV,            FEAT_TYPE_PRED,              "HasSupportVerb",        "HAS_SV",     &FeatureExtractor::fg_has_support_verb_); // problem
+    // add_feature_(FEAT_VERB_VOICE,       FEAT_TYPE_NODE,             "VerbVoice",                "VOICE",    &FeatureExtractor::fg_verb_voice_);
+    // add_feature_(FEAT_PRED_VOICE,       FEAT_TYPE_PRED,             "PredicateVoice",           "PREDVOICE",&FeatureExtractor::fg_predicate_voice_);
+    // add_feature_(FEAT_NODE_V_PRED,       FEAT_TYPE_NODE_VS_PRED,      "VerbBetweenPredicate",       "N_V_PRED",  &FeatureExtractor::fg_has_verb_between_predicate_);
+    // add_feature_(FEAT_HAS_SV,            FEAT_TYPE_PRED,              "HasSupportVerb",        "HAS_SV",     &FeatureExtractor::fg_has_support_verb_); // problem
     
 
     // new features for predicate sense recognition
@@ -239,14 +250,9 @@ void FeatureExtractor::set_feature_set_(
         node_vs_predicate_features.end());
 }
 
-void FeatureExtractor::set_noun_feature_set(const vector<string> &feature_set_str)
+void FeatureExtractor::set_feature_set(const vector<string> &feature_set_str)
 {
-    set_feature_set_(feature_set_str, m_noun_feature_set);
-}
-
-void FeatureExtractor::set_verb_feature_set(const vector<string> &feature_set_str)
-{
-    set_feature_set_(feature_set_str, m_verb_feature_set);
+    set_feature_set_(feature_set_str, m_feature_set);
 }
 
 const std::string& FeatureExtractor::get_feature_value_(
@@ -342,21 +348,8 @@ void FeatureExtractor::calc_features(const size_t predicate_index)
         = mp_sentence->get_predicates()[predicate_index];
 
     m_predicate_row  = predicate.row;
-    m_predicate_type = predicate.type;
 
-    switch (m_predicate_type)
-    {
-        case Predicate::PRED_NOUN:
-            calc_features_(m_noun_feature_set);
-            break;
-        case Predicate::PRED_VERB:
-            calc_features_(m_verb_feature_set);
-            break;
-
-        default:
-            throw runtime_error("Unknown preidcate type for word");
-    }
-
+    calc_features_(m_feature_set);
 }
 
 void FeatureExtractor::calc_features_(const FeatureSet& feature_set)
@@ -364,6 +357,11 @@ void FeatureExtractor::calc_features_(const FeatureSet& feature_set)
     calc_predicate_features_(feature_set.for_predicate);
     calc_node_vs_predicate_features_(feature_set.for_node_vs_predicate);
     calc_node_features_(feature_set.for_node);
+}
+
+void FeatureExtractor::calc_node_features()
+{
+    calc_node_features_(m_feature_set.for_node);
 }
 
 void FeatureExtractor::calc_node_features_(const vector<int>& node_features)
@@ -386,7 +384,7 @@ void FeatureExtractor::calc_node_features_(const vector<int>& node_features)
         }
     }
     m_node_features_extracted_flag = true;
-    
+
 }
 
 void FeatureExtractor::calc_predicate_features_(const vector<int>& predicate_features)
@@ -402,7 +400,7 @@ void FeatureExtractor::calc_predicate_features_(const vector<int>& predicate_fea
 void FeatureExtractor::calc_node_vs_predicate_features_(const vector<int>& node_vs_predicate_features)
 {
     clear_node_vs_predicate_features_();
-    
+
     // prepare constants
     const SRLTree& parse_tree = mp_sentence->get_parse_tree();
     const size_t   row_count  = mp_sentence->get_row_count();
@@ -493,45 +491,30 @@ void FeatureExtractor::clear_node_vs_predicate_features_()
 void FeatureExtractor::set_feature_set_by_file(
     const string& config_file,
     const Configuration &configuration,
-    vector<vector<string> >& verb_com_features,
-    vector<vector<string> >& noun_com_features)
+    vector<vector<string> >& com_features)
 {
     ifstream config_stream(config_file.c_str());
     if (!config_stream) 
     {
         throw runtime_error("FeatureExtractor: Error opening config file.");
     }
+
     string line;
-    verb_com_features.clear();
-    noun_com_features.clear();
+    com_features.clear();
     vector<vector<string> >* p_features;
+    p_features = &com_features;
 
     while (getline(config_stream, line))
     {
-        if ("[VERB]" == line)
-        {
-            p_features = &verb_com_features;
-        }
-        else if ("[NOUN]" == line)
-        {
-            p_features = &noun_com_features;
-        }
-        else
-        {
-            if ('#' != line[0])
-                p_features->push_back(split_(line));
-        }
+        if ('#' != line[0])
+            p_features->push_back(split_(line));
     }
-    
+
     // check features in config file belongs language configuration
     const vector<string>& features = configuration.get_pred_class_config().get_feature_names();
-    check_feature_exist(verb_com_features, features);
-    check_feature_exist(noun_com_features, features);
-    set_noun_feature_set(
-        vct_vct_string2_vct_string(noun_com_features)
-    );
-    set_verb_feature_set(
-        vct_vct_string2_vct_string(verb_com_features)
+    check_feature_exist(com_features, features);
+    set_feature_set(
+        vct_vct_string2_vct_string(com_features)
     );
 }
 
@@ -588,7 +571,7 @@ void FeatureExtractor::get_feature_for_rows(
         {
             throw runtime_error("Specified feature_number is empty for row");
         }
-        
+
         features_for_rows.push_back(get_feature_storage_(feature_number, row));
     }
 }
@@ -695,7 +678,7 @@ void FeatureExtractor::fg_children_pattern_(const size_t row)
     string children_rel;
     string children_pos_ndup;
     string children_rel_ndup;
-    
+
     string child_pos;
     string child_rel;
     string old_child_pos;
@@ -778,44 +761,6 @@ void FeatureExtractor::fg_siblings_pattern_( const size_t row )
     set_feature_value_(FEAT_SIB_REL_NDUP, row, siblings_rel_ndup);
 }
 
-void FeatureExtractor::fg_has_support_verb_(const size_t row)
-{
-    assert(m_predicate_type == Predicate::PRED_NOUN);
-
-    // constants
-    const SRLTree& parse_tree  = mp_sentence->get_parse_tree();
-
-    SRLTree::iterator node_iter
-        = mp_sentence->get_node_of_row(m_predicate_row);
-
-    // check if the predicate is a descendant of a VP
-    node_iter = parse_tree.parent(node_iter); // get parent
-    while (0 != *node_iter)  { // go up till ROOT
-        if (m_configuration.is_verbPOS(mp_sentence->get_PPOS(*node_iter))) {
-            set_feature_value_(FEAT_HAS_SV, m_predicate_row, "1");
-            return;
-        }
-
-        node_iter = parse_tree.parent(node_iter); // go up
-    }
-
-    // check if predicate has a VP neighbor
-    node_iter = mp_sentence->get_node_of_row(m_predicate_row);
-    node_iter = parse_tree.parent(node_iter); // get parent
-    for(SRLTree::iterator sibling = node_iter.begin();
-        sibling != node_iter.end();
-        ++sibling)
-    {
-        if (m_configuration.is_verbPOS(mp_sentence->get_PPOS(*sibling)) ) {
-            set_feature_value_(FEAT_HAS_SV, m_predicate_row, "1");
-        }
-    }
-
-    // no support verb found
-    set_feature_value_(FEAT_HAS_SV, m_predicate_row, "0");
-
-}
-
 void FeatureExtractor::fg_predicate_children_pattern_( const size_t row )
 {
     typedef SRLTree::sibling_iterator Iter;
@@ -862,6 +807,7 @@ void FeatureExtractor::fg_predicate_children_pattern_( const size_t row )
     set_feature_value_(FEAT_PRED_CHD_POS_NDUP, m_predicate_row, children_pos_ndup);
     set_feature_value_(FEAT_PRED_CHD_REL_NDUP, m_predicate_row, children_rel_ndup);
 }
+
 void FeatureExtractor::fg_predicate_siblings_pattern_(const size_t row)
 {
     typedef SRLTree::sibling_iterator Iter;
@@ -1044,7 +990,7 @@ void FeatureExtractor::fg_path_length_(const size_t row)
     set_feature_empty_(FEAT_PATH_LENGTH,   row, false);
     set_feature_empty_(FEAT_UP_PATH_LEN,   row, false);
     set_feature_empty_(FEAT_DOWN_PATH_LEN, row, false);
-    
+
 
 /*    if (row) // skip ROOT (0 == row)
     {
@@ -1087,7 +1033,7 @@ void FeatureExtractor::fg_descendant_of_predicate_( const size_t row )
         = get_feature_value_(FEAT_UP_PATH_LEN, row);
     const string& down_path_length
         = get_feature_value_(FEAT_DOWN_PATH_LEN, row);
-    
+
     if ("0" == down_path_length && "0" != up_path_length) 
     {
         set_feature_value_(FEAT_DESC_OF_PD, row, "1");    
@@ -1179,7 +1125,7 @@ void FeatureExtractor::fg_predicate_bag_of_words_(const size_t row)
         bag_of_words += prefix;
         bag_of_words += mp_sentence->get_FORM(i);
     }
-    
+
     set_feature_value_(FEAT_BAG_OF_WORD, row, bag_of_words);
 
     string bag_of_words_add_des_of_pred = "";
@@ -1196,7 +1142,7 @@ void FeatureExtractor::fg_predicate_bag_of_words_(const size_t row)
         bag_of_words_add_des_of_pred += "_";
         bag_of_words_add_des_of_pred += get_feature_value_(FEAT_DESC_OF_PD, i);
     }
-    
+
     set_feature_value_(FEAT_BAG_OF_WORD_IS_DES_O_PRED, row, bag_of_words_add_des_of_pred);
 }
 
@@ -1224,7 +1170,7 @@ void FeatureExtractor::fg_predicate_bag_of_words_ordered_(const size_t row)
         bag_of_words_o += mp_sentence->get_FORM(i);
         bag_of_words_o += "_r";
     }
-    
+
     set_feature_value_(FEAT_BAG_OF_WORD_O, m_predicate_row, bag_of_words_o);
 }
 
@@ -1252,7 +1198,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_ordered_(const size_t row)
         bag_of_POSs_o += mp_sentence->get_PPOS(i);
         bag_of_POSs_o += "_r";
     }
-    
+
     set_feature_value_(FEAT_BAG_OF_POS_O, m_predicate_row, bag_of_POSs_o);
 
     string bag_of_POSs_o_w5 = "";
@@ -1341,16 +1287,16 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_numbered_(const size_t row)
             <<"_"
             <<distance;
     }
-    
+
     set_feature_value_(FEAT_BAG_OF_POS_N, m_predicate_row, bag_of_POSs_n.str());
 
     const string& w5_prefix = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_POS_N_W5)+"@";
-    
+
     stringstream bag_of_POSs_n_w5;
     bool visit = false;
     const size_t wind_begin = (m_predicate_row-5>1         ? m_predicate_row-5 : 1);
     const size_t wind_end   = (m_predicate_row+5<row_count ? m_predicate_row+5 : row_count);
-    
+
     for (size_t i=m_predicate_row-1; i>= wind_begin; --i)
     {
         const int distance = int(i-m_predicate_row);
@@ -1376,7 +1322,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_numbered_(const size_t row)
         bag_of_POSs_n_w5<<" "<<w5_prefix<<mp_sentence->get_PPOS(i)<<"_"<<distance;
     }
     set_feature_value_(FEAT_BAG_OF_POS_N_W5, m_predicate_row, bag_of_POSs_n_w5.str());
-    
+
 }
 
 void FeatureExtractor::fg_predicate_window5_bigram_(const size_t row) 
@@ -1396,7 +1342,7 @@ void FeatureExtractor::fg_predicate_window5_bigram_(const size_t row)
         wind5_bigram += "_";
         wind5_bigram += mp_sentence->get_FORM(i+1);
     }
-    
+
     set_feature_value_(FEAT_WIND5_BIGRAM, m_predicate_row, wind5_bigram);
 
     const string& pos_prefix = ms_feature_collection.get_feature_prefix(FEAT_WIND5_BIGRAM_POS)+"@";
@@ -1512,31 +1458,10 @@ void FeatureExtractor::fg_pfeat_column_(const size_t row)
     set_feature_value_(FEAT_PFEAT_COLUMN, row, pfeat_str);
     set_feature_value_(FEAT_PFEAT_EXC_NULL, row, pfeat_exc_null);
 }
+
 void FeatureExtractor::fg_pfeat_(const size_t row)
 {
     const string& pfeat = mp_sentence->get_PFEAT(row);
     set_feature_value_(FEAT_PFEAT, row, pfeat);
 }
 
-void FeatureExtractor::fg_has_verb_between_predicate_(const size_t row)
-{
-//    assert(m_predicate_type == Predicate::PRED_NOUN);
-    size_t begin, end;
-    if (row < m_predicate_row) {
-        begin = row+1;
-        end   = m_predicate_row;
-    }
-    else {
-        begin = m_predicate_row+1;
-        end   = row;
-    }
-
-    for (size_t i=begin; i<end; ++i) {
-        if ( m_configuration.is_verbPOS(mp_sentence->get_PPOS(i))) {
-            set_feature_value_(FEAT_NODE_V_PRED, row, "1");
-            return;
-        }
-    }
-    set_feature_value_(FEAT_NODE_V_PRED, row, "0");
-
-}

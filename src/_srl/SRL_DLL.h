@@ -13,44 +13,43 @@ using namespace std;
 #define SRL_DLL_API_EXPORT
 
 #ifdef _WIN32
-		#undef SRL_DLL_API
-		#ifdef SRL_DLL_API_EXPORT
-			#define SRL_DLL_API extern "C" _declspec(dllexport) 
-		#else
-			#define SRL_DLL_API extern "C" _declspec(dllimport)
-			#pragma comment(lib, "srl.lib")
-		#endif
+    #undef SRL_DLL_API
+    #ifdef SRL_DLL_API_EXPORT
+        #define SRL_DLL_API extern "C" _declspec(dllexport)
+    #else
+        #define SRL_DLL_API extern "C" _declspec(dllimport)
+        #pragma comment(lib, "srl.lib")
+    #endif
 #endif
 
 int SRL(
-				 const vector<string> &words,
-				 const vector<string> &POSs,
-				 const vector<string> &NEs,
-				 const vector< pair<int, string> > &parse,
-				 vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult
-				 );
+        const vector<string> &words,
+        const vector<string> &POSs,
+        const vector<string> &NEs,
+        const vector< pair<int, string> > &parse,
+        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult
+);
 
-
-// 加载资源
+// Load Resources
 SRL_DLL_API int SRL_LoadResource(const string &ConfigDir);
 
-// 释放分词器的资源
+// Release Resources
 SRL_DLL_API int SRL_ReleaseResource();
 
-// SRL
+// Perform SRL
 SRL_DLL_API int DoSRL(
-				 const vector<string> &words,
-				 const vector<string> &POSs,
-				 const vector<string> &NEs,
-				 const vector< pair<int, string> > &parse
-				 );
+        const vector<string> &words,
+        const vector<string> &POSs,
+        const vector<string> &NEs,
+        const vector< pair<int, string> > &parse
+);
 
 SRL_DLL_API int GetSRLResult_size(
-		vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult);
+        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult);
 
 
 SRL_DLL_API int GetSRLResult(
-		vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult);
+        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult);
 
 #endif
 

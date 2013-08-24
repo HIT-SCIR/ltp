@@ -1,6 +1,7 @@
 include_directories (
     .
     ${util_DIR} 
+    ${SOURCE_DIR}/utils
     ${THIRDPARTY_DIR}/boost/include
     ${THIRDPARTY_DIR}/maxent)
 
@@ -8,6 +9,7 @@ set (srl_SRC
     Configuration.cpp
     Configuration.h
     ConstVar.h
+    options.h
     DataPreProcess.cpp
     DataPreProcess.h
     DataStruct.h
@@ -41,17 +43,24 @@ link_directories (${LIBRARY_OUTPUT_PATH})
 
 # Training suite is not supported in windows
 if (NOT WIN32)
-set (SRLExtract_SRC SRLExtract.cpp Corpus.cpp)
-add_executable (SRLExtract  ${SRLExtract_SRC})
-target_link_libraries (SRLExtract   srl)
-set_target_properties (SRLExtract
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+#set (SRLExtract_SRC SRLExtract.cpp Corpus.cpp)
+#add_executable (SRLExtract  ${SRLExtract_SRC})
+#target_link_libraries (SRLExtract   srl)
+#set_target_properties (SRLExtract
+#    PROPERTIES
+#    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+#
+#set (SRLGetInstance_SRC SRLGetInstance.cpp GetInstance.cpp)
+#add_executable (SRLGetInstance ${SRLGetInstance_SRC})
+#target_link_libraries (SRLGetInstance   srl)
+#set_target_properties (SRLGetInstance
+#    PROPERTIES
+#    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
-set (SRLGetInstance_SRC SRLGetInstance.cpp GetInstance.cpp)
-add_executable (SRLGetInstance ${SRLGetInstance_SRC})
-target_link_libraries (SRLGetInstance   srl)
-set_target_properties (SRLGetInstance
+set (lgsrl_SRC lgsrl.cpp Corpus.cpp GetInstance.cpp)
+add_executable (lgsrl ${lgsrl_SRC})
+target_link_libraries (lgsrl maxent srl)
+set_target_properties (lgsrl
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 

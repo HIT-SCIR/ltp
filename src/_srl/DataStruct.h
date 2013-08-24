@@ -1,12 +1,12 @@
-///////////////////////////////////////////////////////////////
-//	File Name :DataStruct.h
-//	Author    : hjliu
-//	Time      : 2006年4月4日
-//	Project   :SRLBaseline
-//	Comment   :describe the data structure used in srl baseline
-//	History   : 
-//  Copy Right:IT-IRLab (c) 2006-2010, all rights reserved.
-///////////////////////////////////////////////////////////////
+/*
+ * File Name : DataStruct.h
+ * Author    : hjliu
+ * Time      : 2006年4月4日
+ * Project   : SRLBaseline
+ * Comment   : describe the data structure used in srl baseline
+ *
+ * Copy Right: HIT-SCIR (c) 2006-2013, all rights reserved.
+ */
 
 #ifndef _DATA_STRUCT_
 #define _DATA_STRUCT_
@@ -16,9 +16,11 @@
 #include <stl.h>
 #include <deque>
 
-//follow define some cosnt string
-//relation
+/*
+ * following defines some constant string
+ */
 
+// relation
 static const char *SBV = "SBV";
 static const char *VOB = "VOB";
 static const char *QUN = "QUN";
@@ -29,7 +31,7 @@ static const int VOBID = 2;
 static const int QUNID = 3;
 static const int ADVID = 4;
 
-//pos
+// pos
 static const char *V = "v";
 static const char *NT = "nt";
 static const char *ND = "nd";
@@ -38,7 +40,7 @@ static const char *NS = "ns";
 static const char *P = "p";
 static const char *Q = "q";
 
-//argument type
+// argument type
 static const char *A0 = "Arg0";
 static const char *A1 = "Arg1";
 static const char *A0sQ = "Arg0-QTY";
@@ -49,26 +51,26 @@ static const char *AMsDIR = "ArgM-DIR";
 
 struct DepNode
 {
-	int parent;
-	deque<int> dequeChildren;
-	string relation;
-	int id;
-	pair<int, int> constituent; //the begin and end of the arg candidate
-
+    int parent;
+    deque<int> dequeChildren;
+    string relation;
+    int id;
+    pair<int, int> constituent; //the begin and end of the arg candidate
 };
 
 struct DepTree
 {
-	vector<DepNode> vecDepTree;
-	int nodeNum;
+    vector<DepNode> vecDepTree;
+    int nodeNum;
 };
 
 struct ArgInfo
 {
-	int id;
-	string type;
-	pair<int, int> constituent;
+    int id;
+    string type;
+    pair<int, int> constituent;
 };
 
 
 #endif
+
