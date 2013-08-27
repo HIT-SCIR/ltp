@@ -36,10 +36,10 @@ set_target_properties (segmentor_shared_lib PROPERTIES
 # TOOLKIT
 # -----------------------------------------------
 add_executable (otcws otcws.cpp ${segment_SRC})
-
+message (STATUS ${LIBRARY_OUTPUT_PATH} )
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
-target_link_libraries (otcws boost_regex)
+target_link_libraries (otcws boost_regex_static_lib)
 
 # redirect the output binary to tools/train
 set_target_properties (otcws
