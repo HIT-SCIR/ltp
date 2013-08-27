@@ -24,7 +24,7 @@ public:
                 inst->predicted_deprels.size() == len);
 
         for (int i = 1; i < inst->size(); ++ i) {
-            f << i + 1 
+            f << i 
                 << "\t"                     // 0 - index
                 << inst->forms[i] 
                 << "\t"                     // 1 - form

@@ -44,6 +44,7 @@ public:
         inst->lemmas.push_back( ROOT_LEMMA );
         inst->postags.push_back( ROOT_POSTAG );
         inst->heads.push_back( -1 );
+
         if (model_opt.labeled) {
             inst->deprels.push_back( ROOT_DEPREL );
         }

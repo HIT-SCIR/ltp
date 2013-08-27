@@ -4,6 +4,8 @@ include_directories (
     ${SOURCE_DIR}/utils/math)
 #    ${THIRDPARTY_DIR}/boost/include)
 
+set (ner_VERSION "0.0.1")
+
 set (ner_SRC
     options.cpp
     decoder.cpp
@@ -12,10 +14,17 @@ set (ner_SRC
     extractor.cpp
     ner.cpp)
 
-add_library (ner ner_dll.cpp ${ner_SRC})
+add_library (ner_static_lib STATIC ner_dll.cpp ${ner_SRC})
+
+set_target_properties (ner_static_lib PROPERTIES OUTPUT_NAME ner)
+
+add_library (ner_shared_lib SHARED ner_dll.cpp ${ner_SRC})
+
+set_target_properties (ner_shared_lib PROPERTIES
+    VERSION     ${ner_VERSION}
+    OUTPUT_NAME ner)
 
 add_executable (otner otner.cpp ${ner_SRC})
-link_directories ( ${LIBRARY_OUTPUT_PATH} )
 #target_link_libraries (otner boost_regex)
 
 # redirect the output binary to tools/train

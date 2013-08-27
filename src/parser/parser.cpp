@@ -250,7 +250,7 @@ bool Parser::parse_cfg(utility::ConfigParser & cfg) {
     feat_opt.use_labeled_grand = (model_opt.labeled == true &&
             feat_opt.use_grand);
 
-	return true;
+    return true;
 }
 
 void Parser::build_configuration(void) {
@@ -267,7 +267,7 @@ void Parser::build_configuration(void) {
             train_dat[i]->predicted_deprelsidx.resize(len);
         }
 
-        for (int j = 0; j < len; ++ j) {
+        for (int j = 1; j < len; ++ j) {
             model->postags.push(train_dat[i]->postags[j].c_str());
             if (model_opt.labeled) {
                 int idx = -1;
