@@ -30,10 +30,6 @@ add_subdirectory (src)
 # testing section
 # -- generate configure file for ltp_test
 configure_file (
-    ${CONFIGURE_DIR}/ltp_all_modules.conf.in
-    ${EXECUTABLE_OUTPUT_PATH}/ltp_all_modules.conf)
-
-configure_file (
     ${TOOLS_DIR}/testing/auto-test.sh.in
     ${TOOLS_DIR}/testing/auto-test.sh)
 

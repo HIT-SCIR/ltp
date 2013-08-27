@@ -37,7 +37,7 @@ public:
         }
 
         std::vector<std::string> words = split(line);
-        unsigned found;
+        int found;
 
         for (int i = 0; i < words.size(); ++ i) {
             if (train) {

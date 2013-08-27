@@ -86,15 +86,13 @@ void Sentence::from_corpus_block(
         children_of_node[parent].push_back(row);
     }
 
-    /*
     if (m_predicates.size() != m_argument_columns.size())
     {
         m_argument_columns.resize(m_predicates.size()); //proinsight
         // cout<<m_fields[1][FIELD_FORM]<<endl;
     }
-    */
 
-    assert(m_predicates.size() == m_argument_columns.size());
+    // assert(m_predicates.size() == m_argument_columns.size());
 
     // build parse_tree
     SRLTree::iterator node_iter;

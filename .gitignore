@@ -14,22 +14,26 @@ build
 config.h
 
 ###############
+# config      #
+###############
+*.cnf
+
+###############
 # output      #
 ###############
 include/
 lib/
 bin/
-crf_learn
-crf_test
-gparser
+lgdpj
+lgsrl
+otcws
+otpos
+otner
 ltp-model
-maxent
-svm_learn
 auto-test.sh
-SRLExtract
-SRLGetInstance
-ltp-model.json
-config.svmt
-gparser.conf
+
+###############
+# data file   #
+###############
 new_ltp_data/
 ltp_data/
