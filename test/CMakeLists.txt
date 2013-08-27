@@ -20,17 +20,17 @@ add_executable (ltp_test     ${ltp_test_SRC})
 #add_executable (ltp_test2    ${ltp_test2_SRC})
 
 set (ltp_test_LIBS 
-	maxent
-	util
+	maxent_static_lib
+	util_static_lib
 	ltp
 	splitsnt
-	segmentor
-	postagger
-	parser
-	ner
-	srl
+	segmentor_static_lib
+	postagger_static_lib
+	parser_static_lib
+	ner_static_lib
+	srl_static_lib
 	xml4nlp
-	boost_regex)
+	boost_regex_static_lib)
 	
 if (NOT WIN32) 
 set (ltp_test_LIBS ${ltp_test_LIBS} pthread)

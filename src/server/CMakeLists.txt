@@ -19,17 +19,17 @@ link_directories ( ${LIBRARY_OUTPUT_PATH} )
 add_executable (ltp_server     ${ltp_server_SRC})
 
 target_link_libraries (ltp_server
-    maxent
-    util
+    maxent_static_lib
+    util_static_lib
     ltp
     splitsnt
-    segmentor
-    postagger
-    parser
-    ner
-    srl
+    segmentor_static_lib
+    postagger_static_lib
+    parser_static_lib
+    ner_static_lib
+    srl_static_lib
     xml4nlp
     dl
     pthread
-    boost_regex)
+    boost_regex_static_lib)
 
