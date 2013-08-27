@@ -1,3 +1,4 @@
+set (maxent_VERSION "0.0.1")
 
 set (maxent_SRC
     opmath.h
@@ -8,7 +9,15 @@ set (maxent_SRC
     owlqn.cpp
     lbfgs.cpp)
 
-add_library (maxent ${maxent_SRC})
+add_library (maxent_static_lib STATIC ${maxent_SRC})
+set_target_properties (maxent_static_lib    PROPERTIES
+    OUTPUT_NAME maxent)
+
+add_library (maxent_shared_lib SHARED ${maxent_SRC})
+set_target_properties (maxent_shared_lib PROPERTIES
+    VERSION     ${maxent_VERSION}
+    OUTPUT_NAME maxent)
+
 
 #-----------------------------------
 # add executables
