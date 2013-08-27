@@ -33,10 +33,6 @@ configure_file (
     ${TOOLS_DIR}/testing/auto-test.sh.in
     ${TOOLS_DIR}/testing/auto-test.sh)
 
-configure_file (
-    ${TOOLS_DIR}/train/ltp-model.in
-    ${TOOLS_DIR}/train/ltp-model)
-
 # enable test
 enable_testing()
 
