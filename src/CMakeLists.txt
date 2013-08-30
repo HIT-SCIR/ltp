@@ -6,7 +6,7 @@ set (postagger_DIR       ${SOURCE_DIR}/postagger)
 set (parser_DIR          ${SOURCE_DIR}/parser)
 set (splitsnt_DIR        ${SOURCE_DIR}/_split_sentence/)
 set (ner_DIR             ${SOURCE_DIR}/ner/)
-set (srl_DIR             ${SOURCE_DIR}/_srl/)
+set (srl_DIR             ${SOURCE_DIR}/srl/)
 set (ltp_dll_DIR         ${SOURCE_DIR}/__ltp_dll/)
 set (server_DIR          ${SOURCE_DIR}/server/)
 
@@ -17,7 +17,7 @@ add_subdirectory ("segmentor")
 add_subdirectory ("postagger")
 add_subdirectory ("ner")
 add_subdirectory ("parser")
-add_subdirectory ("_srl")
+add_subdirectory ("srl")
 add_subdirectory ("__ltp_dll")
 
 # mongoose server is not supported in windows
