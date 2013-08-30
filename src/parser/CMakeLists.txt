@@ -34,4 +34,6 @@ set_target_properties (lgdpj
     OUTPUT_NAME lgdpj
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
-
+configure_file (
+    parser_dll.h
+    ${INCLUDE_OUTPUT_PATH}/parser_dll.h)

@@ -40,3 +40,6 @@ set_target_properties (otpos
     OUTPUT_NAME otpos
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
+configure_file (
+    postag_dll.h
+    ${INCLUDE_OUTPUT_PATH}/postag_dll.h)

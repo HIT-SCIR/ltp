@@ -47,3 +47,6 @@ set_target_properties (otcws
     OUTPUT_NAME otcws
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
+configure_file (
+    segment_dll.h
+    ${INCLUDE_OUTPUT_PATH}/segment_dll.h)
