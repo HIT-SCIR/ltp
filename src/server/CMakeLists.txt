@@ -1,13 +1,14 @@
 include_directories (./
     ${SOURCE_DIR}/__util
     ${SOURCE_DIR}/__xml4nlp
-    ${SOURCE_DIR}/_split_sentence
-    ${SOURCE_DIR}/_crfwordsegment
-    ${SOURCE_DIR}/_svmtagger
-    ${SOURCE_DIR}/_ner
-    ${SOURCE_DIR}/_gparser
-    ${SOURCE_DIR}/_srl
     ${SOURCE_DIR}/__ltp_dll
+    ${SOURCE_DIR}/_split_sentence
+    ${SOURCE_DIR}/segmentor
+    ${SOURCE_DIR}/postagger
+    ${SOURCE_DIR}/ner
+    ${SOURCE_DIR}/parser
+    ${SOURCE_DIR}/srl
+    ${SOURCE_DIR}/utils
     ${THIRDPARTY_DIR}/crfpp
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)

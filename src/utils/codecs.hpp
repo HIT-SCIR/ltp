@@ -151,6 +151,29 @@ inline bool tail(const std::string & s,
     return false;
 }
 
+inline bool isclear(const std::string & s, int encoding=UTF8) {
+    int idx = 0;
+    if (encoding == UTF8) {
+        while (idx<s.length()) {
+            if ((s[idx]&0x80)==0) {
+                ++idx;
+            } else if ((s[idx]&0xE0)==0xC0) {
+                idx+=2;
+            } else if ((s[idx]&0xF0)==0xE0) {
+                idx+=3;
+            } else {
+                return false;
+            }
+        }
+    } else if (encoding == GBK) {
+        return true;
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 }       //  end for namespace codecs
 }       //  end for namespace strutils
 }       //  end for namespace ltp

@@ -13,6 +13,8 @@
 #include "Xml4nlp.h"
 #include "Ltp.h"
 
+#include "codecs.hpp"
+
 #if !defined(LISTENING_PORT)
 #define LISTENING_PORT	"12345"
 #endif /* !LISTENING_PORT */
@@ -20,9 +22,10 @@
 #define POST_LEN 1024
 
 using namespace std;
+using namespace ltp::strutils::codecs;
 
 static XML4NLP xml4nlp;
-static LTP ltp(xml4nlp);
+static LTP engine(xml4nlp);
 
 static int exit_flag;
 
@@ -82,23 +85,27 @@ static int Service(struct mg_connection *conn) {
         mg_get_var(str_post_data.c_str(), str_post_data.size(), "t", type, sizeof(type) - 1);
         mg_get_var(str_post_data.c_str(), str_post_data.size(), "x", xml, sizeof(xml) - 1);
 
-        if (strcmp(sentence, "") == 0)
-            return 0;
+        string strSentence = sentence;
+        delete []sentence;
 
-        if(strcmp(type, "") == 0){
+        /*
+         * validation check
+         */
+        if (strcmp(sentence, "") == 0 || !isclear(strSentence)) {
+            return 0;
+        }
+
+        if(strcmp(type, "") == 0) {
             str_type = "";
-        }else{
+        } else {
             str_type = type;
         }
 
-        if(strcmp(xml, "") == 0){
+        if(strcmp(xml, "") == 0) {
             str_xml = "";
         } else {
             str_xml = xml;
         }
-
-        string strSentence = sentence;
-        delete []sentence;
 
         cout << "Input sentence is: " << strSentence << endl;
 
@@ -109,17 +116,17 @@ static int Service(struct mg_connection *conn) {
         }
 
         if(str_type == "ws"){
-            ltp.wordseg();
+            engine.wordseg();
         } else if(str_type == "pos"){
-            ltp.postag();
+            engine.postag();
         } else if(str_type == "ner"){
-            ltp.ner();
+            engine.ner();
         } else if(str_type == "dp"){
-            ltp.parser();
+            engine.parser();
         } else if(str_type == "srl"){
-            ltp.srl();
+            engine.srl();
         } else {
-            ltp.srl();
+            engine.srl();
         }
 
         string strResult;
