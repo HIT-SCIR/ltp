@@ -1,55 +1,56 @@
 /*
-   HIT-IRLab (c) 2001-2005, all rights reserved.
-   This software is "XML Text Representation for NLP"
-   Its aim is to integrate all the modules of IRLab into a uniform frame
-   The author of this software if Huipeng Zhang (zhp@ir.hit.edu.cn)
-   The create time of this software is 2005-11-01
-   In this software, a open source XML parser TinyXML is used
-   We Thank to the author of it -- Lee Thomason
-   */
+ * HIT-IRLab (c) 2001-2005, all rights reserved.
+ * This software is "XML Text Representation for NLP"
+ * Its aim is to integrate all the modules of IRLab into a uniform frame
+ * The author of this software if Huipeng Zhang (zhp@ir.hit.edu.cn)
+ * The create time of this software is 2005-11-01
+ * In this software, a open source XML parser TinyXML is used
+ * We Thank to the author of it -- Lee Thomason
+ */
 
 #include "Xml4nlp.h"
+#include "MyLib.h"
 
-const char * const NOTE_SENT = "sent";
-const char * const NOTE_WORD = "word";
-const char * const NOTE_POS = "pos";
-const char * const NOTE_NE = "ne";
-const char * const NOTE_PARSER = "parser";
-const char * const NOTE_WSD = "wsd";
-const char * const NOTE_SRL = "srl";
+const char * const NOTE_SENT        = "sent";
+const char * const NOTE_WORD        = "word";
+const char * const NOTE_POS         = "pos";
+const char * const NOTE_NE          = "ne";
+const char * const NOTE_PARSER      = "parser";
+const char * const NOTE_WSD         = "wsd";
+const char * const NOTE_SRL         = "srl";
 //const char * const NOTE_CLASS = "class";
 //const char * const NOTE_SUM = "sum";
 //const char * const NOTE_CR = "cr";
 
-const char * const XML4NLP::TAG_DOC = "doc";
-const char * const XML4NLP::TAG_NOTE = "note";
-const char * const XML4NLP::TAG_SUM = "sum";
-const char * const XML4NLP::TAG_CLASS = "class";
-const char * const XML4NLP::TAG_COREF = "coref";
-const char * const XML4NLP::TAG_COREF_CR = "cr";
-const char * const XML4NLP::TAG_COREF_MENT = "mention";
-const char * const XML4NLP::TAG_PARA = "para";
-const char * const XML4NLP::TAG_SENT = "sent";
-const char * const XML4NLP::TAG_WORD = "word";
-const char * const XML4NLP::TAG_CONT = "cont";		//sent, word
-const char * const XML4NLP::TAG_POS = "pos";
-const char * const XML4NLP::TAG_NE = "ne";
-const char * const XML4NLP::TAG_PSR_PARENT = "parent";
-const char * const XML4NLP::TAG_PSR_RELATE = "relate";
-const char * const XML4NLP::TAG_WSD = "wsd";
-const char * const XML4NLP::TAG_WSD_EXP = "wsdexp";
-const char * const XML4NLP::TAG_SRL_ARG = "arg";
-const char * const XML4NLP::TAG_SRL_TYPE = "type";
-const char * const XML4NLP::TAG_BEGIN = "beg";		// cr, srl
-const char * const XML4NLP::TAG_END = "end";		// cr, srl
-const char * const XML4NLP::TAG_ID = "id";			// para, sent, word
+const char * const XML4NLP::TAG_DOC         = "doc";
+const char * const XML4NLP::TAG_NOTE        = "note";
+const char * const XML4NLP::TAG_SUM         = "sum";
+const char * const XML4NLP::TAG_CLASS       = "class";
+const char * const XML4NLP::TAG_COREF       = "coref";
+const char * const XML4NLP::TAG_COREF_CR    = "cr";
+const char * const XML4NLP::TAG_COREF_MENT  = "mention";
+const char * const XML4NLP::TAG_PARA        = "para";
+const char * const XML4NLP::TAG_SENT        = "sent";
+const char * const XML4NLP::TAG_WORD        = "word";
+const char * const XML4NLP::TAG_CONT        = "cont";
+const char * const XML4NLP::TAG_POS         = "pos";
+const char * const XML4NLP::TAG_NE          = "ne";
+const char * const XML4NLP::TAG_PSR_PARENT  = "parent";
+const char * const XML4NLP::TAG_PSR_RELATE  = "relate";
+const char * const XML4NLP::TAG_WSD         = "wsd";
+const char * const XML4NLP::TAG_WSD_EXP     = "wsdexp";
+const char * const XML4NLP::TAG_SRL_ARG     = "arg";
+const char * const XML4NLP::TAG_SRL_TYPE    = "type";
+const char * const XML4NLP::TAG_BEGIN       = "beg";
+const char * const XML4NLP::TAG_END         = "end";
+const char * const XML4NLP::TAG_ID          = "id";
 
 XML4NLP::XML4NLP() {
     m_document_t.documentPtr = NULL; 
-    m_note.nodePtr = NULL;
-    m_summary.nodePtr = NULL;
-    m_textclass.nodePtr = NULL;
-    m_coref.nodePtr = NULL;			
+    m_note.nodePtr           = NULL;
+    m_summary.nodePtr        = NULL;
+    m_textclass.nodePtr      = NULL;
+    m_coref.nodePtr          = NULL;
 }
 
 XML4NLP::~XML4NLP() {
@@ -78,7 +79,7 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
         clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
         // remove_space_gbk(line);
         if (line.empty()) {
-            continue; // Blank line. Is this the best way?
+            continue;
         }
 
         if (0 != BuildParagraph(line, i++)) return -1;
@@ -90,14 +91,11 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
 /// read raw text from a string and create a initial DOM tree.
 /// the paragraphs are separated by CR ("\r\n")
 /////////////////////////////////////////////////////////////////////////////////////
-int XML4NLP::CreateDOMFromString(const string& str) {
+int XML4NLP::CreateDOMFromString(const string & str) {
     ClearDOM();
 
     if (0 != BuildDOMFrame()) return -1;
 
-    // Replace '\r' with '\n'
-    // Zhenghua Li, 2007-6-28, 11:12
-    // Zhenghua Li, 2007-8-31, 15:57
     string strTmp = str;
     replace_char_by_char(strTmp, '\r', '\n');
 
@@ -107,7 +105,6 @@ int XML4NLP::CreateDOMFromString(const string& str) {
     int i = 0;
     while (getline(in, strTmp)) {
         clean_str(strTmp);
-        // remove_space_gbk(strTmp);
 
         if (strTmp.empty()) {
             continue;
@@ -121,14 +118,13 @@ int XML4NLP::CreateDOMFromString(const string& str) {
     return 0;
 }
 
-void XML4NLP::ReportTiXmlDocErr() const
-{
-    cerr << "=====***=====" << endl;
-    cerr << "description: " << m_tiXmlDoc.ErrorDesc() << endl;
-    cerr << "location: " << endl;
-    cerr << "row: " << m_tiXmlDoc.ErrorRow() << endl;
-    cerr << "col: " << m_tiXmlDoc.ErrorCol() << endl;
-    cerr << "=====***=====" << endl;
+void XML4NLP::ReportTiXmlDocErr() const {
+    cerr << "[XML4NLP ERROR REPORT]" << endl;
+    cerr << "description : " << m_tiXmlDoc.ErrorDesc() << endl;
+    cerr << "location :    " << endl;
+    cerr << "row :         " << m_tiXmlDoc.ErrorRow() << endl;
+    cerr << "col :         " << m_tiXmlDoc.ErrorCol() << endl;
+    cerr << "=====================" << endl;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -153,28 +149,28 @@ int XML4NLP::LoadXMLFromFile(const char* fileName) {
 /////////////////////////////////////////////////////////////////////////////////////
 /// load a xml file from a string and parse it.
 /////////////////////////////////////////////////////////////////////////////////////
-
-int XML4NLP::LoadXMLFromString(const char* str)
-{
+int XML4NLP::LoadXMLFromString(const char * str) {
     ClearDOM();
     m_tiXmlDoc.Parse(str);
-    if ( m_tiXmlDoc.Error() )
-    {
+    if (m_tiXmlDoc.Error()) {
         ReportTiXmlDocErr();
         return -1;
     }
     return InitXmlStructure();
 }
 
+int XML4NLP::LoadXMLFromString(const std::string & str) {
+    LoadXMLFromString(str.c_str());
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 /// clear the DOM tree, delete all nodes that allocated before.
 /////////////////////////////////////////////////////////////////////////////////////
-void XML4NLP::ClearDOM()
-{
+void XML4NLP::ClearDOM() {
     m_tiXmlDoc.Clear();
 
     m_document_t.documentPtr = NULL;
-    m_document_t.vecParagraph_t.clear();
+    m_document_t.paragraphs.clear();
     m_note.nodePtr = NULL;
     m_summary.nodePtr = NULL;
     m_textclass.nodePtr = NULL;
@@ -188,10 +184,8 @@ void XML4NLP::ClearDOM()
 /////////////////////////////////////////////////////////////////////////////////////
 /// save the DOM tree to a XML file.
 /////////////////////////////////////////////////////////////////////////////////////
-int XML4NLP::SaveDOM(const char* fileName)
-{
-    if ( !m_tiXmlDoc.SaveFile(fileName) )
-    {
+int XML4NLP::SaveDOM(const char* fileName) {
+    if (!m_tiXmlDoc.SaveFile(fileName)) {
         ReportTiXmlDocErr();
         return -1;
     }
@@ -202,498 +196,445 @@ int XML4NLP::SaveDOM(const char* fileName)
 /////////////////////////////////////////////////////////////////////////////////////
 /// save the DOM tree to a XML string.
 /////////////////////////////////////////////////////////////////////////////////////
-void XML4NLP::SaveDOM(string &strDocument)
-{
+void XML4NLP::SaveDOM(string &strDocument) const {
     TiXmlPrinter printer;
-
     m_tiXmlDoc.Accept(&printer);
-
     strDocument = printer.CStr();
 }
 
 // ----------------------------------------------------------------some counting functions
-/*
-   int XML4NLP::CountParagraphInDocument() const
-   {
-   return m_document_t.vecParagraph_t.size();
-   }
+int XML4NLP::CountParagraphInDocument() const {
+    return m_document_t.paragraphs.size();
+}
 
-   int XML4NLP::CountSentenceInParagraph(int paragraphIdx) const
-   {
-   if ( 0 != CheckRange(paragraphIdx) ) return 0;
+int XML4NLP::CountSentenceInParagraph(int paragraphIdx) const {
+    if ( 0 != CheckRange(paragraphIdx) ) return 0;
+    return m_document_t.paragraphs[paragraphIdx].sentences.size();
+}
 
-   return m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.size();
-   }
-   */
-int XML4NLP::CountSentenceInDocument() const
-{
+int XML4NLP::CountSentenceInDocument() const {
     int stnsNumInDoc = 0;
-    int paragraphNum = m_document_t.vecParagraph_t.size();
-    for (int i = 0; i < paragraphNum; ++i)
-    {
-        stnsNumInDoc += m_document_t.vecParagraph_t[i].vecSentence_t.size();
+    int paragraphNum = m_document_t.paragraphs.size();
+    for (int i = 0; i < paragraphNum; ++i) {
+        stnsNumInDoc += m_document_t.paragraphs[i].sentences.size();
     }
     return stnsNumInDoc;
 }
 
-int XML4NLP::CountWordInSentence(int paragraphIdx, int sentenceIdx) const
-{
+int XML4NLP::CountWordInSentence(int paragraphIdx, int sentenceIdx) const {
     if ( 0 != CheckRange(paragraphIdx, sentenceIdx) ) return 0;
-
-    return m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t.size();
+    return m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words.size();
 }
 
-int XML4NLP::CountWordInSentence(int sentenceIdx) const
-{
+int XML4NLP::CountWordInSentence(int sentenceIdx) const {
     pair<int, int> paraIdx_sentIdx;
     if ( 0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx) ) return 0;
-
-    return m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t.size();
+    return m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words.size();
 }
 
-int XML4NLP::CountWordInParagraph(int paragraphIdx) const
-{
+int XML4NLP::CountWordInParagraph(int paragraphIdx) const {
     if ( 0 != CheckRange(paragraphIdx) ) return -1;
     int totalWordNum = 0;
-    int sentNum = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.size();
-    for (int i=0; i < sentNum; ++i)
-    {
-        totalWordNum += m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[i].vecWord_t.size();
+    int sentNum = m_document_t.paragraphs[paragraphIdx].sentences.size();
+    for (int i=0; i < sentNum; ++i) {
+        totalWordNum += m_document_t.paragraphs[paragraphIdx].sentences[i].words.size();
     }
     return totalWordNum;
 }
 
-int XML4NLP::CountWordInDocument() const
-{
+int XML4NLP::CountWordInDocument() const {
     int totalWordNum = 0;
-    int paraNum = m_document_t.vecParagraph_t.size();
-    for (int i=0; i<paraNum; ++i)
-    {
-        int sentNum = m_document_t.vecParagraph_t[i].vecSentence_t.size();
-        for (int j=0; j<sentNum; ++j)
-        {
-            totalWordNum += m_document_t.vecParagraph_t[i].vecSentence_t[j].vecWord_t.size();
+    int paraNum = m_document_t.paragraphs.size();
+    for (int i=0; i<paraNum; ++i) {
+        int sentNum = m_document_t.paragraphs[i].sentences.size();
+        for (int j=0; j<sentNum; ++j) {
+            totalWordNum += m_document_t.paragraphs[i].sentences[j].words.size();
         }
     }
     return totalWordNum;
 }
 
-// --------------------------------------------------get paragraph, sentence and word contents
-const char * XML4NLP::GetParagraph(int paragraphIdx) const
-{
+const char * XML4NLP::GetParagraph(int paragraphIdx) const {
     if (0 != CheckRange(paragraphIdx)) return NULL;
     if (QueryNote(NOTE_SENT)) return NULL;
 
-    TiXmlElement *paraPtr = m_document_t.vecParagraph_t[paragraphIdx].paragraphPtr;
+    TiXmlElement *paraPtr = m_document_t.paragraphs[paragraphIdx].paragraphPtr;
     return paraPtr->GetText();
 }
 
-int XML4NLP::GetParagraph(int paragraphIdx, string &strParagraph) const
-{
+int XML4NLP::GetParagraph(int paragraphIdx, string &strParagraph) const {
     if (0 != CheckRange(paragraphIdx)) return -1;
 
-    const Paragraph_t &paragraph = m_document_t.vecParagraph_t[paragraphIdx];
-    if ( paragraph.vecSentence_t.empty() ) // Have not done SplitSentence()
-    {
+    const Paragraph_t &paragraph = m_document_t.paragraphs[paragraphIdx];
+    if ( paragraph.sentences.empty() ) {
         strParagraph = paragraph.paragraphPtr->GetText() ;
-    }
-    else
-    {
+    } else {
         strParagraph = "";
-        const vector<Sentence_t> &vecSentence_t = paragraph.vecSentence_t;
-        for (int i=0; i<vecSentence_t.size(); ++i)
-        {
-            strParagraph += vecSentence_t[i].sentencePtr->Attribute(TAG_CONT);
+        const vector<Sentence_t> &sentences = paragraph.sentences;
+        for (int i=0; i<sentences.size(); ++i) {
+            strParagraph += sentences[i].sentencePtr->Attribute(TAG_CONT);
         }
     }
     return 0;
 }
 
-const char* XML4NLP::GetSentence(int paragraphIdx, int sentenceIdx) const
-{
+const char* XML4NLP::GetSentence(int paragraphIdx, int sentenceIdx) const {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return NULL;
-
-    return m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].sentencePtr->Attribute(TAG_CONT);
+    return m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].sentencePtr->Attribute(TAG_CONT);
 }
 
-const char* XML4NLP::GetSentence(int sentenceIdx) const
-{
+const char* XML4NLP::GetSentence(int sentenceIdx) const {
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return NULL;
-
-    return m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].sentencePtr->Attribute(TAG_CONT);
+    return GetSentence(paraIdx_sentIdx.first, paraIdx_sentIdx.second);
 }
 
-const char* XML4NLP::GetWord(int paragraphIdx, int sentenceIdx, int wordIdx) const
-{
+const char* XML4NLP::GetWord(int paragraphIdx, int sentenceIdx, int wordIdx) const {
     if ( 0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx) ) return NULL;
-
-    return m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_CONT);
+    return m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_CONT);
 }
 
-const char* XML4NLP::GetWord(int globalSentIdx, int wordIdx) const
-{
+const char* XML4NLP::GetWord(int globalSentIdx, int wordIdx) const {
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return NULL;
-
-    if (wordIdx >= m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t.size())
-    {
-        //		cerr << "wordIdx is too large: " << wordIdx << endl;
-        return NULL;
-    }
-
-    return m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_CONT);
+    return GetWord(paraIdx_sentIdx.first, paraIdx_sentIdx.second, wordIdx);
 }
 
-const char* XML4NLP::GetWord(int globalWordIdx) const
-{
+const char* XML4NLP::GetWord(int globalWordIdx) const {
     int paraIdx, sentIdx, wordIdx;
     if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return NULL;
-
-    return m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_CONT);
+    return GetWord(paraIdx, sentIdx, wordIdx);
 }
 
-const char *XML4NLP::GetPOS(int paragraphIdx, int sentenceIdx, int wordIdx) const
-{
-    if ( 0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx) ) return NULL;
-
-    return m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_POS);
+const char *XML4NLP::GetPOS(int paragraphIdx, int sentenceIdx, int wordIdx) const {
+    if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return NULL;
+    return m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_POS);
 }
 
-const char *XML4NLP::GetPOS(int globalSentIdx, int wordIdx) const
-{
+const char *XML4NLP::GetPOS(int globalSentIdx, int wordIdx) const {
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return NULL;
-
-    if (wordIdx >= m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t.size())
-    {
-        //		cerr << "wordIdx is too large: " << wordIdx << endl;
-        return NULL;
-    }
-
-    return m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_POS);
+    return GetPOS(paraIdx_sentIdx.first, paraIdx_sentIdx.second, wordIdx);
 }
 
-const char *XML4NLP::GetPOS(int globalWordIdx) const
-{
+const char *XML4NLP::GetPOS(int globalWordIdx) const {
     int paraIdx, sentIdx, wordIdx;
     if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return NULL;
-
-    return m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_POS);
+    return GetPOS(paraIdx, sentIdx, wordIdx);
 }
 
-
-const char *XML4NLP::GetNE(int paragraphIdx, int sentenceIdx, int wordIdx) const
-{
+const char *XML4NLP::GetNE(int paragraphIdx, int sentenceIdx, int wordIdx) const {
     if ( 0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx) ) return NULL;
-
-    return m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_NE);
+    return m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_NE);
 }
 
-const char *XML4NLP::GetNE(int globalSentIdx, int wordIdx) const
-{
+const char *XML4NLP::GetNE(int globalSentIdx, int wordIdx) const {
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return NULL;
-
-    if (wordIdx >= m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t.size())
-    {
-        //		cerr << "wordIdx is too large: " << wordIdx << endl;
-        return "";
-    }
-
-    return m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_NE);
+    return GetNE(paraIdx_sentIdx.first, paraIdx_sentIdx.second, wordIdx);
 }
 
-const char *XML4NLP::GetNE(int globalWordIdx) const
-{
+const char *XML4NLP::GetNE(int globalWordIdx) const {
     int paraIdx, sentIdx, wordIdx;
     if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return NULL;
-
-    return m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_NE);
+    return GetNE(paraIdx, sentIdx, wordIdx);
 }
 
-/*
-   int	XML4NLP::GetWSD(pair<const char *, const char *> &WSD_explain, int paragraphIdx, int sentenceIdx, int wordIdx) const
-   {
-   if ( 0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx) ) return -1;
 
-   WSD_explain.first = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_WSD);
-   WSD_explain.second = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_WSD_EXP);
+int XML4NLP::GetWSD(pair<const char *, const char *> &WSD_explanation, 
+        int paragraphIdx, 
+        int sentenceIdx, 
+        int wordIdx) const {
+   if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return -1;
+
+   WSD_explanation.first  = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_WSD);
+   WSD_explanation.second = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_WSD_EXP);
    return 0;
-   }
+}
 
-   int	XML4NLP::GetWSD(pair<const char *, const char *> &WSD_explain, int globalSentIdx, int wordIdx) const
-   {
+int XML4NLP::GetWSD(pair<const char *, const char *> & WSD_explanation, 
+        int globalSentIdx, 
+        int wordIdx) const {
    pair<int, int> paraIdx_sentIdx;
    if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return -1;
-
-   if (wordIdx >= m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t.size())
-   {
-   cerr << "wordIdx is too large: " << wordIdx << endl;
-   return -1;
-   }
-
-   WSD_explain.first = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_WSD);
-   WSD_explain.second = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_WSD_EXP);
-   return 0;
-   }
-
-   int	XML4NLP::GetWSD(pair<const char *, const char *> &WSD_explain, int globalWordIdx) const
-   {
-   int paraIdx, sentIdx, wordIdx;
-   if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return -1;
-
-   WSD_explain.first = m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_WSD);
-   WSD_explain.second = m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_WSD_EXP);
-   return 0;
-   }
-   */
-
-int	XML4NLP::GetParse(pair<int, const char *> &parent_relate, int paragraphIdx, int sentenceIdx, int wordIdx) const
-{
-    if ( 0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx) ) return -1;
-
-    const char *cszParent = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_PSR_PARENT);
-    parent_relate.first = (cszParent == NULL ? 0 : atoi(cszParent));
-    parent_relate.second = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_PSR_RELATE);
-    return 0;
+   return GetWSD(WSD_explanation, paraIdx_sentIdx.first, paraIdx_sentIdx.second);
 }
 
-int	XML4NLP::GetParse(pair<int, const char *> &parent_relate, int globalSentIdx, int wordIdx) const
-{
-    pair<int, int> paraIdx_sentIdx;
-    if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return -1;
-
-    if (wordIdx >= m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t.size())
-    {
-        cerr << "wordIdx is too large: " << wordIdx << endl;
-        return -1;
-    }
-
-    const char *cszParent = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_PSR_PARENT);
-    parent_relate.first = (cszParent == NULL ? 0 : atoi(cszParent));
-    parent_relate.second = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr->Attribute(TAG_PSR_RELATE);
-    return 0;
-}
-
-int	XML4NLP::GetParse(pair<int, const char *> &parent_relate, int globalWordIdx) const
-{
+int XML4NLP::GetWSD(pair<const char *, const char *> & WSD_explanation, 
+        int globalWordIdx) const {
     int paraIdx, sentIdx, wordIdx;
     if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return -1;
+    return GetWSD(WSD_explanation, paraIdx, sentIdx, wordIdx);
+}
 
-    const char *cszParent = m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_PSR_PARENT);
-    parent_relate.first = (cszParent == NULL ? 0 : atoi(cszParent));
-    parent_relate.second = m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr->Attribute(TAG_PSR_RELATE);
+int XML4NLP::GetParse(pair<int, const char *> & parent_relation, 
+        int paragraphIdx, 
+        int sentenceIdx, 
+        int wordIdx) const {
+    if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return -1;
+    const char *cszParent = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_PSR_PARENT);
+    parent_relation.first   = (cszParent == NULL ? 0 : atoi(cszParent));
+    parent_relation.second  = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr->Attribute(TAG_PSR_RELATE);
     return 0;
 }
 
-int XML4NLP::MapGlobalSentIdx2paraIdx_sentIdx(int sentenceIdx, pair<int, int> &paraIdx_sentIdx) const
-{
+int XML4NLP::GetParse(pair<int, const char *> & parent_relation, 
+        int globalSentIdx, 
+        int wordIdx) const {
+    pair<int, int> paraIdx_sentIdx;
+    if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return -1;
+    return GetParse(parent_relation, paraIdx_sentIdx.first, paraIdx_sentIdx.second);
+}
+
+int XML4NLP::GetParse(pair<int, const char *> &parent_relation, 
+        int globalWordIdx) const {
+    int paraIdx, sentIdx, wordIdx;
+    if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return -1;
+    return GetParse(parent_relation, paraIdx, sentIdx, wordIdx);
+}
+
+int XML4NLP::MapGlobalSentIdx2paraIdx_sentIdx(int sentenceIdx, 
+        pair<int, int> & paraIdx_sentIdx) const {
     int startStnsIdxOfPara = 0;
-    for (int paraIdx=0; paraIdx < m_document_t.vecParagraph_t.size(); ++paraIdx)
-    {
-        if (startStnsIdxOfPara + m_document_t.vecParagraph_t[paraIdx].vecSentence_t.size() > sentenceIdx)
-        {
+    for (int paraIdx=0; paraIdx < m_document_t.paragraphs.size(); ++paraIdx) {
+        if (startStnsIdxOfPara + m_document_t.paragraphs[paraIdx].sentences.size() > sentenceIdx) {
             paraIdx_sentIdx.first = paraIdx;
             paraIdx_sentIdx.second = sentenceIdx - startStnsIdxOfPara;
             return 0;
         }
-        startStnsIdxOfPara += m_document_t.vecParagraph_t[paraIdx].vecSentence_t.size();
+        startStnsIdxOfPara += m_document_t.paragraphs[paraIdx].sentences.size();
     }
-
-    //	cerr << "fail to map global sentence Idx : " << sentenceIdx 
-    //		<< " to paragraphIdx and sentenceIdx pair" << endl;
     return -1;
 }
 
-
-int XML4NLP::MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(int globalWordIdx, int &paraIdx, int &sentIdx, int &wordIdx) const
-{
+int XML4NLP::MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(int globalWordIdx, 
+        int & paraIdx, 
+        int & sentIdx, 
+        int & wordIdx) const {
     int startWordIdxOfStns = 0;
-    for (paraIdx=0; paraIdx < m_document_t.vecParagraph_t.size(); ++paraIdx)
-    {
-        const vector<Sentence_t> &vecSentence_t = m_document_t.vecParagraph_t[paraIdx].vecSentence_t;
-        for (sentIdx=0; sentIdx < vecSentence_t.size(); ++sentIdx)
-        {
-            if (startWordIdxOfStns + vecSentence_t[sentIdx].vecWord_t.size() > globalWordIdx)
-            {
+    for (paraIdx=0; paraIdx < m_document_t.paragraphs.size(); ++paraIdx) {
+        const vector<Sentence_t> &sentences = m_document_t.paragraphs[paraIdx].sentences;
+        for (sentIdx=0; sentIdx < sentences.size(); ++sentIdx) {
+            if (startWordIdxOfStns + sentences[sentIdx].words.size() > globalWordIdx) {
                 wordIdx = globalWordIdx - startWordIdxOfStns;
                 return 0;
             }
-            startWordIdxOfStns += vecSentence_t[sentIdx].vecWord_t.size();
+            startWordIdxOfStns += sentences[sentIdx].words.size();
         }
     }
-
-    //	cerr << "fail to map global word Idx : " << globalWordIdx 
-    //		<< " to paragraphIdx, sentenceIdx and wordIdx" << endl;
     return -1;
 }
 
-// ----------------------------------------------------------------for sentence splitting
-int XML4NLP::GetSentencesFromParagraph(vector<const char *> &vecSentence, int paragraphIdx) const
-{
-    if ( 0 != CheckRange(paragraphIdx) ) return -1;
-    if ( m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.empty() )
-    {
-        //		cerr << "have not done SplitSentence() in paragraph : " << paragraphIdx << endl;
+int XML4NLP::GetSentencesFromParagraph(vector<const char *> &vecSentence, 
+        int paragraphIdx) const {
+    if (0 != CheckRange(paragraphIdx)) return -1;
+    if (m_document_t.paragraphs[paragraphIdx].sentences.empty()) {
         return -1;
     }
 
-    const vector<Sentence_t> &vecSentence_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t;
-    if (vecSentence.size() != vecSentence_t.size())
-    {
-        //		cerr << "vecSentence.size() does not equal to the sentence num in the paragraph, should resize() first" << endl;
+    const vector<Sentence_t> & sentences = m_document_t.paragraphs[paragraphIdx].sentences;
+    if (vecSentence.size() != sentences.size()) {
         return -1;
     }
 
-    for (int i=0; i < vecSentence_t.size(); ++i)
-    {
-        vecSentence[i] = vecSentence_t[i].sentencePtr->Attribute(TAG_CONT);
+    for (int i=0; i < sentences.size(); ++i) {
+        vecSentence[i] = sentences[i].sentencePtr->Attribute(TAG_CONT);
     }
 
     return 0;
 }
 
-int XML4NLP::GetSentencesFromParagraph(vector<string> &vecSentence, int paragraphIdx) const
-{
-    if ( 0 != CheckRange(paragraphIdx) ) return -1;
+int XML4NLP::GetSentencesFromParagraph(vector<string> &vecSentence, 
+        int paragraphIdx) const {
+    if (0 != CheckRange(paragraphIdx)) return -1;
 
-    if ( m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.empty() )
-    {
-        //		cerr << "have not done SplitSentence() in paragraph : " << paragraphIdx << endl;
+    if (m_document_t.paragraphs[paragraphIdx].sentences.empty()) {
         return -1;
     }
 
     vecSentence.clear();
-    const vector<Sentence_t> &vecSentence_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t;
-    for (int i=0; i < vecSentence_t.size(); ++i)
-    {
-        vecSentence.push_back( vecSentence_t[i].sentencePtr->Attribute(TAG_CONT) );
+    const vector<Sentence_t> &sentences = m_document_t.paragraphs[paragraphIdx].sentences;
+    for (int i = 0; i < sentences.size(); ++ i) {
+        vecSentence.push_back( sentences[i].sentencePtr->Attribute(TAG_CONT) );
     }
     return 0;
 }
 
-int XML4NLP::SetSentencesToParagraph(const vector<string> &vecSentence, int paragraphIdx)
-{
-    if ( 0 != CheckRange(paragraphIdx) ) return -1;
-
-    if ( !m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.empty() )
-    {
-        //		cerr << "have done SplitSentence() in paragraph : " << paragraphIdx << endl;
+int XML4NLP::SetSentencesToParagraph(const vector<string> &vecSentence, int paragraphIdx) {
+    if (0 != CheckRange(paragraphIdx)) {
         return -1;
     }
 
-    Paragraph_t &paragraph = m_document_t.vecParagraph_t[paragraphIdx];
-    TiXmlElement *paragraphPtr = paragraph.paragraphPtr;
-    vector<Sentence_t> &vecSentence_t = paragraph.vecSentence_t;
+    if (!m_document_t.paragraphs[paragraphIdx].sentences.empty()) {
+        return -1;
+    }
+
+    Paragraph_t & paragraph         = m_document_t.paragraphs[paragraphIdx];
+    TiXmlElement * paragraphPtr     = paragraph.paragraphPtr;
+    vector<Sentence_t> &sentences   = paragraph.sentences;
 
     TiXmlText *textPtr = paragraphPtr->FirstChild()->ToText();
-    if (textPtr == NULL)	// "" or NULL
-    {
-        //		cerr << "there should be some text in paragraph: " << paragraphIdx << endl;
+    if (textPtr == NULL) {
         return -1;
-    }
-    else
-    {
-        paragraphPtr->RemoveChild( textPtr );
+    } else {
+        paragraphPtr->RemoveChild(textPtr);
     }
 
-    for (int i = 0; i < vecSentence.size(); ++i)
-    {
+    for (int i = 0; i < vecSentence.size(); ++i) {
         TiXmlElement *sentencePtr = new TiXmlElement(TAG_SENT);
         sentencePtr->SetAttribute(TAG_ID, static_cast<int>(i));
         sentencePtr->SetAttribute(TAG_CONT, vecSentence[i].c_str());
         paragraphPtr->LinkEndChild(sentencePtr);
 
-        vecSentence_t.push_back( Sentence_t() );
-        vecSentence_t[vecSentence_t.size()-1].sentencePtr = sentencePtr;
+        sentences.push_back( Sentence_t() );
+        sentences[sentences.size()-1].sentencePtr = sentencePtr;
     }
 
     return 0;
 }
 
+int XML4NLP::GetWordsFromSentence(vector<const char *> & vecWord,
+        int paragraphIdx,
+        int sentenceIdx) const {
+    return GetInfoFromSentence(vecWord, paragraphIdx, sentenceIdx, TAG_CONT);
+}
 
-// ----------------------------------------------------------------for set word
+int XML4NLP::GetWordsFromSentence(std::vector<std::string> & vecWord,
+        int paragraphIdx,
+        int sentenceIdx) const {
+    return GetInfoFromSentence(vecWord, paragraphIdx, sentenceIdx, TAG_CONT);
+}
 
-int XML4NLP::SetWordsToSentence(const vector<string> &vecWord, int paragraphIdx, int sentenceIdx)
-{
+int XML4NLP::GetWordsFromSentence(std::vector<const char *> & vecWord,
+        int globalSentIdx) const {
+    return GetInfoFromSentence(vecWord, globalSentIdx, TAG_CONT);
+}
+
+int XML4NLP::GetWordsFromSentence(std::vector<std::string> & vecWord,
+        int globalSentIdx) const {
+    return GetInfoFromSentence(vecWord, globalSentIdx, TAG_CONT);
+}
+
+int XML4NLP::SetWordsToSentence(const vector<string> & vecWord, 
+        int paragraphIdx, 
+        int sentenceIdx) {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return -1;
 
-    Sentence_t &sentence = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx];
-    if ( !sentence.vecWord_t.empty() )
-    {
-        //		cerr << "has done word segment in paragraph : " << paragraphIdx << " sentence : " << sentenceIdx << endl;
+    Sentence_t &sentence = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx];
+    if (!sentence.words.empty()) {
         return -1;
     }
 
-    for (int i = 0; i < vecWord.size(); ++i)
-    {
+    for (int i = 0; i < vecWord.size(); ++ i) {
         TiXmlElement *wordPtr = new TiXmlElement(TAG_WORD);
         wordPtr->SetAttribute(TAG_ID, i);
         wordPtr->SetAttribute(TAG_CONT, vecWord[i].c_str());
         sentence.sentencePtr->LinkEndChild(wordPtr);
 
-        sentence.vecWord_t.push_back( Word_t() );
-        sentence.vecWord_t[sentence.vecWord_t.size() - 1].wordPtr = wordPtr;
+        sentence.words.push_back( Word_t() );
+        sentence.words[sentence.words.size() - 1].wordPtr = wordPtr;
     }
     return 0;
 }
 
-int XML4NLP::SetWordsToSentence(const vector<string> &vecWord, int sentenceIdx)
-{
+int XML4NLP::SetWordsToSentence(const vector<string> & vecWord,
+        int sentenceIdx) {
     pair<int, int> paraIdx_sentIdx;
-    if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx))
-    {
-        //		cerr << "fail to map global sentence Idx : " << sentenceIdx << " to paragraphIdx and sentenceIdx pair" << endl;
+    if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) {
         return -1;
     }
-
-    Sentence_t &sentence = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second];
-    if ( !sentence.vecWord_t.empty() )
-    {
-        //		cerr << "has done word segment in paragraph : " << paraIdx_sentIdx.first << " sentence : " << paraIdx_sentIdx.second << endl;
-        return -1;
-    }
-
-    for (int i = 0; i < vecWord.size(); ++i)
-    {
-        TiXmlElement *wordPtr = new TiXmlElement(TAG_WORD);
-        wordPtr->SetAttribute(TAG_ID, i);
-        wordPtr->SetAttribute(TAG_CONT, vecWord[i].c_str());
-        sentence.sentencePtr->LinkEndChild(wordPtr);
-
-        sentence.vecWord_t.push_back( Word_t() );
-        sentence.vecWord_t[sentence.vecWord_t.size() - 1].wordPtr = wordPtr;
-    }
+    SetWordsToSentence(vecWord, paraIdx_sentIdx.first, paraIdx_sentIdx.second);
     return 0;
 }
 
-// ----------------------------------------------------------------for Parser
+int XML4NLP::GetPOSsFromSentence(std::vector<const char *> & vecPOS,
+        int paragraphIdx,
+        int sentenceIdx) const {
+    return GetInfoFromSentence(vecPOS, paragraphIdx, sentenceIdx, TAG_POS);
+}
 
-int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > &vecParse, int paragraphIdx, int sentenceIdx) const\
-{
+int XML4NLP::GetPOSsFromSentence(std::vector<const char *> &vecPOS, 
+        int globalSentIdx) const {
+    return GetInfoFromSentence(vecPOS, globalSentIdx, TAG_POS);
+}
+
+int XML4NLP::GetPOSsFromSentence(std::vector<std::string> &vecPOS, 
+        int paragraphIdx, 
+        int sentenceIdx) const {
+    return GetInfoFromSentence(vecPOS, paragraphIdx, sentenceIdx, TAG_POS);
+}
+
+int XML4NLP::GetPOSsFromSentence(std::vector<std::string> &vecPOS, 
+        int globalSentIdx) const {
+    return GetInfoFromSentence(vecPOS, globalSentIdx, TAG_POS);
+}
+
+int XML4NLP::SetPOSsToSentence(const std::vector<std::string> &vecPOS,
+        int paragraphIdx,
+        int sentenceIdx) {
+    return SetInfoToSentence(vecPOS, paragraphIdx, sentenceIdx, TAG_POS);
+}
+
+int XML4NLP::SetPOSsToSentence(const std::vector<std::string> & vecPOS,
+        int sentenceIdx) {
+    return SetInfoToSentence(vecPOS, sentenceIdx, TAG_POS);
+}
+
+int XML4NLP::GetNEsFromSentence(std::vector<const char *> & vecNE,
+        int paragraphIdx,
+        int sentenceIdx) const {
+    return GetInfoFromSentence(vecNE, paragraphIdx, sentenceIdx, TAG_NE);
+}
+
+int XML4NLP::GetNEsFromSentence(std::vector<const char *> & vecNE, 
+        int globalSentIdx) const {
+    return GetInfoFromSentence(vecNE, globalSentIdx, TAG_NE);
+}
+
+int XML4NLP::GetNEsFromSentence(std::vector<std::string> &vecNE, 
+        int paragraphIdx, 
+        int sentenceIdx) const {
+    return GetInfoFromSentence(vecNE, paragraphIdx, sentenceIdx, TAG_NE);
+}
+
+int XML4NLP::GetNEsFromSentence(std::vector<std::string> & vecNE, 
+        int globalSentIdx) const {
+    return GetInfoFromSentence(vecNE, globalSentIdx, TAG_NE);
+}
+
+int XML4NLP::SetNEsToSentence(const std::vector<std::string> & vecNE, 
+        int paragraphIdx, 
+        int sentenceIdx) {
+    return SetInfoToSentence(vecNE, paragraphIdx, sentenceIdx, TAG_NE);
+}
+
+int XML4NLP::SetNEsToSentence(const std::vector<std::string> & vecNE,
+        int sentenceIdx) {
+    return SetInfoToSentence(vecNE, sentenceIdx, TAG_NE);
+}
+
+int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > &vecParse, 
+        int paragraphIdx, 
+        int sentenceIdx) const {
     vector<const char *> vecParent;
     vector<const char *> vecRelate;
     int wordNum = CountWordInSentence(paragraphIdx, sentenceIdx);
-    if (wordNum != vecParse.size())
-    {
+    if (wordNum != vecParse.size()) {
         cerr << "vecParse.size() does not equal to the word num in the sentence, should resize first" << endl;
         return -1;
     }
 
     // vecParent.resize(wordNum);
     // vecRelate.resize(wordNum);
-    if (0 != GetInfoFromSentence(vecParent, paragraphIdx, sentenceIdx, TAG_PSR_PARENT))
-    {
-        return -1;
-    }
-    if (0 != GetInfoFromSentence(vecRelate, paragraphIdx, sentenceIdx, TAG_PSR_RELATE))
-    {
+    if (0 != GetInfoFromSentence(vecParent, paragraphIdx, sentenceIdx, TAG_PSR_PARENT)) {
         return -1;
     }
 
-    for (int i=0; i < vecParent.size(); ++i)
-    {
+    if (0 != GetInfoFromSentence(vecRelate, paragraphIdx, sentenceIdx, TAG_PSR_RELATE)) {
+        return -1;
+    }
+
+    for (int i=0; i < vecParent.size(); ++ i) {
         vecParse[i].first = atoi( vecParent[i] );
         vecParse[i].second = vecRelate[i];
     }
@@ -701,30 +642,27 @@ int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > &vecParse, 
     return 0;
 }
 
-int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > &vecParse, int sentenceIdx) const
-{
+int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > & vecParse, 
+        int sentenceIdx) const {
     vector<const char *> vecParent;
     vector<const char *> vecRelate;
     int wordNum = CountWordInSentence(sentenceIdx);
-    if (wordNum != vecParse.size())
-    {
+    if (wordNum != vecParse.size()) {
         cerr << "vecParse.size() does not equal to the word num in the sentence, should resize first" << endl;
         return -1;
     }
 
     vecParent.resize(wordNum);
     vecRelate.resize(wordNum);
-    if (0 != GetInfoFromSentence(vecParent, sentenceIdx, TAG_PSR_PARENT))
-    {
-        return -1;
-    }
-    if (0 != GetInfoFromSentence(vecRelate, sentenceIdx, TAG_PSR_RELATE))
-    {
+    if (0 != GetInfoFromSentence(vecParent, sentenceIdx, TAG_PSR_PARENT)) {
         return -1;
     }
 
-    for (int i=0; i < vecParent.size(); ++i)
-    {
+    if (0 != GetInfoFromSentence(vecRelate, sentenceIdx, TAG_PSR_RELATE)) {
+        return -1;
+    }
+
+    for (int i=0; i < vecParent.size(); ++i) {
         vecParse[i].first = atoi( vecParent[i] );
         vecParse[i].second = vecRelate[i];
     }
@@ -734,23 +672,20 @@ int XML4NLP::GetParsesFromSentence(vector< pair<int, const char *> > &vecParse, 
 
 
 int XML4NLP::GetParsesFromSentence(vector< pair<int, string> > &vecParse, 
-        int paragraphIdx, int sentenceIdx) const
-{
+        int paragraphIdx, 
+        int sentenceIdx) const {
     vector<string> vecParent;
     vector<string> vecRelate;
-    if (0 != GetInfoFromSentence(vecParent, paragraphIdx, sentenceIdx, TAG_PSR_PARENT))
-    {
+    if (0 != GetInfoFromSentence(vecParent, paragraphIdx, sentenceIdx, TAG_PSR_PARENT)) {
         return -1;
     }
-    if (0 != GetInfoFromSentence(vecRelate, paragraphIdx, sentenceIdx, TAG_PSR_RELATE))
-    {
+    if (0 != GetInfoFromSentence(vecRelate, paragraphIdx, sentenceIdx, TAG_PSR_RELATE)) {
         return -1;
     }
 
     vecParse.clear();
     // Assume their sizes of the two vector are equal. Is it OK?
-    for (int i=0; i < vecParent.size(); ++i)
-    {
+    for (int i=0; i < vecParent.size(); ++i) {
         int parentIdx = atoi( vecParent[i].c_str() );
         vecParse.push_back( make_pair(static_cast<int>(parentIdx), vecRelate[i]) );
     }
@@ -758,23 +693,20 @@ int XML4NLP::GetParsesFromSentence(vector< pair<int, string> > &vecParse,
     return 0;
 }
 
-int XML4NLP::GetParsesFromSentence(vector< pair<int, string> > &vecParse, int sentenceIdx) const
-{
+int XML4NLP::GetParsesFromSentence(vector< pair<int, string> > &vecParse, 
+        int sentenceIdx) const {
     vector<string> vecParent;
     vector<string> vecRelate;
-    if (0 != GetInfoFromSentence(vecParent, sentenceIdx, TAG_PSR_PARENT))
-    {
+    if (0 != GetInfoFromSentence(vecParent, sentenceIdx, TAG_PSR_PARENT)) {
         return -1;
     }
-    if (0 != GetInfoFromSentence(vecRelate, sentenceIdx, TAG_PSR_RELATE))
-    {
+    if (0 != GetInfoFromSentence(vecRelate, sentenceIdx, TAG_PSR_RELATE)) {
         return -1;
     }
 
     vecParse.clear();
     // Assume their sizes of the two vector are equal. Is it OK?
-    for (int i=0; i < vecParent.size(); ++i)
-    {
+    for (int i=0; i < vecParent.size(); ++i) {
         int parentIdx = atoi( vecParent[i].c_str() );
         vecParse.push_back( make_pair(static_cast<int>(parentIdx), vecRelate[i]) );
     }
@@ -783,70 +715,63 @@ int XML4NLP::GetParsesFromSentence(vector< pair<int, string> > &vecParse, int se
 }
 
 int XML4NLP::SetParsesToSentence(const vector< pair<int, string> > &vecParse, 
-        int paragraphIdx, int sentenceIdx)
-{
+        int paragraphIdx, 
+        int sentenceIdx) {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return -1;
-
-    vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t;
-
-    if (vecWord_t.size() != vecParse.size())
-    {
+    vector<Word_t> &words = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words;
+    if (words.size() != vecParse.size()) {
         cerr << "word number does not equal to vecInfo's size in paragraph" << paragraphIdx
             << " sentence " << sentenceIdx << endl;
         return -1;
     }
 
-    if (vecWord_t[0].wordPtr->Attribute(TAG_PSR_PARENT) != NULL)
-    {
+    if (words[0].wordPtr->Attribute(TAG_PSR_PARENT) != NULL) {
         cerr << "Attribute \"" << TAG_PSR_PARENT << "\" already exists in paragraph" << paragraphIdx
             << " sentence " << sentenceIdx << endl;
         return -1;
     }
 
-    if (vecWord_t[0].wordPtr->Attribute(TAG_PSR_RELATE) != NULL)
-    {
+    if (words[0].wordPtr->Attribute(TAG_PSR_RELATE) != NULL) {
         cerr << "Attribute \"" << TAG_PSR_RELATE << "\" already exists in paragraph" << paragraphIdx
             << " sentence " << sentenceIdx << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
-    {
-        vecWord_t[i].wordPtr->SetAttribute(TAG_PSR_PARENT, vecParse[i].first);
-        vecWord_t[i].wordPtr->SetAttribute(TAG_PSR_RELATE, vecParse[i].second.c_str());
+    for (int i = 0; i < words.size(); ++i) {
+        words[i].wordPtr->SetAttribute(TAG_PSR_PARENT, vecParse[i].first);
+        words[i].wordPtr->SetAttribute(TAG_PSR_RELATE, vecParse[i].second.c_str());
     }
+
     return 0;
 }
 
-int XML4NLP::SetParsesToSentence(const vector< pair<int, string> > &vecParse, int sentenceIdx)
-{
+int XML4NLP::SetParsesToSentence(const vector< pair<int, string> > &vecParse, int sentenceIdx) {
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t;
-    if (vecWord_t.size() != vecParse.size())
-    {
+    vector<Word_t> &words = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words;
+    if (words.size() != vecParse.size()) {
         cerr << "word number does not equal to vecInfo's size in paragraph" << paraIdx_sentIdx.first
             << " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
-    if (vecWord_t[0].wordPtr->Attribute(TAG_PSR_PARENT) != NULL)
+    if (words[0].wordPtr->Attribute(TAG_PSR_PARENT) != NULL)
     {
         cerr << "Attribute \"" << TAG_PSR_PARENT << "\" already exists in paragraph" << paraIdx_sentIdx.first
             << " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
-    if (vecWord_t[0].wordPtr->Attribute(TAG_PSR_RELATE) != NULL)
+    if (words[0].wordPtr->Attribute(TAG_PSR_RELATE) != NULL)
     {
         cerr << "Attribute \"" << TAG_PSR_RELATE << "\" already exists in paragraph" << paraIdx_sentIdx.first
             << " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecWord_t[i].wordPtr->SetAttribute(TAG_PSR_PARENT, vecParse[i].first);
-        vecWord_t[i].wordPtr->SetAttribute(TAG_PSR_RELATE, vecParse[i].second.c_str());
+        words[i].wordPtr->SetAttribute(TAG_PSR_PARENT, vecParse[i].first);
+        words[i].wordPtr->SetAttribute(TAG_PSR_RELATE, vecParse[i].second.c_str());
     }
     return 0;
 }
@@ -936,7 +861,7 @@ int XML4NLP::CountPredArgToWord(int paragraphIdx, int sentenceIdx, int wordIdx) 
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr;
     TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
     if (argPtr == NULL)
     {
@@ -960,7 +885,7 @@ int XML4NLP::CountPredArgToWord(int globalSentIdx, int wordIdx) const
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(globalSentIdx, paraIdx_sentIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words[wordIdx].wordPtr;
     TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
     if (argPtr == NULL)
     {
@@ -984,7 +909,7 @@ int XML4NLP::CountPredArgToWord(int globalWordIdx) const
     int paraIdx, sentIdx, wordIdx;
     if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paraIdx].sentences[sentIdx].words[wordIdx].wordPtr;
     TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
     if (argPtr == NULL)
     {
@@ -1009,7 +934,7 @@ int XML4NLP::GetPredArgToWord(	int paragraphIdx, int sentenceIdx, int wordIdx,
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr;
 
     TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
     if (argPtr == NULL)
@@ -1069,7 +994,7 @@ int XML4NLP::GetPredArgToWord(	int sentenceIdx, int wordIdx,
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words[wordIdx].wordPtr;
     TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
     if (argPtr == NULL)
     {
@@ -1129,7 +1054,7 @@ int XML4NLP::GetPredArgToWord(	int globalWordIdx,
     int paraIdx, sentIdx, wordIdx;
     if (0 != MapGlobalWordIdx2paraIdx_sentIdx_wordIdx(globalWordIdx, paraIdx, sentIdx, wordIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paraIdx].vecSentence_t[sentIdx].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paraIdx].sentences[sentIdx].words[wordIdx].wordPtr;
     TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
     if (argPtr == NULL)
     {
@@ -1187,7 +1112,7 @@ int XML4NLP::GetPredArgToWord(	int paragraphIdx, int sentenceIdx, int wordIdx,
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr;
 
     vecType.clear();
     vecBegEnd.clear();
@@ -1221,7 +1146,7 @@ int XML4NLP::GetPredArgToWord(	int sentenceIdx, int wordIdx,
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words[wordIdx].wordPtr;
 
     vecType.clear();
     vecBegEnd.clear();
@@ -1255,7 +1180,7 @@ int XML4NLP::SetPredArgToWord(	int paragraphIdx, int sentenceIdx, int wordIdx,
 
     if (0 != CheckRange(paragraphIdx, sentenceIdx, wordIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words[wordIdx].wordPtr;
 
     if (wordPtr->FirstChildElement(TAG_SRL_ARG) != NULL)
     {
@@ -1282,7 +1207,7 @@ int XML4NLP::SetPredArgToWord(	int sentenceIdx, int wordIdx,
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t[wordIdx].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words[wordIdx].wordPtr;
 
     if (wordPtr->FirstChildElement(TAG_SRL_ARG) != NULL)
     {
@@ -1402,7 +1327,7 @@ int XML4NLP::SetCoreference(const vector< vector< pair<int, int> > > &vecCoref)
 /// initialize the XML DOM tree.
 /// after the process LoadFile(), the DOM tree has been set up
 /// but it is not fully conform to our need, 
-/// for example, the member "vecParagraph_ts" of the class Document has not been initialized,
+/// for example, the member "paragraphss" of the class Document has not been initialized,
 /// this function just do this.
 /////////////////////////////////////////////////////////////////////////////////////
 int XML4NLP::InitXmlStructure()
@@ -1443,12 +1368,12 @@ void XML4NLP::CheckNoteForOldLtml()
     //	if (m_summary.nodePtr != NULL) SetNote(NOTE_SUM);
     //	if (m_textclass.nodePtr != NULL) SetNote(NOTE_CLASS);
 
-    if ( m_document_t.vecParagraph_t.empty() ) return;
-    if ( m_document_t.vecParagraph_t[0].vecSentence_t.empty() ) return;
+    if ( m_document_t.paragraphs.empty() ) return;
+    if ( m_document_t.paragraphs[0].sentences.empty() ) return;
     SetNote(NOTE_SENT);
-    if ( m_document_t.vecParagraph_t[0].vecSentence_t[0].vecWord_t.empty() ) return;
+    if ( m_document_t.paragraphs[0].sentences[0].words.empty() ) return;
     SetNote(NOTE_WORD);
-    TiXmlElement *wordPtr = m_document_t.vecParagraph_t[0].vecSentence_t[0].vecWord_t[0].wordPtr;
+    TiXmlElement *wordPtr = m_document_t.paragraphs[0].sentences[0].words[0].wordPtr;
     if ( wordPtr->Attribute(TAG_POS) != NULL ) SetNote(NOTE_POS);
     if ( wordPtr->Attribute(TAG_NE) != NULL ) SetNote(NOTE_NE);
     if ( wordPtr->Attribute(TAG_WSD) != NULL ) SetNote(NOTE_WSD);			// consider only one attribute, excluding TAG_WSD_EXP
@@ -1507,16 +1432,16 @@ int XML4NLP::InitXmlDocument(Document_t &document)
 
     do
     {
-        if (0 != InitXmlParagraph(document.vecParagraph_t, paragraphPtr)) return -1;
+        if (0 != InitXmlParagraph(document.paragraphs, paragraphPtr)) return -1;
         paragraphPtr = paragraphPtr->NextSiblingElement(TAG_PARA);
     } while (paragraphPtr != NULL);
     return 0;
 }
 
-int XML4NLP::InitXmlParagraph(vector<Paragraph_t> &vecParagraph_t, TiXmlElement *paragraphPtr)
+int XML4NLP::InitXmlParagraph(vector<Paragraph_t> &paragraphs, TiXmlElement *paragraphPtr)
 {
-    vecParagraph_t.push_back( Paragraph_t() );
-    Paragraph_t &paragraph = vecParagraph_t[vecParagraph_t.size()-1];
+    paragraphs.push_back( Paragraph_t() );
+    Paragraph_t &paragraph = paragraphs[paragraphs.size()-1];
     paragraph.paragraphPtr = paragraphPtr;
 
     TiXmlElement *stnsPtr = paragraphPtr->FirstChildElement(TAG_SENT);
@@ -1524,17 +1449,17 @@ int XML4NLP::InitXmlParagraph(vector<Paragraph_t> &vecParagraph_t, TiXmlElement 
 
     // record the sentence info
     do {
-        if (0 != InitXmlSentence(paragraph.vecSentence_t, stnsPtr)) return -1;
+        if (0 != InitXmlSentence(paragraph.sentences, stnsPtr)) return -1;
         stnsPtr = stnsPtr->NextSiblingElement(TAG_SENT);
     } while(stnsPtr != NULL);
 
     return 0;
 }
 
-int XML4NLP::InitXmlSentence(vector<Sentence_t> &vecSentence_t, TiXmlElement *stnsPtr)
+int XML4NLP::InitXmlSentence(vector<Sentence_t> &sentences, TiXmlElement *stnsPtr)
 {
-    vecSentence_t.push_back( Sentence_t() );
-    Sentence_t &sentence = vecSentence_t[vecSentence_t.size()-1];
+    sentences.push_back( Sentence_t() );
+    Sentence_t &sentence = sentences[sentences.size()-1];
     sentence.sentencePtr = stnsPtr;
 
     TiXmlElement *wordPtr = stnsPtr->FirstChildElement(TAG_WORD);
@@ -1542,17 +1467,17 @@ int XML4NLP::InitXmlSentence(vector<Sentence_t> &vecSentence_t, TiXmlElement *st
 
     do
     {
-        if (0 != InitXmlWord(sentence.vecWord_t, wordPtr)) return -1;
+        if (0 != InitXmlWord(sentence.words, wordPtr)) return -1;
         wordPtr = wordPtr->NextSiblingElement(TAG_WORD);
     } while(wordPtr != NULL);
 
     return 0;
 }
 
-int XML4NLP::InitXmlWord(vector<Word_t> &vecWord_t, TiXmlElement *wordPtr)
+int XML4NLP::InitXmlWord(vector<Word_t> &words, TiXmlElement *wordPtr)
 {
-    vecWord_t.push_back( Word_t() );
-    vecWord_t[vecWord_t.size()-1].wordPtr = wordPtr;
+    words.push_back( Word_t() );
+    words[words.size()-1].wordPtr = wordPtr;
     return 0;
 }
 
@@ -1612,10 +1537,10 @@ int XML4NLP::BuildParagraph(string& strParagraph, int paragraphIdx) {
     }
 
     TiXmlElement * documentPtr = m_document_t.documentPtr;
-    vector<Paragraph_t> &vecParagraph_t = m_document_t.vecParagraph_t;
+    vector<Paragraph_t> &paragraphs = m_document_t.paragraphs;
 
-    vecParagraph_t.push_back( Paragraph_t() );
-    Paragraph_t &paragraph = vecParagraph_t[vecParagraph_t.size() - 1];
+    paragraphs.push_back( Paragraph_t() );
+    Paragraph_t &paragraph = paragraphs[paragraphs.size() - 1];
 
     paragraph.paragraphPtr = new TiXmlElement(TAG_PARA);
     paragraph.paragraphPtr->SetAttribute(TAG_ID, paragraphIdx);
@@ -1634,27 +1559,27 @@ int XML4NLP::GetInfoFromSentence(vector<const char *> &vecInfo,
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return -1;
 
-    const vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t;
+    const vector<Word_t> &words = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words;
 
     /*
-       if (vecInfo.size() != vecWord_t.size())
+       if (vecInfo.size() != words.size())
        {
     //		cerr << "vecInfo's size does not equal to word num in the sentence, should resize() first" << endl;
     return -1;
     }
     */
 
-    if (vecWord_t[0].wordPtr->Attribute(attrName) == NULL)
+    if (words[0].wordPtr->Attribute(attrName) == NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" does not exists in paragraph " << paragraphIdx
         //			<< " sentence " << sentenceIdx << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecInfo.push_back(vecWord_t[i].wordPtr->Attribute(attrName));
-        //vecInfo[i] = vecWord_t[i].wordPtr->Attribute(attrName);
+        vecInfo.push_back(words[i].wordPtr->Attribute(attrName));
+        //vecInfo[i] = words[i].wordPtr->Attribute(attrName);
     }
     return 0;
 }
@@ -1664,27 +1589,27 @@ int XML4NLP::GetInfoFromSentence(vector<const char *> &vecInfo, int sentenceIdx,
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    const vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t;
+    const vector<Word_t> &words = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words;
 
     /*
-       if (vecInfo.size() != vecWord_t.size())
+       if (vecInfo.size() != words.size())
        {
     //		cerr << "vecInfo's size does not equal to word num in the sentence, should resize() first" << endl;
     return -1;
     }
     */
 
-    if (vecWord_t[0].wordPtr->Attribute(attrName) == NULL)
+    if (words[0].wordPtr->Attribute(attrName) == NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" does not exists in paragraph " << paraIdx_sentIdx.first
         //			<< " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecInfo.push_back(vecWord_t[i].wordPtr->Attribute(attrName));
-        //vecInfo[i] = vecWord_t[i].wordPtr->Attribute(attrName);
+        vecInfo.push_back(words[i].wordPtr->Attribute(attrName));
+        //vecInfo[i] = words[i].wordPtr->Attribute(attrName);
     }
     return 0;
 
@@ -1696,9 +1621,9 @@ int XML4NLP::GetInfoFromSentence(vector<string> &vecInfo, int paragraphIdx,
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return -1;
 
-    const vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t;
+    const vector<Word_t> &words = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words;
 
-    if (vecWord_t[0].wordPtr->Attribute(attrName) == NULL)
+    if (words[0].wordPtr->Attribute(attrName) == NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" does not exists in paragraph " << paragraphIdx
         //			<< " sentence " << sentenceIdx << endl;
@@ -1706,9 +1631,9 @@ int XML4NLP::GetInfoFromSentence(vector<string> &vecInfo, int paragraphIdx,
     }
 
     vecInfo.clear();
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        const char *cszAttrValue = vecWord_t[i].wordPtr->Attribute(attrName);
+        const char *cszAttrValue = words[i].wordPtr->Attribute(attrName);
         vecInfo.push_back(cszAttrValue != NULL ? cszAttrValue : "");
     }
     return 0;
@@ -1719,9 +1644,9 @@ int XML4NLP::GetInfoFromSentence(vector<string> &vecInfo, int sentenceIdx, const
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    const vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t;
+    const vector<Word_t> &words = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words;
 
-    if (vecWord_t[0].wordPtr->Attribute(attrName) == NULL)
+    if (words[0].wordPtr->Attribute(attrName) == NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" does not exists in paragraph " << paraIdx_sentIdx.first
         //			<< " sentence " << paraIdx_sentIdx.second << endl;
@@ -1729,9 +1654,9 @@ int XML4NLP::GetInfoFromSentence(vector<string> &vecInfo, int sentenceIdx, const
     }
 
     vecInfo.clear();
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        const char *cszAttrValue = vecWord_t[i].wordPtr->Attribute(attrName);
+        const char *cszAttrValue = words[i].wordPtr->Attribute(attrName);
         vecInfo.push_back(cszAttrValue != NULL ? cszAttrValue : "");
     }
     return 0;
@@ -1742,24 +1667,24 @@ int XML4NLP::SetInfoToSentence(const vector<string> &vecInfo, int paragraphIdx,
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return -1;
 
-    vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t;
+    vector<Word_t> &words = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words;
 
-    if (vecWord_t.size() != vecInfo.size())
+    if (words.size() != vecInfo.size())
     {
         //		cerr << "word number does not equal to attribute \"" << attrName << "\" num in paragraph " << paragraphIdx
         //			<< " sentence " << sentenceIdx << endl;
         return -1;
     }
-    if (vecWord_t[0].wordPtr->Attribute(attrName) != NULL)
+    if (words[0].wordPtr->Attribute(attrName) != NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" already exists in paragraph " << paragraphIdx
         //			<< " sentence " << sentenceIdx << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecWord_t[i].wordPtr->SetAttribute(attrName, vecInfo[i].c_str());
+        words[i].wordPtr->SetAttribute(attrName, vecInfo[i].c_str());
     }
     return 0;
 }
@@ -1769,23 +1694,23 @@ int XML4NLP::SetInfoToSentence(const vector<string> &vecInfo, int sentenceIdx, c
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t;
-    if (vecWord_t.size() != vecInfo.size())
+    vector<Word_t> &words = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words;
+    if (words.size() != vecInfo.size())
     {
         //		cerr << "word number does not equal to attribute \"" << attrName << "\" num in paragraph " << paraIdx_sentIdx.first
         //			<< " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
-    if (vecWord_t[0].wordPtr->Attribute(attrName) != NULL)
+    if (words[0].wordPtr->Attribute(attrName) != NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" already exists in paragraph " << paraIdx_sentIdx.first
         //			<< " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecWord_t[i].wordPtr->SetAttribute(attrName, vecInfo[i].c_str());
+        words[i].wordPtr->SetAttribute(attrName, vecInfo[i].c_str());
     }
     return 0;
 }
@@ -1795,24 +1720,24 @@ int XML4NLP::SetInfoToSentence(const vector<int> &vecInfo, int paragraphIdx,
 {
     if (0 != CheckRange(paragraphIdx, sentenceIdx)) return -1;
 
-    vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t;
+    vector<Word_t> &words = m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words;
 
-    if (vecWord_t.size() != vecInfo.size())
+    if (words.size() != vecInfo.size())
     {
         //		cerr << "word number does not equal to attribute \"" << attrName << "\" num in paragraph " << paragraphIdx
         //			<< " sentence " << sentenceIdx << endl;
         return -1;
     }
-    if (vecWord_t[0].wordPtr->Attribute(attrName) != NULL)
+    if (words[0].wordPtr->Attribute(attrName) != NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" already exists in paragraph " << paragraphIdx
         //			<< " sentence " << sentenceIdx << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecWord_t[i].wordPtr->SetAttribute(attrName, vecInfo[i]);
+        words[i].wordPtr->SetAttribute(attrName, vecInfo[i]);
     }
     return 0;
 }
@@ -1822,23 +1747,23 @@ int XML4NLP::SetInfoToSentence(const vector<int> &vecInfo, int sentenceIdx, cons
     pair<int, int> paraIdx_sentIdx;
     if (0 != MapGlobalSentIdx2paraIdx_sentIdx(sentenceIdx, paraIdx_sentIdx)) return -1;
 
-    vector<Word_t> &vecWord_t = m_document_t.vecParagraph_t[paraIdx_sentIdx.first].vecSentence_t[paraIdx_sentIdx.second].vecWord_t;
-    if (vecWord_t.size() != vecInfo.size())
+    vector<Word_t> &words = m_document_t.paragraphs[paraIdx_sentIdx.first].sentences[paraIdx_sentIdx.second].words;
+    if (words.size() != vecInfo.size())
     {
         //		cerr << "word number does not equal to attribute \"" << attrName << "\" num in paragraph " << paraIdx_sentIdx.first
         //			<< " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
-    if (vecWord_t[0].wordPtr->Attribute(attrName) != NULL)
+    if (words[0].wordPtr->Attribute(attrName) != NULL)
     {
         //		cerr << "Attribute \"" << attrName << "\" already exists in paragraph " << paraIdx_sentIdx.first
         //			<< " sentence " << paraIdx_sentIdx.second << endl;
         return -1;
     }
 
-    for (int i = 0; i < vecWord_t.size(); ++i)
+    for (int i = 0; i < words.size(); ++i)
     {
-        vecWord_t[i].wordPtr->SetAttribute(attrName, vecInfo[i]);
+        words[i].wordPtr->SetAttribute(attrName, vecInfo[i]);
     }
     return 0;
 }
@@ -1846,17 +1771,17 @@ int XML4NLP::SetInfoToSentence(const vector<int> &vecInfo, int sentenceIdx, cons
 
 int XML4NLP::CheckRange(int paragraphIdx, int sentenceIdx, int wordIdx) const
 {
-    if (paragraphIdx >= m_document_t.vecParagraph_t.size())
+    if (paragraphIdx >= m_document_t.paragraphs.size())
     {
         //		cerr << "paragraphIdx is too large: " << paragraphIdx << endl;
         return -1;
     }
-    if (sentenceIdx >= m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.size())
+    if (sentenceIdx >= m_document_t.paragraphs[paragraphIdx].sentences.size())
     {
         //		cerr << "sentenceIdx is too large: " << sentenceIdx << " in paragraph : " << paragraphIdx << endl;
         return -1;
     }
-    if (wordIdx >= m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t[sentenceIdx].vecWord_t.size())
+    if (wordIdx >= m_document_t.paragraphs[paragraphIdx].sentences[sentenceIdx].words.size())
     {
         //		cerr << "wordIdx is too large: " << wordIdx << " in sentence : " << sentenceIdx
         //			<< " of paragraph : " << paragraphIdx << endl;
@@ -1867,12 +1792,12 @@ int XML4NLP::CheckRange(int paragraphIdx, int sentenceIdx, int wordIdx) const
 
 int XML4NLP::CheckRange(int paragraphIdx, int sentenceIdx) const
 {
-    if (paragraphIdx >= m_document_t.vecParagraph_t.size())
+    if (paragraphIdx >= m_document_t.paragraphs.size())
     {
         //		cerr << "paragraphIdx is too large: " << paragraphIdx << endl;
         return -1;
     }
-    if (sentenceIdx >= m_document_t.vecParagraph_t[paragraphIdx].vecSentence_t.size())
+    if (sentenceIdx >= m_document_t.paragraphs[paragraphIdx].sentences.size())
     {
         //		cerr << "sentenceIdx is too large: " << sentenceIdx << " in paragraph : " << paragraphIdx << endl;
         return -1;
@@ -1882,7 +1807,7 @@ int XML4NLP::CheckRange(int paragraphIdx, int sentenceIdx) const
 
 int XML4NLP::CheckRange(int paragraphIdx) const
 {
-    if (paragraphIdx >= m_document_t.vecParagraph_t.size())
+    if (paragraphIdx >= m_document_t.paragraphs.size())
     {
         //		cerr << "paragraphIdx is too large: " << paragraphIdx << endl;
         return -1;
