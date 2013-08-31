@@ -833,6 +833,7 @@ void Parser::train(void) {
     }
 
     delete model;
+    model = 0;
 }
 
 void Parser::evaluate(void) {

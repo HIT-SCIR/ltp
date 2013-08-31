@@ -450,7 +450,10 @@ void NER::train(void) {
     const char * train_file = train_opt.train_file.c_str();
 
     // read in training instance
-    read_instance(train_file);
+    if (!read_instance(train_file)) {
+        ERROR_LOG("Training file doesn't exist");
+    }
+
     TRACE_LOG("Read in [%d] instances.", train_dat.size());
 
     model = new Model;
