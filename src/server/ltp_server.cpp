@@ -14,6 +14,7 @@
 #include "Ltp.h"
 
 #include "codecs.hpp"
+#include "logging.hpp"
 
 #if !defined(LISTENING_PORT)
 #define LISTENING_PORT	"12345"
@@ -78,36 +79,61 @@ static int Service(struct mg_connection *conn) {
             buffer[len] = 0;
             str_post_data += buffer;
         }
-        cout << str_post_data.size() << " " << str_post_data << endl;
+
+        TRACE_LOG("CDATA: %s", str_post_data.c_str());
+        TRACE_LOG("CDATA length: %d", str_post_data.size());
 
         sentence = new char[str_post_data.size() + 1];
-        mg_get_var(str_post_data.c_str(), str_post_data.size(), "s", sentence, str_post_data.size());
-        mg_get_var(str_post_data.c_str(), str_post_data.size(), "t", type, sizeof(type) - 1);
-        mg_get_var(str_post_data.c_str(), str_post_data.size(), "x", xml, sizeof(xml) - 1);
+
+        mg_get_var(str_post_data.c_str(), 
+                str_post_data.size(), 
+                "s",
+                sentence,
+                str_post_data.size());
+
+        mg_get_var(str_post_data.c_str(), 
+                str_post_data.size(), 
+                "t",
+                type,
+                sizeof(type) - 1);
+
+        mg_get_var(str_post_data.c_str(), 
+                str_post_data.size(), 
+                "x",
+                xml,
+                sizeof(xml) - 1);
+
+        // std::cerr << "sentence: " << sentence << std::endl;
+        // std::cerr << "type    : " << type << std::endl;
+        // std::cerr << "xml     : " << xml << std::endl;
+        // std::cerr << "validation check" << std::endl;
 
         string strSentence = sentence;
-        delete []sentence;
 
         /*
          * validation check
          */
-        if (strcmp(sentence, "") == 0 || !isclear(strSentence)) {
+        if (strlen(sentence) == 0 || !isclear(strSentence)) {
+            // std::cerr << "Failed validation check" << std::endl;
+            WARNING_LOG("Failed string validation check");
             return 0;
         }
 
-        if(strcmp(type, "") == 0) {
+        if(strlen(type) == 0) {
             str_type = "";
         } else {
             str_type = type;
         }
 
-        if(strcmp(xml, "") == 0) {
+        if(strlen(xml) == 0) {
             str_xml = "";
         } else {
             str_xml = xml;
         }
 
-        cout << "Input sentence is: " << strSentence << endl;
+        delete []sentence;
+
+        TRACE_LOG("Input sentence is: %s", strSentence.c_str());
 
         if(str_xml == "y"){
             xml4nlp.LoadXMLFromString(strSentence);
