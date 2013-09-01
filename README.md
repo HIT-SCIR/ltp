@@ -16,6 +16,11 @@ __[语言技术平台（Language Technology Platform，LTP）](http://ir.hit.edu
 
 关于LTP的使用，请参考[LTP使用文档v3.0](https://github.com/HIT-SCIR/ltp/blob/ltp-new-framework/doc/ltp-document-3.0.md)
 
+模型
+---
+
+* [3.0](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
+
 开源协议
 -------
 1. 语言技术平台面向国内外大学、中科院各研究所以及个人研究者免费开放源代码，但如上述机构和个人将该平台用于商业目的（如企业合作项目等）则需要付费。
