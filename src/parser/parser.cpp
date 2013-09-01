@@ -939,6 +939,7 @@ void Parser::test() {
 
     ifstream f(test_file);
     if (!f) {
+        ERROR_LOG("Failed to load test file %s", test_file);
         return;
     }
 

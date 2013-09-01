@@ -1,0 +1,25 @@
+[model]
+labeled = 1
+decoder-name = 2o-carreras
+
+[feature]
+use-postag-unigram = 0
+use-dependency = 1
+use-dependency-unigram = 1
+use-dependency-bigram = 1
+use-dependency-surrounding = 1
+use-dependency-between = 1
+use-sibling = 1
+use-sibling-basic = 1
+use-sibling-linear = 1
+use-grand = 1
+use-grand-basic = 1
+use-grand-linear = 1
+
+[train]
+train-file = data/parser/example-train.conll
+holdout-file = data/parser/example-holdout.conll
+
+max-iter = 1 
+algorithm = pa
+model-name = build/parser/ldc-o2carreras

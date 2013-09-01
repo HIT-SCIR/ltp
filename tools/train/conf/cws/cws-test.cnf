@@ -1,0 +1,3 @@
+[test]
+test-file = data/seg/example-test.seg
+model-file = build/cws/example-seg.0.model
