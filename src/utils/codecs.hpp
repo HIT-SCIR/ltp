@@ -165,6 +165,8 @@ inline bool isclear(const std::string & s, int encoding=UTF8) {
                 return false;
             }
         }
+
+        return true;
     } else if (encoding == GBK) {
         return true;
     } else {
