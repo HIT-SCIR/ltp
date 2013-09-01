@@ -1,7 +1,9 @@
 INCLUDE_DIRECTORIES( ./
     ${THIRDPARTY_DIR}/boost/include/ )
 
-add_library(boost_regex
+set (boost_regex_VERSION "3.12")
+
+set (boost_regex_SRC
   src/c_regex_traits.cpp
   src/cpp_regex_traits.cpp
   src/cregex.cpp
@@ -20,3 +22,14 @@ add_library(boost_regex
   src/winstances.cpp 
   src/usinstances.cpp
   )
+
+add_library(boost_regex_static_lib STATIC ${boost_regex_SRC})
+
+set_target_properties (boost_regex_static_lib   PROPERTIES
+    OUTPUT_NAME boost_regex)
+
+add_library(boost_regex_shared_lib SHARED ${boost_regex_SRC})
+
+set_target_properties (boost_regex_shared_lib   PROPERTIES
+    VERSION     ${boost_regex_VERSION}
+    OUTPUT_NAME boost_regex)

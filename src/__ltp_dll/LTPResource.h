@@ -1,127 +1,151 @@
-#ifndef _LTP_RESOURCE_H_
-#define _LTP_RESOURCE_H_
+#ifndef __LTP_RESOURCE_H__
+#define __LTP_RESOURCE_H__
 
-#pragma warning(disable: 4786 4284)
 #include <string>
-using namespace std;
 
-extern ofstream ltp_log_file;
+// extern ofstream ltp_log_file;
 
-#include "MyLib.h"
-#include "Xml4nlp.h"
-#include "SplitSentence.h"
-#include "CRFWS_DLL.h"
-#pragma comment(lib, "_crfwordsegment.lib")
+class LTPResource {
+public:
+    LTPResource();
+    ~LTPResource();
 
-#include "svmtagger_dll.h"
-#include "NER_DLL.h"
-#pragma comment(lib, "_ner.lib")
-/*
-#include "../_wsd/WSD_dll.h"
-#pragma comment(lib, "_wsd.lib")
-*/
-#include "SRL_DLL.h"
-#pragma comment(lib, "_srl.lib")
-#include "gparser_dll.h"
-#pragma comment(lib, "_gparser.lib")
+    /*
+     * Load segmentor resource from model file. Return 0 on success,
+     * otherwise -1.
+     *
+     *  @param[in]  model_file      the model_file
+     *  @return     int             0 on success, otherwise -1
+     */
+    int LoadSegmentorResource(const char * model_file);
 
-/*
-#ifdef _WIN32
+    /*
+     * std::string wrapper for LoadSegmentResource(const char *);
+     */
+    int LoadSegmentorResource(const std::string & model_file);
 
-#include "../_irlas/IRLAS_DLL.h"
+    /*
+     * load postagger resource from model file. Return 0 on success,
+     * otherwise -1.
+     *
+     *  @param[in]  model_file
+     *  @return     int             0 on success, otherwise -1
+     */
+    int LoadPostaggerResource(const char * model_file);
 
-#include "../_parser/Parser_dll.h"
-#pragma comment(lib, "_parser.lib")
+    /*
+     * std::string wrapper for LoadSegmentResouce(const char *);
+     */
+    int LoadPostaggerResource(const std::string & model_file);
 
-#endif
-*/
+    /*
+     * load parser resource from model file. Return 0 on success,
+     * otherwise -1.
+     *
+     *  @param[in]  model_file
+     *  @return     int             0 on success, otherwise -1
+     */
+    int LoadNEResource(const char * model_file);
 
-class LTPResource
-{
-    public:
-        LTPResource();
-        ~LTPResource();
+    /*
+     * std::string wrapper for LoadNEResource(const char *)
+     */
+    int LoadNEResource(const std::string & model_file);
 
-        int LoadCRFWSRes(const char *dataFolder);
-        int LoadCRFWSRes(const string &dataFolder) 
-        {
-            return LoadCRFWSRes( dataFolder.c_str() );
-        }
+    /*
+     * load parser resource from model file. Return 0 on success,
+     * otherwise -1.
+     *
+     *  @param[in]  model_file
+     *  @return     int             0 on success, otherwise -1
+     */
+    int LoadParserResource(const char * model_file);
 
-        /*
-           int LoadIrlasRes(const char *confFile, const char *dataFolder);
-           int LoadIrlasRes(const string &confFile, const string &dataFolder) 
-           {
-           return LoadIrlasRes(confFile.c_str(), dataFolder.c_str());
-           }
-           */
-        int LoadSvmtaggerRes(const char *dataFolder);
-        int LoadSvmtaggerRes(const string &dataFolder) 
-        {
-            return LoadSvmtaggerRes(dataFolder.c_str());
-        }
-        int LoadNeRes(const char *dataFolder);
-        int LoadNeRes(const string &dataFolder) 
-        {
-            return LoadNeRes(dataFolder.c_str());
-        }
-        /*
-           int LoadWsdRes(const char *dataFolder);
-           int LoadWsdRes(const string &dataFolder)
-           {
-           return LoadWsdRes(dataFolder.c_str());
-           }
-           */
+    /*
+     * std::string wrapper for LoadParserResource(const char *)
+     */
+    int LoadParserResource(const std::string & data_folder);
 
-        int LoadGParserRes(const char *dataFolder);
-        int LoadGParserRes(const string &dataFolder)
-        {
-            return LoadGParserRes(dataFolder.c_str());
-        }
+    /*
+     * load srl resource from model file. Return 0 on success,
+     * otherwise -1.
+     *
+     *  @param[in]  model_file
+     *  @return     int             0 on success, otherwise -1
+     */
+    int LoadSRLResource(const char * data_folder);
 
-        /*
-           int LoadParserRes(const char *dataFolder);
-           int LoadParserRes(const string &dataFolder)
-           {
-           return LoadParserRes(dataFolder.c_str());
-           }
-           */
+    /*
+     * std::string wrapper for LoadParserResource(const char *)
+     */
+    int LoadSRLResource(const std::string & data_folder);
 
-        int LoadSrlRes(const char *dataFolder);
-        int LoadSrlRes(const string &dataFolder) 
-        {
-            return LoadSrlRes(dataFolder.c_str());
-        }
+    /*
+     * release segmentor resource
+     */
+    void ReleaseSegmentorResource(void);
 
+    /*
+     * release postagger resource
+     */
+    void ReleasePostaggerResource(void);
 
-        void ReleaseCRFWSRes();
-        //int ReleaseIrlasRes();
-        int ReleaseSvmtaggerRes();
-        int ReleaseNeRes();
-        //int ReleaseWsdRes();
-        int ReleaseGParserRes();
-        //int ReleaseParserRes();
-        int ReleaseSrlRes();
+    /*
+     * release ner resource
+     */
+    void ReleaseNEResource(void);
 
-        //void *GetIrlasSeggerPtr() { return m_irlasSeggerPtr; }
-        void *GetNerPtr() {return m_nerPtr; }
-        void *GetGParserPtr() {return m_gparserPtr; }
-    private:
-        void *m_irlasSeggerPtr;
-        void *m_nerPtr;
-        void *m_gparserPtr;
-    private:
+    /*
+     * release parser resource
+     */
+    void ReleaseParserResource(void);
+
+    /*
+     * release srl resource
+     */
+    void ReleaseSRLResource(void);
+
+    /*
+     * Get the segmentor
+     *
+     *  @return void *  pointer to the segmentor
+     */
+    void * GetSegmentor();
+
+    /*
+     * Get the postagger
+     *
+     *  @return void *  pointer to the postagger
+     */
+    void * GetPostagger();
+
+    /*
+     * Get the parser;
+     *
+     *  @return void *  pointer to the parser
+     */
+    void * GetParser();
+
+    /*
+     * Get the ner
+     *
+     *  @return void *  pointer to the ner
+     */
+    void * GetNER();
+private:
+    void * m_segmentor;
+    void * m_postagger;
+    void * m_parser;
+    void * m_ner;
+private:
         // copy operator and assign operator is not allowed.
 
-    private:
-        bool m_isLoadCRFWSRes;
-        //bool m_isLoadIrlasRes;
-        bool m_isLoadSvmtaggerRes;
-        bool m_isLoadNeRes;
-        //bool m_isLoadWsdRes;
-        bool m_isLoadGParserRes;
-        //bool m_isLoadParserRes;
-        bool m_isLoadSrlRes;
+private:
+    bool    m_isSegmentorResourceLoaded;
+    bool    m_isPostaggerResourceLoaded;
+    bool    m_isNEResourceLoaded;
+    bool    m_isParserResourceLoaded;
+    bool    m_isSRLResourceLoaded;
 };
 
-#endif
+#endif      //  end for __LTP_RESOURCE_H__

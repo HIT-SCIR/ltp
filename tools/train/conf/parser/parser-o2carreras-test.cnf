@@ -1,0 +1,3 @@
+[test]
+test-file = data/parser/example-test.conll
+model-file = build/parser/ldc-o2carreras.0.model

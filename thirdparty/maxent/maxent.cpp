@@ -1,464 +1,574 @@
-/*
- * vi:ts=4:tw=78:shiftwidth=4:expandtab
- * vim600:fdm=marker
- *
- * maxent.cpp  -  A handy command line maxent utility built on top of the
- * maxent library.
- *
- * Copyright (C) 2003 by Zhang Le <ejoy@users.sourceforge.net>
- * Begin       : 02-Sep-2003
- * Last Change : 11-Sep-2004.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <cassert>
-
-#if HAVE_GETTIMEOFDAY
-    #include <sys/time.h> // for gettimeofday()
-#endif
-
+#include <vector>
+#include <fstream>
+#include <cstdio>
 #include <cstdlib>
-#include <cassert>
-#include <stdexcept> //for std::runtime_error
-#include <memory>    //for std::bad_alloc
-#include <iostream>
-#include <string>
 #include <algorithm>
-#include <boost/tokenizer.hpp>
-#include <boost/lexical_cast.hpp>
+#include "maxent.h"
+#include "opmath.h"
 
-#include "line_stream_iterator.hpp"
-#include "maxentmodel.hpp"
-#include "display.hpp" 
-#include "maxent_cmdline.h"
-
-#include "mmapfile.hpp"
-
-#if defined(HAVE_SYSTEM_MMAP)
-    #include "line_mem_iterator.hpp"
-    #include "token_mem_iterator.hpp"
-#endif
-
-bool g_use_mmap = true;
+namespace maxent {
 
 using namespace std;
-using namespace maxent;
+using namespace math;
 
-typedef MaxentModel::context_type me_context_type;
-typedef MaxentModel::outcome_type me_outcome_type;
-
-//add_event helper function objects
-struct AddEventToModel{
-    AddEventToModel(MaxentModel& m)
-        :model(m){}
-
-    void operator()(const me_context_type& context, 
-            const me_outcome_type& outcome) {
-        model.add_event(context, outcome, 1);
+void ME_Model::add_training_sample(const ME_Sample& mes)
+{
+    Sample s;
+    s.label = _set_label.append(mes.label);
+    if (s.label > ME_Feature::MAX_LABEL_TYPES)
+    {
+        cerr << "error: too many types of labels (limit: 255)." << endl;
+        exit(1);
     }
-    private:
-    MaxentModel& model;
-};
 
-struct AddHeldoutEventToModel{
-    AddHeldoutEventToModel(MaxentModel& m)
-        :model(m){}
-
-    void operator()(const me_context_type& context,
-            const me_outcome_type& outcome) {
-        model.add_heldout_event(context, outcome, 1);
+    for (vector<string>::const_iterator i = mes.features.begin(); i != mes.features.end(); ++i)
+    {
+        s.features.push_back(_set_feature.append(*i));
     }
-    private:
-    MaxentModel& model;
-};
 
-struct AddEventToVector{
-    typedef vector<pair<me_context_type, me_outcome_type> >  EventVector_;
-    AddEventToVector(EventVector_& v)
-        :vec(v){}
-
-    void operator()(const me_context_type& context, 
-            const me_outcome_type& outcome) {
-        vec.push_back(make_pair(context, outcome));
+    for (vector< pair<string, double> >::const_iterator i = mes.rvfeatures.begin(); i != mes.rvfeatures.end(); ++i)
+    {
+        s.rvfeatures.push_back(pair<int, double>(_set_feature.append(i->first), i->second));
     }
-    private:
-    EventVector_& vec;
-};
 
-bool get_sample(const string& line, me_context_type& context, 
-        me_outcome_type& outcome, bool binary_feature) {
-    typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-    boost::char_separator<char> sep(" \t");
-    tokenizer tokens(line, sep);
-    tokenizer::iterator it = tokens.begin();
+    _training_data.push_back(s);
+}
 
-    outcome = *it++;
-    if (outcome.empty())
+int ME_Model::train()
+{
+    if (_training_data.size() == 0)
+    {
+        cerr << "error: no training samples." << endl;
+        exit(1);
+    }
+
+    if (_param.nheldout >= (int)_training_data.size())
+    {
+        cerr << "error: too much heldout data." << endl;
+        exit(1);
+    }
+
+    int max_label = 0;
+    for (std::vector<Sample>::const_iterator i = _training_data.begin(); i != _training_data.end(); ++i)
+    {
+        max_label = max(max_label, i->label);
+    }
+    _num_classes = max_label + 1;
+
+    if (_num_classes != _set_label.size())
+    {
+        cerr << "[debug] _num_classes != _set_label.size()" << endl;
+    }
+
+    for (int i = 0; i < _param.nheldout; ++i)
+    {
+        _heldout_data.push_back(_training_data.back());
+        _training_data.pop_back();
+    }
+
+    /* for better feature scanning */
+    sort(_training_data.begin(), _training_data.end());
+
+    if ((_param.solver_type == L1_SGD || _param.solver_type == L1_OWLQN)
+            && _param.l1_reg > 0)
+        cerr << "L1 regularizer = " << _param.l1_reg << endl;
+    if (_param.solver_type == L2_LBFGS && _param.l2_reg > 0)
+        cerr << "L2 regularizer = " << _param.l2_reg << endl;
+
+    _param.l1_reg /= _training_data.size();
+    _param.l2_reg /= _training_data.size();
+
+    cerr << "collecting positive feature set for estimation...";
+    collect_mefeature_set();   /* To-do: allow feature cutoff */
+    cerr << "[done]" << endl;
+    cerr << "number of samples = " << _training_data.size() << endl;
+    cerr << "number of features = " << _set_mefeature.size() << endl;
+
+    cerr << "calculating empirical expectation...";
+    _vec_empirical_expectation.resize(_set_mefeature.size());
+    for (size_t i = 0; i < _set_mefeature.size(); ++i)
+    {
+        _vec_empirical_expectation[i] = 0.0;
+    }
+
+    for (size_t i = 0; i < _training_data.size(); ++i)
+    {
+        const Sample* s = &_training_data[i];
+        for (vector<int>::const_iterator j = s->features.begin(); j != s->features.end(); ++j)
+        {
+            for (vector<int>::const_iterator k = _feature2mef[*j].begin(); k != _feature2mef[*j].end(); ++k)
+            {
+                if (_set_mefeature.feature(*k).label() == s->label)
+                    _vec_empirical_expectation[*k] += 1.0;
+            }
+        }
+
+        for (vector< pair<int, double> >::const_iterator j = s->rvfeatures.begin(); j != s->rvfeatures.end(); ++j)
+        {
+            for (vector<int>::const_iterator k = _feature2mef[j->first].begin(); k != _feature2mef[j->first].end(); ++k)
+            {
+                if (_set_mefeature.feature(*k).label() == s->label)
+                    _vec_empirical_expectation[*k] += j->second;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < _set_mefeature.size(); ++i)
+    {
+        _vec_empirical_expectation[i] /= _training_data.size();
+    }
+    cerr << "[done]" << endl;
+
+    _vec_lambda.resize(_set_mefeature.size());
+    for (size_t i = 0; i < _vec_lambda.size(); ++i)
+    {
+        _vec_lambda[i] = 0.0;
+    }
+
+    vector<double> x;
+    switch (_param.solver_type)
+    {
+        case L1_SGD:
+            cerr << "perform SGD" << endl;
+            perform_SGD();   break;
+        case L2_LBFGS:
+            cerr << "perform LBFGS" << endl;
+            perform_LBFGS(); break;
+        case L1_OWLQN:
+            cerr << "perform OWLQN" << endl;
+            perform_OWLQN(); break;
+        default:
+            cerr << "error: unsupported solver type" << endl;
+            break;
+    }
+
+    int num_active_features = 0;
+    for (size_t i = 0; i < _set_mefeature.size(); ++i)
+    {
+        if (_vec_lambda[i] != 0)
+            num_active_features++;
+    }
+    cerr << "number of active features = " << num_active_features << endl;
+
+    return 0;
+}
+
+vector<double> ME_Model::predict(ME_Sample& mes) const
+{
+    Sample s;
+
+    for (vector<string>::const_iterator i = mes.features.begin(); i != mes.features.end(); ++i)
+    {
+        int fid = _set_feature.id(*i);
+        if (fid >= 0)
+            s.features.push_back(fid);
+    }
+    for (vector< pair<string, double> >::const_iterator i = mes.rvfeatures.begin(); i != mes.rvfeatures.end(); ++i)
+    {
+        int fid = _set_feature.id(i->first);
+        if (fid >= 0)
+            s.rvfeatures.push_back(pair<int, double>(fid, i->second));
+    }
+
+    vector<double> vec_prob;
+    int l = classify(s, vec_prob);
+    mes.label = get_class_label(l);
+
+    return vec_prob;
+}
+
+void ME_Model::predict(
+        ME_Sample& mes,
+        Prediction& outcomes,
+        bool sort_result) const
+{
+    vector<double> vec_prob = predict(mes);
+
+    for (size_t i = 0; i < vec_prob.size(); ++i)
+    {
+        string label = get_class_label(i);
+        outcomes.push_back(make_pair(label, vec_prob[i]));
+    }
+
+    if (sort_result)
+        sort(outcomes.begin(), outcomes.end(), cmp_outcome());
+}
+
+
+int ME_Model::classify(const Sample& s, vector<double>& vp) const
+{
+    vp.resize(_num_classes);
+    for (size_t i = 0; i < _num_classes; ++i)
+    {
+        vp[i] = 0.0;
+    }
+
+    for (vector<int>::const_iterator i = s.features.begin(); i != s.features.end(); ++i)
+    {
+        for (vector<int>::const_iterator k = _feature2mef[*i].begin(); k != _feature2mef[*i].end(); ++k)
+        {
+            int label = _set_mefeature.feature(*k).label();
+            vp[label] += _vec_lambda[*k];
+        }
+    }
+
+    for (vector< pair<int, double> >::const_iterator i = s.rvfeatures.begin(); i != s.rvfeatures.end(); ++i)
+    {
+        for (vector<int>::const_iterator k = _feature2mef[i->first].begin(); k != _feature2mef[i->first].end(); ++k)
+        {
+            int label = _set_mefeature.feature(*k).label();
+            vp[label] += _vec_lambda[*k] * i->second;
+        }
+    }
+
+    double sum_prob = 0.0;
+    vector<double>::const_iterator pmax = max_element(vp.begin(), vp.end());
+    double offset = max(0.0, *pmax - 700);
+    for (int label = 0; label < _num_classes; ++label)
+    {
+        double prod = exp(vp[label] - offset);
+        vp[label] = prod;
+        sum_prob += prod;
+    }
+
+    int max_label = -1;
+    double max_prob = -1;
+    for (int label = 0; label < _num_classes; ++label)
+    {
+        vp[label] /= sum_prob;
+
+        if (vp[label] > max_prob)
+        {
+            max_label = label;
+            max_prob  = vp[max_label];
+        }
+    }
+
+    return max_label;
+}
+
+int ME_Model::classify(
+        const vector<double>& x,
+        const Sample& s,
+        vector<double>& vp) const
+{
+    vp.resize(_num_classes);
+    for (size_t i = 0; i < _num_classes; ++i)
+    {
+        vp[i] = 0.0;
+    }
+
+    for (vector<int>::const_iterator i = s.features.begin(); i != s.features.end(); ++i)
+    {
+        for (vector<int>::const_iterator k = _feature2mef[*i].begin(); k != _feature2mef[*i].end(); ++k)
+        {
+            int label = _set_mefeature.feature(*k).label();
+            vp[label] += x[*k];
+        }
+    }
+
+    for (vector< pair<int, double> >::const_iterator i = s.rvfeatures.begin(); i != s.rvfeatures.end(); ++i)
+    {
+        for (vector<int>::const_iterator k = _feature2mef[i->first].begin(); k != _feature2mef[i->first].end(); ++k)
+        {
+            int label = _set_mefeature.feature(*k).label();
+            vp[label] += x[*k] * i->second;
+        }
+    }
+
+    double sum_prob = 0.0;
+    vector<double>::const_iterator pmax = max_element(vp.begin(), vp.end());
+    double offset = max(0.0, *pmax - 700);
+    for (int label = 0; label < _num_classes; ++label)
+    {
+        double prod = exp(vp[label] - offset);
+        vp[label] = prod;
+        sum_prob += prod;
+    }
+
+    int max_label = -1;
+    double max_prob = -1;
+    for (int label = 0; label < _num_classes; ++label)
+    {
+        vp[label] /= sum_prob;
+
+        if (vp[label] > max_prob)
+        {
+            max_label = label;
+            max_prob  = vp[max_label];
+        }
+    }
+
+    return max_label;
+}
+
+bool ME_Model::load(const std::string& modelfile)
+{
+    ifstream fp(modelfile.c_str());
+    if (!fp)
+    {
+        cerr << "error: cannot open model:" << modelfile << endl;
         return false;
-
-    context.clear();
-    if (binary_feature) {
-        for (; it != tokens.end(); ++it)
-            context.push_back(make_pair(*it, 1.0));
-    } else {
-        for (; it != tokens.end(); ++it) {
-            size_t pos = it->find(':');
-            if (pos == string::npos)
-                return false;
-            context.push_back(make_pair(it->substr(0, pos),
-                        atof(it->substr(pos + 1).c_str())));
-        }
     }
+
+    _vec_lambda.clear();
+    _set_label.clear();
+    _set_feature.clear();
+    _set_mefeature.clear();
+
+    string buf;
+    while (getline(fp, buf))
+    {
+        string::size_type p1 = buf.find_first_of('\t');
+        string::size_type p2 = buf.find_last_of('\t');
+
+        string class_name = buf.substr(0, p1);
+        string feature_name = buf.substr(p1+1, p2-p1-1);
+        double lambda = atof(buf.substr(p2+1).c_str());
+
+        int label = _set_label.append(class_name);
+        int feature = _set_feature.append(feature_name);
+
+        _set_mefeature.append(ME_Feature(label, feature));
+        _vec_lambda.push_back(lambda);
+    }
+
+    _num_classes = _set_label.size();
+
+    init_feature2mef();
+
     return true;
 }
 
-#if defined(HAVE_SYSTEM_MMAP)
-// the same as the above function, but use the faster token_mem_iterator
-// to locate tokens in [begin, end)
-bool get_sample(const char* begin, const char* end, me_context_type& context,
-        me_outcome_type& outcome, bool binary_feature) {
-    token_mem_iterator<> it(begin, end);
-    token_mem_iterator<> it_end;
-
-    outcome = string(it->first, it->second - it->first);
-    if (outcome.empty())
+bool ME_Model::save(const std::string& modelfile,
+                double weight_cutoff)
+{
+    ofstream fp(modelfile.c_str());
+    if (!fp)
+    {
+        cerr << "error: cannot open " << modelfile << endl;
         return false;
-    ++it;
+    }
 
-    context.clear();
-    if (binary_feature) {
-        for (; it != it_end; ++it) {
-            context.push_back(make_pair(string(it->first,
-                            it->second - it->first), 1.0));
-        }
-    } else {
-        for (; it != it_end; ++it) {
-            const char* p = it->first;
-            const char* q = it->second;
-            while (p < q && *p != ':')
-                ++p;
-            if (p == q)
-                return false;
-            context.push_back(make_pair(string(it->first, p - it->first), 
-                        atof(string(p + 1, q-p-1).c_str())));
+    for (map<string, int>::const_iterator i = _set_feature.begin(); i != _set_feature.end(); ++i)
+    {
+        for (int j = 0; j < _set_label.size(); ++j)
+        {
+            string label = _set_label.str(j);
+            string feature = i->first;
+
+            int fid = _set_mefeature.id(ME_Feature(j, i->second));
+            if (fid < 0) continue;
+            if (_vec_lambda[fid] == 0) continue;
+            if (fabs(_vec_lambda[fid]) < weight_cutoff) continue;
+
+            fp << label << "\t" << feature << "\t" << _vec_lambda[fid] << endl;
         }
     }
-    return true;
-}
-#endif
 
-// check if all features in a data stream are binary
-// it checks for the first non-empty line
-// the relative stream position leave unchanged
-bool is_binary_feature(const string& file) {
-    ifstream is(file.c_str());
-    if (!is)
-        throw runtime_error("can not open data file to read");
+    fp.close();
 
-    string line;
-    while (getline(is, line)) {
-        if (!line.empty()) {
-            typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-            boost::char_separator<char> sep(" \t");
-            tokenizer tokens(line, sep);
-            tokenizer::iterator it = tokens.begin();
-            ++it;
-
-            for (;it != tokens.end(); ++it) {
-                size_t pos = it->find(':');
-                if (pos == string::npos)
-                    break;
-                try {
-                    boost::lexical_cast<double>(it->substr(pos + 1));
-                } catch (boost::bad_lexical_cast&) {
-                    break;
-                }
-            }
-            return it != tokens.end();
-        }
-    }
     return true;
 }
 
-template <typename Func>
-void load_events(const string& file, Func add_event) {
-    bool binary_feature = is_binary_feature(file);
+double ME_Model::heldout_likelihood()
+{
+    double log_likelihood = 0;
+    int n_error = 0;
 
-    size_t count = 0;
-    me_context_type context;
-    me_outcome_type outcome;
+    for (vector<Sample>::const_iterator i = _heldout_data.begin(); i != _heldout_data.end(); ++i)
+    {
+        vector<double> vec_prob;
+        int label = classify(*i, vec_prob);
+        log_likelihood += log(vec_prob[i->label]);
 
-#if defined(HAVE_SYSTEM_MMAP)
-    if (g_use_mmap) {
-        MmapFile fm(file.c_str(), "r", 0);
-        if (fm.open() == false)
-            throw runtime_error("fail to mmap file");
+        if (label != i->label)
+            n_error++;
+    }
 
-        const char* data = (const char*)fm.addr();
-        line_mem_iterator<> line(data, data + fm.size());
-        line_mem_iterator<> lend;
-        for (; line != lend; ++line) {
-            if (line->first == line->second)
-                continue; 
-            if (!get_sample(line->first, line->second, context,
-                        outcome, binary_feature)) {
-                char msg[100];
-                sprintf(msg, "line [%d] in data file broken.", count);
-                throw runtime_error(msg);
-            }
-            add_event(context, outcome);
-            ++count;
-            if (count % 1000 == 0) {
-                displayA(".");
-                if (count % 10000 == 0)
-                    displayA(" ");
-                if (count % 50000 == 0)
-                    display("\t%d samples", count);
-            }
-        }
-    } else {
-#endif
-        ifstream is(file.c_str());
-        if (!is)
-            throw runtime_error("can not open data file to read");
-        line_stream_iterator<> line(is);
-        line_stream_iterator<> lend;
-        for (; line != lend; ++line) {
-            if (line->empty())
-                continue; 
-            if (!get_sample(*line, context, outcome, binary_feature)) {
-                char msg[100];
-                sprintf(msg, "line [%d] in data file broken.", count);
-                throw runtime_error(msg);
-            }
-            add_event(context, outcome);
-            ++count;
-            if (count % 1000 == 0) {
-                displayA(".");
-                if (count % 10000 == 0)
-                    displayA(" ");
-                if (count % 50000 == 0)
-                    display("\t%d samples", count);
-            }
-        }
-#if defined(HAVE_SYSTEM_MMAP)
-    } // g_use_mmap
-#endif
+    _heldout_error = (double)n_error / _heldout_data.size();
+    log_likelihood /= _heldout_data.size();
 
-    display("");
+    return log_likelihood;
 }
 
-// perform n-Fold cross_validation, results are printed to stdout
-void cross_validation(const string& file, size_t n, int iter, 
-        const string& method, double gaussian, bool random) {
-    vector<pair<me_context_type, me_outcome_type> > v;
-    vector<pair<me_context_type, me_outcome_type> >::iterator it;
-    load_events(file, AddEventToVector(v));
+void ME_Model::collect_mefeature_set(const int cutoff)
+{
+    map<unsigned int, int> feature_freq;
+    if (cutoff > 0)
+    {
+        /* calculate the feature count */
+        for (vector<Sample>::const_iterator i = _training_data.begin(); i != _training_data.end(); ++i)
+        {
+            for (vector<int>::const_iterator j = i->features.begin(); j != i->features.end(); ++j)
+            {
+                feature_freq[ME_Feature(i->label, *j).body()]++;
+            }
 
-    if (v.size() < 5 * n)
-        throw runtime_error("data set is too small to perform cross_validation");
-
-    if (random) {
-#if HAVE_GETTIMEOFDAY
-        timeval t;
-        gettimeofday(&t, 0);
-        srand48(t.tv_usec);
-#endif
-        random_shuffle(v.begin(), v.end());
+            for (vector< pair<int, double> >::const_iterator j = i->rvfeatures.begin(); j != i->rvfeatures.end(); ++j)
+            {
+                feature_freq[ME_Feature(i->label, j->first).body()]++;
+            }
+        }
     }
 
-    double total_acc = 0;
-    size_t step = v.size() / n;
-    for (size_t i = 0; i < n; ++i) {
-        MaxentModel m;
-
-        m.begin_add_event();
-        m.add_events(v.begin(), v.begin() + i * step);
-        m.add_events(v.begin() + (i + 1) * step, v.end());
-        m.end_add_event();
-        m.train(iter, method, gaussian); 
-
-        size_t correct = 0;
-        size_t count = 0;
-        for (it = v.begin() + i * step; it != v.begin() + (i + 1) * step;
-                ++it) {
-            if (m.predict(it->first) == it->second)
-                ++correct;
-            ++count;
+    /* collect features */
+    for (vector<Sample>::const_iterator i = _training_data.begin(); i != _training_data.end(); ++i)
+    {
+        // days ago, mason told me that Michael Collins is a gay...
+        // I feel so sad that I stuck here for two days...
+        for (vector<int>::const_iterator j = i->features.begin(); j != i->features.end(); ++j)
+        {
+            const ME_Feature mefeature(i->label, *j);
+            if (cutoff > 0 && feature_freq[mefeature.body()] <= cutoff)
+            {
+                continue;
+            }
+            int fid = _set_mefeature.append(mefeature);
         }
 
-        double acc = double(correct)/count;
-
-        cout << "Accuracy[" << i + 1 << "]: " << 100 * acc  << "%" << endl;
-        total_acc += acc;
+        for (vector< pair<int, double> >::const_iterator j = i->rvfeatures.begin(); j != i->rvfeatures.end(); ++j)
+        {
+            const ME_Feature mefeature(i->label, j->first);
+            if (cutoff > 0 && feature_freq[mefeature.body()] <= cutoff)
+                continue;
+            _set_mefeature.append(mefeature);
+        }
     }
-    cout << n << "-fold Cross Validation Accuracy: " <<
-        total_acc * 100 / n << "%" << endl;
+
+    feature_freq.clear();
+
+    init_feature2mef();
 }
 
-void predict(const MaxentModel& m, const string& in_file,
-        const string& out_file, bool output_prob) {
-    ifstream input(in_file.c_str());
-    if (!input)
-        throw runtime_error("unable to open data file to read");
+double ME_Model::update_model_expectation()
+{
+    /* update the model expectation of features */
 
-    ostream* output = 0;
-    ofstream os;
-    if (!out_file.empty()) {
-        os.open(out_file.c_str());
-        if (!os)
-            throw runtime_error("unable to open data file to write");
-        else
-            output = &os;
+    double log_likelihood = 0;
+    int n_error = 0;
+
+    /* here is a lesson paid for with many many blood
+     * do not use the stupid 'push_back' here!
+     */
+    _vec_model_expectation.resize(_set_mefeature.size());
+    for (size_t i = 0; i < _set_mefeature.size(); ++i)
+    {
+        _vec_model_expectation[i] = 0;
     }
 
-    bool binary_feature = is_binary_feature(in_file);
-    size_t correct = 0;
-    size_t count = 0;
-    me_context_type context;
-    me_outcome_type outcome;
-    vector<pair<me_outcome_type, double> > outcomes;
-    string prediction;
-    line_stream_iterator<> line(input);
-    line_stream_iterator<> lend;
-    if (output)
-        output->precision(10);
-    for (; line != lend; ++line) {
-        if (!get_sample(*line, context, outcome, binary_feature)) {
-            char msg[100];
-            sprintf(msg, "line [%d] in data file broken.", count);
-            throw runtime_error(msg);
-        }
+    for (vector<Sample>::const_iterator i = _training_data.begin(); i != _training_data.end(); ++i)
+    {
+        vector<double> vec_prob(_num_classes);
+        int plabel = classify(*i, vec_prob);
 
-        m.eval_all(context, outcomes, false);
-        size_t max_i = 0;
-        for (size_t i = 1; i < outcomes.size(); ++i)
-            if (outcomes[i].second > outcomes[max_i].second)
-                max_i = i;
+        // increment the log-likelihood
+        log_likelihood += log(vec_prob[i->label]);
+        if (plabel != i->label) n_error++;
 
-        prediction = outcomes[max_i].first;
-
-        if (prediction == outcome)
-            ++correct;
-
-        if (output) {
-            if (output_prob) {
-                for (size_t i = 0; i < outcomes.size(); ++i)
-                    *output << outcomes[i].first << '\t'
-                        << outcomes[i].second << '\t';
-                *output << endl;
-            } else {
-                *output << prediction << endl;
+        // calculate the model expectation
+        for (vector<int>::const_iterator j = i->features.begin(); j != i->features.end(); ++j)
+        {
+            for (vector<int>::const_iterator k = _feature2mef[*j].begin(); k != _feature2mef[*j].end(); ++k)
+            {
+                _vec_model_expectation[*k] += vec_prob[_set_mefeature.feature(*k).label()];
             }
         }
 
-        ++count;
+        for (vector< pair<int, double> >::const_iterator j = i->rvfeatures.begin(); j != i->rvfeatures.end(); ++j)
+        {
+            for (vector<int>::const_iterator k = _feature2mef[j->first].begin(); k != _feature2mef[j->first].end(); ++k)
+            {
+                _vec_model_expectation[*k] += vec_prob[_set_mefeature.feature(*k).label()] * j->second;
+            }
+        }
     }
-    cout << "Accuracy: " << 100.0 * correct/count << "% (" << 
-        correct << "/" << count << ")" << endl;
+
+    for (size_t i = 0; i < _set_mefeature.size(); ++i)
+    {
+        _vec_model_expectation[i] /= _training_data.size();
+    }
+
+    _train_error = (double)n_error / _training_data.size();
+    log_likelihood /= _training_data.size();
+
+    if (_param.solver_type == L2_LBFGS && (_param.l2_reg > 0))
+    {
+        for (size_t i = 0; i < _set_mefeature.size(); ++i)
+        {
+            log_likelihood -= _vec_lambda[i] * _vec_lambda[i] * _param.l2_reg;
+        }
+    }
+
+    return log_likelihood;
 }
 
-int main(int argc,char* argv[]) {
-    try {
-        gengetopt_args_info args_info;
-
-        /* let's call our CMDLINE Parser */
-        if (cmdline_parser (argc, argv, &args_info) != 0)
-            return EXIT_FAILURE;
-
-        string model_file;
-        string in_file;
-        string out_file;
-        string test_file;
-        string heldout_file;
-
-        if (args_info.model_given)
-            model_file = args_info.model_arg;
-
-        if (args_info.output_given) {
-            out_file = args_info.output_arg;
+void ME_Model::init_feature2mef()
+{
+    _feature2mef.clear();
+    for (size_t i = 0; i < _set_feature.size(); ++i)
+    {
+        vector<int> vec_l;
+        for (int k = 0; k < _num_classes; ++k)
+        {
+            int fid = _set_mefeature.id(ME_Feature(k, i));
+            if (fid >= 0)
+                vec_l.push_back(fid);
         }
-
-        maxent::verbose = args_info.verbose_flag;
-
-        if (args_info.inputs_num > 0) {
-            in_file = args_info.inputs[0];
-            if (args_info.inputs_num > 1)
-                test_file = args_info.inputs[1];
-        } else {
-            cmdline_parser_print_help();
-            return EXIT_FAILURE;
-        }
-
-        string estimate = "lbfgs";
-        if (args_info.gis_given)
-            estimate = "gis";
-
-        if (args_info.heldout_given)
-            heldout_file = args_info.heldout_arg;
-
-        g_use_mmap = (args_info.nommap_flag) ? false : true;
-
-        if (args_info.cv_arg > 0) {
-            cross_validation(in_file, args_info.cv_arg, args_info.iter_arg,
-                    estimate, args_info.gaussian_arg,
-                    args_info.random_flag);
-        } else if (args_info.predict_given) {
-            if (model_file == "")
-                throw runtime_error("model name not given");
-
-            MaxentModel m;
-            m.load(model_file);
-            predict(m, in_file, out_file, args_info.detail_flag);
-        } else { // training mode
-            MaxentModel m;
-            m.begin_add_event();
-            display("Loading training events from %s", in_file.c_str());
-            load_events(in_file, AddEventToModel(m));
-            if (!heldout_file.empty()) {
-                display("Loading heldout events from %s", heldout_file.c_str());
-                load_events(heldout_file, AddHeldoutEventToModel(m));
-            }
-            m.end_add_event(args_info.cutoff_arg);
-            m.train(args_info.iter_arg, estimate, args_info.gaussian_arg);
-
-            if (!test_file.empty())
-                predict(m, test_file, out_file, args_info.detail_flag);
-
-            if (model_file != "")
-                m.save(model_file, args_info.binary_flag);
-            else
-                cerr << "Warning: model name not given, no model saved" << endl;
-        }
-    } catch (std::bad_alloc& e) {
-        cerr << "std::bad_alloc caught: out of memory" << endl;
-        return EXIT_FAILURE;
-    } catch (std::runtime_error& e) {
-        cerr << "std::runtime_error caught:" << e.what() << endl;
-        return EXIT_FAILURE;
-    } catch (std::exception& e) {
-        cerr << "std::exception caught:" << e.what() << endl;
-        return EXIT_FAILURE;
-    } catch (...) {
-        cerr << "unknown exception caught!" << endl;
-        return EXIT_FAILURE;
+        _feature2mef.push_back(vec_l);
     }
-    return EXIT_SUCCESS;
+}
+
+double ME_Model::l1_regularized_func_gradient(
+        const Vec & x,
+        Vec & grad)
+{
+    // negtive log-likelihood
+    // gradient stays the same with the l2-regularization
+    double score = l2_regularized_func_gradient(x.stl_vec(), grad.stl_vec());
+
+    for (size_t i = 0; i < x.size(); ++i)
+    {
+        score += _param.l1_reg * fabs(x[i]);
+    }
+
+    return score;
+}
+
+double ME_Model::l2_regularized_func_gradient(
+        const std::vector<double> & x,
+        std::vector<double> & grad)
+{
+    if (_set_mefeature.size() != x.size())
+    {
+        cerr << "error: incompatible vector length." << endl;
+        exit(1);
+    }
+
+    for (size_t i = 0; i < x.size(); ++i)
+    {
+        _vec_lambda[i] = x[i];
+    }
+
+    double score = update_model_expectation();
+
+    if (_param.solver_type == L2_LBFGS && (_param.l2_reg > 0))
+    {
+        for (size_t i = 0; i < x.size(); ++i)
+        {
+            grad[i] = -(_vec_empirical_expectation[i] - _vec_model_expectation[i]
+                      - 2 * _param.l2_reg * _vec_lambda[i]);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < x.size(); ++i)
+        {
+            grad[i] = -(_vec_empirical_expectation[i] - _vec_model_expectation[i]);
+        }
+    }
+
+    return -score;
+}
+
 }

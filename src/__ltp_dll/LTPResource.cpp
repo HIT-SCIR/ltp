@@ -1,299 +1,253 @@
 #include "LTPResource.h"
 
-LTPResource::LTPResource() : 
-				m_nerPtr(NULL),
-				m_isLoadSvmtaggerRes(false), m_isLoadNeRes(false), m_isLoadGParserRes(false),
-				m_isLoadSrlRes(false), m_isLoadCRFWSRes(false)
-{
-}
-
-LTPResource::~LTPResource()
-{
-	ReleaseCRFWSRes();
-	//ReleaseIrlasRes();
-	ReleaseSvmtaggerRes();
-	//ReleaseNeRes();
-	//ReleaseWsdRes();
-	//ReleaseGParserRes();
-	//ReleaseParserRes();
-	//ReleaseSrlRes();
-}
-
-
-/************* Load Resource ************/
-/************* Release Resource ************/
-
-
-int LTPResource::LoadCRFWSRes(const char *dataFolder)
-{
-	if (m_isLoadCRFWSRes) return 0;
-
-	cerr << "load crf-ws resource from: " << dataFolder << endl;
-	print_time();
-	int ret = 0;
-	try {
-		ret = CRFWS_LoadResource(dataFolder);
-	} catch (const exception &e) {
-		ret = -2;
-		cerr << e.what() << endl;
-	}
-
-	if (ret != 0) {
-		cerr << "load crf-ws resource error!" << endl;
-		return -1;
-	}
-
-	cerr << "load crf-ws resource over." << endl;
-	print_time();
-
-	m_isLoadCRFWSRes = true;
-	return 0;
-}
-
-
-void LTPResource::ReleaseCRFWSRes()
-{
-	if (!m_isLoadCRFWSRes) return ;
-	cerr << "start to release crf-ws resource..." << endl;
-	print_time();
-
-	CRFWS_ReleaseResource();
-	cerr << "release crf-ws resource over" << endl;
-	print_time();
-	m_isLoadCRFWSRes = false;
-}
-
-int LTPResource::LoadSvmtaggerRes(const char *dataFolder)
-{
-	if (m_isLoadSvmtaggerRes) return 0;
-
-	cerr << "load svmtagger resource from " << dataFolder << " ..." << endl;
-	print_time();
-	if (0 != svmtagger_LoadResource(dataFolder)) return -1;
-	cerr << "load svmtagger resource over" << endl;
-	print_time();
-
-	m_isLoadSvmtaggerRes = true;
-	return 0;
-}
-
-int LTPResource::ReleaseSvmtaggerRes()
-{
-	if (!m_isLoadSvmtaggerRes) return 0;
-
-	cerr << "start to release svmtagger resource ..." << endl;
-	print_time();
-	svmtagger_ReleaseResource();
-	cerr << "release svmtagger resource over" << endl;
-	print_time();
-
-	m_isLoadSvmtaggerRes = false;
-	return 0;
-}
-int LTPResource::LoadNeRes(const char *dataFolder)
-{
-	if (m_isLoadNeRes) return 0;
-
-	cerr << "load ner resource..." << endl;
-	print_time();
-	if ( !NER_LoadResource(const_cast<char *>(dataFolder)) )  //加载资源
-	{
-		cerr << "load ner resource error!" << endl;
-		return -1;
-	}	
-	m_nerPtr = NER_CreateNErecoger();		//创建NE识别器
-
-	cerr << "load ner resource over." << endl;
-	print_time();
-	
-	m_isLoadNeRes = true;
-	return 0;
-}
-
-
-
-int LTPResource::ReleaseNeRes()
-{
-	if (!m_isLoadNeRes) return 0;
-
-	cerr << "start to release ner resource ..." << endl;
-	print_time();
-
-	NER_ReleaseNErecoger(m_nerPtr); //销毁NE识别器
-	NER_ReleaseResource();	    //释放资源
-	m_nerPtr = NULL;
-
-	cerr << "release ner resource over" << endl;
-	print_time();
-
-	m_isLoadNeRes = false;
-	return 0;
-}
-
-/*
-int LTPResource::LoadWsdRes(const char *dataFolder)
-{
-	if (m_isLoadWsdRes) return 0;
-
-	cerr << "load wsd resource... " << dataFolder << endl;
-	print_time();
-	WSD_LoadResource(dataFolder);
-	cerr << "load wsd resource over" << endl;
-	print_time();
-
-	m_isLoadWsdRes = true;
-	return 0;
-}
-
-int LTPResource::ReleaseWsdRes()
-{
-	if (!m_isLoadWsdRes) return 0;
-
-	cerr << "start to release wsd resource ..." << endl;
-	print_time();
-	WSD_ReleaseResource();
-	cerr << "release wsd resource over" << endl;
-	print_time();
-
-	m_isLoadWsdRes = false;
-	return 0;
-}
-*/
-
-int LTPResource::LoadGParserRes(const char *dataFolder)
-{
-	if (m_isLoadGParserRes) return 0;
-
-	cerr << "load gparser resource..." << endl;
-	print_time();
-
-	string strDataFolder = dataFolder;
-	strDataFolder += "config.ircdt_10k.txt";
-	m_gparserPtr = GParser_CreateParser(strDataFolder.c_str());
-	if (!m_gparserPtr) return -1;
-
-	if (0 != GParser_LoadResource(m_gparserPtr, dataFolder)) return -1;
-
-	cerr << "load gparser resource over" << endl;
-	print_time();
-
-	m_isLoadGParserRes = true;
-	return 0;
-}
-
-int LTPResource::ReleaseGParserRes()
-{
-	if (!m_isLoadGParserRes) return 0;
-
-	cerr << "start to release gparser resource ..." << endl;
-	print_time();
-	
-	GParser_ReleaseResource(m_gparserPtr);
-	GParser_ReleaseParser(m_gparserPtr);
-
-	cerr << "release gparser resource over" << endl;
-	print_time();
-
-	m_isLoadGParserRes = false;
-	return 0;
-}
-
-int LTPResource::LoadSrlRes(const char *dataFolder)
-{
-	if (m_isLoadSrlRes) return 0;
-
-	cerr << "load srl resource..." << endl;
-	print_time();
-	if (0 != SRL_LoadResource(string(dataFolder))) return -1;
-	cerr << "load srl resource over" << endl;
-	print_time();
-
-	m_isLoadSrlRes = true;
-	return 0;
-}
-
-int LTPResource::ReleaseSrlRes()
-{
-	if (!m_isLoadSrlRes) return 0;
-
-	cerr << "start to release srl resource ..." << endl;
-	print_time();
-	if (0 != SRL_ReleaseResource()) return -1;
-	cerr << "release srl resource over" << endl;
-	print_time();
-
-	m_isLoadSrlRes = false;
-	return 0;
-}
-
-#ifdef _WIN32
-
-/*
-int LTPResource::LoadIrlasRes(const char *confFile, const char *dataFolder)
-{
-if (m_isLoadIrlasRes) return 0;
-
-cerr << "load irlas resource..." << endl;
-print_time();
-if (1 != IRLAS_LoadResource(confFile, dataFolder))
-{
-cerr << "load irlas resource error!" << endl;
-return -1;
-}
-m_irlasSeggerPtr = IRLAS_CreateSegger();
-
-cerr << "load irlas resource over." << endl;
-print_time();
-
-m_isLoadIrlasRes = true;
-return 0;
-}
-
-
-int LTPResource::ReleaseIrlasRes()
-{
-if (!m_isLoadIrlasRes) return 0;
-cerr << "start to release irlas resource..." << endl;
-print_time();
-
-IRLAS_ReleaseSegger(m_irlasSeggerPtr);
-IRLAS_ReleaseResource();
-m_irlasSeggerPtr = NULL;
-
-cerr << "release irlas resource over" << endl;
-print_time();
-m_isLoadIrlasRes = false;
-return 0;
-}
-*/
-
-/*
-int LTPResource::LoadParserRes(const char *dataFolder)
-{
-if (m_isLoadParserRes) return 0;
-
-cerr << "load parser resource..." << endl;
-print_time();
-Parser_LoadResource(dataFolder);
-cerr << "load parser resource over" << endl;
-
-m_isLoadParserRes = true;
-print_time();
-return 0;
-}
-
-int LTPResource::ReleaseParserRes()
-{
-if (!m_isLoadParserRes) return 0;
-
-cerr << "start to release parser resource ..." << endl;
-print_time();
-Parser_ReleaseResource();
-cerr << "release parser resource over" << endl;
-print_time();
-
-m_isLoadParserRes = false;
-return 0;
-}
-*/
+#include "MyLib.h"
+#include "Xml4nlp.h"
+#include "SplitSentence.h"
+#include "segment_dll.h"
+#include "postag_dll.h"
+#include "parser_dll.h"
+#include "ner_dll.h"
+#include "SRL_DLL.h"
+
+#if _WIN32
+#pragma warning(disable: 4786 4284)
+#pragma comment(lib, "segmentor.lib")
+#pragma comment(lib, "postagger.lib")
+#pragma comment(lib, "parser.lib")
+#pragma comment(lib, "ner.lib")
+#pragma comment(lib, "srl.lib")
 #endif
+
+#include "logging.hpp"
+
+LTPResource::LTPResource() : 
+    m_segmentor(NULL),
+    m_postagger(NULL),
+    m_ner(NULL),
+    m_parser(NULL),
+    m_isSegmentorResourceLoaded(false),
+    m_isPostaggerResourceLoaded(false),
+    m_isNEResourceLoaded(false),
+    m_isParserResourceLoaded(false),
+    m_isSRLResourceLoaded(false) {
+}
+
+LTPResource::~LTPResource() {
+    //ReleaseCRFWSRes();
+    //ReleaseIrlasRes();
+    //ReleaseSvmtaggerRes();
+    //ReleaseNeRes();
+    //ReleaseWsdRes();
+    //ReleaseGParserRes();
+    //ReleaseParserRes();
+    //ReleaseSrlRes();
+}
+
+
+/* ======================================================== *
+ * Segmentor related resource management                    *
+ * ======================================================== */
+// function wrapper of segmentor_create_segmentor
+int LTPResource::LoadSegmentorResource(const char * model_file) {
+    //  resource has be loaded.
+    if (m_isSegmentorResourceLoaded) {
+        return 0;
+    }
+
+    TRACE_LOG("Loading segmentor model from \"%s\" ...", model_file);
+
+    m_segmentor = segmentor_create_segmentor(model_file);
+    if (0 == m_segmentor) {
+        ERROR_LOG("Failed to load segmentor model");
+        return -1;
+    }
+
+    m_isSegmentorResourceLoaded = true;
+    TRACE_LOG("segmentor model is loaded.");
+    return 0;
+}
+
+int LTPResource::LoadSegmentorResource(const std::string & model_file) {
+    return LoadSegmentorResource(model_file.c_str());
+}
+
+void LTPResource::ReleaseSegmentorResource() {
+    if (!m_isSegmentorResourceLoaded) {
+        return;
+    }
+
+    segmentor_release_segmentor(m_segmentor);
+
+    TRACE_LOG("segmentor model is released.");
+
+    m_segmentor = 0;
+    m_isSegmentorResourceLoaded = false;
+}
+
+void * LTPResource::GetSegmentor() {
+    return m_segmentor;
+}
+
+/* ======================================================== *
+ * Postagger related resource management                    *
+ * ======================================================== */
+int LTPResource::LoadPostaggerResource(const char * model_file) {
+    if (m_isPostaggerResourceLoaded) {
+        return 0;
+    }
+
+    TRACE_LOG("Loading postagger model from \"%s\" ...", model_file);
+
+    m_postagger = postagger_create_postagger(model_file);
+
+    if (0 == m_postagger) {
+        ERROR_LOG("Failed to load postagger model");
+        return -1;
+    }
+
+    m_isPostaggerResourceLoaded = true;
+    TRACE_LOG("postagger model is loaded");
+    return 0;
+}
+
+int LTPResource::LoadPostaggerResource(const std::string & model_file) {
+    return LoadPostaggerResource(model_file.c_str());
+}
+
+void LTPResource::ReleasePostaggerResource() {
+    if (!m_isPostaggerResourceLoaded) {
+        return;
+    }
+
+    postagger_release_postagger(m_postagger);
+
+    m_postagger = 0;
+    m_isPostaggerResourceLoaded = false;
+}
+
+void * LTPResource::GetPostagger() {
+    return m_postagger;
+}
+
+/* ======================================================== *
+ * NER related resource management                          *
+ * ======================================================== */
+int LTPResource::LoadNEResource(const char * model_file) {
+    if (m_isNEResourceLoaded) {
+        return 0;
+    }
+
+    TRACE_LOG("Loading NER resource from \"%s\"", model_file);
+
+    m_ner = ner_create_recognizer(model_file);
+
+    if (0 == m_ner) {
+        ERROR_LOG("Failed to load ner model");
+        return -1;
+    }
+
+    m_isNEResourceLoaded = true;
+    TRACE_LOG("NER resource is loaded.");
+    return 0;
+}
+
+int LTPResource::LoadNEResource(const std::string & model_file) {
+    return LoadNEResource(model_file.c_str());
+}
+
+void LTPResource::ReleaseNEResource() {
+    if (!m_isNEResourceLoaded) {
+        return;
+    }
+
+    ner_release_recognizer(m_ner);
+
+    m_ner = NULL;
+    m_isNEResourceLoaded = false;
+    TRACE_LOG("NER resource is released");
+}
+
+void * LTPResource::GetNER() {
+    return m_ner;
+}
+
+/* ====================================================== *
+ * Parser related resource                                *
+ * ====================================================== */
+int LTPResource::LoadParserResource(const char * model_file) {
+    if (m_isParserResourceLoaded) {
+        return 0;
+    }
+
+    TRACE_LOG("Loading parser resource from \"%s\"", model_file);
+
+    m_parser = parser_create_parser(model_file);
+    if (!m_parser) {
+        ERROR_LOG("Failed to create parser");
+        return -1;
+    }
+
+    TRACE_LOG("Parser is loaded.");
+
+    m_isParserResourceLoaded = true;
+    return 0;
+}
+
+int LTPResource::LoadParserResource(const std::string & model_file) {
+    return LoadParserResource(model_file.c_str());
+}
+
+void LTPResource::ReleaseParserResource() {
+    if (!m_isParserResourceLoaded) {
+        return;
+    }
+
+    parser_release_parser(m_parser);
+    TRACE_LOG("Parser is released");
+
+    m_parser = NULL;
+    m_isParserResourceLoaded = false;
+}
+
+void * LTPResource::GetParser() {
+    return m_parser;
+}
+
+/* ======================================================== *
+ * SRL related resource management                          *
+ * ======================================================== */
+int LTPResource::LoadSRLResource(const char *data_folder) {
+    if (m_isSRLResourceLoaded) {
+        return 0;
+    }
+
+    TRACE_LOG("Loading SRL resource from \"%s\"", data_folder);
+
+    if (0 != SRL_LoadResource(string(data_folder))) {
+        ERROR_LOG("Failed to load SRL resource.");
+        return -1;
+    }
+
+    TRACE_LOG("SRL resource is loaded.");
+    m_isSRLResourceLoaded = true;
+    return 0;
+}
+
+int LTPResource::LoadSRLResource(const std::string & data_folder) {
+    return LoadSRLResource(data_folder.c_str());
+}
+
+void LTPResource::ReleaseSRLResource() {
+    if (!m_isSRLResourceLoaded) {
+        return;
+    }
+
+    if (0 != SRL_ReleaseResource()) {
+        ERROR_LOG("Failed to release SRL resource");
+        return;
+    }
+
+    m_isSRLResourceLoaded = false;
+    return;
+}
+
