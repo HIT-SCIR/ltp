@@ -103,11 +103,6 @@ static int Service(struct mg_connection *conn) {
                 xml,
                 sizeof(xml) - 1);
 
-        // std::cerr << "sentence: " << sentence << std::endl;
-        // std::cerr << "type    : " << type << std::endl;
-        // std::cerr << "xml     : " << xml << std::endl;
-        // std::cerr << "validation check" << std::endl;
-
         string strSentence = sentence;
 
         /*
@@ -136,10 +131,15 @@ static int Service(struct mg_connection *conn) {
         TRACE_LOG("Input sentence is: %s", strSentence.c_str());
 
         if(str_xml == "y"){
-            xml4nlp.LoadXMLFromString(strSentence);
+            if (-1 == xml4nlp.LoadXMLFromString(strSentence)) {
+                // failed the xml validation check
+                return 0;
+            }
         } else {
             xml4nlp.CreateDOMFromString(strSentence);
         }
+
+        TRACE_LOG("XML Creation is done.");
 
         if(str_type == "ws"){
             engine.wordseg();
@@ -154,6 +154,8 @@ static int Service(struct mg_connection *conn) {
         } else {
             engine.srl();
         }
+
+        TRACE_LOG("Analysis is done.");
 
         string strResult;
         xml4nlp.SaveDOM(strResult);
