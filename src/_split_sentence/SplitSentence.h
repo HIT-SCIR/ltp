@@ -10,3 +10,4 @@
 int SplitSentence( const std::string& strPara, std::vector<std::string>& vecSentence );
 
 #endif //__SPLIT_SENTENCE_H__
+

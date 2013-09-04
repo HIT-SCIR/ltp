@@ -1,5 +1,5 @@
-segmentor-model = new_ltp_data/cws.model
-postagger-model = new_ltp_data/pos.model
-parser-model = new_ltp_data/parser.model
-ner-model = new_ltp_data/ne_data
-srl-data = new_ltp_data/srl/
+segmentor-model = ltp_data/cws.model
+postagger-model = ltp_data/pos.model
+parser-model = ltp_data/parser.model
+ner-model = ltp_data/ner.model
+srl-data = ltp_data/srl/
