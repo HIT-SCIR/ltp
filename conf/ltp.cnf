@@ -1,5 +1,5 @@
 segmentor-model = new_ltp_data/cws.model
 postagger-model = new_ltp_data/pos.model
 parser-model = new_ltp_data/parser.model
-ner-data = ltp_data/ne_data
-srl-data = ltp_data/srl_data
+ner-model = new_ltp_data/ne_data
+srl-data = new_ltp_data/srl/
