@@ -1,0 +1,6 @@
+[train]
+train-file = sample/ner/example-train.ner
+holdout-file = sample/ner/example-holdout.ner
+algorithm = pa 
+model-name = model/ner/example-ner
+max-iter = 1

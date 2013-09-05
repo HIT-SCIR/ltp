@@ -1,0 +1,6 @@
+[train]
+train-file = sample/pku-train.pos
+holdout-file = sample/pku-holdout.pos
+algorithm = pa
+model-name = build/pos/pku-model
+max-iter = 10

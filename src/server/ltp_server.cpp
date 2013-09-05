@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     callbacks.begin_request = Service;
 
     if ((ctx = mg_start(&callbacks, NULL, options)) == NULL) {
-        (void) printf("%s\n", "Cannot initialize Mongoose context");
+        ERROR_LOG("Cannot initialize Mongoose context");
         exit(EXIT_FAILURE);
     }
 
