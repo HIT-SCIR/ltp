@@ -17,7 +17,7 @@ conn.login(mail_username, mail_password)
 
 import logging
 logging.basicConfig(
-        #filename='ltp_monitor.log',
+        filename='ltp_monitor.log',
         format='[%(levelname)s] %(asctime)s : %(message)s',
         level=logging.INFO)
 
