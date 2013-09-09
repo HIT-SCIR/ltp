@@ -21,6 +21,7 @@
 #pragma comment(lib, "srl.lib")
 #endif
 
+#include "codecs.hpp"
 #include "logging.hpp"
 #include "cfgparser.hpp"
 
@@ -206,6 +207,11 @@ int LTP::wordseg() {
         string strStn = m_xml4nlp.GetSentence(i);
         vector<string> vctWords;
 
+        if (ltp::strutils::codecs::length(strStn) > MAX_SENTENCE_LEN) {
+            ERROR_LOG("in LTP::wordseg, input sentence is too long");
+            return -1;
+        }
+
         if (0 == segmentor_segment(segmentor, strStn, vctWords)) {
             ERROR_LOG("in LTP::wordseg, failed to perform word segment on \"%s\"",
                     strStn.c_str());
@@ -257,6 +263,17 @@ int LTP::postag() {
         vector<string> vecPOS;
 
         m_xml4nlp.GetWordsFromSentence(vecWord, i);
+
+        if (0 == vecWord.size()) {
+            ERROR_LOG("Input sentence is empty.");
+            return -1;
+        }
+
+        if (vecWord.size() > MAX_WORDS_NUM) {
+            ERROR_LOG("Input sentence is too long.");
+            return -1;
+        }
+
         if (0 == postagger_postag(postagger, vecWord, vecPOS)) {
             ERROR_LOG("in LTP::postag, failed to perform postag on sent. #%d", i+1);
             return -1;
@@ -319,6 +336,16 @@ int LTP::ner() {
             return -1;
         }
 
+        if (0 == vecWord.size()) {
+            ERROR_LOG("Input sentence is empty.");
+            return -1;
+        }
+
+        if (vecWord.size() > MAX_WORDS_NUM) {
+            ERROR_LOG("Input sentence is too long.");
+            return -1;
+        }
+
         if (0 == ner_recognize(ner, vecWord, vecPOS, vecNETag)) {
             ERROR_LOG("in LTP::ner, failed to perform ner on sent. #%d", i+1);
             return -1;
@@ -370,6 +397,16 @@ int LTP::parser() {
 
         if (m_xml4nlp.GetPOSsFromSentence(vecPOS, i) != 0) {
             ERROR_LOG("in LTP::parser, failed to get postags from xml");
+            return -1;
+        }
+
+        if (0 == vecWord.size()) {
+            ERROR_LOG("Input sentence is empty.");
+            return -1;
+        }
+
+        if (vecWord.size() > MAX_WORDS_NUM) {
+            ERROR_LOG("Input sentence is too long.");
             return -1;
         }
 

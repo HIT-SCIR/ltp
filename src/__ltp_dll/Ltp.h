@@ -15,6 +15,8 @@
 using namespace std;
 
 // extern ofstream ltp_log_file;
+#define MAX_SENTENCE_LEN 300
+#define MAX_WORDS_NUM    70
 
 class LTP {
 public:

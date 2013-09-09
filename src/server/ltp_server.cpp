@@ -136,27 +136,8 @@ static int Service(struct mg_connection *conn) {
                 return 0;
             }
 
-            // guanrante the input sentence is not to long.
-            int  num_para = xml4nlp.CountParagraphInDocument();
-            bool flag = true;
-            for (int i = 0; i < num_para; ++ i) {
-                int num_sent = xml4nlp.CountSentenceInParagraph(i);
-                for (int j = 0; j < num_sent; ++ j) { 
-                    if (length(std::string(xml4nlp.GetSentence(i,j))) > 70) {
-                        flag = false;
-                    }
-                }
-            }
-
-            if (!flag) {
-                WARNING_LOG("Input sentence is too long");
-                return 0;
-            }
+            // move sentence validation check into each module
         } else {
-            if (length(strSentence) > 70) {
-                WARNING_LOG("Input sentence is too long");
-                return 0;
-            }
             xml4nlp.CreateDOMFromString(strSentence);
         }
 
