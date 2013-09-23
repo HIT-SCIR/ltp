@@ -7,7 +7,6 @@ compiler:
 before_install:
     - sudo apt-get install gfortran
     - sudo apt-get install cmake
-    - git submodule update --init --recursive
 
 script:
     - ./configure

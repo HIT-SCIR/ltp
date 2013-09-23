@@ -24,12 +24,14 @@ namespace segmentor {
 
 Segmentor::Segmentor() :
    model(0),
-   decoder(0) {
+   decoder(0),
+   baseAll(0) {
 }
 
 Segmentor::Segmentor(ltp::utility::ConfigParser & cfg) :
     model(0),
-    decoder(0) {
+    decoder(0),
+    baseAll(0) {
     parse_cfg(cfg);
 }
 
@@ -40,6 +42,10 @@ Segmentor::~Segmentor() {
 
     if (decoder) {
         delete decoder;
+    }
+
+    if(baseAll) {
+        delete baseAll;
     }
 }
 

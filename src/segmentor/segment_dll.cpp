@@ -45,9 +45,9 @@ public:
             }
         }
 
-
-        ltp::segmentor::rulebase::RuleBase base(model->labels);
-        decoder = new ltp::segmentor::Decoder(model->num_labels(), base);
+        // don't need to allocate a decoder
+        // one sentence, one decoder
+        baseAll = new ltp::segmentor::rulebase::RuleBase(model->labels);
 
         beg_tag0 = model->labels.index( ltp::segmentor::__b__ );
         beg_tag1 = model->labels.index( ltp::segmentor::__s__ );
@@ -66,11 +66,18 @@ public:
 
         ltp::segmentor::Segmentor::extract_features(inst);
         ltp::segmentor::Segmentor::calculate_scores(inst, true);
-        decoder->decode(inst);
 
+        // allocate a new decoder so that the segmentor support multithreaded
+        // decoding. this modification was committed by niuox
+        ltp::segmentor::Decoder * decoder_temp = new ltp::segmentor::Decoder(
+                model->num_labels(),
+                *baseAll);
+
+        decoder_temp->decode(inst);
         ltp::segmentor::Segmentor::build_words(inst, inst->predicted_tagsidx, words, beg_tag0, beg_tag1);
 
         delete inst;
+        delete decoder_temp;
         return words.size();
     }
 
