@@ -75,15 +75,12 @@ public:
 
         // allocate a new decoder so that the segmentor support multithreaded
         // decoding. this modification was committed by niuox
-        ltp::segmentor::Decoder * decoder_temp = new ltp::segmentor::Decoder(
-                model->num_labels(),
-                *baseAll);
+        ltp::segmentor::Decoder deco(model->num_labels(), *baseAll);
 
-        decoder_temp->decode(inst);
+        deco.decode(inst);
         ltp::segmentor::Segmentor::build_words(inst, inst->predicted_tagsidx, words, beg_tag0, beg_tag1);
 
         delete inst;
-        delete decoder_temp;
         return words.size();
     }
 

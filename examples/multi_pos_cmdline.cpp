@@ -1,5 +1,5 @@
 /*
- * Multi-threaded segmentor test program. The user input a line
+ * Multi-threaded postagger test program. The user input a line
  * of Chinese sentence an the program will output its segment
  * result.
  *
@@ -12,6 +12,7 @@
  * is not compilable under MSVC
  */
 #include <iostream>
+#include <sstream>
 #include <cstring>
 #include <ctime>
 #include <vector>
@@ -19,7 +20,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-#include "segment_dll.h"
+#include "postag_dll.h"
 #include "tinythread.h"
 #include "fast_mutex.h"
 
@@ -40,20 +41,30 @@ public:
         _model = model;
     }
 
-    int next(string &sentence) {
-        sentence = "";
+    int next(std::vector<std::string> &words) {
+        std::string line;
+        std::string word;
         lock_guard<fast_mutex> guard(_mutex);
-        if (!getline(cin, sentence, '\n')) {
+        if (getline(std::cin, line, '\n')) {
+            std::stringstream S(line);
+            words.clear();
+            while (S >> word) { words.push_back(word); }
+        } else {
             return -1;
         }
         return 0;
     }
 
-    void output(const vector<string> &result) {
+    void output(const std::vector<std::string> & words,
+            const std::vector<std::string> &postags) {
         lock_guard<fast_mutex> guard(_mutex);
-        for (int i = 0; i < result.size(); ++ i) {
-            cout << result[i];
-            cout << (i == result.size() - 1 ? '\n' : '|');
+        if (words.size() != postags.size()) {
+            return;
+        }
+
+        for (int i = 0; i < words.size(); ++ i) {
+            std::cout << words[i] << "_" << postags[i];
+            std::cout << (i == words.size() - 1 ? '\n' : '|');
         }
         return;
     }
@@ -68,22 +79,22 @@ private:
     string          _sentence;
 };
 
-void multithreaded_segment( void * args) {
-    string sentence;
-    vector<string> result;
+void multithreaded_postag( void * args) {
+    std::vector<std::string> words;
+    std::vector<std::string> postags;
 
     Dispatcher * dispatcher = (Dispatcher *)args;
     void * model = dispatcher->model();
 
     while (true) {
-        int ret = dispatcher->next(sentence);
+        int ret = dispatcher->next(words);
 
         if (ret < 0)
             break;
 
-        result.clear();
-        segmentor_segment(model, sentence, result);
-        dispatcher->output(result);
+        postags.clear();
+        postagger_postag(model, words, postags);
+        dispatcher->output(words, postags);
     }
 
     return;
@@ -91,19 +102,14 @@ void multithreaded_segment( void * args) {
 
 int main(int argc, char ** argv) {
     if (argc < 1 || (0 == strcmp(argv[1], "-h"))) {
-        std::cerr << "Example: ./multi_cws_cmdline [model path] [lexicon file]" << std::endl;
+        std::cerr << "Usage: ./multi_pos_cmdline [model path]" << std::endl;
         std::cerr << std::endl;
         std::cerr << "This program recieve input word sequence from stdin." << std::endl;
-        std::cerr << "One sentence per line." << std::endl;
+        std::cerr << "One sentence per line. Words are separated by space." << std::endl;
         return -1;
     }
 
-    void * engine = 0;
-    if (argc == 2) {
-        engine = segmentor_create_segmentor(argv[1]);
-    } else if (argc == 3) {
-        engine = segmentor_create_segmentor(argv[1], argv[2]);
-    }
+    void * engine = postagger_create_postagger(argv[1]);
 
     if (!engine) {
         return -1;
@@ -118,7 +124,7 @@ int main(int argc, char ** argv) {
     double tm = get_time();
     list<thread *> thread_list;
     for (int i = 0; i < num_threads; ++ i) {
-        thread * t = new thread( multithreaded_segment, (void *)dispatcher );
+        thread * t = new thread( multithreaded_postag, (void *)dispatcher );
         thread_list.push_back( t );
     }
 
@@ -134,7 +140,6 @@ int main(int argc, char ** argv) {
         << tm 
         << " seconds."
         << std::endl;
-
 
     return 0;
 }
