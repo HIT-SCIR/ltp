@@ -30,6 +30,12 @@ otcws
 otpos
 otner
 maxent
+cws
+cws_cmdline
+multi_cws_cmdline
+pos
+par
+ner
 
 ###############
 # data file   #
