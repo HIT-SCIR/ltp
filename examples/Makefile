@@ -1,10 +1,16 @@
-all: cws pos par ner multi_cws
+all: cws cws_cmdline pos par ner multi_cws_cmdline
 
 cws: cws.cpp
 	g++ -o cws cws.cpp -I./ \
 		-I../include/ \
 		-I../thirdparty/boost/include \
 		-L../lib/ -lsegmentor -lboost_regex
+
+cws_cmdline: cws_cmdline.cpp
+	g++ -o cws_cmdline cws_cmdline.cpp -I./ \
+		-I../include/ \
+		-I../thirdparty/boost/include \
+		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
 
 pos: pos.cpp
 	g++ -o pos pos.cpp -I./ \
@@ -21,20 +27,21 @@ par: par.cpp
 		-I../src/parser/ \
 		-L../lib -lparser
 
-multi_cws: multi_cws.cpp
-	g++ -o multi_cws multi_cws.cpp \
+multi_cws_cmdline: multi_cws_cmdline.cpp
+	g++ -o multi_cws_cmdline multi_cws_cmdline.cpp \
 		thirdparty/tinythreadpp/tinythread.cpp \
 		-I./ \
 		-I../include/ \
 		-I../thirdparty/boost/include/ \
 		-I./thirdparty/tinythreadpp/ \
-		-L../lib/ -lsegmentor -lboost_regex -lpthread
+		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy -lpthread
 
 .PHONY: clean
 
 clean:
 	rm cws
+	rm cws_cmdline
 	rm pos
 	rm ner
 	rm par
-	rm multi_cws
+	rm multi_cws_cmdline

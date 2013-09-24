@@ -732,7 +732,7 @@ void Segmentor::test(void) {
     }
 
     rulebase::RuleBase base(model->labels);
-    decoder = new Decoder(model->num_labels(), base);
+    Decoder * decoder = new Decoder(model->num_labels(), base);
     SegmentReader reader(ifs);
     SegmentWriter writer(cout);
     Instance * inst = NULL;
@@ -750,7 +750,11 @@ void Segmentor::test(void) {
         calculate_scores(inst, true);
         decoder->decode(inst);
 
-        build_words(inst, inst->predicted_tagsidx, inst->predicted_words, beg_tag0, beg_tag1);
+        build_words(inst, 
+                inst->predicted_tagsidx, 
+                inst->predicted_words, 
+                beg_tag0, 
+                beg_tag1);
 
         writer.write(inst);
         delete inst;

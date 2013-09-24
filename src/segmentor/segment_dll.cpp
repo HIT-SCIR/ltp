@@ -59,10 +59,16 @@ public:
             std::vector<std::string> & words) {
         ltp::segmentor::Instance * inst = new ltp::segmentor::Instance;
         // ltp::strutils::codecs::decode(str, inst->forms);
-        ltp::segmentor::rulebase::preprocess(str,
+        int ret = ltp::segmentor::rulebase::preprocess(str,
                 inst->raw_forms,
                 inst->forms,
                 inst->chartypes);
+
+        if (-1 == ret) {
+            delete inst;
+            words.clear();
+            return 0;
+        }
 
         ltp::segmentor::Segmentor::extract_features(inst);
         ltp::segmentor::Segmentor::calculate_scores(inst, true);

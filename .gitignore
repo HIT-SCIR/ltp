@@ -29,8 +29,7 @@ lgsrl
 otcws
 otpos
 otner
-ltp-model
-auto-test.sh
+maxent
 
 ###############
 # data file   #
