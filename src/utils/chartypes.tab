@@ -1,5 +1,8 @@
 #ifndef __LTP_STRUTILS_CHARTYPES_TAB__
 #define __LTP_STRUTILS_CHARTYPES_TAB__
+
+#pragma warning(disable: 4309)
+
 const int   __chartype_dbc_chinese_punc_utf8_size__ = 18;
 static char __chartype_dbc_chinese_punc_utf8_buff__[71] = {
 227, 128, 130,   0, 227, 128, 129,   0, 226, 128, 156,   0, 226, 128, 157,

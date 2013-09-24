@@ -56,7 +56,7 @@ public:
             __trans__ |= (1<<((__o_idx__<<3) + __b_idx__));
             __trans__ |= (1<<((__o_idx__<<3) + __o_idx__));
         } else {
-            __trans__ == 0xffff;
+            __trans__ = 0xffff;
         }
     }
 
@@ -73,7 +73,7 @@ public:
             return ((__trans__ & (1<<((prev_prefix<<3) + curr_prefix))) > 0
                 && (prev_suffix == curr_suffix));
         } else {
-            return (__trans__ & (1<<((prev_prefix<<3) + curr_prefix)) > 0);
+            return ((__trans__ & (1<<((prev_prefix<<3) + curr_prefix))) > 0);
         }
     }
 

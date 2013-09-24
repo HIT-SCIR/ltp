@@ -10,6 +10,12 @@
 #include "sbcdbc.hpp"
 #include "smartmap.hpp"
 #include "chartypes.hpp"
+
+#if _WIN32
+// disable auto-link feature in boost
+#define BOOST_ALL_NO_LIB
+#endif
+
 #include "boost/regex.hpp"
 
 namespace ltp {
@@ -202,7 +208,7 @@ public:
                 __trans__ |= (1<<((__e_idx__<<2) + __s_idx__));
                 __trans__ |= (1<<((__e_idx__<<2) + __b_idx__));
             } else {
-                __trans__ == 0xffff;
+                __trans__ = 0xffff;
             }
         }
     }
