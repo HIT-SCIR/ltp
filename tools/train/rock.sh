@@ -107,4 +107,75 @@ else
     echo "[3] TRACE: NER train model test is passed."
 fi
 
+#################################################
+# THE PARSER O1 SESSION                         #
+#################################################
+
+PARSER_MODEL_DIR=$BUILD_DIR/parser
+PARSER_MODEL_O1_PATH=$PARSER_MODEL_DIR/example-parser-o1.0.model
+
+PARSER_CONF_DIR=$CONF_DIR/parser
+PARSER_CONF_TRAIN_O1_PATH=$PARSER_CONF_DIR/parser-o1.cnf
+
+PARSER_LOG_DIR=$LOG_DIR/parser
+PARSER_LOG_TRAIN_O1_PATH=$PARSER_LOG_DIR/example-train.conll
+
+PARSER_EXE=./lgdpj
+
+mkdir -p $PARSER_MODEL_DIR
+mkdir -p $PARSER_LOG_DIR
+
+$PARSER_EXE $PARSER_CONF_TRAIN_O1_PATH >& $PARSER_LOG_TRAIN_O1_PATH
+
+if [ ! -f $PARSER_MODEL_O1_PATH ]; then 
+    echo "[4.1] ERROR: Parser-o1 model is not detected!"
+else
+    echo "[4.1] TRACE: Parser-o1 train model test is passed."
+fi
+
+#################################################
+# THE PARSER O2 sibling SESSION                 #
+#################################################
+
+PARSER_MODEL_DIR=$BUILD_DIR/parser
+PARSER_MODEL_O2SIB_PATH=$PARSER_MODEL_DIR/example-parser-o2sib.0.model
+
+PARSER_CONF_DIR=$CONF_DIR/parser
+PARSER_CONF_TRAIN_O2SIB_PATH=$PARSER_CONF_DIR/parser-o2sib.cnf
+
+PARSER_LOG_DIR=$LOG_DIR/parser
+PARSER_LOG_TRAIN_O2SIB_PATH=$PARSER_LOG_DIR/example-train.conll
+
+PARSER_EXE=./lgdpj
+
+$PARSER_EXE $PARSER_CONF_TRAIN_O2SIB_PATH >& $PARSER_LOG_TRAIN_O2SIB_PATH
+
+if [ ! -f $PARSER_MODEL_O2SIB_PATH ]; then 
+    echo "[4.2] ERROR: Parser-o2sib model is not detected!"
+else
+    echo "[4.2] TRACE: Parser-o2sib train model test is passed."
+fi
+
+#################################################
+# THE PARSER O2 carreras SESSION                #
+#################################################
+
+PARSER_MODEL_DIR=$BUILD_DIR/parser
+PARSER_MODEL_O2CARRERAS_PATH=$PARSER_MODEL_DIR/example-parser-o2carreras.0.model
+
+PARSER_CONF_DIR=$CONF_DIR/parser
+PARSER_CONF_TRAIN_O2CARRERAS_PATH=$PARSER_CONF_DIR/parser-o2carreras.cnf
+
+PARSER_LOG_DIR=$LOG_DIR/parser
+PARSER_LOG_TRAIN_O2CARRERAS_PATH=$PARSER_LOG_DIR/example-train.conll
+
+PARSER_EXE=./lgdpj
+
+$PARSER_EXE $PARSER_CONF_TRAIN_O2CARRERAS_PATH >& $PARSER_LOG_TRAIN_O2CARRERAS_PATH
+
+if [ ! -f $PARSER_MODEL_O2SIB_PATH ]; then 
+    echo "[4.3] ERROR: Parser-o2carreras model is not detected!"
+else
+    echo "[4.3] TRACE: Parser-o2carreras train model test is passed."
+fi
 

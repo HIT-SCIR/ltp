@@ -19,4 +19,4 @@ holdout-file = sample/parser/example-holdout.conll
 
 max-iter = 1 
 algorithm = pa
-model-name = build/parser/example-o1
+model-name = build/parser/example-parser-o1
