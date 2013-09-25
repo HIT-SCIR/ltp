@@ -25,9 +25,8 @@
 using namespace std;
 using namespace ltp::strutils::codecs;
 
-static XML4NLP xml4nlp;
-static LTP engine(xml4nlp);
 
+static LTP engine();
 static int exit_flag;
 
 static int Service(struct mg_connection *conn);
@@ -62,6 +61,7 @@ int main(int argc, char *argv[]) {
 }
 
 static int Service(struct mg_connection *conn) {
+    XML4NLP xml4nlp;
     char *sentence;
     char type[10];
     char xml[10];
@@ -144,15 +144,15 @@ static int Service(struct mg_connection *conn) {
         TRACE_LOG("XML Creation is done.");
 
         if(str_type == "ws"){
-            engine.wordseg();
+            engine.wordseg(xml4nlp);
         } else if(str_type == "pos"){
-            engine.postag();
+            engine.postag(xml4nlp);
         } else if(str_type == "ner"){
-            engine.ner();
+            engine.ner(xml4nlp);
         } else if(str_type == "dp"){
-            engine.parser();
+            engine.parser(xml4nlp);
         } else if(str_type == "srl"){
-            engine.srl();
+            engine.srl(xml4nlp);
         } else {
             engine.srl();
         }
