@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     // ofstream log_file("test.log");
 
     XML4NLP xml4nlp;
-    LTP ltp(argv[1], xml4nlp);
+    LTP ltp(argv[1]);
 
     string type(argv[2]);
     ifstream in(argv[3]);
@@ -44,17 +44,17 @@ int main(int argc, char *argv[]) {
         xml4nlp.CreateDOMFromString(sentence);
 
         if(type == "ws"){
-            ltp.wordseg();
+            ltp.wordseg(xml4nlp);
         } else if(type == "pos"){
-            ltp.postag();
+            ltp.postag(xml4nlp);
         } else if(type == "ner"){
-            ltp.ner();
+            ltp.ner(xml4nlp);
         } else if(type == "dp"){
-            ltp.parser();
+            ltp.parser(xml4nlp);
         } else if(type == "srl"){
-            ltp.srl();
+            ltp.srl(xml4nlp);
         } else {
-            ltp.srl();
+            ltp.srl(xml4nlp);
         }
 
         string result;
