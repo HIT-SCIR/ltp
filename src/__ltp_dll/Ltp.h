@@ -21,7 +21,7 @@ using namespace std;
 class LTP {
 public:
     LTP();
-    LTP(const char * cfg_file, XML4NLP & xml4nlp);
+    LTP(const char * cfg_file);
     ~LTP();
 
     int wordseg(XML4NLP & xml4nlp);
