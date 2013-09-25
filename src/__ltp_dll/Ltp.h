@@ -20,28 +20,23 @@ using namespace std;
 
 class LTP {
 public:
-    LTP(XML4NLP & xml4nlp);
+    LTP();
     LTP(const char * cfg_file, XML4NLP & xml4nlp);
     ~LTP();
 
-    int CreateDOMFromTxt(const char *cszTxtFileName);
-    int CreateDOMFromXml(const char *cszXmlFileName);
-    int SaveDOM(const char *cszSaveFileName);
-
-    int wordseg();
-    int postag();
-    int ner();
-    int parser();
-    int srl();
+    int wordseg(XML4NLP & xml4nlp);
+    int postag(XML4NLP & xml4nlp);
+    int ner(XML4NLP & xml4nlp);
+    int parser(XML4NLP & xml4nlp);
+    int srl(XML4NLP & xml4nlp);
 
 private:
-    int splitSentence_dummy();
+    int splitSentence_dummy(XML4NLP & xml4nlp);
     int ReadConfFile(const char *confFileName = "conf/ltp.cnf");
 
 private:
     LTPResource m_ltpResource;
     LTPOption   m_ltpOption;
-    XML4NLP &   m_xml4nlp;
 
     static const unsigned int DO_XML;
     static const unsigned int DO_SPLITSENTENCE;
