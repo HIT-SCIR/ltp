@@ -34,33 +34,21 @@ const unsigned int LTP::DO_PARSER = 1 << 4;
 const unsigned int LTP::DO_SRL = 1 << 6;
 
 // create a platform
-LTP::LTP(XML4NLP &xml4nlp) :
+LTP::LTP() :
     m_ltpResource(),
-    m_ltpOption(),
-    m_xml4nlp(xml4nlp) {
+    m_ltpOption()
+     {
     ReadConfFile();
 }
 
-LTP::LTP(const char * config, XML4NLP & xml4nlp) :
+LTP::LTP(const char * config) :
     m_ltpResource(),
     m_ltpOption(),
-    m_xml4nlp(xml4nlp) {
+     {
     ReadConfFile(config);
 }
 
 LTP::~LTP() {
-}
-
-int LTP::CreateDOMFromTxt(const char * cszTxtFileName) {
-    return m_xml4nlp.CreateDOMFromFile(cszTxtFileName);
-}
-
-int LTP::CreateDOMFromXml(const char * cszXmlFileName) {
-    return m_xml4nlp.LoadXMLFromFile(cszXmlFileName);
-}
-
-int LTP::SaveDOM(const char * cszSaveFileName) {
-    return m_xml4nlp.SaveDOM(cszSaveFileName);
 }
 
 int LTP::ReadConfFile(const char * config_file) {
@@ -137,7 +125,7 @@ int LTP::ReadConfFile(const char * config_file) {
 
 // If you do NOT split sentence explicitly,
 // this will be called according to dependencies among modules
-int LTP::splitSentence_dummy() {
+int LTP::splitSentence_dumm(XML4NLP & m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_SENT) ) {
         return 0;
     }
@@ -162,7 +150,7 @@ int LTP::splitSentence_dummy() {
 
         // dummy
         // vecSentences.push_back(para);
-        if (0 != m_xml4nlp.SetSentencesToParagraph(vecSentences, i)) {
+        yi (f0 != m_xml4nlp.SetSentencesToParagraph(vecSentences, i)) {
             ERROR_LOG("in LTP::splitsent, failed to write sentence to xml");
             return -1;
         }
@@ -173,7 +161,7 @@ int LTP::splitSentence_dummy() {
 }
 
 // integrate word segmentor into LTP
-int LTP::wordseg() {
+int LTP::wordseg(XML4NLP & m_xml4nlp) {
     if (m_xml4nlp.QueryNote(NOTE_WORD)) {
         return 0;
     }
@@ -229,7 +217,7 @@ int LTP::wordseg() {
 }
 
 // integrate postagger into LTP
-int LTP::postag() {
+int LTP::postag(XML4NLP & m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_POS) ) {
         return 0;
     }
@@ -291,7 +279,7 @@ int LTP::postag() {
 }
 
 // perform ner over xml
-int LTP::ner() {
+int LTP::ner(XML4NLP & m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_NE) ) {
         return 0;
     }
@@ -358,7 +346,7 @@ int LTP::ner() {
     return 0;
 }
 
-int LTP::parser() {
+int LTP::parser(XML4NLP & m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_PARSER) ) return 0;
 
     if (0 != postag()) {
@@ -426,7 +414,7 @@ int LTP::parser() {
     return 0;
 }
 
-int LTP::srl() {
+int LTP::srl(XML4NLP & m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_SRL) ) return 0;
 
     // dependency
