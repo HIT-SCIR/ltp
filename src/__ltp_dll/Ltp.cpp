@@ -43,7 +43,7 @@ LTP::LTP() :
 
 LTP::LTP(const char * config) :
     m_ltpResource(),
-    m_ltpOption(),
+    m_ltpOption()
      {
     ReadConfFile(config);
 }
@@ -125,7 +125,7 @@ int LTP::ReadConfFile(const char * config_file) {
 
 // If you do NOT split sentence explicitly,
 // this will be called according to dependencies among modules
-int LTP::splitSentence_dumm(XML4NLP & m_xml4nlp) {
+int LTP::splitSentence_dummy(XML4NLP &m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_SENT) ) {
         return 0;
     }
@@ -150,7 +150,7 @@ int LTP::splitSentence_dumm(XML4NLP & m_xml4nlp) {
 
         // dummy
         // vecSentences.push_back(para);
-        yi (f0 != m_xml4nlp.SetSentencesToParagraph(vecSentences, i)) {
+        if(0 != m_xml4nlp.SetSentencesToParagraph(vecSentences, i)) {
             ERROR_LOG("in LTP::splitsent, failed to write sentence to xml");
             return -1;
         }
@@ -161,13 +161,13 @@ int LTP::splitSentence_dumm(XML4NLP & m_xml4nlp) {
 }
 
 // integrate word segmentor into LTP
-int LTP::wordseg(XML4NLP & m_xml4nlp) {
+int LTP::wordseg(XML4NLP &m_xml4nlp) {
     if (m_xml4nlp.QueryNote(NOTE_WORD)) {
         return 0;
     }
 
     //
-    if (0 != splitSentence_dummy()) {
+    if (0 != splitSentence_dummy(m_xml4nlp)) {
         ERROR_LOG("in LTP::wordseg, failed to perform split sentence preprocess.");
         return -1;
     }
@@ -217,13 +217,13 @@ int LTP::wordseg(XML4NLP & m_xml4nlp) {
 }
 
 // integrate postagger into LTP
-int LTP::postag(XML4NLP & m_xml4nlp) {
+int LTP::postag(XML4NLP &m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_POS) ) {
         return 0;
     }
 
     // dependency
-    if (0 != wordseg()) {
+    if (0 != wordseg(m_xml4nlp)) {
         ERROR_LOG("in LTP::postag, failed to perform word segment preprocess");
         return -1;
     }
@@ -279,13 +279,13 @@ int LTP::postag(XML4NLP & m_xml4nlp) {
 }
 
 // perform ner over xml
-int LTP::ner(XML4NLP & m_xml4nlp) {
+int LTP::ner(XML4NLP &m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_NE) ) {
         return 0;
     }
 
     // dependency
-    if (0 != postag()) {
+    if (0 != postag(m_xml4nlp)) {
         ERROR_LOG("in LTP::ner, failed to perform postag preprocess");
         return -1;
     }
@@ -346,10 +346,10 @@ int LTP::ner(XML4NLP & m_xml4nlp) {
     return 0;
 }
 
-int LTP::parser(XML4NLP & m_xml4nlp) {
+int LTP::parser(XML4NLP &m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_PARSER) ) return 0;
 
-    if (0 != postag()) {
+    if (0 != postag(m_xml4nlp)) {
         ERROR_LOG("in LTP::parser, failed to perform postag preprocessing");
         return -1;
     }
@@ -414,16 +414,16 @@ int LTP::parser(XML4NLP & m_xml4nlp) {
     return 0;
 }
 
-int LTP::srl(XML4NLP & m_xml4nlp) {
+int LTP::srl(XML4NLP &m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_SRL) ) return 0;
 
     // dependency
-    if (0 != ner()) {
+    if (0 != ner(m_xml4nlp)) {
         ERROR_LOG("in LTP::srl, failed to perform ner preprocess");
         return -1;
     }
 
-    if (0 != parser()) {
+    if (0 != parser(m_xml4nlp)) {
         ERROR_LOG("in LTP::srl, failed to perform parsing preprocess");
         return -1;
     }

@@ -24,14 +24,14 @@ public:
     LTP(const char * cfg_file);
     ~LTP();
 
-    int wordseg(XML4NLP & xml4nlp);
-    int postag(XML4NLP & xml4nlp);
-    int ner(XML4NLP & xml4nlp);
-    int parser(XML4NLP & xml4nlp);
-    int srl(XML4NLP & xml4nlp);
+    int wordseg(XML4NLP &m_xml4nlp);
+    int postag(XML4NLP &m_xml4nlp);
+    int ner(XML4NLP &m_xml4nlp);
+    int parser(XML4NLP &m_xml4nlp);
+    int srl(XML4NLP &m_xml4nlp);
 
 private:
-    int splitSentence_dummy(XML4NLP & xml4nlp);
+    int splitSentence_dummy(XML4NLP & m_xml4nlp);
     int ReadConfFile(const char *confFileName = "conf/ltp.cnf");
 
 private:
@@ -46,4 +46,4 @@ private:
     static const unsigned int DO_SRL;
 };
 
-(#ndeif  //  end for __LTP_H__
+#endif  //  end for __LTP_H__

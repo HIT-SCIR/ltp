@@ -26,7 +26,7 @@ using namespace std;
 using namespace ltp::strutils::codecs;
 
 
-static LTP engine();
+static LTP engine;
 static int exit_flag;
 
 static int Service(struct mg_connection *conn);
@@ -154,7 +154,7 @@ static int Service(struct mg_connection *conn) {
         } else if(str_type == "srl"){
             engine.srl(xml4nlp);
         } else {
-            engine.srl();
+            engine.srl(xml4nlp);
         }
 
         TRACE_LOG("Analysis is done.");
