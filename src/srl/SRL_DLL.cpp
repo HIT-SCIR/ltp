@@ -8,7 +8,6 @@
 using namespace std;
 
 static DepSRL g_depSRL;
-static vector< pair< int, vector< pair<string, pair< int, int > > > > > g_vecSRLResult;
 
 // Load Resources
 int SRL_LoadResource(const string &ConfigDir)
@@ -29,7 +28,8 @@ int DoSRL(
         const vector<string> &words,
         const vector<string> &POSs,
         const vector<string> &NEs,
-        const vector< pair<int, string> > &parse)
+        const vector< pair<int, string> > &parse,
+        vector< pair< int, vector< pair<string, pair< int, int > > > > > &g_vecSRLResult)
 {
     g_vecSRLResult.clear();
     if (0 == g_depSRL.GetSRLResult(words, POSs, NEs, parse, g_vecSRLResult)) return -1;;
@@ -37,7 +37,8 @@ int DoSRL(
 }
 
 int GetSRLResult_size(
-        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult)
+        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult,
+        vector< pair< int, vector< pair<string, pair< int, int > > > > > &g_vecSRLResult)
 {
     if (vecSRLResult.size() != g_vecSRLResult.size()) {
         cerr << "vecSRLResult size != g_vecSRLResult size" << endl;
@@ -51,7 +52,8 @@ int GetSRLResult_size(
 }
 
 int GetSRLResult(
-        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult)
+        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult,
+        vector< pair< int, vector< pair<string, pair< int, int > > > > > &g_vecSRLResult)
 {
     if (vecSRLResult.size() != g_vecSRLResult.size()) {
         cerr << "vecSRLResult size != g_vecSRLResult size" << endl;
