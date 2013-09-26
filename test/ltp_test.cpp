@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         }
         sentence = sentence.substr(0, len);
 
-        cout << "Input sentence is: " << sentence << endl;
+    //    cout << "Input sentence is: " << sentence << endl;
 
         xml4nlp.CreateDOMFromString(sentence);
 
