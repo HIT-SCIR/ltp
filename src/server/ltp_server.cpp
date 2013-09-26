@@ -25,8 +25,7 @@
 using namespace std;
 using namespace ltp::strutils::codecs;
 
-static XML4NLP xml4nlp;
-static LTP engine(xml4nlp);
+static LTP engine;
 
 static int exit_flag;
 
@@ -130,6 +129,9 @@ static int Service(struct mg_connection *conn) {
 
         TRACE_LOG("Input sentence is: %s", strSentence.c_str());
 
+        //Get a XML4NLP instance here.
+        XML4NLP    xml4nlp;
+        
         if(str_xml == "y"){
             if (-1 == xml4nlp.LoadXMLFromString(strSentence)) {
                 // failed the xml validation check
@@ -144,17 +146,17 @@ static int Service(struct mg_connection *conn) {
         TRACE_LOG("XML Creation is done.");
 
         if(str_type == "ws"){
-            engine.wordseg();
+            engine.wordseg(xml4nlp);
         } else if(str_type == "pos"){
-            engine.postag();
+            engine.postag(xml4nlp);
         } else if(str_type == "ner"){
-            engine.ner();
+            engine.ner(xml4nlp);
         } else if(str_type == "dp"){
-            engine.parser();
+            engine.parser(xml4nlp);
         } else if(str_type == "srl"){
-            engine.srl();
+            engine.srl(xml4nlp);
         } else {
-            engine.srl();
+            engine.srl(xml4nlp);
         }
 
         TRACE_LOG("Analysis is done.");

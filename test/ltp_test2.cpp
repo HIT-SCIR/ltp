@@ -10,8 +10,8 @@
 
 using namespace std;
 
-static XML4NLP xml4nlp;
-static LTP ltp(xml4nlp);
+XML4NLP xml4nlp;
+static LTP ltp;
 
 int main(int argc, char *argv[])
 {
@@ -28,17 +28,17 @@ int main(int argc, char *argv[])
     xml4nlp.CreateDOMFromFile(in_file.c_str());
 
     if (type == "ws") {
-        ltp.crfWordSeg();
+        ltp.crfWordSeg(xml4nlp);
     } else if(type == "pos"){
-        ltp.postag();
+        ltp.postag(xml4nlp);
     } else if(type == "ner"){
-        ltp.ner();
+        ltp.ner(xml4nlp);
     } else if(type == "dp"){
-        ltp.gparser();
+        ltp.gparser(xml4nlp);
     } else if(type == "srl"){
-        ltp.srl();
+        ltp.srl(xml4nlp);
     } else {
-        ltp.srl();
+        ltp.srl(xml4nlp);
     }
 
     string result;

@@ -34,32 +34,30 @@ const unsigned int LTP::DO_PARSER = 1 << 4;
 const unsigned int LTP::DO_SRL = 1 << 6;
 
 // create a platform
-LTP::LTP(XML4NLP &xml4nlp) :
+LTP::LTP() :
     m_ltpResource(),
-    m_ltpOption(),
-    m_xml4nlp(xml4nlp) {
+    m_ltpOption(){
     ReadConfFile();
 }
 
-LTP::LTP(const char * config, XML4NLP & xml4nlp) :
+LTP::LTP(const char * config) :
     m_ltpResource(),
-    m_ltpOption(),
-    m_xml4nlp(xml4nlp) {
+    m_ltpOption(){
     ReadConfFile(config);
 }
 
 LTP::~LTP() {
 }
 
-int LTP::CreateDOMFromTxt(const char * cszTxtFileName) {
+int LTP::CreateDOMFromTxt(const char * cszTxtFileName,XML4NLP &   m_xml4nlp) {
     return m_xml4nlp.CreateDOMFromFile(cszTxtFileName);
 }
 
-int LTP::CreateDOMFromXml(const char * cszXmlFileName) {
+int LTP::CreateDOMFromXml(const char * cszXmlFileName,XML4NLP &   m_xml4nlp) {
     return m_xml4nlp.LoadXMLFromFile(cszXmlFileName);
 }
 
-int LTP::SaveDOM(const char * cszSaveFileName) {
+int LTP::SaveDOM(const char * cszSaveFileName,XML4NLP &   m_xml4nlp) {
     return m_xml4nlp.SaveDOM(cszSaveFileName);
 }
 
@@ -131,13 +129,39 @@ int LTP::ReadConfFile(const char * config_file) {
         m_ltpOption.neOpt.isNum = 1;
     else
         m_ltpOption.neOpt.isNum = atoi( it->second.c_str() );*/
-
+    
+    //load segmentor model
+    if (0 != m_ltpResource.LoadSegmentorResource(m_ltpOption.segmentor_model_path)) {
+        ERROR_LOG("in LTP::wordseg, failed to load segmentor resource");
+        return -1;
+    }
+    //load postagger model
+    if (0 != m_ltpResource.LoadPostaggerResource(m_ltpOption.postagger_model_path)) {
+        ERROR_LOG("in LTP::postag, failed to load postagger resource.");
+        return -1;
+    }
+    //load ner model
+    if (0 != m_ltpResource.LoadNEResource(m_ltpOption.ner_model_path)) {
+        ERROR_LOG("in LTP::ner, failed to load ner resource");
+        return -1;
+    }
+    //load paser model
+    if ( 0 != m_ltpResource.LoadParserResource(m_ltpOption.parser_model_path) ) {
+        ERROR_LOG("in LTP::parser, failed to load parser resource");
+        return -1;
+    }
+    //load srl model
+    if ( 0 != m_ltpResource.LoadSRLResource(m_ltpOption.srl_data_dir) ) {
+        ERROR_LOG("in LTP::srl, failed to load srl resource");
+        return -1;
+    }
+    
     return 0;
 }
 
 // If you do NOT split sentence explicitly,
 // this will be called according to dependencies among modules
-int LTP::splitSentence_dummy() {
+int LTP::splitSentence_dummy(XML4NLP &   m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_SENT) ) {
         return 0;
     }
@@ -173,13 +197,13 @@ int LTP::splitSentence_dummy() {
 }
 
 // integrate word segmentor into LTP
-int LTP::wordseg() {
+int LTP::wordseg(XML4NLP &   m_xml4nlp) {
     if (m_xml4nlp.QueryNote(NOTE_WORD)) {
         return 0;
     }
 
     //
-    if (0 != splitSentence_dummy()) {
+    if (0 != splitSentence_dummy(m_xml4nlp)) {
         ERROR_LOG("in LTP::wordseg, failed to perform split sentence preprocess.");
         return -1;
     }
@@ -229,13 +253,13 @@ int LTP::wordseg() {
 }
 
 // integrate postagger into LTP
-int LTP::postag() {
+int LTP::postag(XML4NLP &   m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_POS) ) {
         return 0;
     }
 
     // dependency
-    if (0 != wordseg()) {
+    if (0 != wordseg(m_xml4nlp)) {
         ERROR_LOG("in LTP::postag, failed to perform word segment preprocess");
         return -1;
     }
@@ -291,13 +315,13 @@ int LTP::postag() {
 }
 
 // perform ner over xml
-int LTP::ner() {
+int LTP::ner(XML4NLP &   m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_NE) ) {
         return 0;
     }
 
     // dependency
-    if (0 != postag()) {
+    if (0 != postag(m_xml4nlp)) {
         ERROR_LOG("in LTP::ner, failed to perform postag preprocess");
         return -1;
     }
@@ -358,10 +382,10 @@ int LTP::ner() {
     return 0;
 }
 
-int LTP::parser() {
+int LTP::parser(XML4NLP &   m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_PARSER) ) return 0;
 
-    if (0 != postag()) {
+    if (0 != postag(m_xml4nlp)) {
         ERROR_LOG("in LTP::parser, failed to perform postag preprocessing");
         return -1;
     }
@@ -426,16 +450,16 @@ int LTP::parser() {
     return 0;
 }
 
-int LTP::srl() {
+int LTP::srl(XML4NLP &   m_xml4nlp) {
     if ( m_xml4nlp.QueryNote(NOTE_SRL) ) return 0;
 
     // dependency
-    if (0 != ner()) {
+    if (0 != ner(m_xml4nlp)) {
         ERROR_LOG("in LTP::srl, failed to perform ner preprocess");
         return -1;
     }
 
-    if (0 != parser()) {
+    if (0 != parser(m_xml4nlp)) {
         ERROR_LOG("in LTP::srl, failed to perform parsing preprocess");
         return -1;
     }
