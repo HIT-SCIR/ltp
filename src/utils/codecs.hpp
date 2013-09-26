@@ -35,6 +35,10 @@ inline int decode(const std::string & s,
                 chars.push_back(s.substr(idx, 3));
                 ++len;
                 idx+=3;
+            } else if ((s[idx]&0xF8)==0xF0) {
+                chars.push_back(s.substr(idx, 4));
+                ++len;
+                idx+=4;
             } else {
                 std::cerr << "Warning: " 
                     << "in utf.h "

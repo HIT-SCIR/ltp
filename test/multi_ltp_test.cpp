@@ -45,8 +45,8 @@ public:
         lock_guard<fast_mutex> guard(_mutex);
         if (!getline(cin, sentence, '\n')) {
             return -1;
-        }
-        return 0;
+        } 
+        return _max_idx ++;
     }
 
     void output(int idx, const string &result) {
@@ -55,14 +55,14 @@ public:
         if (idx > _idx) {
             _back[idx] = result;
         } else if (idx == _idx) {
-            std::cout << result;
+            std::cout << result << std::endl;
             ++ _idx;
 
             std::map<int, std::string>::iterator itx;
             itx = _back.find(_idx);
 
             while (itx != _back.end()) {
-                std::cout << itx->second;
+                std::cout << itx->second << std::endl;
 
                 _back.erase(itx);
                 ++ _idx;
@@ -100,24 +100,24 @@ void multithreaded_ltp( void * args) {
         xml4nlp.CreateDOMFromString(sentence);
 
         if(type == "ws"){
-            (*engine).wordseg(xml4nlp);
+            engine->wordseg(xml4nlp);
         } else if(type == "pos"){
-            (*engine).postag(xml4nlp);
+            engine->postag(xml4nlp);
         } else if(type == "ner"){
-            (*engine).ner(xml4nlp);
+            engine->ner(xml4nlp);
         } else if(type == "dp"){
-            (*engine).parser(xml4nlp);
+            engine->parser(xml4nlp);
         } else if(type == "srl"){
-            (*engine).srl(xml4nlp);
+            engine->srl(xml4nlp);
         } else {
-            (*engine).srl(xml4nlp);
+            engine->srl(xml4nlp);
         }
 
         string result;
         xml4nlp.SaveDOM(result);
-        dispatcher->output(ret, result);
         xml4nlp.ClearDOM();
 
+        dispatcher->output(ret, result);
     }
 
     return;
@@ -130,10 +130,10 @@ int main(int argc, char ** argv) {
         exit(1);
     }
 
-    LTP ltp(argv[1]);
+    LTP engine(argv[1]);
     string _type(argv[2]);
     type = _type;
-    Dispatcher * dispatcher = new Dispatcher( &ltp);
+    Dispatcher * dispatcher = new Dispatcher( &engine );
 
     int num_threads = thread::hardware_concurrency();
     std::cerr << "TRACE: LTP is built" << std::endl;
