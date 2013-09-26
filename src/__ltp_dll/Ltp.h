@@ -15,31 +15,32 @@
 using namespace std;
 
 // extern ofstream ltp_log_file;
+#define MAX_SENTENCE_LEN 300
+#define MAX_WORDS_NUM    70
 
 class LTP {
 public:
-    LTP(XML4NLP & xml4nlp);
-    LTP(const char * cfg_file, XML4NLP & xml4nlp);
+    LTP();
+    LTP(const char * cfg_file);
     ~LTP();
 
-    int CreateDOMFromTxt(const char *cszTxtFileName);
-    int CreateDOMFromXml(const char *cszXmlFileName);
-    int SaveDOM(const char *cszSaveFileName);
+    int CreateDOMFromTxt(const char *cszTxtFileName,XML4NLP &   m_xml4nlp);
+    int CreateDOMFromXml(const char *cszXmlFileName,XML4NLP &   m_xml4nlp);
+    int SaveDOM(const char *cszSaveFileName,XML4NLP &   m_xml4nlp);
 
-    int wordseg();
-    int postag();
-    int ner();
-    int parser();
-    int srl();
+    int wordseg(XML4NLP &   m_xml4nlp);
+    int postag(XML4NLP &   m_xml4nlp);
+    int ner(XML4NLP &   m_xml4nlp);
+    int parser(XML4NLP &   m_xml4nlp);
+    int srl(XML4NLP &   m_xml4nlp);
 
 private:
-    int splitSentence_dummy();
+    int splitSentence_dummy(XML4NLP &   m_xml4nlp);
     int ReadConfFile(const char *confFileName = "conf/ltp.cnf");
 
 private:
     LTPResource m_ltpResource;
     LTPOption   m_ltpOption;
-    XML4NLP &   m_xml4nlp;
 
     static const unsigned int DO_XML;
     static const unsigned int DO_SPLITSENTENCE;

@@ -30,9 +30,6 @@ public:
             return false;
         }
 
-        ltp::ner::rulebase::RuleBase base(model->labels);
-        decoder = new ltp::ner::Decoder(model->num_labels(), base);
-
         // beg_tag0 = model->labels.index( );
         // beg_tag1 = model->labels.index( );
 
@@ -42,6 +39,9 @@ public:
     int recognize(const std::vector<std::string> & words,
             const std::vector<std::string> & postags,
             std::vector<std::string> & tags) {
+        ltp::ner::rulebase::RuleBase base(model->labels);
+        ltp::ner::Decoder deco(model->num_labels(), base);
+
         ltp::ner::Instance * inst = new ltp::ner::Instance;
         if (words.size() != postags.size()) {
             return 0;
@@ -54,7 +54,7 @@ public:
 
         ltp::ner::NER::extract_features(inst);
         ltp::ner::NER::calculate_scores(inst, true);
-        decoder->decode(inst);
+        deco.decode(inst);
 
         for (int i = 0; i < words.size(); ++ i) {
             tags.push_back(model->labels.at(inst->predicted_tagsidx[i]));

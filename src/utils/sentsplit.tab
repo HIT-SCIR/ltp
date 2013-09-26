@@ -1,5 +1,8 @@
 #ifndef __LTP_SPLIT_SENTENCE_TAB__
 #define __LTP_SPLIT_SENTENCE_TAB__
+
+#pragma warning(disable: 4309)
+
 const int __double_peridos_utf8_size_x__ = 6;
 static int __double_periods_utf8_buff_x__[12] = {
 14909570 , 14844061 ,

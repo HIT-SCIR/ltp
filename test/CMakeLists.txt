@@ -5,6 +5,7 @@ include_directories (./
     ${SOURCE_DIR}/_ner
     ${SOURCE_DIR}/_srl
     ${SOURCE_DIR}/__ltp_dll
+    ${PROJECT_SOURCE_DIR}/examples/thirdparty/tinythreadpp
     ${THIRDPARTY_DIR}/crfpp
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)
@@ -16,27 +17,29 @@ set (ltp_test_SRC           ltp_test.cpp)
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 add_executable (ltp_test     ${ltp_test_SRC})
+add_executable (multi_ltp_test    multi_ltp_test.cpp ../examples/thirdparty/tinythreadpp/tinythread.cpp)
 #add_executable (ltp_test_xml ${ltp_test_xml_SRC})
 #add_executable (ltp_test2    ${ltp_test2_SRC})
 
 set (ltp_test_LIBS 
-	maxent_static_lib
-	util_static_lib
-	ltp
-	splitsnt
-	segmentor_static_lib
-	postagger_static_lib
-	parser_static_lib
-	ner_static_lib
-	srl_static_lib
-	xml4nlp
-	boost_regex_static_lib)
-	
+maxent_static_lib
+util_static_lib
+ltp
+splitsnt
+segmentor_static_lib
+postagger_static_lib
+parser_static_lib
+ner_static_lib
+srl_static_lib
+xml4nlp
+boost_regex_static_lib)
+
 if (NOT WIN32) 
 set (ltp_test_LIBS ${ltp_test_LIBS} pthread)
 endif()
 
 target_link_libraries (ltp_test ${ltp_test_LIBS})
+target_link_libraries (multi_ltp_test ${ltp_test_LIBS} pthread)
 
 #target_link_libraries (ltp_test2
 #    maxent
@@ -74,4 +77,3 @@ target_link_libraries (ltp_test ${ltp_test_LIBS})
 #    COMMAND "${CMAKE_COMMAND}"
 #    -DTEST_PROG=${EXECUTABLE_TEST_OUTPUT}
 #    -P ${CMAKE_MODULE_PATH}/LtpDiff.cmake)
-
