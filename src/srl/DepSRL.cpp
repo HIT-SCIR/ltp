@@ -145,6 +145,7 @@ int DepSRL::GetSRLResult(
 
     // rename arguments to short forms (ARGXYZ->AXYZ)
     if (!RenameArguments(vecSRLResult)) return 0;
+    delete m_srlBaseline;
 
     return 1;
 }
