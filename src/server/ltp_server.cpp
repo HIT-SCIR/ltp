@@ -25,8 +25,7 @@
 using namespace std;
 using namespace ltp::strutils::codecs;
 
-static XML4NLP xml4nlp;
-static LTP engine(xml4nlp);
+static LTP engine;
 
 static int exit_flag;
 
@@ -48,7 +47,7 @@ int main(int argc, char *argv[]) {
     callbacks.begin_request = Service;
 
     if ((ctx = mg_start(&callbacks, NULL, options)) == NULL) {
-        (void) printf("%s\n", "Cannot initialize Mongoose context");
+        ERROR_LOG("Cannot initialize Mongoose context");
         exit(EXIT_FAILURE);
     }
 
@@ -103,11 +102,6 @@ static int Service(struct mg_connection *conn) {
                 xml,
                 sizeof(xml) - 1);
 
-        // std::cerr << "sentence: " << sentence << std::endl;
-        // std::cerr << "type    : " << type << std::endl;
-        // std::cerr << "xml     : " << xml << std::endl;
-        // std::cerr << "validation check" << std::endl;
-
         string strSentence = sentence;
 
         /*
@@ -135,25 +129,37 @@ static int Service(struct mg_connection *conn) {
 
         TRACE_LOG("Input sentence is: %s", strSentence.c_str());
 
+        //Get a XML4NLP instance here.
+        XML4NLP    xml4nlp;
+        
         if(str_xml == "y"){
-            xml4nlp.LoadXMLFromString(strSentence);
+            if (-1 == xml4nlp.LoadXMLFromString(strSentence)) {
+                // failed the xml validation check
+                return 0;
+            }
+
+            // move sentence validation check into each module
         } else {
             xml4nlp.CreateDOMFromString(strSentence);
         }
 
+        TRACE_LOG("XML Creation is done.");
+
         if(str_type == "ws"){
-            engine.wordseg();
+            engine.wordseg(xml4nlp);
         } else if(str_type == "pos"){
-            engine.postag();
+            engine.postag(xml4nlp);
         } else if(str_type == "ner"){
-            engine.ner();
+            engine.ner(xml4nlp);
         } else if(str_type == "dp"){
-            engine.parser();
+            engine.parser(xml4nlp);
         } else if(str_type == "srl"){
-            engine.srl();
+            engine.srl(xml4nlp);
         } else {
-            engine.srl();
+            engine.srl(xml4nlp);
         }
+
+        TRACE_LOG("Analysis is done.");
 
         string strResult;
         xml4nlp.SaveDOM(strResult);

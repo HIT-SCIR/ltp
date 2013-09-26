@@ -83,6 +83,9 @@ inline int split_sentence(const std::string & text,
                     }
                     i+=3;
                 }
+            } else if ((text[i]&0xF8)==0xF0) {
+                sentence.append(text.substr(i,4));
+                i += 4;
             } else {
                 std::cerr << "Warning: "
                     << "in utf.h "

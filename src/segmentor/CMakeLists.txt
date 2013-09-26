@@ -19,6 +19,8 @@ set (segment_SRC
 # -----------------------------------------------
 add_library (segmentor_static_lib segment_dll.cpp ${segment_SRC})
 
+target_link_libraries (segmentor_static_lib boost_regex_static_lib)
+
 set_target_properties (segmentor_static_lib
     PROPERTIES
     OUTPUT_NAME segmentor)
@@ -27,6 +29,8 @@ set_target_properties (segmentor_static_lib
 # SHARED LIBRARY
 # -----------------------------------------------
 add_library (segmentor_shared_lib SHARED segment_dll.cpp ${segment_SRC})
+
+target_link_libraries (segmentor_shared_lib boost_regex_shared_lib)
 
 set_target_properties (segmentor_shared_lib PROPERTIES
     VERSION     ${segment_VERSION}

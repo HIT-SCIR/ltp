@@ -783,13 +783,14 @@ private:
             int sentenceIdx, 
             const char* attrName);
 
+    bool LTMLValidation(); 
     /*-------------------------------------------*/
 
 private:
     vector<int> m_vecBegStnsIdxOfPara;
     vector<int> m_vecBegWordIdxOfStns;
 
-    Document_t  m_document_t;
+    Document_t  m_document;
     Note        m_note;
     Summary     m_summary;
     TextClass   m_textclass;

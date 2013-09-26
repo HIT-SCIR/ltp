@@ -14,9 +14,9 @@ use-sibling-basic = 1
 use-sibling-linear = 1
 
 [train]
-train-file = data/parser/example-train.conll
-holdout-file = data/parser/example-holdout.conll
+train-file = sample/parser/example-train.conll
+holdout-file = sample/parser/example-holdout.conll
 
 max-iter = 1 
 algorithm = pa
-model-name = build/parser/example-o1
+model-name = build/parser/example-parser-o1

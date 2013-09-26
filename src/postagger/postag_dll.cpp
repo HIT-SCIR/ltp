@@ -27,21 +27,21 @@ public:
             return false;
         }
 
-        decoder = new ltp::postagger::Decoder(model->num_labels());
-
         return true;
     }
 
     int postag(const std::vector<std::string> & words,
             std::vector<std::string> & tags) {
         ltp::postagger::Instance * inst = new ltp::postagger::Instance;
+        ltp::postagger::Decoder deco(model->num_labels());
+
         for (int i = 0; i < words.size(); ++ i) {
             inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
         }
 
         ltp::postagger::Postagger::extract_features(inst);
         ltp::postagger::Postagger::calculate_scores(inst, true);
-        decoder->decode(inst);
+        deco.decode(inst);
 
         ltp::postagger::Postagger::build_labels(inst, tags);
 

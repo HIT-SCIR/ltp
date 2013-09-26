@@ -1,0 +1,6 @@
+[train]
+train-file = sample/pos/example-train.pos
+holdout-file = sample/pos/example-holdout.pos
+algorithm = pa
+model-name = build/pos/example-pos
+max-iter = 2

@@ -96,10 +96,15 @@ public:
                 }
             }
         } else {
-            rulebase::preprocess(line,
+            int ret = rulebase::preprocess(line,
                     inst->raw_forms,
                     inst->forms,
                     inst->chartypes);
+
+            if (ret < 0) {
+                delete inst;
+                return 0;
+            }
         }
 
         return inst;
