@@ -46,6 +46,12 @@ LTP::LTP(const char * config) :
     m_ltpOption()
      {
     ReadConfFile(config);
+    m_ltpResource.LoadSegmentorResource(m_ltpOption.segmentor_model_path);	
+    m_ltpResource.LoadPostaggerResource(m_ltpOption.postagger_model_path);	
+    m_ltpResource.LoadNEResource(m_ltpOption.ner_model_path);	
+    m_ltpResource.LoadParserResource(m_ltpOption.parser_model_path);	
+    m_ltpResource.LoadSRLResource(m_ltpOption.srl_data_dir);	
+	std::cout<<"load finish"<<endl;
 }
 
 LTP::~LTP() {

@@ -435,6 +435,29 @@ bool Parser::read_instances(const char * filename, vector<Instance *> & dat) {
     return true;
 }
 
+void Parser::build_decoder(Decoder * &deco) {
+    if (model_opt.decoder_name == "1o") {
+        if (!model_opt.labeled) {
+            deco = new Decoder1O();
+        } else {
+            deco = new Decoder1O(model->num_deprels());
+        }
+
+    } else if (model_opt.decoder_name == "2o-sib") {
+        if (!model_opt.labeled) {
+            deco = new Decoder2O();
+        } else {
+            deco = new Decoder2O(model->num_deprels());
+        }
+
+    } else if (model_opt.decoder_name == "2o-carreras") {
+        if (!model_opt.labeled) {
+            deco = new Decoder2OCarreras();
+        } else {
+            deco = new Decoder2OCarreras(model->num_deprels());
+        }
+    }
+}
 void Parser::build_decoder(void) {
     if (model_opt.decoder_name == "1o") {
         if (!model_opt.labeled) {

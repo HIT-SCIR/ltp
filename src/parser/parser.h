@@ -92,6 +92,7 @@ private:
             bool gold = false);
 
 protected:
+    void build_decoder(Decoder *&);
     void build_decoder(void);
 
     void extract_features(Instance * inst);
