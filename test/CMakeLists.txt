@@ -19,7 +19,6 @@ set (multi_ltp_test_SRC     multi_ltp_test.cpp
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 add_executable (ltp_test ${ltp_test_SRC})
-add_executable (multi_ltp_test ${multi_ltp_test_SRC})
 #add_executable (ltp_test_xml ${ltp_test_xml_SRC})
 #add_executable (ltp_test2    ${ltp_test2_SRC})
 
@@ -41,7 +40,14 @@ set (ltp_test_LIBS ${ltp_test_LIBS} pthread)
 endif()
 
 target_link_libraries (ltp_test ${ltp_test_LIBS})
+
+#
+# multithreaded ltp test is not supported in Windows
+# 
+if (NOT WIN32) 
+add_executable (multi_ltp_test ${multi_ltp_test_SRC})
 target_link_libraries (multi_ltp_test ${ltp_test_LIBS} pthread)
+endif()
 
 #target_link_libraries (ltp_test2
 #    maxent
