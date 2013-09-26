@@ -1,5 +1,0 @@
-#LTP data file path
-
-LTP_dataFolder=${MODEL_DIR}/
-
-#--------------------------------#

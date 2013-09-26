@@ -1,0 +1,3 @@
+[test]
+test-file = sample/pos/example-test.pos
+model-file = build/pos/example-pos.0.model

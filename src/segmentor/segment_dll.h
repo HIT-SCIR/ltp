@@ -1,3 +1,6 @@
+/*
+ * this is a test.
+ */
 #ifndef __LTP_SEGMENT_DLL_H__
 #define __LTP_SEGMENT_DLL_H__
 

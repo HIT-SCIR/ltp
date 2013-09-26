@@ -23,6 +23,8 @@
 #define __STRLIB_X_H__
 
 #include <iostream>
+#include <cstdio>
+#include <cstdlib>
 #include <sstream>
 #include <vector>
 #include <string>
