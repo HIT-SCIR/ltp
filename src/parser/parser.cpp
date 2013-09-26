@@ -435,7 +435,8 @@ bool Parser::read_instances(const char * filename, vector<Instance *> & dat) {
     return true;
 }
 
-void Parser::build_decoder(Decoder * &deco) {
+Decoder * Parser::build_decoder(void) {
+    Decoder * deco;
     if (model_opt.decoder_name == "1o") {
         if (!model_opt.labeled) {
             deco = new Decoder1O();
@@ -457,29 +458,7 @@ void Parser::build_decoder(Decoder * &deco) {
             deco = new Decoder2OCarreras(model->num_deprels());
         }
     }
-}
-void Parser::build_decoder(void) {
-    if (model_opt.decoder_name == "1o") {
-        if (!model_opt.labeled) {
-            decoder = new Decoder1O();
-        } else {
-            decoder = new Decoder1O(model->num_deprels());
-        }
-
-    } else if (model_opt.decoder_name == "2o-sib") {
-        if (!model_opt.labeled) {
-            decoder = new Decoder2O();
-        } else {
-            decoder = new Decoder2O(model->num_deprels());
-        }
-
-    } else if (model_opt.decoder_name == "2o-carreras") {
-        if (!model_opt.labeled) {
-            decoder = new Decoder2OCarreras();
-        } else {
-            decoder = new Decoder2OCarreras(model->num_deprels());
-        }
-    }
+    return deco;
 }
 
 
@@ -788,7 +767,7 @@ void Parser::train(void) {
     model->param.realloc(model->dim());
     TRACE_LOG("Allocate a parameter vector of [%d] dimension.", model->dim());
 
-    build_decoder();
+decoder=    build_decoder();
 
     for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
         TRACE_LOG("Start training epoch #%d.", (iter + 1));

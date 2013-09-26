@@ -51,7 +51,7 @@ public:
         ltp::parser::Parser::extract_features(inst);
         ltp::parser::Parser::calculate_score(inst, ltp::parser::Parser::model->param);
 	ltp::parser::Decoder * deco;
-	ltp::parser::Parser::build_decoder(deco);	
+	deco=build_decoder();	
         deco->decode(inst);
 
         int len = inst->size();
