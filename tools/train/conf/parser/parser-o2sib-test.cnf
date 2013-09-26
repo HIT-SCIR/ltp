@@ -1,3 +1,3 @@
 [test]
-test-file = data/parser/example-test.conll
+test-file = sample/parser/example-test.conll
 model-file = build/parser/example-o2sib.0.model

@@ -22,7 +22,7 @@ using namespace std;
     #endif
 #endif
 
-int SRL(
+SRL_DLL_API int SRL(
         const vector<string> &words,
         const vector<string> &POSs,
         const vector<string> &NEs,

@@ -29,9 +29,6 @@ add_subdirectory (src)
 
 # testing section
 # -- generate configure file for ltp_test
-configure_file (
-    ${TOOLS_DIR}/testing/auto-test.sh.in
-    ${TOOLS_DIR}/testing/auto-test.sh)
 
 # enable test
 enable_testing()

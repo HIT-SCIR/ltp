@@ -6,9 +6,16 @@
 #include <vector>
 
 #include "settings.h"
+#include "strutils.hpp"
 #include "sbcdbc.hpp"
 #include "smartmap.hpp"
 #include "chartypes.hpp"
+
+#if _WIN32
+// disable auto-link feature in boost
+#define BOOST_ALL_NO_LIB
+#endif
+
 #include "boost/regex.hpp"
 
 namespace ltp {
@@ -48,7 +55,10 @@ inline int preprocess(const std::string & sentence,
         std::vector<std::string> & forms,
         std::vector<int> & chartypes) {
 
-    int len = sentence.size();
+    std::string sent = ltp::strutils::chomp(sentence);
+    // std::cerr << sent << std::endl;
+
+    int len = sent.size();
     if (0 == len) {
         return 0;
     }
@@ -63,12 +73,12 @@ inline int preprocess(const std::string & sentence,
         flags[i] = 0;
     }
 
-    start = sentence.begin();
-    end = sentence.end();
+    start = sent.begin();
+    end = sent.end();
 
     while (boost::regex_search(start, end, what, uripattern, boost::match_default)) {
-        int left = what[0].first - sentence.begin();
-        int right = what[0].second - sentence.begin();
+        int left = what[0].first - sent.begin();
+        int right = what[0].second - sent.begin();
 
         if (flags_clear_check(flags, left, right)) {
             flags[left] = URI_BEG;
@@ -78,12 +88,12 @@ inline int preprocess(const std::string & sentence,
         start = what[0].second;
     }
 
-    start = sentence.begin();
-    end   = sentence.end();
+    start = sent.begin();
+    end   = sent.end();
 
     while (boost::regex_search(start, end, what, engpattern, boost::match_default)) {
-        int left = what[0].first - sentence.begin();
-        int right = what[0].second - sentence.begin();
+        int left = what[0].first - sent.begin();
+        int right = what[0].second - sent.begin();
 
         if (flags_clear_check(flags, left, right)) {
             flags[left] = ENG_BEG;
@@ -102,13 +112,13 @@ inline int preprocess(const std::string & sentence,
             form = "";
 
             for (; i<len && flags[i]; ++ i) {
-                form += sentence[i];
+                form += sent[i];
             }
             raw_forms.push_back(form);
 
             if (flag == ENG_BEG) {
                 forms.push_back( __eng__ );
-                if (ret>0) {
+                if (chartypes.size() > 0) {
                     chartypes.back() |= HAVE_ENG_ON_RIGHT;
                 }
 
@@ -117,7 +127,7 @@ inline int preprocess(const std::string & sentence,
                 left = HAVE_ENG_ON_LEFT;
             } else if (flag == URI_BEG) {
                 forms.push_back( __uri__ );
-                if (ret>0) {
+                if (chartypes.size() > 0) {
                     chartypes.back() |= HAVE_URI_ON_RIGHT;
                 }
 
@@ -127,9 +137,9 @@ inline int preprocess(const std::string & sentence,
             }
             ++ ret;
         } else {
-            if ((sentence[i]&0x80)==0) {
-                if ((sentence[i] != ' ') && (sentence[i] != '\t')) {
-                    raw_forms.push_back(sentence.substr(i, 1));
+            if ((sent[i]&0x80)==0) {
+                if ((sent[i] != ' ') && (sent[i] != '\t')) {
+                    raw_forms.push_back(sent.substr(i, 1));
                     chartypes.push_back(strutils::chartypes::chartype(raw_forms.back()));
                     forms.push_back("");
                     strutils::chartypes::sbc2dbc(raw_forms.back(), forms.back());
@@ -137,26 +147,36 @@ inline int preprocess(const std::string & sentence,
                     left = 0;
                 } else {
                     left = HAVE_SPACE_ON_LEFT;
-                    if (ret>0) {
+                    if (chartypes.size()>0) {
                         chartypes.back() |= HAVE_SPACE_ON_RIGHT;
                     }
                 }
                 ++ i;
-            } else if ((sentence[i]&0xE0)==0xC0) {
-                raw_forms.push_back(sentence.substr(i, 2));
+            } else if ((sent[i]&0xE0)==0xC0) {
+                raw_forms.push_back(sent.substr(i, 2));
                 chartypes.push_back(strutils::chartypes::chartype(raw_forms.back()));
                 forms.push_back("");
                 strutils::chartypes::sbc2dbc(raw_forms.back(), forms.back());
                 chartypes.back() |= left;
                 left = 0;
                 i += 2;
-            } else if ((sentence[i]&0xF0)==0xE0) {
-                raw_forms.push_back(sentence.substr(i, 3));
+            } else if ((sent[i]&0xF0)==0xE0) {
+                raw_forms.push_back(sent.substr(i, 3));
                 chartypes.push_back(strutils::chartypes::chartype(raw_forms.back()));
                 forms.push_back("");
                 strutils::chartypes::sbc2dbc(raw_forms.back(), forms.back());
                 chartypes.back() |= left;
                 i += 3;
+            } else if ((sent[i]&0xF8)==0xF0) {
+                raw_forms.push_back(sent.substr(i, 3));
+                chartypes.push_back(strutils::chartypes::chartype(raw_forms.back()));
+                forms.push_back("");
+                strutils::chartypes::sbc2dbc(raw_forms.back(), forms.back());
+                chartypes.back() |= left;
+                i += 4;
+            } else {
+                delete [](flags);
+                return -1;
             }
 
             ++ ret;
@@ -164,7 +184,6 @@ inline int preprocess(const std::string & sentence,
     }
 
     delete [](flags);
-
     return ret;
 }
 
@@ -189,7 +208,7 @@ public:
                 __trans__ |= (1<<((__e_idx__<<2) + __s_idx__));
                 __trans__ |= (1<<((__e_idx__<<2) + __b_idx__));
             } else {
-                __trans__ == 0xffff;
+                __trans__ = 0xffff;
             }
         }
     }
