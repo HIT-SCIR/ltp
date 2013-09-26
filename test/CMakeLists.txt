@@ -5,19 +5,21 @@ include_directories (./
     ${SOURCE_DIR}/_ner
     ${SOURCE_DIR}/_srl
     ${SOURCE_DIR}/__ltp_dll
-    ${PROJECT_SOURCE_DIR}/examples/thirdparty/tinythreadpp
+    ${THIRDPARTY_DIR}/tinythreadpp
     ${THIRDPARTY_DIR}/crfpp
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)
 
 set (ltp_test_SRC           ltp_test.cpp)
+set (multi_ltp_test_SRC     multi_ltp_test.cpp 
+    ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 #set (ltp_test_xml_SRC       ltp_test_xml.cpp)
 #set (ltp_test2_SRC          ltp_test2.cpp)
 
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
-add_executable (ltp_test     ${ltp_test_SRC})
-add_executable (multi_ltp_test    multi_ltp_test.cpp ../examples/thirdparty/tinythreadpp/tinythread.cpp)
+add_executable (ltp_test ${ltp_test_SRC})
+add_executable (multi_ltp_test ${multi_ltp_test_SRC})
 #add_executable (ltp_test_xml ${ltp_test_xml_SRC})
 #add_executable (ltp_test2    ${ltp_test2_SRC})
 

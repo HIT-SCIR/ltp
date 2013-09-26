@@ -1,3 +1,7 @@
+#################################################
+# Example for call LTP libraries under UNIX     #
+#################################################
+
 all: cws cws_cmdline multi_cws_cmdline \
 	pos pos_cmdline multi_pos_cmdline \
 	par \
@@ -15,13 +19,16 @@ cws_cmdline: cws_cmdline.cpp
 		-I../thirdparty/boost/include \
 		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
 
+#
+# tinythread is directly invoked into the example
+#
 multi_cws_cmdline: multi_cws_cmdline.cpp
 	g++ -o multi_cws_cmdline multi_cws_cmdline.cpp \
-		thirdparty/tinythreadpp/tinythread.cpp \
+		../thirdparty/tinythreadpp/tinythread.cpp \
 		-I./ \
 		-I../include/ \
 		-I../thirdparty/boost/include/ \
-		-I./thirdparty/tinythreadpp/ \
+		-I../thirdparty/tinythreadpp/ \
 		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy -lpthread
 
 pos: pos.cpp
@@ -36,10 +43,10 @@ pos_cmdline: pos_cmdline.cpp
 
 multi_pos_cmdline: multi_pos_cmdline.cpp
 	g++ -o multi_pos_cmdline multi_pos_cmdline.cpp \
-		thirdparty/tinythreadpp/tinythread.cpp \
+		../thirdparty/tinythreadpp/tinythread.cpp \
 		-I./ \
 		-I../include/ \
-		-I./thirdparty/tinythreadpp/ \
+		-I../thirdparty/tinythreadpp/ \
 		-Wl,-dn -L../lib/ -lpostagger -Wl,-dy -lpthread
 
 ner: ner.cpp

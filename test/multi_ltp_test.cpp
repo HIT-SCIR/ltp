@@ -1,8 +1,18 @@
+/*
+ * this is the multi-threaded test suite for LTP.
+ *
+ *  @author: NIU, Guochen <gcniu@ir.hit.edu.cn>
+ *           HAN, Bin     <bhan@ir.hit.edu.cn>
+ *           LIU, Yijia   <yjliu@ir.hit.edu.cn>
+ *
+ *  @data:  2013-09-26
+ */
 #include <iostream>
 #include <cstring>
 #include <ctime>
 #include <vector>
 #include <list>
+#include <map>
 #include <sys/time.h>
 #include <sys/types.h>
 
@@ -25,9 +35,10 @@ double get_time(void) {
 
 class Dispatcher {
 public:
-    Dispatcher( LTP * engine) {
-        _engine = engine;
-    }
+    Dispatcher( LTP * engine) : 
+        _engine(engine),
+        _max_idx(0), 
+        _idx(0) {}
 
     int next(string &sentence) {
         sentence = "";
@@ -38,33 +49,53 @@ public:
         return 0;
     }
 
-    void output(const string &result) {
+    void output(int idx, const string &result) {
         lock_guard<fast_mutex> guard(_mutex);
-        cout << result;
+
+        if (idx > _idx) {
+            _back[idx] = result;
+        } else if (idx == _idx) {
+            std::cout << result;
+            ++ _idx;
+
+            std::map<int, std::string>::iterator itx;
+            itx = _back.find(_idx);
+
+            while (itx != _back.end()) {
+                std::cout << itx->second;
+
+                _back.erase(itx);
+                ++ _idx;
+                itx = _back.find(_idx);
+            }
+        }
         return;
     }
 
-    LTP* getEngine() {
+    LTP* get_engine() {
         return _engine;
     }
-    
+
 private:
-    fast_mutex     _mutex;
-    LTP*          _engine;
+    fast_mutex  _mutex;
+    LTP *       _engine;
+    int         _max_idx;
+    int         _idx;
+    std::map<int, std::string> _back;
 };
 
 void multithreaded_ltp( void * args) {
     string sentence;
 
     Dispatcher * dispatcher = (Dispatcher *)args;
-    LTP *  engine = dispatcher->getEngine();
+    LTP *  engine = dispatcher->get_engine();
 
     while (true) {
         int ret = dispatcher->next(sentence);
 
         if (ret < 0)
             break;
-        
+
         XML4NLP xml4nlp;
         xml4nlp.CreateDOMFromString(sentence);
 
@@ -84,21 +115,21 @@ void multithreaded_ltp( void * args) {
 
         string result;
         xml4nlp.SaveDOM(result);
-	dispatcher->output(result);
+        dispatcher->output(ret, result);
         xml4nlp.ClearDOM();
-        
+
     }
 
     return;
 }
 
 int main(int argc, char ** argv) {
-    
+
     if (argc != 3) {
         cerr << "Usage: ./ltp_test <config_file> <type>" << endl;
         exit(1);
     }
-    
+
     LTP ltp(argv[1]);
     string _type(argv[2]);
     type = _type;
@@ -121,12 +152,13 @@ int main(int argc, char ** argv) {
         t->join();
         delete t;
     }
+
     delete dispatcher;
     tm = get_time() - tm;
     std::cerr << "TRACE: consume "
         << tm 
         << " seconds."
         << std::endl;
-   
+
     return 0;
 }
