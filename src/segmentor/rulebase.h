@@ -168,7 +168,7 @@ inline int preprocess(const std::string & sentence,
                 chartypes.back() |= left;
                 i += 3;
             } else if ((sent[i]&0xF8)==0xF0) {
-                raw_forms.push_back(sent.substr(i, 3));
+                raw_forms.push_back(sent.substr(i, 4));
                 chartypes.push_back(strutils::chartypes::chartype(raw_forms.back()));
                 forms.push_back("");
                 strutils::chartypes::sbc2dbc(raw_forms.back(), forms.back());
