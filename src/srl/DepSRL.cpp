@@ -107,9 +107,7 @@ int DepSRL::GetSRLResult(
         const LTPData     &ltpData,
         const vector<int> &predicates,
         vector< pair< int, vector< pair< string, pair< int, int > > > > > &vecSRLResult,
-	SRLBaselineExt * m_srlBaseline
-        )
-{
+        SRLBaselineExt * m_srlBaseline) {
     vecSRLResult.clear();
 
     if ( !m_resourceLoaded ) {
@@ -155,7 +153,7 @@ int DepSRL::ExtractSrlFeatures(
         const vector<int> &VecAllPredicates,
         VecFeatForSent    &vecAllFeatures,
         VecPosForSent     &vecAllPos,
-	SRLBaselineExt* m_srlBaseline
+        SRLBaselineExt* m_srlBaseline
         )
 {
     vecAllFeatures.clear();
@@ -892,4 +890,3 @@ int DepSRL::RenameArguments(
 
     return 1;
 }
-

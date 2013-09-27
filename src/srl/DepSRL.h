@@ -70,10 +70,12 @@ class DepSRL {
                 const LTPData     &ltpData,
                 const vector<int> &predicates,
                 vector< pair< int, vector< pair< string, pair< int, int > > > > > &vecSRLResult,
-		SRLBaselineExt * m_srlBaseline
+                SRLBaselineExt * m_srlBaseline
                 );
-	string GetConfigXml();
-	string GetSelectFeats();
+
+        string GetConfigXml();
+        string GetSelectFeats();
+
     private:
         /* 1.Extract SRL Features from input
          */
@@ -82,7 +84,7 @@ class DepSRL {
                 const vector<int> &VecAllPredicates,
                 VecFeatForSent    &vecAllFeatures,
                 VecPosForSent     &vecAllPos,
-		SRLBaselineExt* m_srlBaseline
+                SRLBaselineExt* m_srlBaseline
                 );
 
         /* 2.Predict with the maxent library
@@ -243,11 +245,11 @@ class DepSRL {
 
     private:
         bool                m_resourceLoaded;
-	string m_configXml;
-	string m_selectFeats;
+
+        string m_configXml;
+        string m_selectFeats;
         maxent::ME_Model    *m_srlModel; // for role labeling
         maxent::ME_Model    *m_prgModel; // for predicate recognition
 };
 
 #endif
-

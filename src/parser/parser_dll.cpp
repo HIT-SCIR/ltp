@@ -50,8 +50,9 @@ public:
 
         ltp::parser::Parser::extract_features(inst);
         ltp::parser::Parser::calculate_score(inst, ltp::parser::Parser::model->param);
-	ltp::parser::Decoder * deco;
-	deco=build_decoder();	
+
+        ltp::parser::Decoder * deco;
+        deco = build_decoder();
         deco->decode(inst);
 
         int len = inst->size();
@@ -64,7 +65,8 @@ public:
         }
 
         delete inst;
-	delete deco;
+        delete deco;
+
         return inst->size();
     }
 };

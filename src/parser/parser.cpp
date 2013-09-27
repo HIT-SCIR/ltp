@@ -10,7 +10,7 @@
 #if _WIN32
 #include <Windows.h>
 #define sleep Sleep
-#endif	//	end for _WIN32
+#endif  //  end for _WIN32
 
 namespace ltp {
 namespace parser {
