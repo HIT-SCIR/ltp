@@ -26,7 +26,7 @@ public:
             return false;
         }
 
-        ltp::parser::Parser::build_decoder();
+//        ltp::parser::Parser::build_decoder();
 
         return true;
     }
@@ -50,7 +50,9 @@ public:
 
         ltp::parser::Parser::extract_features(inst);
         ltp::parser::Parser::calculate_score(inst, ltp::parser::Parser::model->param);
-        decoder->decode(inst);
+    ltp::parser::Decoder * deco;
+    deco=build_decoder();   
+        deco->decode(inst);
 
         int len = inst->size();
         heads.resize(len - 1);
@@ -62,6 +64,7 @@ public:
         }
 
         delete inst;
+    delete deco;
         return inst->size();
     }
 };
