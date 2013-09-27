@@ -41,10 +41,9 @@ inline int decode(const std::string & s,
                 idx+=4;
             } else {
                 std::cerr << "Warning: " 
-                    << "in utf.h "
-                    << "getCharactersFromUTF8String: string '" 
+                    << "in codecs.hpp decode: string '" 
                     << s 
-                    << "' not encoded in unicode utf-8" 
+                    << "' is not encoded in unicode utf-8" 
                     << std::endl;
                  ++len;
                  ++idx;
@@ -84,12 +83,15 @@ inline int length(const std::string & s, int encoding=UTF8) {
             } else if ((s[idx]&0xF0)==0xE0) {
                 ++len;
                 idx+=3;
+            } else if ((s[idx]&0xF8)==0xF0) {
+                ++len;
+                idx+=4;
             } else {
                 std::cerr << "Warning: " 
-                    << "in utf.h "
-                    << "getCharactersFromUTF8String: string '" 
+                    << "in codecs.hpp "
+                    << "length: string '" 
                     << s 
-                    << "' not encoded in unicode utf-8" 
+                    << "' is not encoded in unicode utf-8" 
                     << std::endl;
                  ++len;
                  ++idx;
