@@ -69,8 +69,12 @@ class DepSRL {
         int GetSRLResult(
                 const LTPData     &ltpData,
                 const vector<int> &predicates,
-                vector< pair< int, vector< pair< string, pair< int, int > > > > > &vecSRLResult
+                vector< pair< int, vector< pair< string, pair< int, int > > > > > &vecSRLResult,
+                SRLBaselineExt * m_srlBaseline
                 );
+
+        string GetConfigXml();
+        string GetSelectFeats();
 
     private:
         /* 1.Extract SRL Features from input
@@ -79,7 +83,8 @@ class DepSRL {
                 const LTPData     &ltpData,
                 const vector<int> &VecAllPredicates,
                 VecFeatForSent    &vecAllFeatures,
-                VecPosForSent     &vecAllPos
+                VecPosForSent     &vecAllPos,
+                SRLBaselineExt* m_srlBaseline
                 );
 
         /* 2.Predict with the maxent library
@@ -119,11 +124,11 @@ class DepSRL {
          */
         void GetPredicateFromSentence(
                 const vector<string>& vecPos,
-                vector<int>& vecPredicate) const;
+                vector<int>& vecPredicate,SRLBaselineExt * m_srlBaseline) const;
 
         /* Version 2: find predicates according to a MaxEnt model
          */
-        void GetPredicateFromSentence(vector<int>& vecPredicate) const;
+        void GetPredicateFromSentence(vector<int>& vecPredicate,SRLBaselineExt * m_srlBaselie) const;
 
         void ProcessOnePredicate(
                 const vector<string>& vecWords,
@@ -240,11 +245,11 @@ class DepSRL {
 
     private:
         bool                m_resourceLoaded;
-        SRLBaselineExt*     m_srlBaseline;
 
+        string m_configXml;
+        string m_selectFeats;
         maxent::ME_Model    *m_srlModel; // for role labeling
         maxent::ME_Model    *m_prgModel; // for predicate recognition
 };
 
 #endif
-

@@ -39,7 +39,6 @@ int main(int argc, char *argv[]) {
         }
         sentence = sentence.substr(0, len);
 
-        cout << "Input sentence is: " << sentence << endl;
         XML4NLP xml4nlp;
         xml4nlp.CreateDOMFromString(sentence);
 
@@ -59,9 +58,9 @@ int main(int argc, char *argv[]) {
 
         string result;
         xml4nlp.SaveDOM(result);
-
-        cout << "Result is: " << result << endl;
         xml4nlp.ClearDOM();
+
+        std::cout << result << std::endl;
     }
 
     return 0;

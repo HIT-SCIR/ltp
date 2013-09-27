@@ -88,8 +88,7 @@ inline int split_sentence(const std::string & text,
                 i += 4;
             } else {
                 std::cerr << "Warning: "
-                    << "in utf.h "
-                    << "getCharactersFromUTF8String: string '"
+                    << "in sentsplit.hpp split_sentence: string '"
                     << text
                     << "' not encoded in unicode utf-8"
                     << std::endl;
