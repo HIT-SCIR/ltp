@@ -64,6 +64,7 @@ public:
         }
 
         delete inst;
+	delete deco;
         return inst->size();
     }
 };
