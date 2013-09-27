@@ -17,11 +17,8 @@
 // Load necessary resources into memory
 int DepSRL::LoadResource(const string &ConfigDir)
 {
-    string configXml = ConfigDir + "/Chinese.xml";
-    string selectFeats = ConfigDir + "/srl.cfg";
-
-    m_srlBaseline = new SRLBaselineExt(configXml, selectFeats);
-
+    m_configXml = ConfigDir + "/Chinese.xml";
+    m_selectFeats = ConfigDir + "/srl.cfg";
     // load srl and prg model
     m_srlModel = new maxent::ME_Model;
     m_srlModel->load(ConfigDir + "/srl.model");
@@ -44,7 +41,14 @@ int DepSRL::ReleaseResource()
 
     return 1;
 }
-
+string DepSRL::GetConfigXml()
+{
+    return m_configXml;
+}
+string DepSRL::GetSelectFeats()
+{
+    return m_selectFeats;
+}
 int DepSRL::GetSRLResult(
         const vector<string> &words,
         const vector<string> &POSs,
@@ -63,15 +67,16 @@ int DepSRL::GetSRLResult(
     // construct a DataPreProcess instance
     DataPreProcess* dataPreProc = new DataPreProcess(&ltpData);
 
+    SRLBaselineExt * m_srlBaseline=new SRLBaselineExt(GetConfigXml(),GetSelectFeats());
     // extract features !
     m_srlBaseline->setDataPreProc(dataPreProc);
 
     // GetPredicateFromSentence(POSs,predicates);
     vector<int> predicates;
-    GetPredicateFromSentence(predicates);
+    GetPredicateFromSentence(predicates,m_srlBaseline);
 
     // return GetSRLResult(words, POSs, NEs, parse, predicates, vecSRLResult);
-    return GetSRLResult(ltpData, predicates, vecSRLResult);
+    return GetSRLResult(ltpData, predicates, vecSRLResult,m_srlBaseline);
 }
 
 // produce DepSRL result for a sentence
@@ -101,7 +106,8 @@ int DepSRL::GetSRLResult(
 int DepSRL::GetSRLResult(
         const LTPData     &ltpData,
         const vector<int> &predicates,
-        vector< pair< int, vector< pair< string, pair< int, int > > > > > &vecSRLResult
+        vector< pair< int, vector< pair< string, pair< int, int > > > > > &vecSRLResult,
+	SRLBaselineExt * m_srlBaseline
         )
 {
     vecSRLResult.clear();
@@ -122,7 +128,7 @@ int DepSRL::GetSRLResult(
     vector< vector< pair<string, double> > > vecAllPairNextArgs;
 
     // extract features
-    if (!ExtractSrlFeatures(ltpData, predicates,vecAllFeatures,vecAllPos))
+    if (!ExtractSrlFeatures(ltpData, predicates,vecAllFeatures,vecAllPos,m_srlBaseline))
         return 0;
 
     // predict
@@ -139,6 +145,7 @@ int DepSRL::GetSRLResult(
 
     // rename arguments to short forms (ARGXYZ->AXYZ)
     if (!RenameArguments(vecSRLResult)) return 0;
+    delete m_srlBaseline;
 
     return 1;
 }
@@ -147,7 +154,8 @@ int DepSRL::ExtractSrlFeatures(
         const LTPData     &ltpData,
         const vector<int> &VecAllPredicates,
         VecFeatForSent    &vecAllFeatures,
-        VecPosForSent     &vecAllPos
+        VecPosForSent     &vecAllPos,
+	SRLBaselineExt* m_srlBaseline
         )
 {
     vecAllFeatures.clear();
@@ -467,7 +475,7 @@ void DepSRL::GetParAndRel(const vector< pair<int, string> >& vecParser,
 }
 
 void DepSRL::GetPredicateFromSentence(const vector<string>& vecPos, 
-        vector<int>& vecPredicate) const
+        vector<int>& vecPredicate,SRLBaselineExt* m_srlBaseline) const
 {
     int index;
     vector<string>::const_iterator itPos;
@@ -485,7 +493,7 @@ void DepSRL::GetPredicateFromSentence(const vector<string>& vecPos,
     }
 }
 
-void DepSRL::GetPredicateFromSentence(vector<int>& vecPredicate) const
+void DepSRL::GetPredicateFromSentence(vector<int>& vecPredicate,SRLBaselineExt * m_srlBaseline) const
 {
     /* extract features for each word in sentence */
     vector< vector<string> > vecFeatures;

@@ -92,8 +92,7 @@ private:
             bool gold = false);
 
 protected:
-    void build_decoder(void);
-
+    Decoder * build_decoder(void);
     void extract_features(Instance * inst);
 
     void calculate_score(Instance * inst, const Parameters& param, bool use_avg = false);
