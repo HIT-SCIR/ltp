@@ -9,15 +9,15 @@ int SRL(
         )
 {
     vecSRLResult.clear();
-    vector< pair< int, vector< pair<string, pair< int, int > > > > > g_vecSRLResult;
-    int resultNum = DoSRL(words, POSs, NEs, parse,g_vecSRLResult);
+    vector< pair< int, vector< pair<string, pair< int, int > > > > > tmp_vecSRLResult;
+    int resultNum = DoSRL(words, POSs, NEs, parse,tmp_vecSRLResult);
     if (resultNum < 0) return -1;
     if (resultNum == 0) return 0;
     vecSRLResult.resize(resultNum);
-    if (0 != GetSRLResult_size(vecSRLResult,g_vecSRLResult)) return -1;
+    if (0 != GetSRLResult_size(vecSRLResult,tmp_vecSRLResult)) return -1;
     int i = 0;
     for (; i < resultNum; ++i) {
         vecSRLResult[i].second.resize( vecSRLResult[i].first );
     }
-    return GetSRLResult(vecSRLResult,g_vecSRLResult);
+    return GetSRLResult(vecSRLResult,tmp_vecSRLResult);
 }

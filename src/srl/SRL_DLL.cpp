@@ -29,48 +29,48 @@ int DoSRL(
         const vector<string> &POSs,
         const vector<string> &NEs,
         const vector< pair<int, string> > &parse,
-        vector< pair< int, vector< pair<string, pair< int, int > > > > > &g_vecSRLResult)
+        vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult)
 {
-    g_vecSRLResult.clear();
-    if (0 == g_depSRL.GetSRLResult(words, POSs, NEs, parse, g_vecSRLResult)) return -1;;
-    return g_vecSRLResult.size();
+    tmp_vecSRLResult.clear();
+    if (0 == g_depSRL.GetSRLResult(words, POSs, NEs, parse, tmp_vecSRLResult)) return -1;;
+    return tmp_vecSRLResult.size();
 }
 
 int GetSRLResult_size(
         vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult,
-        vector< pair< int, vector< pair<string, pair< int, int > > > > > &g_vecSRLResult)
+        vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult)
 {
-    if (vecSRLResult.size() != g_vecSRLResult.size()) {
-        cerr << "vecSRLResult size != g_vecSRLResult size" << endl;
+    if (vecSRLResult.size() != tmp_vecSRLResult.size()) {
+        cerr << "vecSRLResult size != tmp_vecSRLResult size" << endl;
         return -1;
     }
     int i = 0;
     for (; i < vecSRLResult.size(); ++i) {
-        vecSRLResult[i].first = g_vecSRLResult[i].second.size();
+        vecSRLResult[i].first = tmp_vecSRLResult[i].second.size();
     }
     return 0;
 }
 
 int GetSRLResult(
         vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult,
-        vector< pair< int, vector< pair<string, pair< int, int > > > > > &g_vecSRLResult)
+        vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult)
 {
-    if (vecSRLResult.size() != g_vecSRLResult.size()) {
-        cerr << "vecSRLResult size != g_vecSRLResult size" << endl;
+    if (vecSRLResult.size() != tmp_vecSRLResult.size()) {
+        cerr << "vecSRLResult size != tmp_vecSRLResult size" << endl;
         return -1;
     }
     int i = 0;
     for (; i < vecSRLResult.size(); ++i) {
-        if (vecSRLResult[i].second.size() != g_vecSRLResult[i].second.size()) {
-            cerr << "vecSRLResult[i].second.size() != g_vecSRLResult[i].second.size()" << endl
+        if (vecSRLResult[i].second.size() != tmp_vecSRLResult[i].second.size()) {
+            cerr << "vecSRLResult[i].second.size() != tmp_vecSRLResult[i].second.size()" << endl
                 << "i = " << i << endl;
         }
-        vecSRLResult[i].first = g_vecSRLResult[i].first;
+        vecSRLResult[i].first = tmp_vecSRLResult[i].first;
         int j = 0;
-        for (; j < g_vecSRLResult[i].second.size(); ++j) {
-            vecSRLResult[i].second[j].first = g_vecSRLResult[i].second[j].first.c_str();
-            vecSRLResult[i].second[j].second.first = g_vecSRLResult[i].second[j].second.first;
-            vecSRLResult[i].second[j].second.second = g_vecSRLResult[i].second[j].second.second;
+        for (; j < tmp_vecSRLResult[i].second.size(); ++j) {
+            vecSRLResult[i].second[j].first = tmp_vecSRLResult[i].second[j].first.c_str();
+            vecSRLResult[i].second[j].second.first = tmp_vecSRLResult[i].second[j].second.first;
+            vecSRLResult[i].second[j].second.second = tmp_vecSRLResult[i].second[j].second.second;
         }
     }
     return 0;
