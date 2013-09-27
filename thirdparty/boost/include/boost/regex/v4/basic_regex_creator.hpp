@@ -1035,7 +1035,7 @@ int basic_regex_creator<charT, traits>::calculate_backstep(re_syntax_base* state
                state = rep->alt.p;
                continue;
             }
-            else if((state->type == syntax_element_long_set_rep)) 
+            else if(state->type == syntax_element_long_set_rep)
             {
                BOOST_ASSERT(rep->next.p->type == syntax_element_long_set);
                if(static_cast<re_set_long<mask_type>*>(rep->next.p)->singleton == 0)
@@ -1338,7 +1338,7 @@ void basic_regex_creator<charT, traits>::create_startmap(re_syntax_base* state, 
             re_syntax_base* p = m_pdata->m_first_state;
             while(p)
             {
-               if((p->type == syntax_element_recurse))
+               if(p->type == syntax_element_recurse)
                {
                   re_brace* p2 = static_cast<re_brace*>(static_cast<re_jump*>(p)->alt.p);
                   if((p2->type == syntax_element_startmark) && (p2->index == static_cast<re_brace*>(state)->index))

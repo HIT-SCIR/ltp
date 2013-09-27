@@ -143,7 +143,7 @@ inline bool tail(const std::string & s,
         return false;
     }
 
-    if (encoding=UTF8) {
+    if (encoding == UTF8) {
         if ((s[len-1]&0x80)==0) {
             ch = s.substr(len-1, 1);
         } else if ((len>=2 && (s[len-2]&0xE0)==0xC0)) {
