@@ -207,6 +207,7 @@ void Sentence::clear()
 
 const std::string& Sentence::get_argument(const size_t predicate_index, const size_t row) const
 {
+    //very useful ,will not infulence the multi-thread
     static string empty = "";
     if (m_argument_columns[predicate_index].size())
     {

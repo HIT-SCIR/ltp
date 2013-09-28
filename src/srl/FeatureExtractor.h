@@ -130,7 +130,7 @@ enum FEAT_NUM
 };
 
 /* Auxiliary class for FeatureExtractor, holding information for the features
- * all FeatureExtractor objects hold one common static FeatureCollection, for 
+ * all FeatureExtractor objects hold one common non-static FeatureCollection, for 
  * looking up feature informations (such as feature names, feature prefix, etc)
  */
 class FeatureCollection
@@ -248,7 +248,13 @@ class FeatureExtractor
                 const size_t predicate_row,
                 std::string &result,
                 const std::vector<std::vector<std::string> >& m_vct_vct_feature_names);
-
+        //new function
+        int get_feature_number_for_extractor(const std::string &feature_name);
+        int get_feature_type_for_extractor(int feature_number);
+        const FeatureFunction& get_feature_function_for_extractor(int feature_number);
+        const std::vector<FEAT_NUM>& get_predicate_features_for_extractor();
+        const std::vector<FEAT_NUM>& get_node_vs_predicate_features_for_extractor();
+        const std::string get_feature_prefix_for_extractor(int feature_number);
 
 
     private:
@@ -373,8 +379,8 @@ class FeatureExtractor
 
         bool m_node_features_extracted_flag;
 
-        // static assistant class to help get info about features
-        static FeatureCollection ms_feature_collection;
+        // turn static assistant class into common member variable
+        FeatureCollection ms_feature_collection;
 
         // storage the feature value
         std::vector<std::vector<std::string> > m_feature_values;
