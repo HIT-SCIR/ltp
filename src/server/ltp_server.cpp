@@ -25,7 +25,7 @@
 using namespace std;
 using namespace ltp::strutils::codecs;
 
-static LTP engine;
+static LTP * engine = NULL;
 
 static int exit_flag;
 
@@ -36,6 +36,8 @@ static void signal_handler(int sig_num) {
 }
 
 int main(int argc, char *argv[]) {
+    engine = new LTP;
+
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
     struct mg_context *ctx;
@@ -146,17 +148,17 @@ static int Service(struct mg_connection *conn) {
         TRACE_LOG("XML Creation is done.");
 
         if(str_type == "ws"){
-            engine.wordseg(xml4nlp);
+            engine->wordseg(xml4nlp);
         } else if(str_type == "pos"){
-            engine.postag(xml4nlp);
+            engine->postag(xml4nlp);
         } else if(str_type == "ner"){
-            engine.ner(xml4nlp);
+            engine->ner(xml4nlp);
         } else if(str_type == "dp"){
-            engine.parser(xml4nlp);
+            engine->parser(xml4nlp);
         } else if(str_type == "srl"){
-            engine.srl(xml4nlp);
+            engine->srl(xml4nlp);
         } else {
-            engine.srl(xml4nlp);
+            engine->srl(xml4nlp);
         }
 
         TRACE_LOG("Analysis is done.");
