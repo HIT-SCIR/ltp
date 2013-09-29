@@ -18,12 +18,16 @@ int main(int argc, char *argv[]) {
     string sentence;
     // ofstream log_file("test.log");
 
-    
     LTP ltp(argv[1]);
+
+    if (!ltp.loaded()) {
+        std::cerr << "Failed to load LTP" << std::endl;
+        return -1;
+    }
 
     string type(argv[2]);
     ifstream in(argv[3]);
- 
+
     if (!in.is_open()) {
         cerr << "Cann't open file!" << endl;
         exit(1);

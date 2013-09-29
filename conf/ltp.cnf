@@ -1,5 +1,17 @@
+# resources to be loaded, valid value includes: ws, pos, ner, dp, srl
+target = all
+
+# path to the segment model
 segmentor-model = ltp_data/cws.model
+
+# path to the postag model
 postagger-model = ltp_data/pos.model
+
+# path to the parser model
 parser-model = ltp_data/parser.model
+
+# path to the ner model
 ner-model = ltp_data/ner.model
+
+# dir to the srl resource
 srl-data = ltp_data/srl/
