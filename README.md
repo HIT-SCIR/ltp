@@ -23,7 +23,8 @@
 模型
 ---
 
-* [3.0](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
+* [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
+* 当前模型版本3.0.2
 
 开源协议
 -------

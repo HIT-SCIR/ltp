@@ -18,12 +18,16 @@ int main(int argc, char *argv[]) {
     string sentence;
     // ofstream log_file("test.log");
 
-    XML4NLP xml4nlp;
-    LTP ltp(argv[1], xml4nlp);
+    LTP ltp(argv[1]);
+
+    if (!ltp.loaded()) {
+        std::cerr << "Failed to load LTP" << std::endl;
+        return -1;
+    }
 
     string type(argv[2]);
     ifstream in(argv[3]);
- 
+
     if (!in.is_open()) {
         cerr << "Cann't open file!" << endl;
         exit(1);
@@ -39,29 +43,28 @@ int main(int argc, char *argv[]) {
         }
         sentence = sentence.substr(0, len);
 
-        cout << "Input sentence is: " << sentence << endl;
-
+        XML4NLP xml4nlp;
         xml4nlp.CreateDOMFromString(sentence);
 
         if(type == "ws"){
-            ltp.wordseg();
+            ltp.wordseg(xml4nlp);
         } else if(type == "pos"){
-            ltp.postag();
+            ltp.postag(xml4nlp);
         } else if(type == "ner"){
-            ltp.ner();
+            ltp.ner(xml4nlp);
         } else if(type == "dp"){
-            ltp.parser();
+            ltp.parser(xml4nlp);
         } else if(type == "srl"){
-            ltp.srl();
+            ltp.srl(xml4nlp);
         } else {
-            ltp.srl();
+            ltp.srl(xml4nlp);
         }
 
         string result;
         xml4nlp.SaveDOM(result);
-
-        cout << "Result is: " << result << endl;
         xml4nlp.ClearDOM();
+
+        std::cout << result << std::endl;
     }
 
     return 0;

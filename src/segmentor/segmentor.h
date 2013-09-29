@@ -4,6 +4,7 @@
 #include "cfgparser.hpp"
 #include "model.h"
 #include "decoder.h"
+#include "rulebase.h"
 
 namespace ltp {
 namespace segmentor {
@@ -114,6 +115,7 @@ private:
 protected:
     Model * model;
     Decoder * decoder;
+    rulebase::RuleBase* baseAll;
 };
 
 }       //  end for namespace segmentor

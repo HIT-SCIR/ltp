@@ -23,6 +23,8 @@
 #define __STRLIB_X_H__
 
 #include <iostream>
+#include <cstdio>
+#include <cstdlib>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -265,7 +267,7 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
     int sep_flag = (sep != "");
 
     while (str.size() > 0) {
-        size_t pos = std::string::npos;
+        int pos = (int) std::string::npos;
 
         if (sep_flag) {
             pos = str.rfind(sep);

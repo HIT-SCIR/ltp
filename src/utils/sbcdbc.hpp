@@ -55,8 +55,12 @@ inline void sbc2dbc_x(const std::string & x, std::string & y, int encoding=strut
             } else if ((x[i]&0xF0)==0xE0) {
                 y.append(sbc2dbc(x.substr(i, 3)));
                 i+=3;
+            } else if ((x[i]&0xF8)==0xF0) {
+                y.append(sbc2dbc(x.substr(i, 4)));
+                i+=4;
             } else {
                 y = x;
+                i=len;
             }
         } else if (encoding==strutils::codecs::GBK) {
             // not implemented

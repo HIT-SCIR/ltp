@@ -93,7 +93,7 @@ protected:
      *  @param  lvl         mininum log level
      */
     ul_logger(const char * _filename = NULL,
-        int _lvl = NULL) {
+        int _lvl = 0) {
 
         if (!(log_fpo = fopen(_filename, "w"))) {
             log_fpo = stderr;

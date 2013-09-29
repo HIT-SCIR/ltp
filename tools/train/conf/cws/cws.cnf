@@ -1,6 +1,6 @@
 [train]
-train-file = data/seg/example-train.seg
-holdout-file = data/seg/example-holdout.seg
+train-file = sample/seg/example-train.seg
+holdout-file = sample/seg/example-holdout.seg
 algorithm = pa 
 model-name = build/cws/example-seg
 max-iter = 1

@@ -22,8 +22,7 @@ void Configuration::load_xml(const string& filename)
     {
         throw runtime_error("Can't open the configuration file\n");
     }
-    static vector<string> lines;
-
+    vector<string> lines;
     lines.clear();
     string line;
     while (getline(xml_file, line))
@@ -75,7 +74,7 @@ void Configuration::parse(const vector<string>& lines)
 
     m_language = lines[language_begin+1];
 
-    static vector<string> vec;
+    vector<string> vec;
     vec.clear();
     for (size_t i = feat_begin+1; i < feat_end; i++)
     {

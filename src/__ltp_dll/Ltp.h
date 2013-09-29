@@ -15,38 +15,104 @@
 using namespace std;
 
 // extern ofstream ltp_log_file;
+#define MAX_SENTENCE_LEN 300
+#define MAX_WORDS_NUM    70
 
 class LTP {
 public:
-    LTP(XML4NLP & xml4nlp);
-    LTP(const char * cfg_file, XML4NLP & xml4nlp);
+
+    /*
+     * the constructor with config filepath specified to `conf/ltp.cnf`
+     */
+    LTP();
+
+    /*
+     * the another constructor with user specified config file
+     *
+     *  @param[in]  cfg_file    the path to the config file
+     */
+    LTP(const char * cfg_file);
+
+    /*
+     * deallocate the ltp resource
+     */
     ~LTP();
 
-    int CreateDOMFromTxt(const char *cszTxtFileName);
-    int CreateDOMFromXml(const char *cszXmlFileName);
-    int SaveDOM(const char *cszSaveFileName);
+    /*
+     * return true on the resource successful loaded, otherwise false
+     */
+    bool loaded();
 
-    int wordseg();
-    int postag();
-    int ner();
-    int parser();
-    int srl();
+    // discard
+    // int CreateDOMFromTxt(const char * cszTxtFileName, XML4NLP& m_xml4nlp);
+
+    // discard
+    // int CreateDOMFromXml(const char * cszXmlFileName, XML4NLP& m_xml4nlp);
+
+    // save dom tree
+    // int SaveDOM(const char *cszSaveFileName, XML4NLP& m_xml4nlp);
+
+    /*
+     * do word segmentation.
+     *
+     *  @param[in/out]  xml     the xml storing ltp result
+     *  @return         int     0 on success, otherwise -1
+     */
+    int wordseg(XML4NLP & xml);
+
+    /*
+     * do postagging
+     *
+     *  @param[in/out]  xml     the xml storing ltp result
+     *  @return         int     0 on success, otherwise -1
+     */
+    int postag(XML4NLP & xml);
+
+    /*
+     * do name entities recognization
+     *
+     *  @param[in/out]  xml     the xml storing ltp result
+     *  @return         int     0 on success, otherwise -1
+     */
+    int ner(XML4NLP & xml);
+
+    /*
+     * do dependency parsing
+     *
+     *  @param[in/out]  xml     the xml storing ltp result
+     *  @return         int     0 on success, otherwise -1
+     */
+    int parser(XML4NLP & xml);
+
+    /*
+     * do semantic role labeling
+     *
+     *  @param[in/out]  xml     the xml storing ltp result
+     *  @return         int     0 on success, otherwise -1
+     */
+    int srl(XML4NLP & xml);
 
 private:
-    int splitSentence_dummy();
+
+    /*
+     * split the sentence
+     *
+     *  @param[in/out]  xml     the xml storing ltp result
+     *  @return         int     0 on success, otherwise -1
+     */
+    int splitSentence_dummy(XML4NLP & xml);
+
+    /*
+     * parse the config file, and load resource according the config
+     *
+     *  @param[in]  confFileName    the config file
+     *  @return     int             0 on success, otherwise -1
+     */
     int ReadConfFile(const char *confFileName = "conf/ltp.cnf");
 
 private:
-    LTPResource m_ltpResource;
-    LTPOption   m_ltpOption;
-    XML4NLP &   m_xml4nlp;
-
-    static const unsigned int DO_XML;
-    static const unsigned int DO_SPLITSENTENCE;
-    static const unsigned int DO_IRLAS;
-    static const unsigned int DO_NER;
-    static const unsigned int DO_PARSER;
-    static const unsigned int DO_SRL;
+    LTPResource m_ltpResource;      /*< the ltp resources */
+    bool        m_loaded;           /*< use to sepcify if the resource is loaded */
 };
 
 #endif  //  end for __LTP_H__
