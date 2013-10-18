@@ -24,6 +24,33 @@ int FeatureSpace::index(int gid, int tid, const char * key, int lid) {
     return bid * _num_deprels + lid + offsets[gid];
 }
 
+
+void FeatureSpace::build_feature_space_truncate(int num_deprels) {
+    _num_deprels = num_deprels;
+    allocate_dictionary_groups();
+}
+
+void FeatureSpace::set_offset_truncate() {
+    _offset=0;
+    _num_features=0;
+    offsets[DEP]=_offset;
+    if(feat_opt.use_dependency) {
+	_num_features+=groups[DEP]->dim();
+	_offset+=groups[DEP]->dim() * _num_deprels;
+    }
+
+    offsets[SIB]=_offset;
+    if(feat_opt.use_sibling) {
+	_num_features+=groups[SIB]->dim();
+	_offset+=groups[SIB]->dim() * _num_deprels;
+    }
+
+    offsets[GRD]=_offset;
+    if(feat_opt.use_grand) {
+	_num_features+=groups[GRD]->dim();
+	_offset+=groups[GRD]->dim() * _num_deprels;
+    }
+}
 int FeatureSpace::build_feature_space(int num_deprels, const std::vector<Instance *> & instances) {
     _num_deprels = num_deprels;
     // allocate dictionary groups according to the options

@@ -64,6 +64,12 @@ public:
      */
     int retrieve(int tid, const char * key, bool create);
 
+    /*Get the ith Dictionary*/
+    Dictionary * getDictionary(int i);
+
+    /*Get size of dicts*/
+    int size();
+
 public:
     int idx;        /*< the shared index among dictionaries */
 
