@@ -102,6 +102,10 @@ public:
         }
         return ret;
     }
+    double dot(const int idx,bool use_avg=false) const {
+        const double * const p= (use_avg ? _W_sum : _W);
+        return p[idx];
+    }
 
     void str(ostream& out, int width = 10) {
         out << "\t";
