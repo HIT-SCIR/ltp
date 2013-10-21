@@ -121,6 +121,7 @@ Model * Parser::truncate() {
 
 void Parser::copy_featurespace(Model * new_model,int gid) {
     for (FeatureSpaceIterator itx = model->space.begin(gid); !itx.end(); ++itx) {
+	//test HPC Git
         const char * key = itx.key();
         //std::cout<<"countDEP : "<<countDEP<<" model_count : "<<itx.getDicts()->dim()<<std::endl; 
 	//std::cout<<"_i : "<<itx.getI()<<std::endl;
