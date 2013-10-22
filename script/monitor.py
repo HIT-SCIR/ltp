@@ -144,8 +144,8 @@ def connect_test(h):
 def running_test(h):
     cmd = "ps aux | grep {exe} | grep -v grep".format(
             exe = remote_exe)
-    cmd2 = "ssh {host} \"{cmd}\"".format(
-            host = h["name"], 
+    cmd2 = "ssh {ip} \"{cmd}\"".format(
+            ip = h["ip"], 
             cmd = cmd)
     info = epoll(cmd2)
     return info
@@ -170,8 +170,8 @@ def run():
                 cmd = "cd {path}; tail -200 {host}.server.log | grep 'CDATA:' | tail -1".format(
                         path = remote_exe_path,
                         host = h["name"])
-                cmd2 = "ssh {host} \"{cmd}\"".format(
-                        host = h["name"],
+                cmd2 = "ssh {ip} \"{cmd}\"".format(
+                        ip = h["ip"],
                         cmd = cmd)
                 ret = epoll(cmd2)
                 h["case"] = ret
@@ -181,8 +181,8 @@ def run():
                         path = remote_exe_path, 
                         exe = remote_exe, 
                         host = h["name"])
-                cmd2 = "ssh {host} \"{cmd}\"".format(
-                        host = h["name"], 
+                cmd2 = "ssh {ip} \"{cmd}\"".format(
+                        ip = h["ip"], 
                         cmd = cmd)
                 ret = epoll(cmd2)
 
@@ -220,8 +220,8 @@ def stop(h):
 
     pids = " ".join([line.split()[1] for line in info.strip().split("\n")])
     cmd = "kill -9 {pids}".format(pids = pids)
-    cmd2 = "ssh {host} \"{cmd}\"".format(
-            host = h["name"], 
+    cmd2 = "ssh {ip} \"{cmd}\"".format(
+            ip = h["ip"], 
             cmd = cmd)
     info = epoll(cmd2)
     logging.info("LTP on {host} is stopped.".format(host=h["name"]))
@@ -239,8 +239,8 @@ def start(h):
             path = remote_exe_path, 
             exe = remote_exe, 
             host = h["name"])
-    cmd2 = "ssh {host} \"{cmd}\"".format(
-            host = h["name"], 
+    cmd2 = "ssh {ip} \"{cmd}\"".format(
+            ip = h["ip"], 
             cmd = cmd)
     ret = epoll(cmd2)
     logging.info("LTP on {host} is started.".format(host=h["name"]))

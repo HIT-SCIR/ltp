@@ -35,15 +35,16 @@ double get_time(void) {
 
 class Dispatcher {
 public:
-    Dispatcher( LTP * engine) : 
+    Dispatcher( LTP * engine, std::istream & ifs) : 
         _engine(engine),
         _max_idx(0), 
-        _idx(0) {}
+        _idx(0),
+        _ifs(ifs) {}
 
     int next(string &sentence) {
         sentence = "";
         lock_guard<fast_mutex> guard(_mutex);
-        if (!getline(cin, sentence, '\n')) {
+        if (!getline(_ifs, sentence, '\n')) {
             return -1;
         } 
         return _max_idx ++;
@@ -81,6 +82,8 @@ private:
     LTP *       _engine;
     int         _max_idx;
     int         _idx;
+
+    std::istream & _ifs;
     std::map<int, std::string> _back;
 };
 
@@ -124,16 +127,21 @@ void multithreaded_ltp( void * args) {
 }
 
 int main(int argc, char ** argv) {
-
-    if (argc != 3) {
-        cerr << "Usage: ./ltp_test <config_file> <type>" << endl;
+    if (argc != 4) {
+        cerr << "Usage: ./ltp_test <config_file> <type> <test_file>" << endl;
         exit(1);
     }
 
     LTP engine(argv[1]);
-    string _type(argv[2]);
+    if (!engine.loaded()) {
+        std::cerr << "Failed to load LTP" << std::endl;
+        return -1;
+    }
+
+    std::string _type(argv[2]);
+    std::ifstream ifs(argv[3]);
     type = _type;
-    Dispatcher * dispatcher = new Dispatcher( &engine );
+    Dispatcher * dispatcher = new Dispatcher( &engine, ifs);
 
     int num_threads = thread::hardware_concurrency();
     std::cerr << "TRACE: LTP is built" << std::endl;

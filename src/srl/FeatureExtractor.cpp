@@ -183,9 +183,31 @@ const string FeatureCollection::get_feature_prefix(int feature_number)
 
 // impolementation for FeatureExtractor
 
-// static member initaliization
-FeatureCollection FeatureExtractor::ms_feature_collection;
-
+//new function
+int FeatureExtractor::get_feature_number_for_extractor(const std::string &feature_name)
+{
+    return ms_feature_collection.get_feature_number(feature_name);
+}
+int FeatureExtractor::get_feature_type_for_extractor(int feature_number)
+{
+     return ms_feature_collection.get_feature_type(feature_number);
+}
+const FeatureFunction&  FeatureExtractor::get_feature_function_for_extractor(int feature_number)
+{
+    return ms_feature_collection.get_feature_function(feature_number);
+}
+const std::vector<FEAT_NUM>& FeatureExtractor::get_predicate_features_for_extractor()
+{
+    return ms_feature_collection.get_predicate_features();
+}
+const std::vector<FEAT_NUM>& FeatureExtractor::get_node_vs_predicate_features_for_extractor()
+{
+    return ms_feature_collection.get_node_vs_predicate_features();
+}
+const std::string FeatureExtractor::get_feature_prefix_for_extractor(int feature_number)
+{
+    return ms_feature_collection.get_feature_prefix(feature_number);
+}
 void FeatureExtractor::clear_features()
 {
     m_feature_extracted_flags.clear();
@@ -217,8 +239,8 @@ void FeatureExtractor::set_feature_set_(
     for (size_t i=0; i<feature_set_str.size(); ++i)
     {
         const string& feat_tmp = feature_set_str[i];
-        int feature_number = ms_feature_collection.get_feature_number(feat_tmp);
-        int feature_type = ms_feature_collection.get_feature_type(feature_number);
+        int feature_number = get_feature_number_for_extractor(feat_tmp);
+        int feature_type = get_feature_type_for_extractor(feature_number);
 
         switch (feature_type)
         {
@@ -262,7 +284,7 @@ const std::string& FeatureExtractor::get_feature_value_(
     if (is_feature_empty_(feature_number, row))
     {
         FeatureFunction function 
-            = ms_feature_collection.get_feature_function(feature_number);
+            = get_feature_function_for_extractor(feature_number);
 
         function(this, row);
     }
@@ -282,7 +304,7 @@ void FeatureExtractor::set_feature_value_(
 bool FeatureExtractor::is_feature_empty_(const int feature_number, const size_t row)
 {
     int feature_type
-        = ms_feature_collection.get_feature_type(feature_number);
+        = get_feature_type_for_extractor(feature_number);
     
     if (FEAT_TYPE_PRED == feature_type)
     {
@@ -300,7 +322,7 @@ void FeatureExtractor::set_feature_empty_(
     const bool    empty)
 {
     int feature_type
-        = ms_feature_collection.get_feature_type(feature_number);
+        = get_feature_type_for_extractor(feature_number);
 
     if (FEAT_TYPE_PRED == feature_type)
     {
@@ -317,7 +339,7 @@ string& FeatureExtractor::get_feature_storage_(
     const size_t row)
 {
     const int feature_type
-        = ms_feature_collection.get_feature_type(feature_number);
+        = get_feature_type_for_extractor(feature_number);
 
     switch (feature_type)
     {
@@ -461,7 +483,7 @@ void FeatureExtractor::calc_node_vs_predicate_features_(const vector<int>& node_
 void FeatureExtractor::clear_predicate_features_()
 {
     BOOST_FOREACH(int feature_number,
-        ms_feature_collection.get_predicate_features())
+       get_predicate_features_for_extractor())
     {
         m_feature_extracted_flags[m_predicate_row][feature_number] = false;
         m_feature_values[feature_number].clear();
@@ -474,7 +496,7 @@ void FeatureExtractor::clear_node_vs_predicate_features_()
     for (size_t row=1; row<=mp_sentence->get_row_count(); ++row)
     {
         BOOST_FOREACH(int feature_number,
-            ms_feature_collection.get_node_vs_predicate_features())
+           get_node_vs_predicate_features_for_extractor())
         {
             m_feature_extracted_flags[row][feature_number] = false;
         }
@@ -482,7 +504,7 @@ void FeatureExtractor::clear_node_vs_predicate_features_()
 
     // clear feature values
     BOOST_FOREACH(int feature_number,
-        ms_feature_collection.get_node_vs_predicate_features())
+        get_node_vs_predicate_features_for_extractor())
     {
         m_feature_values[feature_number].clear();
     }
@@ -532,7 +554,7 @@ void FeatureExtractor::get_feature_string_for_row(
         for (size_t j=0; j<com_feature_names.size(); ++j)
         {
             const string& feature_name = com_feature_names[j];
-            const size_t feature_number = ms_feature_collection.get_feature_number(feature_name);
+            const size_t feature_number = get_feature_number_for_extractor(feature_name);
             if (first_part_flag)
             {
                 first_part_flag = false;
@@ -541,14 +563,14 @@ void FeatureExtractor::get_feature_string_for_row(
             {
                 row_features_stream<<'+';
             }
-            string feature_prefix = ms_feature_collection.get_feature_prefix(feature_number);
+            string feature_prefix =get_feature_prefix_for_extractor(feature_number);
             string feature_result = get_feature_storage_(feature_number, predicate_row);
             if (feature_prefix == "PFEATNULL" && feature_result == "")
             {
                 continue;
             }
             row_features_stream
-                <<ms_feature_collection.get_feature_prefix(feature_number)
+                <<get_feature_prefix_for_extractor(feature_number)
                 <<"@"
                 <<get_feature_storage_(feature_number, predicate_row);
         }
@@ -1106,7 +1128,7 @@ void FeatureExtractor::fg_predicate_familyship_( const size_t row )
 
 void FeatureExtractor::fg_predicate_bag_of_words_(const size_t row) 
 {
-    const string& prefix   = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_WORD)+"@";
+    const string& prefix   = get_feature_prefix_for_extractor(FEAT_BAG_OF_WORD)+"@";
     const size_t row_count = mp_sentence->get_row_count();
 
     string bag_of_words = "NONSENSE";
@@ -1129,7 +1151,7 @@ void FeatureExtractor::fg_predicate_bag_of_words_(const size_t row)
     set_feature_value_(FEAT_BAG_OF_WORD, row, bag_of_words);
 
     string bag_of_words_add_des_of_pred = "";
-    const string& new_prefix = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_WORD_IS_DES_O_PRED)+"@";
+    const string& new_prefix = get_feature_prefix_for_extractor(FEAT_BAG_OF_WORD_IS_DES_O_PRED)+"@";
 
     for (size_t i=1; i<=row_count; ++i)
     {
@@ -1148,7 +1170,7 @@ void FeatureExtractor::fg_predicate_bag_of_words_(const size_t row)
 
 void FeatureExtractor::fg_predicate_bag_of_words_ordered_(const size_t row) 
 {
-    const string& prefix   = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_WORD_O)+"@";
+    const string& prefix   =get_feature_prefix_for_extractor(FEAT_BAG_OF_WORD_O)+"@";
     const size_t row_count = mp_sentence->get_row_count();
 
     string bag_of_words_o = "NONSENSE";
@@ -1176,7 +1198,7 @@ void FeatureExtractor::fg_predicate_bag_of_words_ordered_(const size_t row)
 
 void FeatureExtractor::fg_predicate_bag_of_POSs_ordered_(const size_t row) 
 {
-    const string& prefix   = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_POS_O)+"@";
+    const string& prefix   = get_feature_prefix_for_extractor(FEAT_BAG_OF_POS_O)+"@";
     const size_t row_count = mp_sentence->get_row_count();
 
     string bag_of_POSs_o = "NONSENSE";
@@ -1202,7 +1224,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_ordered_(const size_t row)
     set_feature_value_(FEAT_BAG_OF_POS_O, m_predicate_row, bag_of_POSs_o);
 
     string bag_of_POSs_o_w5 = "";
-    const string& w5_prefix = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_POS_O_W5) + "@";
+    const string& w5_prefix = get_feature_prefix_for_extractor(FEAT_BAG_OF_POS_O_W5) + "@";
     const size_t wind_begin = (m_predicate_row-5>1         ? m_predicate_row-5 : 1);
     const size_t wind_end   = (m_predicate_row+5<row_count ? m_predicate_row+5 : row_count);
 
@@ -1236,7 +1258,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_ordered_(const size_t row)
 }
 void FeatureExtractor::fg_predicate_bag_of_POSs_window5_(const size_t row)
 {
-    const string& prefix = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_POS_WIND5)+ "@";
+    const string& prefix = get_feature_prefix_for_extractor(FEAT_BAG_OF_POS_WIND5)+ "@";
     const size_t row_count = mp_sentence->get_row_count();
 
     string bag_of_POSs_window5 = "";
@@ -1257,7 +1279,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_window5_(const size_t row)
 
 void FeatureExtractor::fg_predicate_bag_of_POSs_numbered_(const size_t row) 
 {
-    const string& prefix   = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_POS_N)+"@";
+    const string& prefix   = get_feature_prefix_for_extractor(FEAT_BAG_OF_POS_N)+"@";
     const size_t row_count = mp_sentence->get_row_count();
 
     stringstream bag_of_POSs_n;
@@ -1290,7 +1312,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_numbered_(const size_t row)
 
     set_feature_value_(FEAT_BAG_OF_POS_N, m_predicate_row, bag_of_POSs_n.str());
 
-    const string& w5_prefix = ms_feature_collection.get_feature_prefix(FEAT_BAG_OF_POS_N_W5)+"@";
+    const string& w5_prefix = get_feature_prefix_for_extractor(FEAT_BAG_OF_POS_N_W5)+"@";
 
     stringstream bag_of_POSs_n_w5;
     bool visit = false;
@@ -1327,7 +1349,7 @@ void FeatureExtractor::fg_predicate_bag_of_POSs_numbered_(const size_t row)
 
 void FeatureExtractor::fg_predicate_window5_bigram_(const size_t row) 
 {
-    const string& prefix   = ms_feature_collection.get_feature_prefix(FEAT_WIND5_BIGRAM)+"@";
+    const string& prefix   = get_feature_prefix_for_extractor(FEAT_WIND5_BIGRAM)+"@";
     const size_t row_count = mp_sentence->get_row_count();
 
     string wind5_bigram = "NONSENSE";
@@ -1345,7 +1367,7 @@ void FeatureExtractor::fg_predicate_window5_bigram_(const size_t row)
 
     set_feature_value_(FEAT_WIND5_BIGRAM, m_predicate_row, wind5_bigram);
 
-    const string& pos_prefix = ms_feature_collection.get_feature_prefix(FEAT_WIND5_BIGRAM_POS)+"@";
+    const string& pos_prefix = get_feature_prefix_for_extractor(FEAT_WIND5_BIGRAM_POS)+"@";
     string wind5_bigram_pos = "";
     for (size_t i=wind_begin; i<wind_end; ++i)
     {
@@ -1424,9 +1446,9 @@ void FeatureExtractor::fg_pfeat_column_(const size_t row)
         set_feature_value_(FEAT_PFEAT_EXC_NULL, row, "");
         return;
     }
-    string prefix = ms_feature_collection.get_feature_prefix(FEAT_PFEAT_COLUMN)+"@";
+    string prefix = get_feature_prefix_for_extractor(FEAT_PFEAT_COLUMN)+"@";
 
-    string prefix_exc_null = ms_feature_collection.get_feature_prefix(FEAT_PFEAT_EXC_NULL)+"@";
+    string prefix_exc_null = get_feature_prefix_for_extractor(FEAT_PFEAT_EXC_NULL)+"@";
 
     vector<string> result = split_(pfeat, '|');
     sort(result.begin(), result.end());

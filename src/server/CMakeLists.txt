@@ -1,14 +1,9 @@
 include_directories (./
     ${SOURCE_DIR}/__util
     ${SOURCE_DIR}/__xml4nlp
-    ${SOURCE_DIR}/__ltp_dll
     ${SOURCE_DIR}/_split_sentence
-    ${SOURCE_DIR}/segmentor
-    ${SOURCE_DIR}/postagger
-    ${SOURCE_DIR}/ner
-    ${SOURCE_DIR}/parser
-    ${SOURCE_DIR}/srl
     ${SOURCE_DIR}/utils
+    ${SOURCE_DIR}/__ltp_dll
     ${THIRDPARTY_DIR}/crfpp
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)
