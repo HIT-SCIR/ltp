@@ -855,7 +855,7 @@ void Parser::train(void) {
     model->param.realloc(model->dim());
     TRACE_LOG("Allocate a parameter vector of [%d] dimension.", model->dim());
 
-decoder=    build_decoder();
+    decoder = build_decoder();
 
     for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
         TRACE_LOG("Start training epoch #%d.", (iter + 1));
