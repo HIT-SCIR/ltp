@@ -77,7 +77,6 @@ void * parser_create_parser(const char * path) {
     if (!wrapper->load(path)) {
         return 0;
     }
-
     return reinterpret_cast<void *>(wrapper);
 }
 
@@ -98,4 +97,9 @@ int parser_parse(void * parser,
     ParserWrapper * wrapper = 0;
     wrapper = reinterpret_cast<ParserWrapper *>(parser);
     return wrapper->parse(words, postags, heads, deprels);
+}
+
+void parser_optimise_model(const char * path) {
+    ParserWrapper * wrapper = reinterpret_cast<ParserWrapper *>(parser_create_parser(path));
+    wrapper->optimise_model(); 
 }

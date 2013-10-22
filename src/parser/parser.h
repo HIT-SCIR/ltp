@@ -51,6 +51,8 @@ public:
         }
     }
 
+    void optimise_model();
+
 private:
     bool _valid; /* indicating if the parser is valid */
     vector<Instance *> train_dat;
@@ -66,6 +68,8 @@ private:
     bool read_instances(const char * filename, vector<Instance *>& dat);
 
     void build_feature_space(void);
+
+    void build_feature_space_truncate(Model * m);
 
     void build_configuration(void);
 
@@ -90,6 +94,12 @@ private:
 
     void collect_features_of_one_instance(Instance * inst, 
             bool gold = false);
+    
+    void copy_featurespace(Model * new_model,int gid);
+
+    void copy_parameters(Model * new_model,int gid);
+
+    Model * truncate();
 
 protected:
     Decoder * build_decoder(void);
