@@ -18,8 +18,9 @@ public:
         // should be careful about the empty dicts
     }
 
-    FeatureSpaceIterator(utility::SmartMap<int> * dicts) : 
+    FeatureSpaceIterator(utility::SmartMap<int> * dicts,int num_dicts) : 
         _dicts(dicts), 
+	_num_dicts(num_dicts),
         _i(0), 
         _state(0) {
         ++ (*this);
@@ -48,11 +49,11 @@ public:
     void operator ++() {
         switch (_state) {
             case 0:
-                for (_i = 0; ; ++ _i) {
-                    if (_dicts[_i].begin() == _dicts[_i].end()) {
+                for (_i = 0;_i<_num_dicts ; ++ _i) {
+                   /* if (_dicts[_i].begin() == _dicts[_i].end()) {
                         _state = 1;
                         return;
-                    }
+                    }*/
                     for (_j = _dicts[_i].begin(); _j != _dicts[_i].end(); ++ _j) {
                         _state = 1;
                         return;
@@ -64,6 +65,7 @@ public:
 
     int _i;
     int _state;
+    int _num_dicts;
     utility::SmartMap<int>::const_iterator  _j;
     utility::SmartMap<int> * _dicts;
 };
@@ -77,7 +79,9 @@ public:
     int index(int tid, const char * key, int lid = 0);
     int index(int prev_lid, int lid);
     int num_features();
+    int id_label_to_id(int idx);
     int dim();
+    int get_offset();
     void set_num_labels(int num_labeles);
 
     /*
@@ -96,11 +100,11 @@ public:
     bool load(int num_labeles, std::istream & ifs);
 
     FeatureSpaceIterator begin() {
-        return FeatureSpaceIterator(dicts);
+        return FeatureSpaceIterator(dicts,_num_dicts);
     }
 
     FeatureSpaceIterator end() {
-        return FeatureSpaceIterator(dicts + _num_dicts);
+        return FeatureSpaceIterator(dicts + _num_dicts,_num_dicts);
     }
 private:
     int _offset;
