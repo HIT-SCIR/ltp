@@ -6,9 +6,87 @@
 
 #include "instance.h"
 #include "collections.h"
+#include "smartmap.hpp"
 
 namespace ltp {
 namespace parser {
+class FeatureSpaceIterator {
+public:
+    FeatureSpaceIterator():
+        _dicts(NULL),
+        _i(0),
+        _state(0){
+    }
+
+    FeatureSpaceIterator(DictionaryCollections *dicts):
+        _dicts(dicts),
+        _i(0),
+        _state(0) {
+        ++(*this);
+    }
+
+    ~FeatureSpaceIterator(){
+    }
+
+    const char * key() { return _j.key(); }
+    int id() { return (*_j.value()); }
+    int tid() { return _i; }
+
+    bool end() { 
+        int x = _dicts->size();
+        if((x) == _i) {
+            return true; 
+        }
+        return false;
+    }
+
+    FeatureSpaceIterator & operator =(const FeatureSpaceIterator & other) {
+        _dicts  = other._dicts;
+        _i      = other._i;
+        _state  = other._state;
+
+        return *this;
+    }
+
+    void operator ++() {
+        switch (_state) {
+            case 0:
+                for (_i = 0; ; ++_i) {
+                    if(NULL == _dicts->getDictionary(_i)) {
+                        return;
+                    }
+
+                    if (_dicts->getDictionary(_i)->database.begin() == 
+                            _dicts->getDictionary(_i)->database.end()) {
+                        _state = 1;
+                        return;
+                    }
+
+                    for (_j = _dicts->getDictionary(_i)->database.begin();
+                            _j != _dicts->getDictionary(_i)->database.end(); 
+                            ++_j) {
+                        _state = 1;
+                        return;
+            case 1:;
+                    }
+                }
+        }
+    }
+
+    int getI() {
+        return _i;
+    }
+
+    DictionaryCollections * getDicts() {
+        return _dicts;
+    }
+
+private:
+    int _i;
+    int _state;
+    utility::SmartMap<int>::const_iterator _j;
+    DictionaryCollections * _dicts;
+};
 
 /*
  * Feature Space Class, used to process features
@@ -43,12 +121,24 @@ public:
     }
 
     /*
-     * Build feature space from the instances
+     * Build feature space from the instances. For dependency parsing, 
+     * there is no negative feature, so the feature space can be maintained
+     * once the training instance is given.
      *
-     *  @param[in]  instances   the instances
+     *  @param[in]  num_deprels     
+     *  @param[in]  instances       the instances
      */
     int build_feature_space( int num_deprels, const std::vector<Instance *> & instances);
 
+    /*
+     * Build feature space for truncate, just like the function above
+     *
+     *  @param
+     */
+    void build_feature_space_truncate(int num_deprels);
+
+    /*After copy the dic item from the model that not equal to Zero,set the offset */
+    void set_offset_truncate();
 
     /*
      * Retrieve the feature string and maintain its index in the
@@ -107,6 +197,10 @@ public:
      *  @param[in]  in          the input stream
      */
     bool load(int num_deprels, istream & in);
+
+    FeatureSpaceIterator begin(int gid) {
+        return FeatureSpaceIterator(groups[gid]);
+    }
 private:
     const static int NUM_FEATURE_GROUPS = 6;
 

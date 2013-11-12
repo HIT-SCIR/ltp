@@ -77,7 +77,6 @@ void * parser_create_parser(const char * path) {
     if (!wrapper->load(path)) {
         return 0;
     }
-
     return reinterpret_cast<void *>(wrapper);
 }
 

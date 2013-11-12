@@ -67,6 +67,8 @@ private:
 
     void build_feature_space(void);
 
+    void build_feature_space_truncate(Model * m);
+
     void build_configuration(void);
 
     void extract_features(vector<Instance *>& dat);
@@ -90,6 +92,29 @@ private:
 
     void collect_features_of_one_instance(Instance * inst, 
             bool gold = false);
+
+    /*
+     * perform the feature space truncation
+     *
+     *  @param[out]     new_model   the pointer to the new model
+     *  @param[in]      gid         the index of the group.
+     */
+    void copy_featurespace(Model * new_model, int gid);
+
+    /*
+     * perform the parameter truncation.
+     *
+     *  @param[in/out]  new_model   the pointer to the output model
+     *  @param[in]      gid         the index of the group.
+     */
+    void copy_parameters(Model * new_model, int gid);
+
+    /*
+     * perform model truncation and return a new model
+     *
+     *  @return     Model *     pointer to the new model
+     */
+    Model * truncate();
 
 protected:
     Decoder * build_decoder(void);
