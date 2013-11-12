@@ -51,8 +51,6 @@ public:
         }
     }
 
-    void optimise_model();
-
 private:
     bool _valid; /* indicating if the parser is valid */
     vector<Instance *> train_dat;
@@ -94,11 +92,28 @@ private:
 
     void collect_features_of_one_instance(Instance * inst, 
             bool gold = false);
-    
-    void copy_featurespace(Model * new_model,int gid);
 
-    void copy_parameters(Model * new_model,int gid);
+    /*
+     * perform the feature space truncation
+     *
+     *  @param[out]     new_model   the pointer to the new model
+     *  @param[in]      gid         the index of the group.
+     */
+    void copy_featurespace(Model * new_model, int gid);
 
+    /*
+     * perform the parameter truncation.
+     *
+     *  @param[in/out]  new_model   the pointer to the output model
+     *  @param[in]      gid         the index of the group.
+     */
+    void copy_parameters(Model * new_model, int gid);
+
+    /*
+     * perform model truncation and return a new model
+     *
+     *  @return     Model *     pointer to the new model
+     */
     Model * truncate();
 
 protected:

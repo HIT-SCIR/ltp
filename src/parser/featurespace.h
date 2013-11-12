@@ -33,32 +33,38 @@ public:
     int tid() { return _i; }
 
     bool end() { 
-        int x=(*_dicts).size();
-        if((x)==_i) {
-//            std::cout<<"when  i is "<<_i <<" size is "<<x<<std::endl;
+        int x = _dicts->size();
+        if((x) == _i) {
             return true; 
-         }
+        }
         return false;
     }
 
     FeatureSpaceIterator & operator =(const FeatureSpaceIterator & other) {
-        _dicts=other._dicts;
-        _i=other._i;
-        _state=other._state;
+        _dicts  = other._dicts;
+        _i      = other._i;
+        _state  = other._state;
+
         return *this;
     }
+
     void operator ++() {
         switch (_state) {
             case 0:
-                for (_i=0;;++_i) {
-//		    std::cout<<"size "<<(*_dicts).size()<<" _i"<<_i<<std::endl;
-		    if(!(*_dicts).getDictionary(_i))
-			return;
-                    if ((*_dicts).getDictionary(_i)->database.begin() == (*_dicts).getDictionary(_i)->database.end()){
-                        _state=1;
+                for (_i = 0; ; ++_i) {
+                    if(NULL == _dicts->getDictionary(_i)) {
                         return;
                     }
-                    for (_j = (*_dicts).getDictionary(_i)->database.begin();_j!=(*_dicts).getDictionary(_i)->database.end(); ++_j) {
+
+                    if (_dicts->getDictionary(_i)->database.begin() == 
+                            _dicts->getDictionary(_i)->database.end()) {
+                        _state = 1;
+                        return;
+                    }
+
+                    for (_j = _dicts->getDictionary(_i)->database.begin();
+                            _j != _dicts->getDictionary(_i)->database.end(); 
+                            ++_j) {
                         _state = 1;
                         return;
             case 1:;
@@ -66,6 +72,7 @@ public:
                 }
         }
     }
+
     int getI() {
         return _i;
     }
@@ -75,10 +82,10 @@ public:
     }
 
 private:
-	int _i;
-	int _state;
-	utility::SmartMap<int>::const_iterator _j;
-	DictionaryCollections * _dicts;
+    int _i;
+    int _state;
+    utility::SmartMap<int>::const_iterator _j;
+    DictionaryCollections * _dicts;
 };
 
 /*
@@ -114,13 +121,20 @@ public:
     }
 
     /*
-     * Build feature space from the instances
+     * Build feature space from the instances. For dependency parsing, 
+     * there is no negative feature, so the feature space can be maintained
+     * once the training instance is given.
      *
-     *  @param[in]  instances   the instances
+     *  @param[in]  num_deprels     
+     *  @param[in]  instances       the instances
      */
     int build_feature_space( int num_deprels, const std::vector<Instance *> & instances);
 
-    /*Build feature space for truncate, just like the function above*/
+    /*
+     * Build feature space for truncate, just like the function above
+     *
+     *  @param
+     */
     void build_feature_space_truncate(int num_deprels);
 
     /*After copy the dic item from the model that not equal to Zero,set the offset */

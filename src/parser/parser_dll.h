@@ -46,5 +46,4 @@ PARSER_DLL_API int parser_parse(void * parser,
         std::vector<int> & heads,
         std::vector<std::string> & deprels);
 
-PARSER_DLL_API void parser_optimise_model(const char * path);
 #endif  //  end for __LTP_PARSER_DLL_H__

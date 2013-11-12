@@ -109,8 +109,8 @@ int main(int argc, char ** argv) {
         return -1;
     }
     int num_threads=atoi(argv[3]);
-    if(num_threads<0||num_threads>thread::hardware_concurrency()){
-    num_threads = thread::hardware_concurrency();
+    if(num_threads < 0 || num_threads > thread::hardware_concurrency()) {
+        num_threads = thread::hardware_concurrency();
     }
     std::cerr << "TRACE: Model is loaded" << std::endl;
     std::cerr << "TRACE: Running " << num_threads << " thread(s)" << std::endl;

@@ -64,10 +64,19 @@ public:
      */
     int retrieve(int tid, const char * key, bool create);
 
-    /*Get the ith Dictionary*/
+    /*
+     * Get the ith Dictionary
+     *
+     *  @param[in]  i               the index of the dictionary
+     *  @return     Dictionary *    the dictionary
+     */
     Dictionary * getDictionary(int i);
 
-    /*Get size of dicts*/
+    /*
+     * Get size of dicts
+     *
+     *  @return     int             the size of the dictionary
+     */
     int size();
 
 public:

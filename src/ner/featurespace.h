@@ -18,9 +18,10 @@ public:
         // should be careful about the empty dicts
     }
 
-    FeatureSpaceIterator(utility::SmartMap<int> * dicts,int num_dicts) : 
+    // initialize the iterator with dicts and number of dicts
+    FeatureSpaceIterator(utility::SmartMap<int> * dicts, int num_dicts) : 
         _dicts(dicts), 
-	_num_dicts(num_dicts),
+        _num_dicts(num_dicts),
         _i(0), 
         _state(0) {
         ++ (*this);
@@ -33,8 +34,13 @@ public:
     int id() { return (*_j.value()); }
     int tid() { return _i; }
 
-    bool operator ==(const FeatureSpaceIterator & other) const { return ((_dicts + _i) == other._dicts); }
-    bool operator !=(const FeatureSpaceIterator & other) const { return ((_dicts + _i) != other._dicts); }
+    bool operator ==(const FeatureSpaceIterator & other) const {
+        return ((_dicts + _i) == other._dicts); 
+    }
+
+    bool operator !=(const FeatureSpaceIterator & other) const {
+        return ((_dicts + _i) != other._dicts); 
+    }
 
     FeatureSpaceIterator & operator = (const FeatureSpaceIterator & other) {
         if (this != &other) {
@@ -98,11 +104,11 @@ public:
     bool load(int num_labeles, std::istream & ifs);
 
     FeatureSpaceIterator begin() {
-        return FeatureSpaceIterator(dicts,_num_dicts);
+        return FeatureSpaceIterator(dicts, _num_dicts);
     }
 
     FeatureSpaceIterator end() {
-        return FeatureSpaceIterator(dicts + _num_dicts,_num_dicts);
+        return FeatureSpaceIterator(dicts + _num_dicts, _num_dicts);
     }
 private:
     int _offset;

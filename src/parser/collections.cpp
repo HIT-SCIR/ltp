@@ -19,21 +19,24 @@ DictionaryCollections::~DictionaryCollections() {
 }
 
 Dictionary * DictionaryCollections::getDictionary(int i) {
-    if(i<dicts.size())
+    if (i < dicts.size()) {
         return dicts[i];
+    }
+
     return NULL;
 }
 int DictionaryCollections::retrieve(int tid, const char * key, bool create) {
     return dicts[tid]->retrieve(key, create);
 }
 
-size_t DictionaryCollections::dim() const{
+size_t DictionaryCollections::dim() const {
     return idx;
 }
 
-int DictionaryCollections::size(){
+int DictionaryCollections::size() {
     return dicts.size();
 }
+
 void DictionaryCollections::dump(ostream & out) {
     char chunk[32];
     unsigned int sz = dicts.size();

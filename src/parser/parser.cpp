@@ -73,14 +73,22 @@ void Parser::init_opt() {
 }
 
 Model * Parser::truncate() {
+    // main process of performing model truncation
+    // this process can mainly be divied into 3 steps:
+    //
+    //  [1] foreach group in featurespace: truncate featurespace of group;
+    //  [2] reset the offset for the model;
+    //  [3] foreach group in featurespace: build paramter of group;
+    //
     Model * new_model = new Model;
     for(int i = 0 ;i < model -> deprels.size(); ++i) {
-	const char * key = model-> deprels.at(i);
-	new_model->deprels.push(key);
+        const char * key = model-> deprels.at(i);
+        new_model->deprels.push(key);
     }
+
     for(int i=0 ; i< model->postags.size(); ++i) {
-	const char * key = model -> postags.at(i);
-	new_model->postags.push(key);
+        const char * key = model -> postags.at(i);
+        new_model->postags.push(key);
     }
 
     build_feature_space_truncate(new_model);
@@ -96,8 +104,8 @@ Model * Parser::truncate() {
     if(feat_opt.use_grand) {//GRD
         copy_featurespace(new_model,FeatureSpace::GRD);
     }
-    TRACE_LOG("Scanning old features space, building new feature space is done");
 
+    TRACE_LOG("Scanning old features space, building new feature space is done");
     new_model->space.set_offset_truncate();
     TRACE_LOG("Setting offset for each collection is done");
 
@@ -105,57 +113,69 @@ Model * Parser::truncate() {
     TRACE_LOG("Parameter dimension of new model is [%d]",new_model->space.dim());
 
     if(feat_opt.use_dependency) {//DEP
-	copy_parameters(new_model,FeatureSpace::DEP);
+        copy_parameters(new_model,FeatureSpace::DEP);
     }
 
     if(feat_opt.use_sibling) {//SIB
-	copy_parameters(new_model,FeatureSpace::SIB);
+        copy_parameters(new_model,FeatureSpace::SIB);
     }
 
     if(feat_opt.use_grand) {//GRD
-	copy_parameters(new_model,FeatureSpace::GRD);
+        copy_parameters(new_model,FeatureSpace::GRD);
     }
+
     TRACE_LOG("Building new model is done");
     return new_model;
 }
 
-void Parser::copy_featurespace(Model * new_model,int gid) {
-    for (FeatureSpaceIterator itx = model->space.begin(gid); !itx.end(); ++itx) {
+void Parser::copy_featurespace(Model * new_model, int gid) {
+    // perform the feature space truncation
+    // the stategy here is travel through the old feature space, test a group of
+    // feature whether their are all zero. if all zero detected, don't insert it
+    // into new feature space.
+    for (FeatureSpaceIterator itx = model->space.begin(gid); !itx.end(); ++ itx) {
         const char * key = itx.key();
-        //std::cout<<"countDEP : "<<countDEP<<" model_count : "<<itx.getDicts()->dim()<<std::endl; 
-	//std::cout<<"_i : "<<itx.getI()<<std::endl;
         int tid = itx.tid();
         int id = model->space.index(FeatureSpace::DEP,tid,key);
         bool flag = false;
         int L = model-> num_deprels();
+
         for (int l=0;l<L;++l) {
             double p = model -> param.dot(id+l);
             if(p!=0.) {
-            flag=true;
+                flag=true;
             }
         }
+
         if(!flag) {
             continue;
         }
-	new_model->space.retrieve(gid,tid,key,true);
+
+        new_model->space.retrieve(gid,tid,key,true);
     }
 } 
 
-void Parser::copy_parameters (Model * new_model,int gid){
+void Parser::copy_parameters(Model * new_model, int gid) {
+    // perform the parameter trunction
+    // the prerequiest is feature space of new model is already built.
+    // the process travel through the feature space of new model and retrieve
+    // the key in old feature space, then preform the copy operation.
     for (FeatureSpaceIterator itx = new_model->space.begin(gid); !itx.end(); ++itx) {
         const char * key = itx.key();
         int tid = itx.tid();
-        int old_id = model->space.index(gid,tid,key);
-        int new_id = new_model->space.index(gid,tid,key);
+
+        int old_id = model->space.index(gid, tid, key);
+        int new_id = new_model->space.index(gid, tid, key);
 
         int L = model-> num_deprels();
-	for(int l=0;l<L;++l) {
-	    new_model->param._W[new_id+l]= model->param._W[old_id+l];
-	    new_model->param._W_sum[new_id+l]= model->param._W_sum[old_id+l];
-	    //new_model->param._W_time[new_id+l]= model->param._W_time[old_id+l];
-	}
+
+        for (int l = 0; l < L; ++l) {
+            new_model->param._W[new_id + l]     = model->param._W[old_id+l];
+            new_model->param._W_sum[new_id + l] = model->param._W_sum[old_id+l];
+        }
     }
 }
+
 bool Parser::parse_cfg(utility::ConfigParser & cfg) {
     string  strbuf;
     int     intbuf;
@@ -910,14 +930,14 @@ void Parser::train(void) {
         }
 
         model->param.flush( train_dat.size() * (iter + 1) );
-	Model * new_model = truncate();
-	swap(model,new_model);
+        Model * new_model = truncate();
+        swap(model,new_model);
         evaluate();
 
         string saved_model_file = (train_opt.model_name + "." + to_str(iter) + ".model");
         ofstream fout(saved_model_file.c_str(), std::ofstream::binary);
 
-	swap(model,new_model);
+        swap(model,new_model);
         new_model->save(fout);
 
         TRACE_LOG("Model for iteration [%d] is saved to [%s]",
@@ -930,13 +950,6 @@ void Parser::train(void) {
     model = 0;
 }
 
-void Parser::optimise_model() {
-    Model *new_model = truncate();
-    std::string saved_model_file=("small.model");
-    std::ofstream ofs(saved_model_file.c_str(),std::ofstream::binary);
-    new_model->save(ofs);
-    delete(new_model); 
-}
 void Parser::evaluate(void) {
     const char * holdout_file = train_opt.holdout_file.c_str();
 
