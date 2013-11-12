@@ -5,6 +5,10 @@ project ("LTP - Language Technology Platform")
 # -- config cmake modules path
 set (CMAKE_MODULE_PATH      ${PROJECT_SOURCE_DIR}/cmake)
 
+if(APPLE)
+set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libstdc++ -Wno-error=c++11-narrowing")
+endif(APPLE)
+
 # -- config output directories
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
