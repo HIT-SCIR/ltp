@@ -48,7 +48,7 @@ private:
     /*
      * the evaluating process
      */
-    void evaluate(void);
+    void evaluate(double &p);
 
     /*
      * the testing process
@@ -67,6 +67,7 @@ private:
      *  @return Model the duplication of the model
      */
     Model * truncate(void);
+    Model * truncate_prune(int * updates);
 protected:
     /*
      * build labels string for the instance

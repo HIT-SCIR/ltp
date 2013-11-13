@@ -58,6 +58,10 @@ int FeatureSpace::dim() {
     return _offset * _num_labels + _num_labels * _num_labels;
 }
 
+int FeatureSpace::get_offset() {
+    return _offset;
+}
+
 void FeatureSpace::set_num_labels(int num_labels) {
     _num_labels = num_labels;
 }

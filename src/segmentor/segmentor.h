@@ -44,7 +44,7 @@ private:
     /*
      * the evaluating process
      */
-    void evaluate(void);
+    void evaluate(double &p,double &r,double &f);
 
     /*
      * the testing process
@@ -63,6 +63,7 @@ private:
      *  @return Model   the duplication of the model
      */
     Model * truncate(void);
+    Model * truncate_prune(int *);
 protected:
     /*
      * extract features from one instance,
