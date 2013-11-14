@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 #if _WIN32
 #include <Windows.h>
@@ -517,9 +518,17 @@ void Postagger::train(void) {
     TRACE_LOG("Allocate [%d] dimensition parameter.", model->space.dim());
 
     int offset_model = model->space.get_offset();
-    int *updates = new int [offset_model];
-    for(int i=0;i<offset_model;i++) {
+    int label_count = model->num_labels();
+    int feature_count = offset_model*label_count;
+    int *updates = new int [feature_count];
+    int *updates_max = new int [offset_model];
+    double *fangcha = new double[offset_model];
+    for(int i=0;i<feature_count;i++) {
 	updates[i]=0;
+	if(i%label_count==0) {
+	    updates_max[i/label_count] = 0;
+	    fangcha[i/label_count] = 0.0;
+	}
     }
 
     TRACE_LOG("Allocate [%d] update counters", offset_model);
@@ -605,8 +614,27 @@ void Postagger::train(void) {
 
             Model * new_model ;
 
+	    for(int m=0;m<offset_model;m++) {
+		int sum = 0;
+		for(int n=0;n<label_count;n++) {
+		    sum+=updates[m*label_count+n];
+		    cout<<updates[m*label_count+n]<<",";
+		    if(updates_max[m]<updates[m*label_count+n]) {
+			updates_max[m]=updates[m*label_count+n];
+		    }
+		}
+		double avg = sum *1.0/label_count;
+		double fangcha_sum = 0;
+		for(int n=0;n<label_count;n++) {
+		   fangcha_sum+=(updates[m*label_count+n]-avg)*(updates[m*label_count+n]-avg);
+		}
+		fangcha[m]=fangcha_sum/label_count;
+		cout<<"max:"<<updates_max[m]<<"fangcha:"<<fangcha[m]<<"sum:"<<sum<<endl;
+    	    }
+
+    
 	    if(train_opt.use_update=="true")
-		new_model = truncate_prune(updates);
+		new_model = truncate_prune(updates_max);
 	    else
 		new_model = truncate();
             swap(model, new_model);
@@ -632,6 +660,7 @@ void Postagger::train(void) {
         }
 
 	delete updates;
+	delete updates_max;
 	TRACE_LOG("Best result is:");
 	TRACE_LOG("P: %lf ;iter: %d",best_p,best_result);
     }

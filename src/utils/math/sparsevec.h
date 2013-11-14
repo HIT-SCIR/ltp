@@ -80,10 +80,11 @@ public:
         for (const_iterator itx = this->begin();
                 itx != this->end(); ++ itx) {
             int idx = itx->first;
+	    int tmp = offset*num_labels;
 	    if(idx < offset*num_labels) {//this means unfeatrues
 		if(itx->second!=0.0){
 		    //std::cout<<"idx:"<<idx<<" value:"<<itx->second<<" +1"<<std::endl;
-		    updates[idx/num_labels]++;
+		    updates[idx]++;
 		}
 	    }
         }
