@@ -70,6 +70,7 @@ bool Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
     train_opt.display_interval = 5000;
     train_opt.use_update    = "false";
     train_opt.min_update    =10;
+    train_opt.min_f         =1.0;
 
     if (cfg.has_section("train")) {
         TRACE_LOG("Training mode specified.");
@@ -122,6 +123,13 @@ bool Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
 	} else {
             WARNING_LOG("use_update is not configed, false is set as default");
 	}
+	if (cfg.get("train","min_f",strbuf)) {
+	    train_opt.min_f = atof(strbuf.c_str());
+	    std::cout<<"min_f:"<<train_opt.min_f<<std::endl;
+	} else {
+            WARNING_LOG("min_f is not configed, 1 is set as default");
+	}
+
     }
 
     __TEST__ = false;
@@ -334,7 +342,7 @@ void Postagger::collect_features(Instance * inst, const std::vector<int> & tagsi
     }
 }
 
-Model * Postagger::truncate_prune(int * updates) {
+Model * Postagger::truncate_prune(int * updates,double *fangcha) {
     Model * new_model = new Model;
     // copy the label indexable map to the new model
     for (int i = 0; i < model->labels.size(); ++ i) {
@@ -368,8 +376,12 @@ Model * Postagger::truncate_prune(int * updates) {
         }
 
 	int idx = model->space.retrieve(tid, key,false);
+	int sum = 0;
+	for( int j=0;j<L;j++) {
+	    sum+=updates[idx*L+j];
+	}
 
-	if(updates[idx]<train_opt.min_update) {
+	if(sum<train_opt.min_update||fangcha[idx]<train_opt.min_f) {
 	    continue;
 	}
 
@@ -618,7 +630,7 @@ void Postagger::train(void) {
 		int sum = 0;
 		for(int n=0;n<label_count;n++) {
 		    sum+=updates[m*label_count+n];
-		    cout<<updates[m*label_count+n]<<",";
+		//    cout<<updates[m*label_count+n]<<",";
 		    if(updates_max[m]<updates[m*label_count+n]) {
 			updates_max[m]=updates[m*label_count+n];
 		    }
@@ -629,12 +641,12 @@ void Postagger::train(void) {
 		   fangcha_sum+=(updates[m*label_count+n]-avg)*(updates[m*label_count+n]-avg);
 		}
 		fangcha[m]=fangcha_sum/label_count;
-		cout<<"max:"<<updates_max[m]<<"fangcha:"<<fangcha[m]<<"sum:"<<sum<<endl;
+	//	cout<<"max:"<<updates_max[m]<<"fangcha:"<<fangcha[m]<<"sum:"<<sum<<endl;
     	    }
 
     
 	    if(train_opt.use_update=="true")
-		new_model = truncate_prune(updates_max);
+		new_model = truncate_prune(updates,fangcha);
 	    else
 		new_model = truncate();
             swap(model, new_model);

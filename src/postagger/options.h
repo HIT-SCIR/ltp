@@ -19,6 +19,7 @@ struct TrainOptions {
     int             max_iter;
     int             display_interval;
     int             min_update;
+    double	    min_f;
 };
 
 struct TestOptions {

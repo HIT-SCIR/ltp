@@ -67,7 +67,7 @@ private:
      *  @return Model the duplication of the model
      */
     Model * truncate(void);
-    Model * truncate_prune(int * updates);
+    Model * truncate_prune(int * updates,double * fangcha);
 protected:
     /*
      * build labels string for the instance
