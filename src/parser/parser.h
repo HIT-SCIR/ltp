@@ -79,7 +79,7 @@ private:
 
     void train(void);
 
-    void evaluate(void);
+    void evaluate(double &las,double &uas);
 
     void test(void);
 
@@ -95,11 +95,13 @@ private:
     void collect_features_of_one_instance(Instance * inst, 
             bool gold = false);
     
+    void copy_featurespace_prune(Model * new_model,int gid,int * updates);
     void copy_featurespace(Model * new_model,int gid);
 
     void copy_parameters(Model * new_model,int gid);
 
     Model * truncate();
+    Model * truncate_prune(int * updates);
 
 protected:
     Decoder * build_decoder(void);
