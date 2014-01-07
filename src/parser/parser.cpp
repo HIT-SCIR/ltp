@@ -136,13 +136,13 @@ void Parser::copy_featurespace(Model * new_model, int gid) {
     for (FeatureSpaceIterator itx = model->space.begin(gid); !itx.end(); ++ itx) {
         const char * key = itx.key();
         int tid = itx.tid();
-        int id = model->space.index(FeatureSpace::DEP,tid,key);
+        int id = model->space.index(gid, tid, key);
         bool flag = false;
         int L = model-> num_deprels();
 
-        for (int l=0;l<L;++l) {
+        for (int l = 0; l < L; ++ l) {
             double p = model -> param.dot(id+l);
-            if(p!=0.) {
+            if(p != 0.) {
                 flag=true;
             }
         }
@@ -151,9 +151,9 @@ void Parser::copy_featurespace(Model * new_model, int gid) {
             continue;
         }
 
-        new_model->space.retrieve(gid,tid,key,true);
+        new_model->space.retrieve(gid, tid, key, true);
     }
-} 
+}
 
 void Parser::copy_parameters(Model * new_model, int gid) {
     // perform the parameter trunction
