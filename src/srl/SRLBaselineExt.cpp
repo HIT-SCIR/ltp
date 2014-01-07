@@ -65,7 +65,7 @@ void SRLBaselineExt::ExtractPrgFeatures(vector< vector<string> >& vecPrgFeatures
         if (feature_empty_flag)
         {
             feature_values.clear();
-            for (size_t row = 1; row <= row_count; ++row)
+            for (size_t row = 0; row <= row_count; ++row)
             {
                 feature_values.push_back("");
             }
