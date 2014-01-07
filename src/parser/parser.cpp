@@ -174,7 +174,7 @@ void Parser::copy_featurespace_prune(Model * new_model,int gid,int *updates) {
         //std::cout<<"countDEP : "<<countDEP<<" model_count : "<<itx.getDicts()->dim()<<std::endl; 
 	//std::cout<<"_i : "<<itx.getI()<<std::endl;
         int tid = itx.tid();
-        int id = model->space.index(FeatureSpace::DEP,tid,key);
+        int id = model->space.index(gid,tid,key);
         bool flag = false;
         int L = model-> num_deprels();
         for (int l=0;l<L;++l) {
@@ -202,7 +202,7 @@ void Parser::copy_featurespace(Model * new_model,int gid) {
         //std::cout<<"countDEP : "<<countDEP<<" model_count : "<<itx.getDicts()->dim()<<std::endl; 
 	//std::cout<<"_i : "<<itx.getI()<<std::endl;
         int tid = itx.tid();
-        int id = model->space.index(FeatureSpace::DEP,tid,key);
+        int id = model->space.index(gid,tid,key);
         bool flag = false;
         int L = model-> num_deprels();
         for (int l=0;l<L;++l) {
@@ -946,21 +946,13 @@ void Parser::train(void) {
     TRACE_LOG("Allocate a parameter vector of [%d] dimension.", model->dim());
 
     int feature_count = model->num_features();
-    int offset_count  = model->dim();
+    //int offset_count  = model->dim();
     int num_l = model->num_deprels();
-    int *updates = new int [offset_count];
+    //int *updates = new int [offset_count];
     int *updates_group = new int [feature_count];
 
-    std::cout<<"feature_count:"<<feature_count<<std::endl;
-    std::cout<<"offset_count:"<<offset_count<<std::endl;
-    if(feature_count==(offset_count/num_l)){
-	std::cout<<"yes"<<std::endl;
-    }
-    for(int i = 0;i<offset_count;i++){
-	updates[i] = 0;
-	if((i%num_l)==0){
-	    updates_group[i/num_l]=0;
-	}
+    for(int i = 0;i<feature_count;i++){
+        updates_group[i]=0;
     }
 
     decoder = build_decoder();
@@ -989,7 +981,7 @@ void Parser::train(void) {
                 update_features.add(train_dat[i]->features, 1.);
                 update_features.add(train_dat[i]->predicted_features, -1.);
 
-		update_features.update_counter(updates,feature_count,num_l);
+		update_features.update_counter(updates_group,feature_count,num_l);
                 double error = train_dat[i]->num_errors();
                 double score = model->param.dot(update_features, false);
                 double norm = update_features.L2();
@@ -1010,7 +1002,7 @@ void Parser::train(void) {
                 update_features.add(train_dat[i]->features, 1.);
                 update_features.add(train_dat[i]->predicted_features, -1.);
 
-		update_features.update_counter(updates,feature_count,num_l);
+		update_features.update_counter(updates_group,feature_count,num_l);
                 model->param.add(update_features,
                         iter * train_dat.size() + i + 1,
                         1.);
@@ -1026,15 +1018,13 @@ void Parser::train(void) {
         model->param.flush( train_dat.size() * (iter + 1) );
 	Model * new_model;
 
-	for(int m = 0;m<feature_count;m++) {
+	/*for(int m = 0;m<feature_count;m++) {
 	    int sum = 0;
 	    for(int n = 0;n<num_l;n++) {
 		sum+=updates[m*num_l+n];
-	//	cout<<updates[m*num_l+n]<<",";	
 	    }
 	    updates_group[m]=sum;
-	 //   cout<<"group:"<<updates_group[m]<<endl;
-	}
+	}*/
 
 	if(train_opt.use_update=="true")
 	    new_model = truncate_prune(updates_group);
@@ -1056,6 +1046,7 @@ void Parser::train(void) {
 
 	swap(model,new_model);
         new_model->save(fout);
+        delete new_model;
 
         TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                 iter + 1,
@@ -1063,7 +1054,6 @@ void Parser::train(void) {
 
     }
 
-    delete updates;
     delete updates_group;
     TRACE_LOG("Best result is:");
     TRACE_LOG("las: %lf ;uas: %lf ;iter: %d",best_las,best_uas,best_result);
