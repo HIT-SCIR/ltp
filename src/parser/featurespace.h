@@ -50,14 +50,14 @@ public:
     void operator ++() {
         switch (_state) {
             case 0:
-                for (_i=0;;++_i) {
+                for (_i=0;_i<_dicts->size();++_i) {
 //		    std::cout<<"size "<<(*_dicts).size()<<" _i"<<_i<<std::endl;
 		    if(!(*_dicts).getDictionary(_i))
-			return;
-                    if ((*_dicts).getDictionary(_i)->database.begin() == (*_dicts).getDictionary(_i)->database.end()){
+			continue;
+                    /*if ((*_dicts).getDictionary(_i)->database.begin() == (*_dicts).getDictionary(_i)->database.end()){
                         _state=1;
                         return;
-                    }
+                    }*/
                     for (_j = (*_dicts).getDictionary(_i)->database.begin();_j!=(*_dicts).getDictionary(_i)->database.end(); ++_j) {
                         _state = 1;
                         return;

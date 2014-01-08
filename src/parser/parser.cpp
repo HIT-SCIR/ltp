@@ -187,7 +187,7 @@ void Parser::copy_featurespace_prune(Model * new_model,int gid,int *updates) {
             continue;
         }
 
-	int idx = model->space.retrieve(gid,tid,key,false);
+	int idx = id/L;
 	if(updates[idx]<train_opt.min_update){
 	    continue;
 	}
