@@ -450,6 +450,21 @@ Segmentor::collect_features(Instance * inst,
   }
 }
 
+void
+Segmentor::increase_group_updated_time(const math::SparseVec & vec,
+                                       int * feature_group_updated_time) {
+  int L = model->num_labels();
+  for (math::SparseVec::const_iterator itx = vec.begin();
+      itx != vec.end();
+      ++ itx) {
+
+    int idx = itx->first;
+    if (itx->second != 0.0) {
+      ++ feature_group_updated_time[idx / L];
+    }
+  }
+}
+
 // Perform model truncation on the model, according to these two conditions
 //  (1) Erase the group of parameters that it all the parameter in this group
 //      is equals to zero.
@@ -620,9 +635,11 @@ Segmentor::train(void) {
           update_features.zero();
           update_features.add(train_dat[i]->features, 1.);
           update_features.add(train_dat[i]->predicted_features, -1.);
-          update_features.update_counter(feature_group_updated_time,
-                                         nr_feature_groups,
-                                         model->num_labels());
+
+          if (feature_group_updated_time) {
+            increase_group_updated_time(update_features,
+                                        feature_group_updated_time);
+          }
 
           double error = train_dat[i]->num_errors();
           double score = model->param.dot(update_features, false);
@@ -645,6 +662,10 @@ Segmentor::train(void) {
           update_features.add(train_dat[i]->features, 1.);
           update_features.add(train_dat[i]->predicted_features, -1.);
 
+          if (feature_group_updated_time) {
+            increase_group_updated_time(update_features,
+                                        feature_group_updated_time);
+          }
 
           model->param.add(update_features,
                            iter * train_dat.size() + i + 1,

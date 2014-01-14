@@ -115,6 +115,16 @@ protected:
                         const std::vector<int> & tagsidx,
                         ltp::math::SparseVec & vec);
 
+
+  /*
+   * decode the group information for feature represented in sparse vector,
+   * increase their updated time
+   *
+   *  @param[in]  vec           the feature vector
+   *  @param[out] updated_time  the updated time
+   */
+  void increase_group_updated_time(const ltp::math::SparseVec & vec,
+                                   int * feature_group_updated_time);
 private:
   bool  __TRAIN__;
   bool  __TEST__;
