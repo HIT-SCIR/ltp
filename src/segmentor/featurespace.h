@@ -81,7 +81,7 @@ public:
   int index(int prev_lid, int lid);
   int num_features();
   int dim();
-  int get_offset();
+  int num_feature_groups();
   void set_num_labels(int num_labeles);
 
   /*

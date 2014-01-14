@@ -585,7 +585,7 @@ Segmentor::train(void) {
   model->param.realloc(model->space.dim());
   TRACE_LOG("Allocate [%d] dimensition parameter.", model->space.dim());
 
-  int nr_feature_groups = model->space.get_offset();
+  int nr_feature_groups = model->space.num_feature_groups();
   int * feature_group_updated_time = NULL;
 
   // If the rare feature threshold is used, allocate memory for the

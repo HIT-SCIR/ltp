@@ -64,8 +64,8 @@ FeatureSpace::dim() {
 }
 
 int
-FeatureSpace::get_offset() {
-  return _offset;
+FeatureSpace::num_feature_groups() {
+  return _offset + _num_labels;
 }
 
 void
