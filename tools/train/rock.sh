@@ -202,9 +202,9 @@ SRL_PRG_EXE=./lgsrl
 $SRL_PRG_EXE $SRL_PRG_CONF_TRAIN_PATH >& $SRL_PRG_LOG_TRAIN_PATH
 
 if [ ! -f $SRL_PRG_MODEL_PATH ]; then
-    echo "[1] ERROR: SRL model is not detected!"
+    echo "[5.1] ERROR: PRG model is not detected!"
 else
-    echo "[1] TRACE: SRL train model test is passed."
+    echo "[5.1] TRACE: PRG train model test is passed."
 fi
 
 #################################################
@@ -232,8 +232,8 @@ SRL_SRL_EXE=./lgsrl
 $SRL_SRL_EXE $SRL_SRL_CONF_TRAIN_PATH >& $SRL_SRL_LOG_TRAIN_PATH
 
 if [ ! -f $SRL_SRL_MODEL_PATH ]; then
-    echo "[1] ERROR: SRL model is not detected!"
+    echo "[5.2] ERROR: SRL model is not detected!"
 else
-    echo "[1] TRACE: SRL train model test is passed."
+    echo "[5.2] TRACE: SRL train model test is passed."
 fi
 
