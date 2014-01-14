@@ -53,6 +53,12 @@ void Postagger::run(void) {
   if (__DUMP__) {
     dump();
   }
+
+  for (int i = 0; i < train_dat.size(); ++ i) {
+    if (train_dat[i]) {
+      delete train_dat[i];
+    }
+  }
 }
 
 

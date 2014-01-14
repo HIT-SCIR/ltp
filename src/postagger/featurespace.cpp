@@ -48,7 +48,7 @@ int FeatureSpace::index(int prev_lid, int lid) {
 }
 
 int FeatureSpace::num_feature_groups() {
-  return _offset;
+  return _offset + _num_labels;
 }
 
 int FeatureSpace::num_features() {
