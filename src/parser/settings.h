@@ -42,16 +42,16 @@ const size_t INCMP              =   1;
 const size_t SIBSP              =   2;
 
 enum {
-    DEPU,       //  Unlabeled Standard Features
-    DEPL,       //  Labeled Standard Features
-    SIBU,       //  Unlabeled Sibling Features
-    SIBL,       //  Labeled Sibling Features
-    GRDU,       //  Unlabeled Grandchild Feature
-    GRDL,       //  Labeled Grandchild Feature
-    GRDSIBU,    //  Unlabeled Grand Sibling Features
-    GRDSIBL,
-    POSU,
-    POSB,
+  DEPU,       //  Unlabeled Standard Features
+  DEPL,       //  Labeled Standard Features
+  SIBU,       //  Unlabeled Sibling Features
+  SIBL,       //  Labeled Sibling Features
+  GRDU,       //  Unlabeled Grandchild Feature
+  GRDL,       //  Labeled Grandchild Feature
+  GRDSIBU,    //  Unlabeled Grand Sibling Features
+  GRDSIBL,
+  POSU,
+  POSB,
 };
 
 }       //  end for namespace parser

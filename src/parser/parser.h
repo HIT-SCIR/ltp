@@ -82,16 +82,16 @@ private:
     void test(void);
 
     void collect_unlabeled_features_of_one_instance(Instance * inst,
-            const vector<int> & heads,
-            SparseVec & vec);
+                                                    const vector<int> & heads,
+                                                    SparseVec & vec);
 
     void collect_labeled_features_of_one_instance(Instance * inst,
-            const vector<int> & heads,
-            const vector<int> & deprelsidx,
-            SparseVec & vec);
+                                                  const vector<int> & heads,
+                                                  const vector<int> & deprelsidx,
+                                                  SparseVec & vec);
 
-    void collect_features_of_one_instance(Instance * inst, 
-            bool gold = false);
+    void collect_features_of_one_instance(Instance * inst,
+                                          bool gold = false);
 
     /*
      *

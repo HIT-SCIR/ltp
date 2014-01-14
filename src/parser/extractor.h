@@ -1,5 +1,5 @@
-#ifndef __EXTRACTOR_H__
-#define __EXTRACTOR_H__
+#ifndef __LTP_PARSER_EXTRACTOR_H__
+#define __LTP_PARSER_EXTRACTOR_H__
 
 #include <iostream>
 #include <sstream>
@@ -52,8 +52,15 @@ protected:
 class POSUExtractor : public Extractor {
 public:
     static int extract1o(Instance * inst, int hid, vector<string> & cache);
-    static int extract2o(Instance * inst, int hid, int cid, vector<string> & cache);
-    static int extract3o(Instance * inst, int hid, int cid, int sid, vector<string> & cache);
+    static int extract2o(Instance * inst,
+                         int hid,
+                         int cid,
+                         vector<string> & cache);
+    static int extract3o(Instance * inst,
+                         int hid,
+                         int cid,
+                         int sid,
+                         vector<string> & cache);
 private:
     static const string prefix;
 };  //  end for class PosUnigramExtractor
@@ -164,9 +171,18 @@ class SIBExtractor : public Extractor {
 public:
     static SIBExtractor * extractor();
     static int num_templates();
-    static int extract1o(Instance * inst, int hid, vector<string> & cache);
-    static int extract2o(Instance * inst, int hid, int cid, vector<string> & cache);
-    static int extract3o(Instance * inst, int hid, int cid, int sid, vector< StringVec > & cache);
+    static int extract1o(Instance * inst,
+                         int hid,
+                         vector<string> & cache);
+    static int extract2o(Instance * inst,
+                         int hid,
+                         int cid,
+                         vector<string> & cache);
+    static int extract3o(Instance * inst,
+                         int hid,
+                         int cid,
+                         int sid,
+                         vector< StringVec > & cache);
 protected:
     SIBExtractor();
     ~SIBExtractor();
@@ -217,7 +233,11 @@ class GRDExtractor : public Extractor {
 public:
     static GRDExtractor * extractor();
     static int num_templates();
-    static int extract3o(Instance * inst, int hid, int cid, int gid, vector< StringVec > & cache);
+    static int extract3o(Instance * inst,
+                         int hid,
+                         int cid,
+                         int gid,
+                         vector< StringVec > & cache);
 protected:
     GRDExtractor();
     ~GRDExtractor();
@@ -230,4 +250,4 @@ private:
 }   //  end for namespace parser
 }   //  end for namespace ltp
 
-#endif  //  end for ifndef __EXTRACTOR_H__
+#endif  //  end for ifndef __LTP_PARSER_EXTRACTOR_H__
