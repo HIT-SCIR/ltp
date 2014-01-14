@@ -44,7 +44,7 @@ public:
   FeatureSpaceIterator & operator = (const FeatureSpaceIterator & other) {
     if (this != &other) {
       _dicts  = other._dicts;
-      _i    = other._i;
+      _i      = other._i;
       _state  = other._state;
     }
 
