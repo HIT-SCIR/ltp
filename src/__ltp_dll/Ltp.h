@@ -92,6 +92,7 @@ public:
      */
     int srl(XML4NLP & xml);
 
+    int splitSentence_dummy(XML4NLP & xml);
 private:
 
     /*
@@ -100,7 +101,7 @@ private:
      *  @param[in/out]  xml     the xml storing ltp result
      *  @return         int     0 on success, otherwise -1
      */
-    int splitSentence_dummy(XML4NLP & xml);
+    //int splitSentence_dummy(XML4NLP & xml);
 
     /*
      * parse the config file, and load resource according the config

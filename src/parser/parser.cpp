@@ -44,6 +44,8 @@ void Parser::init_opt() {
     train_opt.max_iter          = 10;
     train_opt.algorithm         = "pa";
     train_opt.model_name        = "";
+    train_opt.use_update        = "false";
+    train_opt.min_update        = 0;
 
     test_opt.test_file  = "";
     test_opt.model_file = "";
@@ -70,6 +72,54 @@ void Parser::init_opt() {
     feat_opt.use_no_grand               =   false;
     feat_opt.use_distance_in_features   =   true;
 
+}
+
+
+Model * Parser::truncate_prune(int *updates) {
+    Model * new_model = new Model;
+    for(int i = 0 ;i < model -> deprels.size(); ++i) {
+	const char * key = model-> deprels.at(i);
+	new_model->deprels.push(key);
+    }
+    for(int i=0 ; i< model->postags.size(); ++i) {
+	const char * key = model -> postags.at(i);
+	new_model->postags.push(key);
+    }
+
+    build_feature_space_truncate(new_model);
+
+    if(feat_opt.use_dependency) {//DEP
+        copy_featurespace_prune(new_model,FeatureSpace::DEP,updates);
+    }
+
+    if(feat_opt.use_sibling) {//SIB
+        copy_featurespace_prune(new_model,FeatureSpace::SIB,updates);
+    }
+
+    if(feat_opt.use_grand) {//GRD
+        copy_featurespace_prune(new_model,FeatureSpace::GRD,updates);
+    }
+    TRACE_LOG("Scanning old features space, building new feature space is done");
+
+    new_model->space.set_offset_truncate();
+    TRACE_LOG("Setting offset for each collection is done");
+
+    new_model->param.realloc(new_model->dim());
+    TRACE_LOG("Parameter dimension of new model is [%d]",new_model->space.dim());
+
+    if(feat_opt.use_dependency) {//DEP
+	copy_parameters(new_model,FeatureSpace::DEP);
+    }
+
+    if(feat_opt.use_sibling) {//SIB
+	copy_parameters(new_model,FeatureSpace::SIB);
+    }
+
+    if(feat_opt.use_grand) {//GRD
+	copy_parameters(new_model,FeatureSpace::GRD);
+    }
+    TRACE_LOG("Building new model is done");
+    return new_model;
 }
 
 Model * Parser::truncate() {
@@ -127,6 +177,33 @@ Model * Parser::truncate() {
     TRACE_LOG("Building new model is done");
     return new_model;
 }
+void Parser::copy_featurespace_prune(Model * new_model,int gid,int *updates) {
+    for (FeatureSpaceIterator itx = model->space.begin(gid); !itx.end(); ++itx) {
+        const char * key = itx.key();
+        //std::cout<<"countDEP : "<<countDEP<<" model_count : "<<itx.getDicts()->dim()<<std::endl; 
+	//std::cout<<"_i : "<<itx.getI()<<std::endl;
+        int tid = itx.tid();
+        int id = model->space.index(gid,tid,key);
+        bool flag = false;
+        int L = model-> num_deprels();
+        for (int l=0;l<L;++l) {
+            double p = model -> param.dot(id+l);
+            if(p!=0.) {
+            flag=true;
+            }
+        }
+        if(!flag) {
+            continue;
+        }
+
+	int idx = id/L;
+	if(updates[idx]<train_opt.min_update){
+	    continue;
+	}
+	new_model->space.retrieve(gid,tid,key,true);
+    }
+} 
+
 
 void Parser::copy_featurespace(Model * new_model, int gid) {
     // perform the feature space truncation
@@ -225,10 +302,23 @@ bool Parser::parse_cfg(utility::ConfigParser & cfg) {
                     train_opt.model_name.c_str());
         }
 
+        if (cfg.get("train", "use_update", strbuf)) {
+            train_opt.use_update = strbuf;
+        } else {
+            WARNING_LOG("use_update is not configed, false is set as default");
+        }
+
         if (cfg.get_integer("train", "max-iter", intbuf)) {
             train_opt.max_iter = intbuf;
         } else {
             WARNING_LOG("max-iter is not configed, [10] is set as default.");
+        }
+
+        if (cfg.get_integer("train", "min_update", intbuf)) {
+            train_opt.min_update = intbuf;
+	    std::cout<<"min_update:"<<train_opt.min_update<<std::endl;
+        } else {
+            WARNING_LOG("min_update is not configed, [0] is set as default.");
         }
     }   //  end for cfg.has_section("train")
 
@@ -875,7 +965,21 @@ void Parser::train(void) {
     model->param.realloc(model->dim());
     TRACE_LOG("Allocate a parameter vector of [%d] dimension.", model->dim());
 
+    int feature_count = model->num_features();
+    //int offset_count  = model->dim();
+    int num_l = model->num_deprels();
+    //int *updates = new int [offset_count];
+    int *updates_group = new int [feature_count];
+
+    for(int i = 0;i<feature_count;i++){
+        updates_group[i]=0;
+    }
+
     decoder = build_decoder();
+
+    int best_result = -1;
+    double best_las = -1;
+    double best_uas = -1;
 
     for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
         TRACE_LOG("Start training epoch #%d.", (iter + 1));
@@ -897,6 +1001,7 @@ void Parser::train(void) {
                 update_features.add(train_dat[i]->features, 1.);
                 update_features.add(train_dat[i]->predicted_features, -1.);
 
+                update_features.update_counter(updates_group,feature_count,num_l);
                 double error = train_dat[i]->num_errors();
                 double score = model->param.dot(update_features, false);
                 double norm = update_features.L2();
@@ -917,6 +1022,7 @@ void Parser::train(void) {
                 update_features.add(train_dat[i]->features, 1.);
                 update_features.add(train_dat[i]->predicted_features, -1.);
 
+                update_features.update_counter(updates_group,feature_count,num_l);
                 model->param.add(update_features,
                         iter * train_dat.size() + i + 1,
                         1.);
@@ -930,15 +1036,40 @@ void Parser::train(void) {
         }
 
         model->param.flush( train_dat.size() * (iter + 1) );
-        Model * new_model = truncate();
+
+        Model * new_model;
+
+        // for(int m = 0; m<feature_count; m++) {
+        //  int sum = 0;
+        //  for(int n = 0;n<num_l;n++) {
+        //    sum+=updates[m*num_l+n];
+        //  }
+        //  updates_group[m]=sum;
+        // }
+
+        if(train_opt.use_update=="true") {
+          new_model = truncate_prune(updates_group);
+        } else {
+          new_model = truncate();
+        }
+
         swap(model,new_model);
-        evaluate();
+
+        double las, uas;
+        evaluate(las, uas);
+
+        if(las > best_las) {
+            best_las = las;
+            best_uas = uas;
+            best_result = iter;
+        }
 
         string saved_model_file = (train_opt.model_name + "." + to_str(iter) + ".model");
         ofstream fout(saved_model_file.c_str(), std::ofstream::binary);
 
         swap(model,new_model);
         new_model->save(fout);
+        delete new_model;
 
         TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                 iter + 1,
@@ -946,11 +1077,24 @@ void Parser::train(void) {
 
     }
 
+    delete updates_group;
+    TRACE_LOG("Best result is:");
+    TRACE_LOG("las: %lf ;uas: %lf ;iter: %d", best_las,
+                                              best_uas,
+                                              best_result);
     delete model;
     model = 0;
 }
 
-void Parser::evaluate(void) {
+void Parser::optimise_model() {
+    Model *new_model = truncate();
+    std::string saved_model_file=("small.model");
+    std::ofstream ofs(saved_model_file.c_str(),std::ofstream::binary);
+    new_model->save(ofs);
+    delete(new_model); 
+}
+
+void Parser::evaluate(double &las, double &uas) {
     const char * holdout_file = train_opt.holdout_file.c_str();
 
     int head_correct = 0;
@@ -984,12 +1128,15 @@ void Parser::evaluate(void) {
         delete inst;
     }
 
+    uas=(double)head_correct / total_rels;
     TRACE_LOG("UAS: %.4lf ( %d / %d )", 
             (double)head_correct / total_rels, 
             head_correct, 
             total_rels);
 
+    las = 0;
     if (model_opt.labeled) {
+	las =    (double)label_correct / total_rels;
         TRACE_LOG("LAS: %.4lf ( %d / %d )", 
                 (double)label_correct / total_rels, 
                 label_correct, 

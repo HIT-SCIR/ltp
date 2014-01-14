@@ -16,6 +16,8 @@ struct TrainOptions {
     string  algorithm;              /*< the algorithm */
     string  model_name;             /*< the model name */
     bool    conservative_update;    /*< conservative update */
+    std::string use_update;
+    int min_update;
 };
 
 struct TestOptions {

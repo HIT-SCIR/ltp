@@ -15,8 +15,11 @@ struct TrainOptions {
     std::string     holdout_file;
     std::string     model_name;
     std::string     algorithm;
+    std::string     use_update;
     int             max_iter;
     int             display_interval;
+    int             min_update;
+    double	    min_f;
 };
 
 struct TestOptions {
