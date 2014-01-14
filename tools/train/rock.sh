@@ -179,3 +179,61 @@ else
     echo "[4.3] TRACE: Parser-o2carreras train model test is passed."
 fi
 
+#################################################
+# THE SRL-PRG SESSION                           #
+#################################################
+
+SRL_PRG_MODEL_DIR=$BUILD_DIR/srl
+SRL_PRG_MODEL_PATH=$SRL_PRG_MODEL_DIR/prg.model
+SRL_PRG_INSTANCE_DIR=$SRL_PRG_MODEL_DIR/prg-instances.train
+
+SRL_PRG_CONF_DIR=$CONF_DIR/srl
+SRL_PRG_CONF_TRAIN_PATH=$SRL_PRG_CONF_DIR/srl-prg.cnf
+
+SRL_PRG_LOG_DIR=$LOG_DIR/srl
+SRL_PRG_LOG_TRAIN_PATH=$SRL_PRG_LOG_DIR/example-prg.train.log
+
+mkdir -p $SRL_PRG_MODEL_DIR
+mkdir -p $SRL_PRG_LOG_DIR
+mkdir -p $SRL_PRG_INSTANCE_DIR
+
+SRL_PRG_EXE=./lgsrl
+
+$SRL_PRG_EXE $SRL_PRG_CONF_TRAIN_PATH >& $SRL_PRG_LOG_TRAIN_PATH
+
+if [ ! -f $SRL_PRG_MODEL_PATH ]; then
+    echo "[1] ERROR: SRL model is not detected!"
+else
+    echo "[1] TRACE: SRL train model test is passed."
+fi
+
+#################################################
+# THE SRL-SRL SESSION                           #
+#################################################
+
+SRL_SRL_MODEL_DIR=$BUILD_DIR/srl
+SRL_SRL_MODEL_PATH=$SRL_SRL_MODEL_DIR/srl.model
+SRL_SRL_FEATURES_DIR=$SRL_SRL_MODEL_DIR/srl-features.train
+SRL_SRL_INSTANCE_DIR=$SRL_SRL_MODEL_DIR/srl-instances.train
+
+SRL_SRL_CONF_DIR=$CONF_DIR/srl
+SRL_SRL_CONF_TRAIN_PATH=$SRL_SRL_CONF_DIR/srl-srl.cnf
+
+SRL_SRL_LOG_DIR=$LOG_DIR/srl
+SRL_SRL_LOG_TRAIN_PATH=$SRL_SRL_LOG_DIR/example-srl.train.log
+
+mkdir -p $SRL_SRL_MODEL_DIR
+mkdir -p $SRL_SRL_LOG_DIR
+mkdir -p $SRL_SRL_FEATURES_DIR
+mkdir -p $SRL_SRL_INSTANCE_DIR
+
+SRL_SRL_EXE=./lgsrl
+
+$SRL_SRL_EXE $SRL_SRL_CONF_TRAIN_PATH >& $SRL_SRL_LOG_TRAIN_PATH
+
+if [ ! -f $SRL_SRL_MODEL_PATH ]; then
+    echo "[1] ERROR: SRL model is not detected!"
+else
+    echo "[1] TRACE: SRL train model test is passed."
+fi
+

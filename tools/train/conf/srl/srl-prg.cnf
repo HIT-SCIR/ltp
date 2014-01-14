@@ -1,0 +1,11 @@
+[train-prg]
+prg-train-file = sample/srl/example-train.srl
+core-config = conf/srl/assets/Chinese.xml
+prg-instance-file = build/srl/prg-instances.train/train.inst
+prg-model-file = build/srl/prg.model
+solver-type = 0  # L1-owlqn
+#solver-type = 1 # L1-sgd
+#solver-type = 2 # L2-lbfgs
+#nheldout = 0
+
+

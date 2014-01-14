@@ -1,0 +1,5 @@
+[test]
+test-file = sample/srl/example-test.srl
+config-dir = build/srl/
+output-file = sample/srl/example-test.srl.predict
+

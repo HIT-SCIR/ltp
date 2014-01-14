@@ -117,7 +117,13 @@ void multithreaded_ltp( void * args) {
         }
 
         string result;
-        xml4nlp.SaveDOM(result);
+        vector<string> words;
+        xml4nlp.GetWordsFromSentence(words, 0);
+        size_t ii = 0;
+        for (; ii < words.size() - 1; ++ii)
+            result += words[ii] + " ";
+        result += words[ii];
+        // xml4nlp.SaveDOM(result);
         xml4nlp.ClearDOM();
 
         dispatcher->output(ret, result);
