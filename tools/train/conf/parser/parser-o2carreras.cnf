@@ -23,3 +23,4 @@ holdout-file = sample/parser/example-holdout.conll
 max-iter = 1 
 algorithm = pa
 model-name = build/parser/example-parser-o2carreras
+rare-feature-threshold = 0
