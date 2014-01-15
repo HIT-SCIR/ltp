@@ -43,7 +43,9 @@ LTP提供了一系列中文自然语言处理工具，用户可以使用这些�
 
 同时，你可以从以下一些地方获得LTP的模型。
 
-* 
+* [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
+* 当前模型版本3.1.0
+
 
 ## 安装CMake
 
@@ -860,7 +862,7 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 
 otcws分别支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
 
-	对外		，	他们		代表		国家		。
+	对外	，	他们	代表	国家	。
 
 otcws主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
 
@@ -872,15 +874,17 @@ otcws主要通过配置文件指定执行的工作，其中主要有两类配置
 	algorithm = pa 
 	model-name = model/ctb5-seg
 	max-iter = 5
+	rare-feature-threshold = 0
 
 其中，
 
 * [train] 配置组指定执行训练
-	* Ttain-file 配置项指定训练集文件
-	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-	* Model-name 指定输出模型文件名
-	* Max-iter 指定最大迭代次数
+	* ttain-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
+	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
 
 测试配置的配置文件样例如下所示。
 
@@ -891,8 +895,8 @@ otcws主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [test] 配置组指定执行测试
-	* Test-file 指定测试文件
-	* Model-file 指定模型文件位置
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
 	
 切分结果将输入到标准io中。
 
@@ -924,11 +928,12 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [train] 配置组指定执行训练
-	* Ttain-file 配置项指定训练集文件
-	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-	* Model-name 指定输出模型文件名
-	* Max-iter 指定最大迭代次数
+	* ttain-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
+	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
 
 测试配置的配置文件样例如下所示。
 
@@ -939,8 +944,8 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [test] 配置组指定执行测试
-	* Test-file 指定测试文件
-	* Model-file 指定模型文件位置
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
 
 词性标注结果将输入到标准io中。
 
@@ -972,11 +977,11 @@ Otner主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [train] 配置组指定执行训练
-	* Train-file 配置项指定训练集文件
-	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otner支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
-	* Model-name 指定输出模型文件名
-	* Max-iter 指定最大迭代次数
+	* train-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otner支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
 
 测试配置的配置文件样例如下所示。
 
@@ -987,8 +992,8 @@ Otner主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [test] 配置组指定执行测试
-	* Test-file 指定测试文件
-	* Model-file 指定模型文件位置
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
 
 命名实体识别结果将输入到标准io中。
 
@@ -1000,7 +1005,7 @@ lgdpj是ltp依存句法分析模型的训练套件，用户可以使用lgdpj训�
 
 编译之后，在tools/train下面会产生名为lgdpj的二进制程序。调用方法是
 
-	./lgdpj [config_file]。
+	./lgdpj [config_file]
 
 lgdpj分别支持从人工标注依存句法的数据中训练依存句法分析模型和调用依存句法分析模型对句子进行依存句法分析。人工标注的词性标注依存句法的句子遵从conll格式，其样例如下：
 
@@ -1039,6 +1044,7 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 	max-iter = 5 
 	algorithm = pa
 	model-name = model/parser/ldc-o2carreras
+	rare-feature-threshold = 0
 
 其中，
 
@@ -1047,11 +1053,12 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 	* decoder-name 表示采用的解码算法，现在lgdpj支持三种解码算法，分别是1o，2o-sib，2o-carreras
 * [feature] 配置组指定使用的特征
 * [train] 配置组指定执行训练
-	* Train-file 配置项指定训练集文件
-	* Holdout-file 配置项指定开发集文件
-	* Algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-	* Model-name 指定输出模型文件名
-	* Max-iter 指定最大迭代次数
+	* train-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
+	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
 
 测试配置的配置文件样例如下所示。
 
@@ -1062,8 +1069,8 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [test] 配置组指定执行测试
-	* Test-file 指定测试文件
-	* Model-file 指定模型文件位置
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
 
 依存句法分析结果将输入到标准io中。
 
