@@ -12,6 +12,7 @@
  * is not compilable under MSVC
  */
 #include <iostream>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <vector>
@@ -91,7 +92,9 @@ void multithreaded_segment( void * args) {
 
 int main(int argc, char ** argv) {
     if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
-        std::cerr << "Example: ./multi_cws_cmdline [model path] [lexicon file]=NULL threadnum" << std::endl;
+        std::cerr << "Example: ./multi_cws_cmdline "
+                  << "[model path] [lexicon file](optional) threadnum"
+                  << std::endl;
         std::cerr << std::endl;
         std::cerr << "This program recieve input word sequence from stdin." << std::endl;
         std::cerr << "One sentence per line." << std::endl;
