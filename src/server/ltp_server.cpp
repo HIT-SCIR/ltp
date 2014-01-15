@@ -109,7 +109,7 @@ static int Service(struct mg_connection *conn) {
     // validation check
     if (strlen(sentence) == 0) {
       WARNING_LOG("Input sentence is empty");
-      std::string response = "HTTP/1.1 400 Empty sentence\r\n\r\n";
+      std::string response = "HTTP/1.1 400 EMPTY SENTENCE\r\n\r\n";
       mg_printf(conn, "%s", response.c_str());
       return 0;
     }
@@ -117,7 +117,7 @@ static int Service(struct mg_connection *conn) {
     if (!isclear(strSentence)) {
       WARNING_LOG("Failed string validation check");
       // Input sentence is not clear
-      std::string response = "HTTP/1.1 400 Encoding not in UTF8\r\n\r\n";
+      std::string response = "HTTP/1.1 400 ENCODING NOT IN UTF8\r\n\r\n";
       mg_printf(conn, "%s", response.c_str());
       return 0;
     }
@@ -144,7 +144,7 @@ static int Service(struct mg_connection *conn) {
     if(str_xml == "y") {
       if (-1 == xml4nlp.LoadXMLFromString(strSentence)) {
         // Failed the xml validation check
-        std::string response = "HTTP/1.1 400 Bad XML format\r\n\r\n";
+        std::string response = "HTTP/1.1 400 BAD XML FORMAT\r\n\r\n";
         response += "Failed to load custom xml";
         mg_printf(conn, "%s", response.c_str());
         return 0;

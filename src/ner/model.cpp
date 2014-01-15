@@ -9,9 +9,10 @@ Model::Model() {
 Model::~Model() {
 }
 
-void Model::save(std::ostream & ofs) {
+void
+Model::save(std::ostream & ofs) {
   // write a signature into the file
-  char chunk[16] = {'o','t','c','w','s', '\0'};
+  char chunk[16] = {'o','t','n','e','r', '\0'};
   ofs.write(chunk, 16);
 
   int off = ofs.tellp();
@@ -49,7 +50,7 @@ bool Model::load(std::istream & ifs) {
   char chunk[16];
   ifs.read(chunk, 16);
 
-  if (strcmp(chunk, "otcws")) {
+  if (strcmp(chunk, "otner")) {
     return false;
   }
 
