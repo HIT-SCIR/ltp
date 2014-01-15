@@ -31,7 +31,7 @@ NER_DLL_API void * ner_create_recognizer(const char * path);
  *  @param[in]  segmentor   the segmentor
  *  @return     int         i don't know
  */
-NER_DLL_API int ner_release_recognizer(void * ner); 
+NER_DLL_API int ner_release_recognizer(void * ner);
 
 /*
  * run segment on the given segmentor
@@ -41,8 +41,8 @@ NER_DLL_API int ner_release_recognizer(void * ner);
  *  @return     int         the number of word tokens
  */
 NER_DLL_API int ner_recognize(void * ner,
-        const std::vector<std::string> & words,
-        const std::vector<std::string> & postags,
-        std::vector<std::string> & tags);
+                              const std::vector<std::string> & words,
+                              const std::vector<std::string> & postags,
+                              std::vector<std::string> & tags);
 
 #endif  //  end for __LTP_NER_DLL_H__
