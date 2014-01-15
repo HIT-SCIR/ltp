@@ -32,6 +32,12 @@ Parser::~Parser() {
   if (model) {
     delete model;
   }
+
+  for (int i = 0; i < train_dat.size(); ++ i) {
+    if (train_dat[i]) {
+      delete train_dat[i];
+    }
+  }
 }
 
 void
