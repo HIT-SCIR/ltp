@@ -9,15 +9,12 @@ namespace parser {
 using namespace std;
 
 struct TrainOptions {
-  string  train_file;         /*< the training file */
-  string  holdout_file;       /*< the develop file */
-  int   max_iter;             /*< the iteration number */
-  // training algorithm parameter
-  string  algorithm;          /*< the algorithm */
-  string  model_name;         /*< the model name */
-  bool  conservative_update;  /*< conservative update */
-  std::string use_update;
-  int min_update;
+  string  train_file;             /*< the training file */
+  string  holdout_file;           /*< the develop file */
+  string  algorithm;              /*< the algorithm */
+  string  model_name;             /*< the model name */
+  int     rare_feature_threshold; /*< specify the max number of rare feature */
+  int     max_iter;               /*< the iteration number */
 };
 
 struct TestOptions {
