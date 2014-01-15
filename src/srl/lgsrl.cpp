@@ -45,7 +45,7 @@ bool __TEST__      = false;
 
 void usage(void) {
     cerr << "srltrain - Training suite for semantic role labeling" << endl;
-    cerr << "Copyright (C) 2012-2013 HIT-SCIR" << endl;
+    cerr << "Copyright (C) 2012-2014 HIT-SCIR" << endl;
     cerr << endl;
     cerr << "usage: ./srltrain <config_file>" << endl;
     cerr << endl;

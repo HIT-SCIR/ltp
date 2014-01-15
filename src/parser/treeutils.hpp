@@ -1,5 +1,5 @@
-#ifndef __TREE_UTILS_HPP__
-#define __TREE_UTILS_HPP__
+#ifndef __LTP_PARSER_TREE_UTILS_HPP__
+#define __LTP_PARSER_TREE_UTILS_HPP__
 
 #include <iostream>
 #include <vector>
@@ -546,4 +546,4 @@ private:
 }     //  end for namespace parser
 }     //  end for namespace ltp
 
-#endif  //  end for __TREE_UTILS_HPP__
+#endif  //  end for __LTP_PARSER_TREE_UTILS_HPP__

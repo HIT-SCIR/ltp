@@ -1,5 +1,5 @@
-#ifndef __SETTINGS_H__
-#define __SETTINGS_H__
+#ifndef __LTP_PARSER_SETTINGS_H__
+#define __LTP_PARSER_SETTINGS_H__
 
 #include <iostream>
 
@@ -56,5 +56,5 @@ enum {
 
 }       //  end for namespace parser
 }       //  end for namespace ltp
-#endif  //  end for __SETTINGS_H__
+#endif  //  end for __LTP_PARSER_SETTINGS_H__
 

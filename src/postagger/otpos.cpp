@@ -7,8 +7,9 @@ using namespace ltp::utility;
 using namespace ltp::postagger;
 
 void usage(void) {
-    std::cerr << "otpos - Training and testing suite for Part of Speech Tagging" << std::endl;
-    std::cerr << "Copyright (C) 2012-2013 HIT-SCIR" << std::endl;
+    std::cerr << "otpos - Training and testing suite for Part of Speech Tagging"
+               << std::endl;
+    std::cerr << "Copyright (C) 2012-2014 HIT-SCIR" << std::endl;
     std::cerr << std::endl;
     std::cerr << "usage: ./otpos <config_file>" << std::endl;
     std::cerr << std::endl;
