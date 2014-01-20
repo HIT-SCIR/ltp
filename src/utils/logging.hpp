@@ -95,7 +95,7 @@ protected:
     ul_logger(const char * _filename = NULL,
         int _lvl = 0) {
 
-        if (!(log_fpo = fopen(_filename, "w"))) {
+        if (!_filename || !(log_fpo = fopen(_filename, "w"))) {
             log_fpo = stderr;
         }
 
