@@ -95,12 +95,14 @@ private:
     _right(0),
     _label_s_t(-1),
     _g(-1) {
-    std::cerr << "LatticeItem::LatticeItem(const LatticeItem & rhs) is not allowed" << std::endl;
+    std::cerr << "LatticeItem::LatticeItem(const LatticeItem & rhs) is not allowed"
+              << std::endl;
     exit(-1);
   }
 
   LatticeItem & operator = (const LatticeItem & rhs) {
-    std::cerr << "LatticeItem::operator= (const LatticeItem & rhs) is not allowed" << std::endl;
+    std::cerr << "LatticeItem::operator= (const LatticeItem & rhs) is not allowed"
+              << std::endl;
     exit(-1);
   }
 
@@ -162,8 +164,9 @@ protected:
     } else if (CMP == item->_comp) {
       // do nothing;
     } else if (SIBSP == item->_comp) {
-      //  do nothing
+      // do nothing
     } else {
+      // do nothing
     }
 
     __BUILD_TREE(inst, item->_right);

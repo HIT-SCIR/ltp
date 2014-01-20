@@ -20,14 +20,20 @@
 namespace ltp {
 namespace ner {
 
-NER::NER() :
-   model(0),
-   decoder(0) {
+NER::NER() 
+  : model(0),
+    decoder(0),
+    __TRAIN__(false),
+    __TEST__(false),
+    __DUMP__(false) {
 }
 
-NER::NER(ltp::utility::ConfigParser & cfg) :
-  model(0),
-  decoder(0) {
+NER::NER(ltp::utility::ConfigParser & cfg)
+  : model(0),
+    decoder(0),
+    __TRAIN__(false),
+    __TEST__(false),
+    __DUMP__(false) {
   parse_cfg(cfg);
 }
 
@@ -67,7 +73,6 @@ NER::parse_cfg(ltp::utility::ConfigParser & cfg) {
   std::string strbuf;
   int         intbuf;
 
-  __TRAIN__ = false;
 
   train_opt.train_file        = "";
   train_opt.holdout_file      = "";
@@ -115,8 +120,6 @@ NER::parse_cfg(ltp::utility::ConfigParser & cfg) {
     }
   }
 
-  __TEST__ = false;
-
   test_opt.test_file = "";
   test_opt.model_file = "";
   test_opt.lexicon_file = "";
@@ -142,8 +145,6 @@ NER::parse_cfg(ltp::utility::ConfigParser & cfg) {
       test_opt.lexicon_file = strbuf;
     }
   }
-
-  __DUMP__ = false;
 
   dump_opt.model_file = "";
   if (cfg.has_section("dump")) {
@@ -271,7 +272,8 @@ void NER::extract_features(Instance * inst, bool create) {
 void NER::build_feature_space(void) {
   // build feature space, it a wrapper for
   // featurespace.build_feature_space
-  int N = Extractor::num_templates();
+  Extractor::num_templates();
+
   int L = model->num_labels();
   model->space.set_num_labels(L);
 
@@ -294,19 +296,16 @@ NER::build_entities(Instance * inst,
   entities.clear();
   entities_tags.clear();
 
-  std::string entity = "";
-  std::string entity_tag = "";
   int len = inst->size();
-  int tag = -1;
-  int tag_prefix = -1;
-  int tag_suffix = -1;
 
   // should check the tagsidx size
-  entity = inst->raw_forms[0];
+  std::string entity = inst->raw_forms[0];
 
-  tag = inst->tagsidx[0];
-  tag_suffix = tag % __num_ne_types__;
-  entity_tag = (tag == 12 ? "O" : __ne_types__[tag_suffix]);
+  int tag = inst->tagsidx[0];
+  int tag_prefix = -1;
+  int tag_suffix = tag % __num_ne_types__;
+
+  std::string entity_tag = (tag == 12 ? "O" : __ne_types__[tag_suffix]);
   for (int i = 1; i < len; ++ i) {
     tag = tagsidx[i];
 
@@ -600,9 +599,6 @@ void NER::evaluate(void) {
   int num_predicted_entities = 0;
   int num_gold_entities = 0;
 
-  int L = model->num_labels();
-
-  int c = 0;
   while ((inst = reader.next())) {
     int len = inst->size();
     inst->tagsidx.resize(len);

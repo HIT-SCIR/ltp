@@ -471,6 +471,21 @@ inline std::string to_str(int x) {
     return std::string(buff, sprintf(buff, "%d", x));
 }
 
+// remove the leading space and ending \r\n\t
+inline void clean(std::string &str) {
+  std::string blank = " \t\r\n";
+
+  size_t pos1 = str.find_first_not_of(blank);
+  size_t pos2 = str.find_last_not_of(blank);
+
+  if (pos1 == std::string::npos) {
+    str = "";
+  } else {
+    str = str.substr(pos1, pos2 - pos1 + 1);
+  }
+}
+
+
 /*
  *
  *

@@ -69,7 +69,7 @@ public:
   void add(const SparseVec & vec, int now, double scale = 1.) {
     for (SparseVec::const_iterator itx = vec.begin();
         itx != vec.end();
-        itx ++) {
+        ++ itx) {
       int idx = itx->first;
       int elapsed = now - _W_time[idx];
       double upd = scale * itx->second;

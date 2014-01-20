@@ -587,7 +587,7 @@ int GRDExtractor::extract3o(Instance * inst, int hid, int cid, int gid, vector< 
   int len = inst->size();
 
   bool no_grand = (hid == gid || cid == gid);
-  bool no_grandr = (cid == gid);
+  // bool no_grandr = (cid == gid);
 
   string dir, gdir, feat;
 

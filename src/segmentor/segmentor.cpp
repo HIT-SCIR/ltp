@@ -26,13 +26,19 @@ namespace segmentor {
 Segmentor::Segmentor() :
    model(0),
    decoder(0),
-   baseAll(0) {
+   baseAll(0),
+   __TRAIN__(false),
+   __TEST__(false),
+   __DUMP__(false) {
 }
 
 Segmentor::Segmentor(ltp::utility::ConfigParser & cfg) :
   model(0),
   decoder(0),
-  baseAll(0) {
+  baseAll(0),
+  __TRAIN__(false),
+  __TEST__(false),
+  __DUMP__(false) {
   parse_cfg(cfg);
 }
 
@@ -75,8 +81,6 @@ bool
 Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
   std::string strbuf;
   int         intbuf;
-
-  __TRAIN__ = false;
 
   train_opt.train_file              = "";
   train_opt.holdout_file            = "";
@@ -131,8 +135,6 @@ Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
     }
   }
 
-  __TEST__ = false;
-
   test_opt.test_file    = "";
   test_opt.model_file   = "";
   test_opt.lexicon_file = "";
@@ -158,8 +160,6 @@ Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
       test_opt.lexicon_file = strbuf;
     }
   }
-
-  __DUMP__ = false;
 
   dump_opt.model_file = "";
   if (cfg.has_section("dump")) {
@@ -217,10 +217,10 @@ Segmentor::build_configuration(void) {
   for (int i = 0; i < train_dat.size(); ++ i) {
     //
     Instance * inst = train_dat[i];
-    int len = inst->size();
+    int len = inst->words.size();
     int buff = 0;
 
-    for (int j = 0; j < inst->words.size(); ++ j) {
+    for (int j = 0; j < len; ++ j) {
       wordfreq.set(inst->words[j].c_str(), true);
     }
     total_freq += inst->words.size();
@@ -368,11 +368,10 @@ Segmentor::build_words(Instance * inst,
                        int beg_tag0,
                        int beg_tag1) {
 
-  std::string word = "";
   int len = inst->size();
 
   // should check the tagsidx size
-  word = inst->raw_forms[0];
+  std::string word = inst->raw_forms[0];
   for (int i = 1; i < len; ++ i) {
     int tag = tagsidx[i];
     if (tag == beg_tag0 || tag == beg_tag1) {
@@ -739,8 +738,6 @@ Segmentor::evaluate(double &p, double &r, double &f) {
 
   int beg_tag0 = model->labels.index( __b__ );
   int beg_tag1 = model->labels.index( __s__ );
-
-  int L = model->num_labels();
 
   while ((inst = reader.next())) {
     int len = inst->size();

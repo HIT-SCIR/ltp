@@ -14,8 +14,7 @@ public:
   Instance() {}
 
   ~Instance() {
-    int len = 0;
-    if ((len = uni_features.total_size()) > 0) {
+    if (uni_features.total_size() > 0) {
       int d1 = uni_features.nrows();
       int d2 = uni_features.ncols();
 

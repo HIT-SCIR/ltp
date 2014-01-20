@@ -61,8 +61,6 @@ int FeatureSpace::build_feature_space(int num_deprels,
   for (int i = 0; i < instances.size(); ++ i) {
     Instance * inst = instances[i];
 
-    int len = inst->size();
-
     if (feat_opt.use_dependency) {
       int N = DEPExtractor::num_templates();
 
@@ -85,7 +83,9 @@ int FeatureSpace::build_feature_space(int num_deprels,
     if (feat_opt.use_sibling) {
       int N = SIBExtractor::num_templates();
 
-      for (treeutils::SIBIterator itx(inst->heads, feat_opt.use_last_sibling); !itx.end(); ++ itx) {
+      for (treeutils::SIBIterator itx(inst->heads, feat_opt.use_last_sibling);
+           !itx.end();
+           ++ itx) {
         int hid = itx.hid();
         int cid = itx.cid();
         int sid = itx.sid();
@@ -105,7 +105,9 @@ int FeatureSpace::build_feature_space(int num_deprels,
     if (feat_opt.use_grand) {
       int N = GRDExtractor::num_templates();
 
-      for (treeutils::GRDIterator itx(inst->heads, feat_opt.use_no_grand); !itx.end(); ++ itx) {
+      for (treeutils::GRDIterator itx(inst->heads, feat_opt.use_no_grand);
+           !itx.end();
+           ++ itx) {
         int hid = itx.hid();
         int cid = itx.cid();
         int gid = itx.gid();

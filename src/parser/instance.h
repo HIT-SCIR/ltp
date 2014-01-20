@@ -282,7 +282,7 @@ private:
       }
     }
 
-    if ((len = grdl_features.total_size()) > 0
+    if (grdl_features.total_size() > 0
         && (fvs = grdl_features.c_buf())) {
       int d1 = grdl_features.dim1();
       int d2 = grdl_features.dim2();

@@ -15,11 +15,19 @@
 namespace ltp {
 namespace parser {
 
-Parser::Parser() {
+Parser::Parser() :
+  __TRAIN__(false),
+  __TEST__(false),
+  model(0),
+  decoder(0) {
   init_opt();
 }
 
-Parser::Parser(ConfigParser & cfg) {
+Parser::Parser(ConfigParser & cfg) :
+  __TRAIN__(false),
+  __TEST__(false),
+  model(0),
+  decoder(0) {
   init_opt();
   parse_cfg(cfg);
 }
@@ -152,7 +160,6 @@ Parser::copy_featurespace(Model * new_model,
     int tid = itx.tid();
     int id = model->space.index(gid, tid, key);
     bool flag = false;
-    int L = model-> num_deprels();
 
     for (int l = 0; l < L; ++ l) {
       double p = model -> param.dot(id+l);
@@ -181,14 +188,14 @@ Parser::copy_parameters(Model * new_model, int gid) {
   // the prerequiest is feature space of new model is already built.
   // the process travel through the feature space of new model and retrieve
   // the key in old feature space, then preform the copy operation.
+  int L = model-> num_deprels();
+
   for (FeatureSpaceIterator itx = new_model->space.begin(gid); !itx.end(); ++itx) {
     const char * key = itx.key();
     int tid = itx.tid();
 
     int old_id = model->space.index(gid, tid, key);
     int new_id = new_model->space.index(gid, tid, key);
-
-    int L = model-> num_deprels();
 
     for (int l = 0; l < L; ++l) {
       new_model->param._W[new_id + l]     = model->param._W[old_id+l];
@@ -402,8 +409,7 @@ Parser::build_configuration(void) {
     for (int j = 1; j < len; ++ j) {
       model->postags.push(train_dat[i]->postags[j].c_str());
       if (model_opt.labeled) {
-        int idx = -1;
-        idx = model->deprels.push(train_dat[i]->deprels[j].c_str());
+        int idx = model->deprels.push(train_dat[i]->deprels[j].c_str());
         train_dat[i]->deprelsidx[j] = idx;
       }
     }
@@ -586,7 +592,7 @@ Parser::read_instances(const char * filename, vector<Instance *> & dat) {
 
 Decoder *
 Parser::build_decoder(void) {
-  Decoder * deco;
+  Decoder * deco = NULL;
   if (model_opt.decoder_name == "1o") {
     if (!model_opt.labeled) {
       deco = new Decoder1O();
@@ -615,7 +621,7 @@ void
 Parser::extract_features(Instance * inst) {
   int len = inst->size();
   int L   = model->num_deprels();
-  FeatureSpace& space = model->space;
+  // FeatureSpace & space = model->space;
 
   if (feat_opt.use_dependency) {
 
@@ -919,7 +925,7 @@ Parser::increase_group_updated_time(const math::SparseVec & vec,
 void
 Parser::train(void) {
   const char * train_file   = train_opt.train_file.c_str();
-  const char * holdout_file = train_opt.holdout_file.c_str();
+  // const char * holdout_file = train_opt.holdout_file.c_str();
 
   if (!read_instances(train_file, train_dat)) {
     ERROR_LOG("Failed to read train data from [%s].", train_file);
@@ -945,7 +951,7 @@ Parser::train(void) {
   TRACE_LOG("Allocate a parameter vector of [%d] dimension.", model->dim());
 
   int nr_feature_groups = model->num_features();
-  int num_l = model->num_deprels();
+  // int num_l = model->num_deprels();
   int * feature_group_updated_time = NULL;
 
   if (model_opt.labeled
@@ -1021,14 +1027,6 @@ Parser::train(void) {
     model->param.flush( train_dat.size() * (iter + 1) );
 
     Model * new_model;
-
-    // for(int m = 0; m<feature_count; m++) {
-    //  int sum = 0;
-    //  for(int n = 0;n<num_l;n++) {
-    //  sum+=updates[m*num_l+n];
-    //  }
-    //  updates_group[m]=sum;
-    // }
 
     new_model = erase_rare_features(feature_group_updated_time);
     swap(model,new_model);

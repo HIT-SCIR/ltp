@@ -66,7 +66,6 @@ static int Service(struct mg_connection *conn) {
   char *sentence;
   char type[10];
   char xml[10];
-  char buffer[POST_LEN];
 
   string str_post_data;
   string str_type;
@@ -76,6 +75,8 @@ static int Service(struct mg_connection *conn) {
 
   if (!strcmp(ri->uri, "/ltp")) {
     int len;
+    char buffer[POST_LEN];
+
     while((len = mg_read(conn, buffer, sizeof(buffer) - 1)) > 0){
       buffer[len] = 0;
       str_post_data += buffer;
@@ -165,9 +166,7 @@ static int Service(struct mg_connection *conn) {
       engine->ner(xml4nlp);
     } else if(str_type == "dp"){
       engine->parser(xml4nlp);
-    } else if(str_type == "srl"){
-      engine->srl(xml4nlp);
-    } else {
+    } else { // srl or all
       engine->srl(xml4nlp);
     }
 

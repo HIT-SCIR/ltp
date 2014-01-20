@@ -6,7 +6,7 @@ namespace segmentor {
 
 struct FeatureVector {
 public:
-  FeatureVector () : n(0), idx(0), val(0) {
+  FeatureVector () : n(0), idx(0), val(0), loff(0) {
   }
 
   ~FeatureVector() {

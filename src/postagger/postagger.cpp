@@ -22,12 +22,18 @@ namespace postagger {
 
 Postagger::Postagger()
   : model(0),
-    decoder(0) {
+    decoder(0),
+    __TRAIN__(false),
+    __TEST__(false),
+    __DUMP__(false) {
 }
 
 Postagger::Postagger(ltp::utility::ConfigParser & cfg)
   : model(0),
-    decoder(0) {
+    decoder(0),
+    __TRAIN__(false),
+    __TEST__(false),
+    __DUMP__(false) {
   parse_cfg(cfg);
 }
 
@@ -277,7 +283,7 @@ Postagger::extract_features(Instance * inst, bool create) {
 void
 Postagger::build_feature_space(void) {
   // build feature space, it a wrapper for featurespace.build_feature_space
-  int N = Extractor::num_templates();
+  Extractor::num_templates();
   int L = model->num_labels();
   model->space.set_num_labels(L);
 

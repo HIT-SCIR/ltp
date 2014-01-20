@@ -49,11 +49,11 @@ inline int get_children( const std::vector<int> & heads,
 
 // Generate all the tree space in dependency
 // This class is a Python `yield` like generator
-// detail for implement can refer to 
+// detail for implement can refer to
 // http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
 /*
  * dependency tree space iterator, enumerate all posibly feature
- * 2-tuple of a tree. for example, for a tree like: 
+ * 2-tuple of a tree. for example, for a tree like:
  *
  *  [0] -> ROOT; [1] -> [2]; [2] -> [0]
  *
@@ -62,9 +62,9 @@ inline int get_children( const std::vector<int> & heads,
  */
 class DEPTreeSpaceIterator {
 public:
-  DEPTreeSpaceIterator(int len) : 
+  DEPTreeSpaceIterator(int len) :
     _len(len),
-    _hid(0), 
+    _hid(0),
     _cid(0),
     _state(0) {
     ++ (*this);
@@ -106,7 +106,7 @@ private:
 
 /*
  * sibling tree space iterator, enumerate all possible feature
- * 3-tuple of a tree. for example, for a tree like: 
+ * 3-tuple of a tree. for example, for a tree like:
  *
  *  [0] -> ROOT; [1] -> [2]; [2] -> [0]; [3] -> [2]
  *
@@ -122,7 +122,7 @@ public:
     _last_sibling(last_sibling),
     _hid(0),
     _cid(0),
-    _sid(0), 
+    _sid(0),
     _step(0),
     _end(0),
     _state(0) {
@@ -178,7 +178,7 @@ private:
 
 /*
  * grand tree space iterator, enumerate all possible feature
- * 3-tuple of a tree. for example, for a tree like: 
+ * 3-tuple of a tree. for example, for a tree like:
  *
  *  [0] -> ROOT; [1] -> [2]; [2] -> [0]; [3] -> [2]
  *
@@ -188,8 +188,11 @@ private:
  */
 class GRDTreeSpaceIterator {
 public:
-  GRDTreeSpaceIterator(int len, bool no_grand = true) : 
-    _len(len), 
+  GRDTreeSpaceIterator(int len, bool no_grand = true) :
+    _hid(0),
+    _step(0),
+    _end(0),
+    _len(len),
     _state(0),
     _no_grand(no_grand) {
     ++ (*this);
@@ -247,7 +250,7 @@ private:
 
 /*
  * dependency tree iterator, enumerate all possible features
- * 2-tuple according a tree. for example, for a tree like: 
+ * 2-tuple according a tree. for example, for a tree like:
  *
  *  [0] -> ROOT; [1] -> [2]; [2] -> [0]; [3] -> [2]
  *
@@ -257,7 +260,7 @@ private:
  */
 class DEPIterator {
 public:
-  DEPIterator(const std::vector<int> & heads) : 
+  DEPIterator(const std::vector<int> & heads) :
     _cid(1),
     _len(heads.size()),
     _heads(heads) {}
@@ -285,7 +288,7 @@ private:
 
 /*
  * sibling tree space iterator, enumerate all possible feature
- * 3-tuple of a tree. for example, for a tree like: 
+ * 3-tuple of a tree. for example, for a tree like:
  *
  *  [0] -> ROOT; [1] -> [0]; [2] -> [0]; [3] -> [0]
  *
@@ -295,7 +298,7 @@ private:
  */
 class SIBIterator {
 public:
-  SIBIterator(const std::vector<int> & heads, bool last_sibling = true) : 
+  SIBIterator(const std::vector<int> & heads, bool last_sibling = true) :
     _hid(0),
     _state(0),
     _last_sibling(last_sibling),
