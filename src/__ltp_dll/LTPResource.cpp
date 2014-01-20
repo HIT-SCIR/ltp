@@ -20,7 +20,7 @@
 
 #include "logging.hpp"
 
-LTPResource::LTPResource() : 
+LTPResource::LTPResource() :
   m_segmentor(NULL),
   m_postagger(NULL),
   m_ner(NULL),
@@ -33,14 +33,11 @@ LTPResource::LTPResource() :
 }
 
 LTPResource::~LTPResource() {
-  //ReleaseCRFWSRes();
-  //ReleaseIrlasRes();
-  //ReleaseSvmtaggerRes();
-  //ReleaseNeRes();
-  //ReleaseWsdRes();
-  //ReleaseGParserRes();
-  //ReleaseParserRes();
-  //ReleaseSrlRes();
+  ReleaseSegmentorResource();
+  ReleasePostaggerResource();
+  ReleaseNEResource();
+  ReleaseParserResource();
+  ReleaseSRLResource();
 }
 
 
