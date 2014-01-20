@@ -225,8 +225,8 @@ int LTP::wordseg(XML4NLP & xml) {
   }
 
   for (int i = 0; i < stnsNum; ++ i) {
-    string strStn = xml.GetSentence(i);
-    vector<string> vctWords;
+    std::string strStn = xml.GetSentence(i);
+    std::vector<std::string> vctWords;
 
     if (ltp::strutils::codecs::length(strStn) > MAX_SENTENCE_LEN) {
       ERROR_LOG("in LTP::wordseg, input sentence is too long");
@@ -406,10 +406,10 @@ int LTP::parser(XML4NLP & xml) {
   }
 
   for (int i = 0; i < stnsNum; ++i) {
-    vector<string>  vecWord;
-    vector<string>  vecPOS;
-    vector<int>   vecHead;
-    vector<string>  vecRel;
+    std::vector<std::string>  vecWord;
+    std::vector<std::string>  vecPOS;
+    std::vector<int>          vecHead;
+    std::vector<std::string>  vecRel;
 
     if (xml.GetWordsFromSentence(vecWord, i) != 0) {
       ERROR_LOG("in LTP::parser, failed to get words from xml");
@@ -473,11 +473,11 @@ int LTP::srl(XML4NLP & xml) {
   }
 
   for (int i = 0; i < stnsNum; ++i) {
-    vector<string>        vecWord;
-    vector<string>        vecPOS;
-    vector<string>        vecNE;
+    vector<string>              vecWord;
+    vector<string>              vecPOS;
+    vector<string>              vecNE;
     vector< pair<int, string> > vecParse;
-    vector< pair< int, vector< pair<const char *, pair< int, int > > > > > vecSRLResult;
+    vector< pair<int, vector< pair<const char *, pair< int, int > > > > > vecSRLResult;
 
     if (xml.GetWordsFromSentence(vecWord, i) != 0) {
       ERROR_LOG("in LTP::ner, failed to get words from xml");
