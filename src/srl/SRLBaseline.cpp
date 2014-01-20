@@ -10,11 +10,17 @@
 #include "SRLBaseline.h"
 
 SRLBaseline::SRLBaseline(string configXml, string selectFeats)
+  : m_dataPreProc(NULL),
+    m_featureExtractor(NULL),
+    m_featureCollection(NULL)
 {
 }
 
 SRLBaseline::~SRLBaseline()
 {
+  if (m_dataPreProc)       { delete m_dataPreProc; }
+  if (m_featureCollection) { delete m_featureCollection; }
+  if (m_featureExtractor)  { delete m_featureExtractor; }
 }
 
 // Check if the node will be filtered: only when the node 
