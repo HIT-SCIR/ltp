@@ -11,108 +11,108 @@ namespace segmentor {
 
 class FeatureSpaceIterator {
 public:
-    FeatureSpaceIterator() : 
-        _dicts(NULL),
-        _i(0),
-        _state(0) {
-        // should be careful about the empty dicts
+  FeatureSpaceIterator()
+    : _dicts(NULL),
+      _i(0),
+      _state(0) {
+    // should be careful about the empty dicts
+  }
+
+  FeatureSpaceIterator(utility::SmartMap<int> * dicts, int num_dicts)
+    : _dicts(dicts),
+      _num_dicts(num_dicts),
+      _i(0),
+      _state(0) {
+    ++ (*this);
+  }
+
+  ~FeatureSpaceIterator() {
+  }
+
+  const char * key() { return _j.key(); }
+  int id() { return (*_j.value()); }
+  int tid() { return _i; }
+
+  bool operator ==(const FeatureSpaceIterator & other) const {
+    return ((_dicts + _i) == other._dicts);
+  }
+
+  bool operator !=(const FeatureSpaceIterator & other) const {
+    return ((_dicts + _i) != other._dicts);
+  }
+
+  FeatureSpaceIterator & operator = (const FeatureSpaceIterator & other) {
+    if (this != &other) {
+      _dicts  = other._dicts;
+      _i      = other._i;
+      _state  = other._state;
     }
 
-    FeatureSpaceIterator(utility::SmartMap<int> * dicts,int num_dicts) : 
-        _dicts(dicts), 
-	_num_dicts(num_dicts),
-        _i(0), 
-        _state(0) {
-        ++ (*this);
-    }
+    return *this;
+  }
 
-    ~FeatureSpaceIterator() {
-    }
-
-    const char * key() { return _j.key(); }
-    int id() { return (*_j.value()); }
-    int tid() { return _i; }
-
-    bool operator ==(const FeatureSpaceIterator & other) const { return ((_dicts + _i) == other._dicts); }
-    bool operator !=(const FeatureSpaceIterator & other) const { return ((_dicts + _i) != other._dicts); }
-
-    FeatureSpaceIterator & operator = (const FeatureSpaceIterator & other) {
-        if (this != &other) {
-            _dicts  = other._dicts;
-            _i      = other._i;
-            _state  = other._state;
+  void operator ++() {
+    switch (_state) {
+      case 0:
+        for (_i = 0; _i < _num_dicts; ++ _i) {
+          for (_j = _dicts[_i].begin(); _j != _dicts[_i].end(); ++ _j) {
+            _state = 1;
+            return;
+      case 1:;
+          }
         }
-
-        return *this;
     }
+  }
 
-    void operator ++() {
-        switch (_state) {
-            case 0:
-                for (_i = 0;_i<_num_dicts ; ++ _i) {
-                   /* if (_dicts[_i].begin() == _dicts[_i].end()) {
-                        _state = 1;
-                        return;
-                    }*/
-                    for (_j = _dicts[_i].begin(); _j != _dicts[_i].end(); ++ _j) {
-                        _state = 1;
-                        return;
-            case 1:;
-                    }
-                }
-        }
-    }
-
-    int _i;
-    int _state;
-    int _num_dicts;
-    utility::SmartMap<int>::const_iterator  _j;
-    utility::SmartMap<int> * _dicts;
+  int _i;
+  int _state;
+  int _num_dicts;
+  utility::SmartMap<int>::const_iterator  _j;
+  utility::SmartMap<int> * _dicts;
 };
 
 class FeatureSpace {
 public:
-    FeatureSpace(int num_labels = 1);
-    ~FeatureSpace();
+  FeatureSpace(int num_labels = 1);
+  ~FeatureSpace();
 
-    int retrieve(int tid, const char * key, bool create);
-    int index(int tid, const char * key, int lid = 0);
-    int index(int prev_lid, int lid);
-    int num_features();
-    int id_label_to_id(int idx);
-    int dim();
-    int get_offset();
-    void set_num_labels(int num_labeles);
+  int retrieve(int tid, const char * key, bool create);
+  int index(int tid, const char * key, int lid = 0);
+  int index(int prev_lid, int lid);
+  int num_features();
+  int dim();
+  int num_feature_groups();
+  void set_num_labels(int num_labeles);
 
-    /*
-     * dump the feature space to a output stream
-     *
-     *  @param[in]  ofs     the output stream
-     */
-    void dump(std::ostream & ofs);
+  /*
+   * dump the feature space to a output stream
+   *
+   *  @param[in]  ofs   the output stream
+   */
+  void dump(std::ostream & ofs);
 
-    /*
-     * load the feature space from a input stream
-     *
-     *  @param[in]  num_labels  the number of labels
-     *  @param[in]  ifs         the input stream
-     */
-    bool load(int num_labeles, std::istream & ifs);
+  /*
+   * load the feature space from a input stream
+   *
+   *  @param[in]  num_labels  the number of labels
+   *  @param[in]  ifs     the input stream
+   */
+  bool load(int num_labeles, std::istream & ifs);
 
-    FeatureSpaceIterator begin() {
-        return FeatureSpaceIterator(dicts,_num_dicts);
-    }
+  FeatureSpaceIterator begin() {
+    return FeatureSpaceIterator(dicts, _num_dicts);
+  }
 
-    FeatureSpaceIterator end() {
-        return FeatureSpaceIterator(dicts + _num_dicts,_num_dicts);
-    }
+  FeatureSpaceIterator end() {
+    return FeatureSpaceIterator(dicts + _num_dicts, _num_dicts);
+  }
 private:
-    int _offset;
-    int _num_labels;
-    int _num_dicts;
-    utility::SmartMap<int> * dicts;
+  int _offset;
+  int _num_labels;
+  int _num_dicts;
+  utility::SmartMap<int> * dicts;
 };
 
-}       //  end for namespace segmentor
-}       //  end for namespace ltp
+}     //  end for namespace segmentor
+}     //  end for namespace ltp
 #endif  //  end for __LTP_SEGMENTOR_FEATURE_SPACE_H__
