@@ -18,12 +18,14 @@ LTP使用文档v3.0
 * [发表论文](#发表论文)
 * [附录](#附录)
 
+# 简介
 语言技术平台(Language Technology Platform，LTP)是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块(包括词法、句法、语义等6项中文处理核心技术)，以及基于动态链接库(Dynamic Link Library, DLL)的应用程序接口，可视化工具，并且能够以网络服务(Web Service)的形式进行使用。
 
 从2006年9月5日开始该平台对外免费共享目标代码，截止目前，已经有国内外400多家研究单位共享了LTP，也有国内外多家商业公司购买了LTP，用于实际的商业项目中。2010年12月获得中国中文信息学会颁发的行业最高奖项：“钱伟长中文信息处理科学技术奖”一等奖。
 
 2011年6月1日，为了与业界同行共同研究和开发中文信息处理核心技术，我中心正式将LTP开源。
 
+# 开始使用LTP
 如果你是第一次使用LTP，不妨花一些时间了解LTP能帮你做什么。
 
 LTP提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。从应用角度来看，LTP为用户提供了下列组件：
@@ -117,6 +119,7 @@ Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命�
 * (注*：在window版本中ltp_server、Maxent、SRLExtract、SRLGetInstance并不被编译。)
 * (注**：window下产生的静态库的后缀是.lib，linux下产生的静态库的后缀是.a)
 
+# 使用ltp_test以及模型
 一般来讲，基于统计机器学习方法构建的自然语言处理工具通常包括两部分，即：算法逻辑以及模型。模型从数据中学习而得，通常保存在文件中以持久化；而算法逻辑则与程序对应。
 
 ltp提供一整套算法逻辑以及模型，其中的模型包括：
@@ -161,6 +164,7 @@ ltp_test的使用方法如下：
 
 由于Windows终端采用gbk编码显示，运行ltp_test后会在终端输出乱码。您可以将标准输出重定向到文件，以UTF8方式查看文件，就可以解决乱码的问题。
 
+# 编程接口
 下面的文档将介绍使用LTP编译产生的静态链接库编写程序的方法。
 
 (注：2.30以后，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式)
@@ -560,6 +564,7 @@ ltp_test的使用方法如下：
 
 ## 语义角色标注接口
 
+# 使用ltp_server
 ## 重要注意
 
 本文档中提到的LTP Server与语言云服务不同。语言云建立在LTP Server之上，并封装了一层REST API接口。语言云API(ltp-cloud-api)的请求方式与LTP Server不同。
@@ -662,6 +667,7 @@ print content
 |400 | ENCODING NOT IN UTF8 | 输入句子非UTF8编码 |
 |400 | BAD XML FORMAT | 输入句子不符合LTML格式 |
 
+# 实现原理与性能
 ## 在线学习算法框架
 
 在机器学习领域，在线学习(Online learning)指每次通过一个训练实例学习模型的学习方法。在线学习的目的是正确预测训练实例的标注。在线学习最重要的一个特点是，当一次预测完成时，其正确结果便被获得，这一结果可直接用来修正模型。
@@ -866,6 +872,7 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 |----------|--------|---------|-------|------|
 |0.8444 | 0.7234 | 0.7792 | 41.1 sent./s | 94M(PI+AIC) |
 
+# 使用训练套件
 ## 分词训练套件otcws用法
 
 otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp的分词模型。
@@ -1088,6 +1095,7 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 
 依存句法分析结果将输入到标准io中。
 
+# 发表论文
 * Meishan Zhang, Zhilong Deng，Wanxiang Che, Ting Liu. [Combining Statistical Model and Dictionary for Domain Adaption of Chinese Word Segmentation](http://ir.hit.edu.cn/~mszhang/Conll06Tolgdpj.jar). Journal of Chinese Information Processing. 2012, 26 (2) : 8-12 (in Chinese)
 * Zhenghua Li, Min Zhang, Wanxiang Che, Ting Liu, Wenliang Chen, Haizhou Li. [Joint Models for Chinese POS Tagging and Dependency Parsing](http://ir.hit.edu.cn/~lzh/papers/zhenghua-D11-joint%20pos%20and%20dp.pdf). In Proceedings of the 2011Conference on Empirical Methods in Natural Language Processing (EMNLP 2011). 2011.07, pp. 1180-1191. Edinburgh, Scotland, UK.
 * Wanxiang Che, Zhenghua Li, Ting Liu. [LTP: A Chinese Language Technology Platform](http://www.aclweb.org/anthology/C/C10/C10-3.pdf#page=16). In Proceedings of the Coling 2010:Demonstrations. 2010.08, pp13-16, Beijing, China.
@@ -1096,6 +1104,7 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 * Liu, Ting, Jinshan Ma, and Sheng Li. 2006. [Building a dependency treebank for improving Chinese parser](http://ir.hit.edu.cn/phpwebsite/index.php?module=documents&JAS_DocumentManager_op=downloadFile&JAS_File_id=255#page=43). Journal of Chinese Language and Computing, 16(4):207–224.
 * Lijie Wang, Wanxiang Che, and Ting Liu. 2009. An SVMTool-based Chinese POS Tagger. Journal of Chinese Information Processing, 23(4):16–22.
 
+# 附录
 ## 分词标注集
 
 | 标记 | 含义 | 举例 |
