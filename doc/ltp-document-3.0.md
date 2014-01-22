@@ -8,16 +8,21 @@ LTP使用文档v3.0
 版权所有：哈尔滨工业大学社会计算与信息检索研究中心
 
 ## 目录
-
-# 简介
+* [简介](#简介)
+* [开始使用LTP](#开始使用LTP)
+* [使用ltp_test以及模型](#使用ltp_test以及模型)
+* [编程接口](#编程接口)
+* [使用ltp_server](#使用ltp_server)
+* [实现原理与性能](#实现原理与性能)
+* [使用训练套件](#使用训练套件)
+* [发表论文](#发表论文)
+* [附录](#附录)
 
 语言技术平台(Language Technology Platform，LTP)是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块(包括词法、句法、语义等6项中文处理核心技术)，以及基于动态链接库(Dynamic Link Library, DLL)的应用程序接口，可视化工具，并且能够以网络服务(Web Service)的形式进行使用。
 
 从2006年9月5日开始该平台对外免费共享目标代码，截止目前，已经有国内外400多家研究单位共享了LTP，也有国内外多家商业公司购买了LTP，用于实际的商业项目中。2010年12月获得中国中文信息学会颁发的行业最高奖项：“钱伟长中文信息处理科学技术奖”一等奖。
 
 2011年6月1日，为了与业界同行共同研究和开发中文信息处理核心技术，我中心正式将LTP开源。
-
-# 开始使用LTP
 
 如果你是第一次使用LTP，不妨花一些时间了解LTP能帮你做什么。
 
@@ -31,11 +36,11 @@ LTP提供了一系列中文自然语言处理工具，用户可以使用这些�
 
 如果你的公司需要一套高性能的中文语言分析工具以处理海量的文本，或者你的在研究工作建立在一系列底层中文自然语言处理任务之上，或者你想将自己的科研成果与前沿先进工作进行对比，LTP都可能是你的选择。
 
-# 如何安装LTP
+## 如何安装LTP
 
 下面的文档将介绍如何安装LTP
 
-## 获得LTP
+### 获得LTP
 
 作为安装的第一步，你需要获得LTP。LTP包括两部分，分别是项目源码和编译好的模型文件。你可以从以下链接获得最新的LTP项目源码。
 
@@ -46,12 +51,11 @@ LTP提供了一系列中文自然语言处理工具，用户可以使用这些�
 * [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
 * 当前模型版本3.1.0
 
-
-## 安装CMake
+### 安装CMake
 
 LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安装CMake。CMake的网站在[这里](http://www.cmake.org)。如果你是Windows用户，请下载CMake的二进制安装包；如果你是Linux，Mac OS或Cygwin的用户，可以通过编译源码的方式安装CMake，当然，你也可以使用Linux的软件源来安装。
 
-## Windows(MSVC)编译
+### Windows(MSVC)编译
 
 第一步：构建VC Project
 
@@ -65,11 +69,11 @@ LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安
 
 第二步：编译
 
-构建后得到ALL_BUILD、RUN_TESTS、ZERO_CHECK三个VC Project。使用VS打开ALL_BUILD项目，选择Release方式构建项目。
+构建后得到ALL_BUILD、RUN_TESTS、ZERO_CHECK三个VC Project。使用VS打开ALL_BUILD项目，选择Release(*)方式构建项目。
 
-(注：由于boost::multi_array与VS2010不兼容，并不能使用Debug方式构建项目。)
+(注*：boost::multi_array与VS2010不兼容的bug已经在3.1.0中得到修复，3.1.x及以上版本已经可以使用Debug方式构建，但出于效率考虑，仍旧建议使用Release方式构建。)
 
-## Linux，Mac OSX和Cygwin编译
+### Linux，Mac OSX和Cygwin编译
 
 Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命令
 
@@ -89,7 +93,7 @@ Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命�
 | ltp_test | LTP调用程序 |
 | ltp_server* | LTP Server程序 |
 
-在lib文件夹下生成以下一些静态链接库
+在lib文件夹下生成以下一些静态链接库(**)
 
 | 程序名 | 说明 |
 | ------ | ---- |
@@ -106,14 +110,12 @@ Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命�
 | ------ | ---- |
 | otcws | 分词的训练和测试套件 |
 | otpos | 词性标注的训练和测试套件 |
+| otner | 命名实体识别的训练和测试套件 |
 | lgdpj | 依存句法分析训练和测试套件 |
-| maxent* | 最大熵工具包，用于训练命名实体识别和语义角色标注模型 |
-| SRLExtract* | 语义角色标注训练程序 |
-| SRLGetInstance* | |
+| lgsrl | 语义角色标注训练和测试套件 |
 
-(注*：在window版本中ltp_server、Maxent、SRLExtract、SRLGetInstance并不被编译。)
-
-# 使用ltp_test以及模型
+* (注*：在window版本中ltp_server、Maxent、SRLExtract、SRLGetInstance并不被编译。)
+* (注**：window下产生的静态库的后缀是.lib，linux下产生的静态库的后缀是.a)
 
 一般来讲，基于统计机器学习方法构建的自然语言处理工具通常包括两部分，即：算法逻辑以及模型。模型从数据中学习而得，通常保存在文件中以持久化；而算法逻辑则与程序对应。
 
@@ -129,9 +131,9 @@ ltp提供一整套算法逻辑以及模型，其中的模型包括：
 
 ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型，依照指定方法执行分析的功能。ltp_test加载的模型通过配置文件指定。配置文件的样例如下：
 
-    segmentor-model = new_ltp_data/cws.model
-	postagger-model = new_ltp_data/pos.model
-	parser-model = new_ltp_data/parser.model
+	segmentor-model = ltp_data/cws.model
+	postagger-model = ltp_data/pos.model
+	parser-model = ltp_data/parser.model
 	ner-model = ltp_data/ner.model
 	srl-data = ltp_data/srl_data
 
@@ -149,7 +151,15 @@ ltp_test的使用方法如下：
 
 分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考理解Web Service Client结果一节。
 
-# 编程接口
+## Window动态链接库
+
+在Window下首次运行LTP会提示找不到动态链接库，这时请将编译产生的lib/*.dll拷贝到bin/Release/下，即可正常运行。
+
+## 编码以及显示
+
+自3.0.0及以后版本，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式。
+
+由于Windows终端采用gbk编码显示，运行ltp_test后会在终端输出乱码。您可以将标准输出重定向到文件，以UTF8方式查看文件，就可以解决乱码的问题。
 
 下面的文档将介绍使用LTP编译产生的静态链接库编写程序的方法。
 
@@ -550,24 +560,17 @@ ltp_test的使用方法如下：
 
 ## 语义角色标注接口
 
-# Web Service使用方法
+## 重要注意
 
-除C++的编程接口，LTP还提供针对自然语言处理任务，基于云端的编程接口。用户可以通过使用LTP Web Service Client调用云端服务。
+本文档中提到的LTP Server与语言云服务不同。语言云建立在LTP Server之上，并封装了一层REST API接口。语言云API(ltp-cloud-api)的请求方式与LTP Server不同。
 
-* 免安装：用户只需要下载LTP Web Service客户端源代码，编译执行后即可获得分析结果，无需调用静态库或下载模型文件。
-* 省硬件：LTP Web Service Client几乎可以运行于任何硬件配置的计算机上，用户不需要购买高性能的机器，即可快捷的获得分析结果。
-* 跨平台跨语言：LTP Web Service客户端几乎可以运行于任何操作系统之上，无论是Windows、Linux各个发行版或者Mac OS。
-* 跨编程语言：时至今日，LTP Web Service Client已经提供了包括C++，Java，C#在内的编程接口，其他语言的编程接口也在开发之中。
+## 搭建LTP Server
 
-在运算资源有限，编程语言受限的情况下，Web Service无疑是用户使用LTP更好的选择。
+LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行ltp_server就可以启动LTP Server。LTP Server启动后，将会监听12345（*）端口的HTTP请求。
 
-## 获得Web Service Client
+（*注：如需指定监听其他端口，请在src/server/ltp_server.cpp中将宏`LISTENING_PORT "12345"`设置为其他整数即可。）
 
-你可以从以下链接获得最新的LTP项目源码。
-
-* github项目托管：[https://github.com/HIT-SCIR/ltp-service](https://github.com/HIT-SCIR/ltp-service])
-
-## 利用Web Service Client获得分析结果
+## 请求LTP Server
 
 ### 原理
 
@@ -584,56 +587,36 @@ client提交的post请求主要有以下几个字段。
 | c | 用以指明输入编码方式 |
 | t | 用以指明分析目标，t可以为分词（ws）,词性标注（pos），命名实体识别（ner），依存句法分析（dp），语义角色标注（srl）或者全部任务（all） |
 
-### Python例子
-
-下面这个python版client的例子将介绍如何利用client获得分析结果。
-
-#### 示例程序
-
-	# -*- coding:utf8 -*-
-	import ltpservice
-	from account import username, password
-	
-	client = ltpservice.LTPService("%s:%s" % (username, password))
-	result = client.analysis("我爱北京天安门。天安门上太阳伞。", ltpservice.LTPOption.WS)
-	
-	pid = 0
-	for sid in xrange(result.count_sentence(pid)):
-	    print "|".join([word.encode("utf8") for word in result.get_words(pid, sid)])
-
-首先，第2行import ltpservice这个package，然后第5行实例化一个新的Service Client对象，用户名和密码被保存在这个对象中。然后第6行client发起一个请求，并指明分析目标位分词。请求结果返回并保存在一个LTML对象result中。9到10行解析这个结果。
-
-## 理解Web Service Client结果
+### 数据表示
 
 LTP 数据表示标准称为LTML。下图是LTML的一个简单例子：
 
-	<?xml version="1.0" encoding=" gbk " ?>
+	<?xml version="1.0" encoding="utf-8" ?>
 	<xml4nlp>
 	    <note sent="y" word="y" pos="y" ne="y" parser="y" wsd="y" srl="y" />
 	    <doc>
 	        <para id="0">
 	            <sent id="0" cont="我们都是中国人">
-	                <word id="0" cont="我们" wsd="Aa02" wsdexp="我_我们" pos="r" ne="O" parent="2" relate="SBV" />
-	                <word id="1" cont="都" wsd="Ka07" wsdexp="都_只_不止_甚至" pos="d" ne="O" parent="2" relate="ADV" />
-	                <word id="2" cont="是" wsd="Ja01" wsdexp="是_当做_比作" pos="v" ne="O" parent="-1" relate="HED">
+	                <word id="0" cont="我们" pos="r" ne="O" parent="2" relate="SBV" />
+	                <word id="1" cont="都" pos="d" ne="O" parent="2" relate="ADV" />
+	                <word id="2" cont="是"  pos="v" ne="O" parent="-1" relate="HED">
 	                    <arg id="0" type="A0" beg="0" end="0" />
 	                    <arg id="1" type="AM-ADV" beg="1" end="1" />
 	                </word>
-	                <word id="3" cont="中国" wsd="Di02" wsdexp="国家_行政区划" pos="ns" ne="S-Ns" parent="4" relate="ATT" />
-	                <word id="4" cont="人" wsd="Aa01" wsdexp="人_人民_众人" pos="n" ne="O" parent="2" relate="VOB" />
+	                <word id="3" cont="中国" pos="ns" ne="S-Ns" parent="4" relate="ATT" />
+	                <word id="4" cont="人" pos="n" ne="O" parent="2" relate="VOB" />
 	            </sent>
 	        </para>
 	    </doc>
 	</xml4nlp>
-
 LTML 标准要求如下：结点标签分别为 xml4nlp, note, doc, para, sent, word, arg 共七种结点标签：
 
 1. xml4nlp 为根结点，无任何属性值；
-2. note 为标记结点，具有的属性分别为：sent, word, pos, ne, parser, wsd, srl；分别代表分句，分词，词性标注，命名实体识别，依存句法分析，词义消歧，语义角色标注；值为”n”，表明未做，值为”y”则表示完成，如pos=”y”，表示已经完成了词性标注；
+2. note 为标记结点，具有的属性分别为：sent, word, pos, ne, parser, srl；分别代表分句，分词，词性标注，命名实体识别，依存句法分析，词义消歧，语义角色标注；值为”n”，表明未做，值为”y”则表示完成，如pos=”y”，表示已经完成了词性标注；
 3. doc 为篇章结点，以段落为单位包含文本内容；无任何属性值；
 4. para 为段落结点，需含id 属性，其值从0 开始；
 5. sent 为句子结点，需含属性为id，cont；id 为段落中句子序号，其值从0 开始；cont 为句子内容；
-6. word 为分词结点，需含属性为id, cont；id 为句子中的词的序号，其值从0 开始，cont为分词内容；可选属性为 pos, ne, wsd, wsdexp, parent, relate；pos 的内容为词性标注内容；ne 为命名实体内容；wsd 与wsdexp 成对出现，wsd 为词义消歧内容，wsdexp 为相应的解释说明；parent 与relate 成对出现，parent 为依存句法分析的父亲结点id 号，relate 为相对应的关系；
+6. word 为分词结点，需含属性为id, cont；id 为句子中的词的序号，其值从0 开始，cont为分词内容；可选属性为 pos, ne, parent, relate；pos 的内容为词性标注内容；ne 为命名实体内容；parent 与relate 成对出现，parent 为依存句法分析的父亲结点id 号，relate 为相对应的关系；
 7. arg 为语义角色信息结点，任何一个谓词都会带有若干个该结点；其属性为id, type, beg，end；id 为序号，从0 开始；type 代表角色名称；beg 为开始的词序号，end 为结束的序号；
 
 各结点及属性的逻辑关系说明如下：
@@ -645,20 +628,39 @@ LTML 标准要求如下：结点标签分别为 xml4nlp, note, doc, para, sent, 
 	1. 如果 pos=”y”则分词结点中必须包含pos 属性；
 	2. 如果 ne=”y”则分词结点中必须包含ne 属性；
 	3. 如果 parser=”y”则分词结点中必须包含parent 及relate 属性；
-	4. 如果 wsd=”y”则分词结点中必须包含wsd 及wsdexp 属性；
-	5. 如果 srl=”y”则凡是谓词(predicate)的分词会包含若干个arg 结点；
+	4. 如果 srl=”y”则凡是谓词(predicate)的分词会包含若干个arg 结点；
 
-关于web service client更多的信息请参考[https://github.com/HIT-SCIR/ltp-service](https://github.com/HIT-SCIR/ltp-service)
+### 示例程序
 
-# 搭建一个私人的LTP Server
+下面这个python程序例子显示如何向LTP Server发起http请求，并获得返回结果。
 
-LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行LTP Server就可以启动LTP Server。LTP Server启动后，将会监听12345(*)端口的HTTP请求。
+```
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+import urllib, urllib2
 
-在搭建好私人LTPServer后，请将client程序的目标主机地址改为你的LTPServer的地址。
+uri_base = "http://127.0.0.1:12345/ltp"
 
-(注*：如需指定监听其他端口，请在src/server/ltp_server.cpp中将宏LISTENING_PORT “12345”设置为其他整数即可。)
+data = {
+    's': '我爱北京天安门',
+    'x': 'n',
+    't': 'all'}
+ 
+request = urllib2.Request(uri_base)
+params = urllib.urlencode(data)
+response = urllib2.urlopen(request, params)
+content = response.read().strip()
+print content
+```
+### 错误返回
 
-# 实现原理与性能
+如果请求有不符合格式要求，LTP Server会返回400错误。下面的表格显示了LTP Server返回的错误类型以及原因呢。
+
+|code | reason | 解释 |
+|-----|--------|-----|
+|400 | EMPTY SENTENCE | 输入句子为空 |
+|400 | ENCODING NOT IN UTF8 | 输入句子非UTF8编码 |
+|400 | BAD XML FORMAT | 输入句子不符合LTML格式 |
 
 ## 在线学习算法框架
 
@@ -667,6 +669,12 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
 ![framework](http://ir.hit.edu.cn/~yjliu/image/2013-7-12-ot-framework.jpg)
 
 在自然语言处理领域，在线学习已经被广泛地应用在分词、词性标注、依存句法分析等结构化学习任务中。
+
+## 模型裁剪
+
+在LTP中，词性标注、句法分析两个模块还存在模型比较大的问题。为了缩小模型的大小，我们参考[Learning Sparser Perceptron Model](http://www.cs.bgu.ac.il/~yoavg/publications/acl2011sparse.pdf)，将其中提到的特征裁剪策略加入了LTP。
+
+由于LTP所采用的在线机器学习框架的特征映射方式是以特征前缀为单位进行映射的，所以裁剪时的策略也是如果该前缀的更新次数比较小，就裁剪。
 
 ## 分词模块
 
@@ -850,7 +858,13 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 ## 语义角色标注模块
 
-# 使用训练套件
+在LTP中，我们将SRL分为两个子任务，其一是谓词的识别（Predicate Identification, PI），其次是论元的识别以及分类（Argument Identification and Classification, AIC）。对于论元的识别及分类，我们将其视作一个联合任务，即将“非论元”也看成是论元分类问题中的一个类别。在SRL系统中，我们在最大熵模型中引入L1正则，使得特征维度降至约为原来的1/40，从而大幅度地减小了模型的内存使用率，并且提升了预测的速度。同时，为了保证标注结果满足一定的约束条件，系统增加了一个后处理过程。
+
+在CoNLL 2009评测数据集上，利用LTP的自动词性及句法信息，SRL性能如下所示。
+
+|Precision | Recall | F-Score | Speed | Mem. |
+|----------|--------|---------|-------|------|
+|0.8444 | 0.7234 | 0.7792 | 41.1 sent./s | 94M(PI+AIC) |
 
 ## 分词训练套件otcws用法
 
@@ -858,7 +872,7 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 
 编译之后，在tools/train下面会产生名为otcws的二进制程序。调用方法是
 
-	./otcws [config_file]。
+	./otcws [config_file]
 
 otcws分别支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
 
@@ -1074,8 +1088,6 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 
 依存句法分析结果将输入到标准io中。
 
-# 发表论文
-
 * Meishan Zhang, Zhilong Deng，Wanxiang Che, Ting Liu. [Combining Statistical Model and Dictionary for Domain Adaption of Chinese Word Segmentation](http://ir.hit.edu.cn/~mszhang/Conll06Tolgdpj.jar). Journal of Chinese Information Processing. 2012, 26 (2) : 8-12 (in Chinese)
 * Zhenghua Li, Min Zhang, Wanxiang Che, Ting Liu, Wenliang Chen, Haizhou Li. [Joint Models for Chinese POS Tagging and Dependency Parsing](http://ir.hit.edu.cn/~lzh/papers/zhenghua-D11-joint%20pos%20and%20dp.pdf). In Proceedings of the 2011Conference on Empirical Methods in Natural Language Processing (EMNLP 2011). 2011.07, pp. 1180-1191. Edinburgh, Scotland, UK.
 * Wanxiang Che, Zhenghua Li, Ting Liu. [LTP: A Chinese Language Technology Platform](http://www.aclweb.org/anthology/C/C10/C10-3.pdf#page=16). In Proceedings of the Coling 2010:Demonstrations. 2010.08, pp13-16, Beijing, China.
@@ -1083,9 +1095,6 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 * Guo, Yuhang, Wanxiang Che, Yuxuan Hu, Wei Zhang, and Ting Liu. 2007. [Hit-ir-wsd: A wsd system for english lexical sample task](http://acl.ldc.upenn.edu/W/W07/W07-2034.pdf). In SemEval-2007, pages 165–168.
 * Liu, Ting, Jinshan Ma, and Sheng Li. 2006. [Building a dependency treebank for improving Chinese parser](http://ir.hit.edu.cn/phpwebsite/index.php?module=documents&JAS_DocumentManager_op=downloadFile&JAS_File_id=255#page=43). Journal of Chinese Language and Computing, 16(4):207–224.
 * Lijie Wang, Wanxiang Che, and Ting Liu. 2009. An SVMTool-based Chinese POS Tagger. Journal of Chinese Information Processing, 23(4):16–22.
-
-
-# 附录
 
 ## 分词标注集
 
