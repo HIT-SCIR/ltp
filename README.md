@@ -1,6 +1,8 @@
 # Ltp: Language Technology Platform
 
 [![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
+[![coverity scan build status](https://scan.coverity.com/projects/1432/badge.svg)](https://scan.coverity.com/projects/1432/)
+
 
 简介
 ----
