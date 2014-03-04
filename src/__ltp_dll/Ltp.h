@@ -18,6 +18,21 @@ using namespace std;
 #define MAX_SENTENCE_LEN 300
 #define MAX_WORDS_NUM  70
 
+enum ErrorCodes {
+  kEmptyStringError = 1,  /*< The input sentence is empty */
+  kSplitSentenceError,    /*< Failed to perform split sentence */
+  kWordsegError,          /*< Failed to perform wordseg */
+  kPostagError,           /*< Failed to perform postag  */
+  kParserError,           /*< Failed to perform parsing */
+  kNERError,              /*< Failed to perform NER     */
+  kSRLError,              /*< Failed to perform SRL     */
+  kEncodingError,         /*< Sentence encoding not in UTF-8 */
+  kXmlParseError,         /*< Input xml is not well formatted */
+  kSentenceTooLongError,  /*< More than 300 characters or 70 words */
+  kReadXmlError,          /*< Failed to read XML in internal process */
+  kWriteXmlError,         /*< Failed to write XML in internal process */
+};
+
 class LTP {
 public:
 
