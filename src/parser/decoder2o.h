@@ -1,5 +1,5 @@
-#ifndef __DECODER_2_O_H__
-#define __DECODER_2_O_H__
+#ifndef __LTP_PARSER_DECODER_2_O_H__
+#define __LTP_PARSER_DECODER_2_O_H__
 
 #include "decoder.h"
 
@@ -9,39 +9,39 @@ namespace parser {
 // 2nd-order decoder with dependency features and sibling features
 class Decoder2O : public Decoder {
 public:
-    Decoder2O(int _L = 1) : L(_L) {}
+  Decoder2O(int _L = 1) : L(_L) {}
 
 public:
-    void init_lattice(const Instance * inst);
-    void decode_projective(const Instance * inst);
-    void get_result(Instance * inst);
-    void free_lattice();
+  void init_lattice(const Instance * inst);
+  void decode_projective(const Instance * inst);
+  void get_result(Instance * inst);
+  void free_lattice();
 private:
-    int L;
-    Mat< const LatticeItem * > _lattice_cmp;
-    Mat< const LatticeItem * > _lattice_incmp;
-    Mat< const LatticeItem * > _lattice_sib;
+  int L;
+  Mat< const LatticeItem * > _lattice_cmp;
+  Mat< const LatticeItem * > _lattice_incmp;
+  Mat< const LatticeItem * > _lattice_sib;
 
 };
 
 // 2nd-order decoder with dependency, sibling and grand features
 class Decoder2OCarreras : public Decoder {
 public:
-    Decoder2OCarreras(int _L = 1) : L(_L) {}
+  Decoder2OCarreras(int _L = 1) : L(_L) {}
 
 public:
-    void init_lattice(const Instance * inst);
-    void decode_projective(const Instance * inst);
-    void get_result(Instance *  inst);
-    void free_lattice();
+  void init_lattice(const Instance * inst);
+  void decode_projective(const Instance * inst);
+  void get_result(Instance *  inst);
+  void free_lattice();
 private:
-    int L;
-    Mat3< const LatticeItem * > _lattice_cmp;
-    Mat3< const LatticeItem * > _lattice_incmp;
+  int L;
+  Mat3< const LatticeItem * > _lattice_cmp;
+  Mat3< const LatticeItem * > _lattice_incmp;
 
 };
 
 }   //  end for namespace parser
 }   //  end for namespace ltp
 
-#endif  //  end for __DECODER_2_O__
+#endif  //  end for __LTP_PARSER_DECODER_2_O_H__

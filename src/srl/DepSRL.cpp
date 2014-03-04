@@ -468,7 +468,7 @@ void DepSRL::GetParAndRel(const vector< pair<int, string> >& vecParser,
         pairParser = *itParser;
         vecParent.push_back(pairParser.first);
         vecRelation.push_back(pairParser.second);
-        itParser++;
+        ++ itParser;
     }
 }
 
@@ -486,8 +486,8 @@ void DepSRL::GetPredicateFromSentence(const vector<string>& vecPos,
             vecPredicate.push_back(index);
         }
 
-        index++;
-        itPos++;
+        ++ index;
+        ++ itPos;
     }
 }
 
@@ -763,7 +763,7 @@ bool DepSRL::IsMaxPropGreaterThreshold(
             return 1;
         }
 
-        itIndex++;
+        ++ itIndex;
     }
 
     return 0;

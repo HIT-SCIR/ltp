@@ -318,7 +318,16 @@ public:
                               other.shape()+this->num_dimensions(),
                               this->shape()));
       // iterator-based copy
+#if _MSC_VER >= 1600
+      auto
+        iterThis = begin();
+      auto
+        iterOther = other.begin();
+      for (; iterThis != end(); ++iterThis, ++iterOther)
+        *iterThis = *iterOther;
+#else
       std::copy(other.begin(),other.end(),begin());
+#endif
     }
     return *this;
   }

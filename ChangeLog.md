@@ -1,3 +1,13 @@
+2014-01-20
+----------
+* 在分词、词性标注和依存句法分析模块中加入模型裁剪功能，减少了模型大小。用户可以通过配置文件里的rare-feature-threshold参数配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold大于0时将一步去掉更新次数低于阈值的特征。这一优化方法主要参考[Learning Sparser Perceptron Models](http://www.cs.bgu.ac.il/~yoavg/publications/acl2011sparse.pdf)。
+* 增加了`ltp_server`在异常输入情况下返回错误代码，如果输入数据编码错误或者输入xml不符合规则，将返回400
+* 修复了词性标注、命名实体识别、依存句法分析训练套件中的内存泄露问题
+* 修复了语义角色标注的内存泄露问题
+* 修复了词性标注、命名实体识别模型文件的错误标示符，这项修改将导致3.1.0以及之后的版本不能与3.0.x的模型兼容，请务必注意
+* 修复了由boost.multi_array.views引起的MSVC下不能以Debug方式编译的问题
+* 修复了由打开文件时字符串为空引起的Windows下不能正常运行的bug
+
 2013-09-29
 ----------
 * 解决windows编译问题

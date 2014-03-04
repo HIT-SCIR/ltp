@@ -12,6 +12,7 @@
  * is not compilable under MSVC
  */
 #include <iostream>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <vector>
@@ -90,8 +91,10 @@ void multithreaded_segment( void * args) {
 }
 
 int main(int argc, char ** argv) {
-    if (argc < 1 || (0 == strcmp(argv[1], "-h"))) {
-        std::cerr << "Example: ./multi_cws_cmdline [model path] [lexicon file]" << std::endl;
+    if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
+        std::cerr << "Example: ./multi_cws_cmdline "
+                  << "[model path] [lexicon file](optional) threadnum"
+                  << std::endl;
         std::cerr << std::endl;
         std::cerr << "This program recieve input word sequence from stdin." << std::endl;
         std::cerr << "One sentence per line." << std::endl;
@@ -108,8 +111,10 @@ int main(int argc, char ** argv) {
     if (!engine) {
         return -1;
     }
-
-    int num_threads = thread::hardware_concurrency();
+    int num_threads=atoi(argv[3]);
+    if(num_threads < 0 || num_threads > thread::hardware_concurrency()) {
+        num_threads = thread::hardware_concurrency();
+    }
     std::cerr << "TRACE: Model is loaded" << std::endl;
     std::cerr << "TRACE: Running " << num_threads << " thread(s)" << std::endl;
 

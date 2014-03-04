@@ -1,6 +1,8 @@
 # Ltp: Language Technology Platform
 
 [![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
+[![coverity scan build status](https://scan.coverity.com/projects/1432/badge.svg)](https://scan.coverity.com/projects/1432/)
+
 
 简介
 ----
@@ -24,7 +26,7 @@
 ---
 
 * [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
-* 当前模型版本3.0.2
+* 当前模型版本3.1.0
 
 开源协议
 -------
