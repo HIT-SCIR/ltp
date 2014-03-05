@@ -254,7 +254,8 @@ void FeatureExtractor::set_feature_set_(
                 node_vs_predicate_features.insert(feature_number);
                 break;
             default:
-                throw runtime_error("Unknown feature type for" + feature_number);
+                std::stringstream S; S << feature_number;
+                throw runtime_error("Unknown feature type for" + S.str());
         }
     }
 
