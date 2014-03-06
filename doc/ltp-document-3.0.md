@@ -77,12 +77,13 @@ LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安
 
 ### Linux，Mac OSX和Cygwin编译
 
-Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命令
+Linux、Mac OSX(*)和Cygwin的用户，可以直接在项目根目录下使用命令
 
 
 	./configure
 	./make
 
+(注：Mac OSX如果要编译example下的示例程序，请加入-std=c++11 -stdlib=libstdc++ -Wno-error=c++11-narrowing选项)
 
 进行编译。
 
