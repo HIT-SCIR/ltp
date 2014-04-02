@@ -58,6 +58,7 @@ public:
 public:
   std::vector< std::string >  raw_forms;
   std::vector< std::string >  forms;
+  std::vector< int >          wordtypes;
   std::vector< std::string >  tags;
   std::vector< int >          tagsidx;
   std::vector< std::string >  predicted_tags;

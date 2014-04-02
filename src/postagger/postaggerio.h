@@ -6,6 +6,7 @@
 #include "instance.h"
 #include "sbcdbc.hpp"
 #include "strutils.hpp"
+#include "preprocess.h"
 
 namespace ltp {
 namespace postagger {
@@ -40,6 +41,7 @@ public:
         if (sep.size() == 2) {
           inst->raw_forms.push_back(sep[0]);
           inst->forms.push_back(strutils::chartypes::sbc2dbc_x(sep[0]));
+          inst->wordtypes.push_back(preprocess::wordtype(sep[0]));
           inst->tags.push_back(sep[1]);
         } else {
           std::cerr << words[i] << std::endl;
@@ -49,6 +51,7 @@ public:
       } else {
         inst->raw_forms.push_back(words[i]);
         inst->forms.push_back(strutils::chartypes::sbc2dbc_x(words[i]));
+        inst->wordtypes.push_back(preprocess::wordtype(words[i]));
       }
     }
 

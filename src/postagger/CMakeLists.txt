@@ -1,7 +1,8 @@
 include_directories (./
     ${SOURCE_DIR}/postagger
     ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math)
+    ${SOURCE_DIR}/utils/math
+    ${THIRDPARTY_DIR}/boost/include)
 
 set (postagger_VERSION "0.0.1")
 
@@ -18,6 +19,8 @@ set (postagger_SRC
 # -----------------------------------------------
 add_library (postagger_static_lib postag_dll.cpp ${postagger_SRC})
 
+target_link_libraries (postagger_static_lib boost_regex_static_lib)
+
 set_target_properties (postagger_static_lib PROPERTIES
     OUTPUT_NAME postagger)
 
@@ -33,7 +36,14 @@ set_target_properties (postagger_shared_lib PROPERTIES
 
 add_library (postagger postag_dll.cpp ${postagger_SRC})
 
+target_link_libraries (postagger_shared_lib boost_regex_shared_lib)
+
 add_executable (otpos otpos.cpp ${postagger_SRC})
+message (STATUS ${LIBRARY_OUTPUT_PATH} )
+link_directories ( ${LIBRARY_OUTPUT_PATH} )
+
+target_link_libraries (otpos boost_regex_static_lib)
+
 # redirect the output binary to tools/train
 set_target_properties (otpos
     PROPERTIES
