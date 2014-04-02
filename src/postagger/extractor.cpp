@@ -115,7 +115,6 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
 
       templates[i]->render(data, feat);
       cache[i].push_back(feat);
-
     }
   }
   return 0;

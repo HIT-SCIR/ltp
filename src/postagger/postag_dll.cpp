@@ -6,7 +6,6 @@
 #include "logging.hpp"
 #include "codecs.hpp"
 #include "sbcdbc.hpp"
-#include "preprocess.h"
 #include <iostream>
 
 class PostaggerWrapper : public ltp::postagger::Postagger {
@@ -34,10 +33,10 @@ public:
             std::vector<std::string> & tags) {
         ltp::postagger::Instance * inst = new ltp::postagger::Instance;
         ltp::postagger::Decoder deco(model->num_labels());
-
+        int wt = 0;
         for (int i = 0; i < words.size(); ++ i) {
-            inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
-            inst->wordtypes.push_back(ltp::postagger::preprocess::wordtype(words[i]));
+            inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x_wt(words[i],wt));
+            inst->wordtypes.push_back(wt);
         }
 
         ltp::postagger::Postagger::extract_features(inst);
