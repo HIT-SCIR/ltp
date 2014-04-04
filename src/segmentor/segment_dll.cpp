@@ -64,7 +64,7 @@ public:
         inst->forms,
         inst->chartypes);
 
-    if (-1 == ret) {
+    if (-1 == ret || 0 == ret) {
       delete inst;
       words.clear();
       return 0;
