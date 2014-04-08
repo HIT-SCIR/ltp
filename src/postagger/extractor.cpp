@@ -1,9 +1,8 @@
-#include "extractor.h"
-#include "settings.h"
-
-#include "codecs.hpp"
-#include "strutils.hpp"
-#include "chartypes.hpp"
+#include "postagger/extractor.h"
+#include "postagger/settings.h"
+#include "utils/codecs.hpp"
+#include "utils/strutils.hpp"
+#include "utils/chartypes.hpp"
 
 namespace ltp {
 namespace postagger {

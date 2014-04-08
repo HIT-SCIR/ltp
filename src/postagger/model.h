@@ -1,10 +1,10 @@
 #ifndef __LTP_POSTAGGER_MODEL_H__
 #define __LTP_POSTAGGER_MODEL_H__
 
-#include "featurespace.h"
-#include "parameter.h"
+#include "postagger/featurespace.h"
+#include "postagger/parameter.h"
 
-#include "smartmap.hpp"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace postagger {

@@ -2,7 +2,7 @@
 #define __LTP_SEGMENTOR_WRITER_H__
 
 #include <iostream>
-#include "instance.h"
+#include "segmentor/instance.h"
 
 namespace ltp {
 namespace segmentor {

@@ -1,10 +1,8 @@
-#include "parser_dll.h"
-
-#include "parser.h"
-#include "settings.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
+#include "parser/parser_dll.h"
+#include "parser/parser.h"
+#include "parser/settings.h"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
 
 #include <iostream>
 

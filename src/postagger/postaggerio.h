@@ -2,10 +2,10 @@
 #define __LTP_POSTAGGER_IO_H__
 
 #include <iostream>
-#include "settings.h"
-#include "instance.h"
-#include "sbcdbc.hpp"
-#include "strutils.hpp"
+#include "postagger/settings.h"
+#include "postagger/instance.h"
+#include "utils/sbcdbc.hpp"
+#include "utils/strutils.hpp"
 
 namespace ltp {
 namespace postagger {

@@ -1,8 +1,4 @@
-include_directories (
-    ${SOURCE_DIR}/segmentor
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math
-    ${THIRDPARTY_DIR}/boost/include)
+include_directories ( ${SOURCE_DIR} )
 
 set (segment_VERSION "0.0.1")
 

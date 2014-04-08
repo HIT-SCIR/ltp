@@ -1,11 +1,9 @@
-#include "postag_dll.h"
-
-#include "postagger.h"
-#include "settings.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
-#include "sbcdbc.hpp"
+#include "postagger/postag_dll.h"
+#include "postagger/postagger.h"
+#include "postagger/settings.h"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
+#include "utils/sbcdbc.hpp"
 
 #include <iostream>
 

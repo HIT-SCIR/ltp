@@ -1,4 +1,4 @@
-#include "decoder.h"
+#include "postagger/decoder.h"
 
 namespace ltp {
 namespace postagger {

@@ -1,7 +1,4 @@
-include_directories (./
-    ${SOURCE_DIR}/postagger
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math)
+include_directories (  ${SOURCE_DIR}/ )
 
 set (postagger_VERSION "0.0.1")
 

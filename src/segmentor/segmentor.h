@@ -1,10 +1,10 @@
 #ifndef __LTP_SEGMENTOR_SEGMENTOR_H__
 #define __LTP_SEGMENTOR_SEGMENTOR_H__
 
-#include "cfgparser.hpp"
-#include "model.h"
-#include "decoder.h"
-#include "rulebase.h"
+#include "utils/cfgparser.hpp"
+#include "segmentor/model.h"
+#include "segmentor/decoder.h"
+#include "segmentor/rulebase.h"
 
 namespace ltp {
 namespace segmentor {

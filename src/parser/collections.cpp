@@ -1,4 +1,4 @@
-#include "collections.h"
+#include "parser/collections.h"
 
 namespace ltp {
 namespace parser {
