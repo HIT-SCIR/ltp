@@ -5,6 +5,7 @@
 #include "parameter.h"
 
 #include "smartmap.hpp"
+#include "poslexicon.h"
 
 namespace ltp {
 namespace postagger {
@@ -42,6 +43,8 @@ public:
   IndexableSmartMap   labels;
   FeatureSpace        space;
   Parameters          param;
+
+  Poslexicon          poslexicon;
 
 private:
   void write_uint(std::ostream & out, unsigned int val) {

@@ -45,6 +45,7 @@ Postagger::~Postagger() {
   if (decoder) {
     delete decoder;
   }
+
 }
 
 void Postagger::run(void) {
@@ -132,6 +133,7 @@ Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
 
   test_opt.test_file = "";
   test_opt.model_file = "";
+  test_opt.lexicon_file = "";
 
   if (cfg.has_section("test")) {
     __TEST__ = true;
@@ -149,6 +151,11 @@ Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
       ERROR_LOG("model-file is not configed. ");
       return false;
     }
+
+    if (cfg.get("test", "lexicon-file", strbuf)) {
+      test_opt.lexicon_file = strbuf;
+    }
+
   }
 
   __DUMP__ = false;
@@ -499,6 +506,10 @@ Postagger::train(void) {
 
         Instance * inst = train_dat[i];
         calculate_scores(inst, false);
+
+        /*in training,we do not need to add lexicon
+            but if lexicon is added , it is ok too */
+        //decoder->decode(inst,&(model->poslexicon) );
         decoder->decode(inst);
 
         if (inst->features.dim() == 0) {
@@ -619,6 +630,8 @@ Postagger::evaluate(double &p) {
 
     extract_features(inst, false);
     calculate_scores(inst, true);
+
+    // evaluate phrase do not need lexicon
     decoder->decode(inst);
 
     num_recalled_tags += inst->num_corrected_predicted_tags();
@@ -653,6 +666,45 @@ Postagger::test(void) {
   TRACE_LOG("Number of features   [%d]", model->space.num_features());
   TRACE_LOG("Number of dimension  [%d]", model->space.dim());
 
+  // load exteranl lexicon
+  const char * lexicon_file =test_opt.lexicon_file.c_str();
+
+  if (NULL != lexicon_file) {
+      std::ifstream lfs(lexicon_file);
+      if (lfs) {
+          std::string buffer;
+          std::vector<std::string> key_values;
+          int key_values_size;
+          std::string key;
+          std::vector<int> values;
+          int value;
+
+          while (std::getline(lfs, buffer)) {
+              buffer = ltp::strutils::chomp(buffer);
+              if (buffer.size() == 0) {
+                  continue;
+              }
+              key_values = ltp::strutils::split(buffer);
+              key_values_size = key_values.size();
+              key = ltp::strutils::chartypes::sbc2dbc_x(key_values[0]);
+              values.clear();
+              for(int i=1;i<key_values_size;i++){
+                  value = model->labels.index(key_values[i]);
+                  if (value != -1){
+                      values.push_back( value );
+                  }
+                  else {
+                      std::cerr << "Tag named" << key_values[i] << " for word "<< key_values[0]<< " is not existed in LTP labels set."<<std::endl;
+                  }
+              }
+              values.erase( unique(values.begin(),values.end()),values.end() );
+              if (int(values.size()) > 0){
+                  model->poslexicon.set(key,values);
+              }
+          }
+      }
+  }
+  
   const char * test_file = test_opt.test_file.c_str();
 
   ifstream ifs(test_file);
@@ -681,7 +733,9 @@ Postagger::test(void) {
 
     extract_features(inst);
     calculate_scores(inst, true);
-    decoder->decode(inst);
+
+    //in testing phrase,docode need poslexicon
+    decoder->decode(inst,&(model->poslexicon) );
 
     build_labels(inst, inst->predicted_tags);
     writer.write(inst);

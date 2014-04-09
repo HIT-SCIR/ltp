@@ -13,7 +13,7 @@ public:
     PostaggerWrapper() {}
     ~PostaggerWrapper() {}
 
-    bool load(const char * model_file) {
+    bool load(const char * model_file, const char * lexicon_file = NULL) {
         std::ifstream mfs(model_file, std::ifstream::binary);
 
         if (!mfs) {
@@ -24,6 +24,43 @@ public:
         if (!model->load(mfs)) {
             delete model;
             return false;
+        }
+
+        if (NULL != lexicon_file) {
+            std::ifstream lfs(lexicon_file);
+            if (lfs) {
+                
+                std::string buffer;
+                std::vector<std::string> key_values;
+                int key_values_size;
+                std::string key;
+                std::vector<int> values;
+                int value;
+
+                while (std::getline(lfs, buffer)) {
+                    buffer = ltp::strutils::chomp(buffer);
+                    if (buffer.size() == 0) {
+                        continue;
+                    }
+                    key_values = ltp::strutils::split(buffer);
+                    key_values_size = key_values.size();
+                    key = ltp::strutils::chartypes::sbc2dbc_x(key_values[0]);
+                    values.clear();
+                    for(int i=1;i<key_values_size;i++){
+                        value = model->labels.index(key_values[i]);
+                        if (value != -1){
+                            values.push_back( value );
+                        }
+                        else {
+                            std::cerr << "Tag named" << key_values[i] << " for word "<< key_values[0]<< " is not existed in LTP labels set."<<std::endl;
+                        }
+                    }
+                    values.erase( unique(values.begin(),values.end()),values.end() );
+                    if (int(values.size()) > 0){
+                        model->poslexicon.set(key,values);
+                    }
+                }
+            }
         }
 
         return true;
@@ -41,7 +78,7 @@ public:
 
         ltp::postagger::Postagger::extract_features(inst);
         ltp::postagger::Postagger::calculate_scores(inst, true);
-        deco.decode(inst);
+        deco.decode(inst,&(model->poslexicon) );
 
         ltp::postagger::Postagger::build_labels(inst, tags);
 
@@ -50,10 +87,10 @@ public:
     }
 };
 
-void * postagger_create_postagger(const char * path) {
+void * postagger_create_postagger(const char * path, const char * lexicon_file) {
     PostaggerWrapper * wrapper = new PostaggerWrapper();
 
-    if (!wrapper->load(path)) {
+    if (!wrapper->load(path, lexicon_file)) {
         return 0;
     }
 
