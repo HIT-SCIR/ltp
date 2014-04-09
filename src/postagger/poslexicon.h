@@ -33,15 +33,17 @@ public:
     else{
       std::vector <int> & origin = it->second;
       origin.insert( origin.begin(),value.begin(),value.end() );
+      sort(origin.begin(),origin.end());
       origin.erase( unique(origin.begin(),origin.end()),origin.end() );
     }
   }
-  
+
   void dump(){
      Lexiconmap_const_iter it = lexiconmap.begin();
      int lexicon_size;
      for(;it != lexiconmap.end();it++){
         std::cout<<it->first<<" ->";
+        lexicon_size = (it->second).size();
         for(int i=0;i<lexicon_size;i++){
           std::cout<<" "<<(it->second)[i];
         }

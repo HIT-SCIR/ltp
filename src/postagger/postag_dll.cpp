@@ -52,9 +52,10 @@ public:
                             values.push_back( value );
                         }
                         else {
-                            std::cerr << "Tag named" << key_values[i] << " for word "<< key_values[0]<< " is not existed in LTP labels set."<<std::endl;
+                            std::cerr << "Tag named " << key_values[i] << " for word "<< key_values[0]<< " is not existed in LTP labels set."<<std::endl;
                         }
                     }
+                    sort(values.begin(),values.end());
                     values.erase( unique(values.begin(),values.end()),values.end() );
                     if (int(values.size()) > 0){
                         model->poslexicon.set(key,values);
