@@ -1,4 +1,4 @@
-include_directories (${SOURCE_DIR}/)
+include_directories (${SOURCE_DIR}/ ${THIRDPARTY_DIR}/boost/include/)
 
 set (ner_VERSION "0.0.1")
 
