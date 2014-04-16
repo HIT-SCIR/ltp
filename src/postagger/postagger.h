@@ -4,6 +4,8 @@
 #include "cfgparser.hpp"
 #include "model.h"
 #include "decoder.h"
+#include "smartmap.hpp"
+#include "tinybitset.hpp"
 
 namespace ltp {
 namespace postagger {

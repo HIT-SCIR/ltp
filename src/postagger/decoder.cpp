@@ -5,9 +5,9 @@ namespace postagger {
 
 
 void
-Decoder::decode(Instance * inst,const Poslexicon* lexicon ) {
+Decoder::decode(Instance * inst) {
   init_lattice(inst);
-  viterbi_decode(inst,lexicon);
+  viterbi_decode(inst);
   get_result(inst);
   free_lattice();
 }
@@ -40,32 +40,33 @@ void Decoder::viterbi_decode_inner(const Instance * inst,int i,int l){
 }
 
 void
-Decoder::viterbi_decode(const Instance * inst,const Poslexicon*  lexicon) {
+Decoder::viterbi_decode(const Instance * inst) {
   int len = inst->size();
-  if (!lexicon){
-    for (int i = 0; i < len; ++ i) {
+  bool external_lexicon_flag = false;
+  if(inst->external_lexicon_match_state.size() == len){
+    external_lexicon_flag = true;
+  }
+  for (int i = 0; i < len; ++ i) {
+    if(external_lexicon_flag && inst->external_lexicon_match_state[i].isnotempty())  {
+      for (int l = 0; l < L; ++ l) {
+        if(inst->external_lexicon_match_state[i].get(l)){
+          viterbi_decode_inner(inst,i,l);
+        }
+      }
+    }
+    else if(inst->internal_lexicon_match_state[i].isnotempty())  {
+      for (int l = 0; l < L; ++ l) {
+        if(inst->internal_lexicon_match_state[i].get(l))  {
+          viterbi_decode_inner(inst,i,l);
+        }
+      }
+    }
+    else{
       for (int l = 0; l < L; ++ l) {
         viterbi_decode_inner(inst,i,l);
-      } // end for label kinds
-    } // end for len
-  } // end for lexicon == NULL
-  else{
-    std::vector <int> lex_labels;
-    int lex_labels_size;
-    for (int i = 0; i < len; ++ i) {
-      if ( lexicon->get(inst->forms[i] ,lex_labels) ){
-        lex_labels_size = lex_labels.size();
-        for (int l_idx = 0; l_idx < lex_labels_size; ++l_idx) {
-          viterbi_decode_inner( inst,i,lex_labels[l_idx] );
-        } // end for label kinds
-      }// end for if word found in lexicon
-      else{
-        for (int l = 0; l < L; ++ l) {
-          viterbi_decode_inner(inst,i,l);
-        } // end for label kinds
-      }// end for word not found in lexicon
-    } // end for len
-  } // end for lexicon != NULL
+      }
+    }
+  }
 }
 
 void

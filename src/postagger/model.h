@@ -3,9 +3,8 @@
 
 #include "featurespace.h"
 #include "parameter.h"
-
 #include "smartmap.hpp"
-#include "poslexicon.h"
+#include "tinybitset.hpp"
 
 namespace ltp {
 namespace postagger {
@@ -43,8 +42,8 @@ public:
   IndexableSmartMap   labels;
   FeatureSpace        space;
   Parameters          param;
-
-  Poslexicon          poslexicon;
+  SmartMap<Bitset>  internal_lexicon;
+  SmartMap<Bitset>  external_lexicon;
 
 private:
   void write_uint(std::ostream & out, unsigned int val) {

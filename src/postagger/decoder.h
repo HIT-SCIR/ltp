@@ -6,7 +6,6 @@
 #include <vector>
 #include "instance.h"
 #include "mat.h"
-#include "poslexicon.h"
 
 namespace ltp {
 namespace postagger {
@@ -36,11 +35,11 @@ public:
 class Decoder {
 public:
   Decoder (int _L) : L(_L) {}
-  void decode(Instance * inst,const Poslexicon* lexicon = NULL);
+  void decode(Instance * inst);
 private:
   void init_lattice(const Instance * inst);
   void viterbi_decode_inner(const Instance * inst,int i,int l);
-  void viterbi_decode(const Instance * inst,const Poslexicon* lexicon = NULL);
+  void viterbi_decode(const Instance * inst);
   void get_result(Instance * inst);
   void free_lattice();
 

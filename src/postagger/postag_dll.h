@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include "tinybitset.hpp"
 
 #define POSTAGGER_DLL_API
 #define POSTAGGER_DLL_API_EXPORT

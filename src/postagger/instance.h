@@ -5,9 +5,12 @@
 #include "featurevec.h"
 #include "mat.h"
 #include "sparsevec.h"
+#include "tinybitset.hpp"
 
 namespace ltp {
 namespace postagger {
+
+using namespace ltp::utility;
 
 class Instance {
 public:
@@ -63,6 +66,9 @@ public:
   std::vector< int >          tagsidx;
   std::vector< std::string >  predicted_tags;
   std::vector< int >          predicted_tagsidx;
+
+  std::vector<Bitset>       internal_lexicon_match_state;
+  std::vector<Bitset>       external_lexicon_match_state;
 
   math::SparseVec             features;           /*< the gold features */
   math::SparseVec             predicted_features; /*< the predicted features */
