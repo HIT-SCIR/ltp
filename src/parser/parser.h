@@ -7,6 +7,7 @@
 #include "model.h"
 #include "extractor.h"
 #include "decoder.h"
+#include "rulebase.h"
 
 #include "cfgparser.hpp"
 #include "logging.hpp"

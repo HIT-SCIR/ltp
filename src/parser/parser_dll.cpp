@@ -35,9 +35,6 @@ public:
             const std::vector<std::string> & postags,
             std::vector<int> & heads,
             std::vector<std::string> & deprels) {
-    if (words.size() != postags.size()) {
-      return -1;
-    }
 
     ltp::parser::Instance * inst = new ltp::parser::Instance;
     inst->forms.push_back( ltp::parser::ROOT_FORM );
@@ -94,6 +91,9 @@ int parser_parse(void * parser,
                  std::vector<int> & heads,
                  std::vector<std::string> & deprels) {
   // std::cout << "input str = " << str << std::endl;
+  if(!ltp::parser::rulebase::dll_validity_check(words,postags)) {
+    return -1;
+  }
   ParserWrapper * wrapper = 0;
   wrapper = reinterpret_cast<ParserWrapper *>(parser);
   return wrapper->parse(words, postags, heads, deprels);

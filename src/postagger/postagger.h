@@ -4,6 +4,7 @@
 #include "cfgparser.hpp"
 #include "model.h"
 #include "decoder.h"
+#include "rulebase.h"
 
 namespace ltp {
 namespace postagger {
