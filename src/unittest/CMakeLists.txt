@@ -15,6 +15,13 @@ target_link_libraries (utils_strutils_unittest gtest pthread)
 set_target_properties(utils_strutils_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
+set (utils_template_unittest_SRC ./utils_template_unittest.cpp)
+add_executable (utils_template_unittest ${utils_template_unittest_SRC})
+target_link_libraries (utils_template_unittest gtest pthread)
+set_target_properties(utils_template_unittest PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
+
+
 set (utils_strpaste_unittest_SRC ./utils_strpaste_unittest.cpp)
 add_executable (utils_strpaste_unittest ${utils_strpaste_unittest_SRC})
 target_link_libraries (utils_strpaste_unittest gtest pthread)

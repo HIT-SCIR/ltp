@@ -40,9 +40,6 @@ public:
     ltp::ner::Decoder deco(model->num_labels(), base);
 
     ltp::ner::Instance * inst = new ltp::ner::Instance;
-    if (words.size() != postags.size()) {
-      return 0;
-    }
 
     for (int i = 0; i < words.size(); ++ i) {
       inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
@@ -88,6 +85,9 @@ int ner_recognize(void * ner,
     const std::vector<std::string> & words,
     const std::vector<std::string> & postags,
     std::vector<std::string> & tags) {
+  if(!ltp::ner::rulebase::dll_validity_check(words,postags)) {
+    return 0;
+  }
   NERWrapper * wrapper = 0;
   wrapper = reinterpret_cast<NERWrapper *>(ner);
   return wrapper->recognize(words, postags, tags);

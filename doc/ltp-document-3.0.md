@@ -81,7 +81,7 @@ Linux、Mac OSX(*)和Cygwin的用户，可以直接在项目根目录下使用�
 
 
 	./configure
-	./make
+	make
 
 (注：Mac OSX如果要编译example下的示例程序，请加入-std=c++11 -stdlib=libstdc++ -Wno-error=c++11-narrowing选项)
 
