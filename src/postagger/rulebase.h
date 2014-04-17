@@ -11,7 +11,7 @@ namespace rulebase {
 
 static bool dll_validity_check(const std::vector<std::string> & words) {
     for (int i = 0; i < words.size(); ++ i) {
-        if(0 == words[i].length()) {
+        if(words[i].empty()) {
             return false;
         }
     }

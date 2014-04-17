@@ -1,8 +1,8 @@
 #ifndef __LTP_PARSER_PARAMETERS_H__
 #define __LTP_PARSER_PARAMETERS_H__
 
-#include "sparsevec.h"
-#include "featurevec.h"
+#include "utils/math/sparsevec.h"
+#include "utils/math/featurevec.h"
 
 namespace ltp {
 namespace parser {

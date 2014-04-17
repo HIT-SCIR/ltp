@@ -1,4 +1,4 @@
-#include "model.h"
+#include "parser/model.h"
 
 namespace ltp {
 namespace parser {

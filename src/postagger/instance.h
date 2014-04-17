@@ -2,9 +2,9 @@
 #define __LTP_POSTAGGER_INSTANCE_H__
 
 #include <iostream>
-#include "featurevec.h"
-#include "mat.h"
-#include "sparsevec.h"
+#include "utils/math/mat.h"
+#include "utils/math/sparsevec.h"
+#include "utils/math/featurevec.h"
 
 namespace ltp {
 namespace postagger {
@@ -66,7 +66,7 @@ public:
   math::SparseVec             features;           /*< the gold features */
   math::SparseVec             predicted_features; /*< the predicted features */
 
-  math::Mat< FeatureVector *> uni_features;
+  math::Mat< math::FeatureVector *> uni_features;
   math::Mat< double > uni_scores;
   math::Mat< double > bi_scores;
 

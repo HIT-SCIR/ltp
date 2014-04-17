@@ -1,7 +1,7 @@
 #include <iostream>
-#include "cfgparser.hpp"
-#include "logging.hpp"
-#include "ner.h"
+#include "utils/cfgparser.hpp"
+#include "utils/logging.hpp"
+#include "ner/ner.h"
 
 using namespace ltp::utility;
 using namespace ltp::ner;

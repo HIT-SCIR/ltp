@@ -1,9 +1,9 @@
 #ifndef __LTP_NER_NER_H__
 #define __LTP_NER_NER_H__
 
-#include "cfgparser.hpp"
-#include "model.h"
-#include "decoder.h"
+#include "utils/cfgparser.hpp"
+#include "ner/model.h"
+#include "ner/decoder.h"
 
 namespace ltp {
 namespace ner {

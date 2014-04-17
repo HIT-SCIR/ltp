@@ -1,7 +1,7 @@
 #include <iostream>
-#include "cfgparser.hpp"
-#include "logging.hpp"
-#include "segmentor.h"
+#include "utils/cfgparser.hpp"
+#include "utils/logging.hpp"
+#include "segmentor/segmentor.h"
 
 using namespace ltp::utility;
 using namespace ltp::segmentor;

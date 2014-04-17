@@ -1,11 +1,8 @@
-#include "ner_dll.h"
-
-#include "ner.h"
-#include "settings.h"
-//#include "instance.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
+#include "ner/ner_dll.h"
+#include "ner/ner.h"
+#include "ner/settings.h"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
 
 #include <iostream>
 

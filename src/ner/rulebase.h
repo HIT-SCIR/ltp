@@ -6,10 +6,10 @@
 #include <bitset>
 #include <vector>
 
-#include "settings.h"
-#include "sbcdbc.hpp"
-#include "smartmap.hpp"
-#include "chartypes.hpp"
+#include "ner/settings.h"
+#include "utils/sbcdbc.hpp"
+#include "utils/smartmap.hpp"
+#include "utils/chartypes.hpp"
 
 namespace ltp {
 namespace ner {
@@ -18,6 +18,19 @@ namespace rulebase {
 static bool dll_validity_check(const std::vector<std::string> & words,const std::vector<std::string> & postags) {
   if(words.size()!=postags.size()) {
     return false;
+  }
+  int len = words.size();
+
+  for(int i=0;i<len;++i) {
+    if(words[i].empty()) {
+      return false;
+    }
+  }
+
+  for(int i=0;i<len;++i) {
+    if(postags[i].empty()) {
+      return false;
+    }
   }
   return true;
 }

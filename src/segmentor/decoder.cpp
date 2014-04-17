@@ -1,4 +1,4 @@
-#include "decoder.h"
+#include "segmentor/decoder.h"
 
 namespace ltp {
 namespace segmentor {

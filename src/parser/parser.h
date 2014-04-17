@@ -3,17 +3,15 @@
 
 #include <iostream>
 
-#include "instance.h"
-#include "model.h"
-#include "extractor.h"
-#include "decoder.h"
+#include "parser/instance.h"
+#include "parser/model.h"
+#include "parser/extractor.h"
+#include "parser/decoder.h"
+#include "parser/debug.h"
+#include "utils/cfgparser.hpp"
+#include "utils/logging.hpp"
+#include "utils/time.hpp"
 #include "rulebase.h"
-
-#include "cfgparser.hpp"
-#include "logging.hpp"
-#include "time.hpp"
-
-#include "debug.h"
 
 using namespace std;
 using namespace ltp::utility;

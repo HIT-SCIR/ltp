@@ -16,13 +16,36 @@ static bool dll_validity_check(
   if(words.size()!=postags.size()||words.size()!=parser.size()||words.size()!=nes.size()) {
     return false;
   }
+
   int len = parser.size(); 
-  for(int i = 0;i<len; ++i) {
-    int father = parser[i].first;
-    if(father<-1||father>=len) {
+
+  for(int i =0;i<len;++i) {
+    if(words[i].empty()) {
       return false;
     }
   }
+
+  for(int i =0;i<len;++i) {
+    if(postags[i].empty()) {
+      return false;
+    }
+  }
+
+  for(int i =0;i<len;++i) {
+    if(nes[i].empty()) {
+      return false;
+    }
+  }
+
+  for(int i = 0;i<len; ++i) {
+    int father = parser[i].first;
+    if(father<-1||father>=len||parser[i].second.empty()) {
+      return false;
+    }
+  }
+
+
+
   return true;
 }
 

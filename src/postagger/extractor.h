@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include "instance.h"
 
-#include "template.hpp"
-#include "strvec.hpp"
+#include "postagger/instance.h"
+#include "utils/template.hpp"
+#include "utils/strvec.hpp"
 
 namespace ltp {
 namespace postagger {

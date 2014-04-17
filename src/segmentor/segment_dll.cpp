@@ -1,11 +1,9 @@
-#include "segment_dll.h"
-
-#include "segmentor.h"
-#include "settings.h"
+#include "segmentor/segment_dll.h"
+#include "segmentor/segmentor.h"
+#include "segmentor/settings.h"
 //#include "instance.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
 
 #include <iostream>
 

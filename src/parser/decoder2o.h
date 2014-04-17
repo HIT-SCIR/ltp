@@ -1,7 +1,7 @@
 #ifndef __LTP_PARSER_DECODER_2_O_H__
 #define __LTP_PARSER_DECODER_2_O_H__
 
-#include "decoder.h"
+#include "parser/decoder.h"
 
 namespace ltp {
 namespace parser {
