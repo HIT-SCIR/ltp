@@ -27,6 +27,6 @@ static bool dll_validity_check(
 }
 
 }//end rulebase
-}//end postagger
+}//end srl
 }//end ltp
 #endif
