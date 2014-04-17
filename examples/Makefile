@@ -5,7 +5,8 @@
 all: cws cws_cmdline multi_cws_cmdline \
 	pos pos_cmdline multi_pos_cmdline \
 	par \
-	ner
+	ner \
+	srl 
 
 cws: cws.cpp
 	g++ -o cws cws.cpp -I./ \
@@ -58,6 +59,10 @@ par: par.cpp
 	g++ -o par par.cpp -I./ \
 		-I../src/parser/ \
 		-L../lib -lparser
+srl: srl.cpp
+	g++ -o srl srl.cpp -I./ \
+		-I../src/srl/ \
+		-L../lib -lsrl
 
 .PHONY: clean
 
@@ -68,5 +73,6 @@ clean:
 	rm pos_cmdline
 	rm ner
 	rm par
+	rm srl
 	rm multi_cws_cmdline
 	rm multi_pos_cmdline

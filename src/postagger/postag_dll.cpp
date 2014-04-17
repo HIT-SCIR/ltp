@@ -70,6 +70,8 @@ int postagger_postag(void * postagger,
         const std::vector<std::string> & words,
         std::vector<std::string> & tags) {
     // std::cout << "input str = " << str << std::endl;
+    if(!ltp::postagger::rulebase::dll_validity_check(words)) 
+       return 0; 
     PostaggerWrapper * wrapper = 0;
     wrapper = reinterpret_cast<PostaggerWrapper *>(postagger);
     return wrapper->postag(words, tags);

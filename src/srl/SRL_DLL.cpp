@@ -31,6 +31,9 @@ int DoSRL(
         const vector< pair<int, string> > &parse,
         vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult)
 {
+    if(!ltp::srl::rulebase::dll_validity_check(words,POSs,NEs,parse)) {
+        return -1;
+    }
     tmp_vecSRLResult.clear();
     if (0 == g_depSRL.GetSRLResult(words, POSs, NEs, parse, tmp_vecSRLResult)) return -1;;
     return tmp_vecSRLResult.size();
