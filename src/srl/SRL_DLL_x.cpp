@@ -8,9 +8,6 @@ int SRL(
         vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult
         )
 {
-    if(!ltp::srl::rulebase::dll_validity_check(words,POSs,NEs,parse)) {
-        return -1;
-    }
     vecSRLResult.clear();
     vector< pair< int, vector< pair<string, pair< int, int > > > > > tmp_vecSRLResult;
     int resultNum = DoSRL(words, POSs, NEs, parse,tmp_vecSRLResult);

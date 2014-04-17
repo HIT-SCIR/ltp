@@ -19,7 +19,7 @@ static bool dll_validity_check(
   int len = parser.size(); 
   for(int i = 0;i<len; ++i) {
     int father = parser[i].first;
-    if(father<0||father>=len) {
+    if(father<-1||father>=len) {
       return false;
     }
   }
