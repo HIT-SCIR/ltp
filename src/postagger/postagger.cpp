@@ -762,7 +762,7 @@ Postagger::test(void) {
           }
       }
   }
-  
+
   const char * test_file = test_opt.test_file.c_str();
 
   ifstream ifs(test_file);
@@ -829,7 +829,7 @@ Postagger::test(void) {
   TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
   TRACE_LOG("Eclipse time %lf", after - before);
 
-  sleep(1000000);
+  //sleep(1000000);
   return;
 }
 
