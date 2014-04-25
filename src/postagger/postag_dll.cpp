@@ -57,7 +57,7 @@ public:
                           std::cerr << "Tag named " << key_values[i] << " for word "<< key_values[0]<< " is not existed in LTP labels set."<<std::endl;
                       }
                   }
-                  if(values.isnotempty()){
+                  if(values.isnotempty()) {
                     original_bitset = model->external_lexicon.get(key.c_str());
                     if(original_bitset){
                       original_bitset->merge(values);
@@ -78,19 +78,10 @@ public:
             std::vector<std::string> & tags) {
         ltp::postagger::Instance * inst = new ltp::postagger::Instance;
         ltp::postagger::Decoder deco(model->num_labels());
-        int wt = 0;
         Bitset * original_bitset;
 
         for (int i = 0; i < words.size(); ++ i) {
-            inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x_wt(words[i],wt));
-            inst->wordtypes.push_back(wt);
-            original_bitset = model->internal_lexicon.get((inst->forms[i]).c_str());
-            if(original_bitset){
-              inst->internal_lexicon_match_state.push_back((*original_bitset));
-            }
-            else{
-              inst->internal_lexicon_match_state.push_back(Bitset());
-            }
+            inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
             if( int(model->external_lexicon.size()) != 0){
               original_bitset = model->external_lexicon.get((inst->forms[i]).c_str());
               if(original_bitset){
@@ -104,7 +95,6 @@ public:
 
         ltp::postagger::Postagger::extract_features(inst);
         ltp::postagger::Postagger::calculate_scores(inst, true);
-        //deco.decode(inst,&(model->external_lexicon) );
         deco.decode(inst);
 
         ltp::postagger::Postagger::build_labels(inst, tags);

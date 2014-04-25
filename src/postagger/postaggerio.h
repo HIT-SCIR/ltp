@@ -33,15 +33,12 @@ public:
     }
 
     std::vector<std::string> words = split(line);
-    int wt = 0;
     for (int i = 0; i < words.size(); ++ i) {
       if (train) {
         std::vector<std::string> sep = strutils::rsplit_by_sep(words[i], "_", 1);
         if (sep.size() == 2) {
           inst->raw_forms.push_back(sep[0]);
-          wt = strutils::chartypes::CHAR_OTHER;
-          inst->forms.push_back(strutils::chartypes::sbc2dbc_x_wt(sep[0],wt));
-          inst->wordtypes.push_back(wt);
+          inst->forms.push_back(strutils::chartypes::sbc2dbc_x(sep[0]));
           inst->tags.push_back(sep[1]);
         } else {
           std::cerr << words[i] << std::endl;
@@ -50,9 +47,7 @@ public:
         }
       } else {
         inst->raw_forms.push_back(words[i]);
-        wt = strutils::chartypes::CHAR_OTHER;
-        inst->forms.push_back(strutils::chartypes::sbc2dbc_x_wt(words[i],wt));
-        inst->wordtypes.push_back(wt);
+        inst->forms.push_back(strutils::chartypes::sbc2dbc_x(words[i]));
       }
     }
 

@@ -201,52 +201,14 @@ void
 Postagger::build_configuration(void) {
   // model->labels.push( __dummy__ );
 
-  
-  SmartMap<Bitset>  tmp_internal_lexicon;
-  SmartMap<bool> wordfreq;
-  Bitset * original_bitset;
-
-  //word frequency firstly
   for (int i = 0; i < train_dat.size(); ++ i) {
     Instance * inst = train_dat[i];
     int len = inst->size();
     inst->tagsidx.resize(len);
     for (int j = 0; j < len; ++ j) {
       inst->tagsidx[j] = model->labels.push( inst->tags[j] );
-      wordfreq.set(inst->forms[j].c_str(), true);
-      original_bitset = tmp_internal_lexicon.get((inst->forms[j]).c_str());
-      if(original_bitset){
-        original_bitset->set(inst->tagsidx[j]);
-      }
-      else{
-        tmp_internal_lexicon.set((inst->forms[j]).c_str(),Bitset(inst->tagsidx[j]) );
-      }
     }
   }
-
-  for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
-    itx != wordfreq.end();
-    ++ itx) {
-    if (itx.frequency() >= 5 ) {
-      original_bitset = tmp_internal_lexicon.get(itx.key());
-      if(original_bitset){
-        model->internal_lexicon.set(itx.key(), *(original_bitset) );
-      }
-    }
-  }
-
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    Instance * inst = train_dat[i];
-    int len = inst->size();
-    inst->internal_lexicon_match_state.resize(len);
-    for (int j = 0; j < len; ++ j) {
-      original_bitset = model->internal_lexicon.get((inst->forms[j]).c_str());
-      if(original_bitset){
-        inst->internal_lexicon_match_state[j] = (*original_bitset);
-      }
-    }
-  }
-
 }
 
 void
@@ -483,12 +445,6 @@ Postagger::erase_rare_features(int * feature_group_updated_time) {
     }
   }
   TRACE_LOG("Building new model is done");
-
-  for(SmartMap<Bitset>::const_iterator itx = model->internal_lexicon.begin();
-            itx != model->internal_lexicon.end();
-            ++itx)  {
-    new_model->internal_lexicon.set(itx.key(),*(itx.value()) );
-  }
   return new_model;
 }
 
@@ -551,9 +507,6 @@ Postagger::train(void) {
 
         Instance * inst = train_dat[i];
         calculate_scores(inst, false);
-        /*in training,we do not need to add lexicon
-            but if lexicon is added , it is ok too */
-        //decoder->decode(inst,&(model->external_lexicon) );
         decoder->decode(inst);
 
         if (inst->features.dim() == 0) {
@@ -665,24 +618,16 @@ Postagger::evaluate(double &p) {
   int num_recalled_tags = 0;
   int num_tags = 0;
 
-  Bitset * original_bitset;
-
   while ((inst = reader.next())) {
     int len = inst->size();
     inst->tagsidx.resize(len);
-    inst->internal_lexicon_match_state.resize(len);
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
-      original_bitset = model->internal_lexicon.get((inst->forms[i]).c_str());
-      if(original_bitset){
-        inst->internal_lexicon_match_state[i] = (*original_bitset);
-      }
     }
 
     extract_features(inst, false);
     calculate_scores(inst, true);
 
-    // evaluate phrase do not need lexicon
     decoder->decode(inst);
 
     num_recalled_tags += inst->num_corrected_predicted_tags();
@@ -786,14 +731,8 @@ Postagger::test(void) {
   while ((inst = reader.next())) {
     int len = inst->size();
     inst->tagsidx.resize(len);
-    inst->internal_lexicon_match_state.resize(len);
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
-      original_bitset = model->internal_lexicon.get((inst->forms[i]).c_str());
-      
-      if(original_bitset){
-        inst->internal_lexicon_match_state[i] = (*original_bitset);
-      }
       
       if( int(model->external_lexicon.size()) != 0){
         original_bitset = model->external_lexicon.get((inst->forms[i]).c_str());
@@ -804,16 +743,12 @@ Postagger::test(void) {
           inst->external_lexicon_match_state.push_back(Bitset());
         }
       }
-
     }
 
     extract_features(inst);
     calculate_scores(inst, true);
 
-    //in testing phrase,docode need poslexicon
-    //decoder->decode(inst,&(model->external_lexicon) );
     decoder->decode(inst);
-
     build_labels(inst, inst->predicted_tags);
     writer.write(inst);
     num_recalled_tags += inst->num_corrected_predicted_tags();

@@ -46,6 +46,7 @@ Extractor::Extractor() {
   //templates.push_back(new Template("11={ch-0,n}-{ch+1,0}"));
   templates.push_back(new Template("12={prefix}"));
   templates.push_back(new Template("13={suffix}"));
+  //templates.push_back(new Template("14={pos}"));
   //templates.push_back(new Template("14={ct-1}"));
   //templates.push_back(new Template("15={ct-0}"));
   //templates.push_back(new Template("16={ct+1}"));
@@ -74,7 +75,7 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
 
   Template::Data data;
 
-#define TYPE(x) (strutils::to_str(inst->wordtypes[(x)]))
+  //#define TYPE(x) (strutils::to_str(inst->wordtypes[(x)]))
 
   data.set( "c-2",  (idx-2 < 0 ? BOS : inst->forms[idx-2]) ); 
   data.set( "c-1",  (idx-1 < 0 ? BOS : inst->forms[idx-1]) );
@@ -117,6 +118,7 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
       cache[i].push_back(feat);
     }
   }
+
   return 0;
 }
 

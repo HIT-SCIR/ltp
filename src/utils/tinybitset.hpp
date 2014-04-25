@@ -2,17 +2,17 @@
 #define __TINYBITSET__
 
 #include <iostream>
-#include <map>
-#include <vector>
 #include <string.h>
-#include <algorithm>
+#include <vector>
 
 namespace ltp {
 namespace utility {
 
 struct Bitset{
+private:
   bool nonemptyflag;
   unsigned bits[4];
+public:
   Bitset(){
     memset(bits,0,sizeof(bits));
     nonemptyflag = 0;
@@ -58,16 +58,10 @@ struct Bitset{
     }
     return false;
   }
-  inline void debug() const{
-    int idxrange = int( sizeof(bits) ) * 8;
-    for(int i=0;i<idxrange;i++){
-      if(get(i)){
-        std::cout<<i<<" ";
-      }
-    }
-    std::cout<<std::endl;
+  inline int getrange() {
+    return int( sizeof(bits) ) * 8;
   }
-  /*inline std::vector<int> debug() const{
+  inline std::vector<int> debug() const{
       std::vector<int> tmp;
       for(int i=0;i<128;i++){
         if(get(i)){
@@ -75,7 +69,31 @@ struct Bitset{
         }
       }
       return tmp;
-  }*/
+  }
+  inline std::vector<int> getbitones() const{
+    std::vector<int> ones;
+    int bucket_cap = sizeof(bits) / sizeof(unsigned);
+    int bucket_size = int( sizeof(unsigned) ) * 8;
+    unsigned x,y;
+    int curbit;
+    for(int i=0;i<bucket_cap;i++){
+      x = bits[i];
+      while(x != 0){
+        y = x&(x^(x-1));
+        curbit = -1;
+        while(y != 0){
+          y >>= 1;
+          curbit++;
+        }//end while y!=0
+        if(curbit != -1){
+          curbit += (bucket_size * i);
+          ones.push_back(curbit);
+        }//end if
+        x = x&(x-1);
+      }//end while x!=0
+    }//end for
+    return ones;
+  }
 
 };
 

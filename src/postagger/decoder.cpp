@@ -54,13 +54,6 @@ Decoder::viterbi_decode(const Instance * inst) {
         }
       }
     }
-    else if(inst->internal_lexicon_match_state[i].isnotempty())  {
-      for (int l = 0; l < L; ++ l) {
-        if(inst->internal_lexicon_match_state[i].get(l))  {
-          viterbi_decode_inner(inst,i,l);
-        }
-      }
-    }
     else{
       for (int l = 0; l < L; ++ l) {
         viterbi_decode_inner(inst,i,l);

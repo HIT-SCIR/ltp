@@ -42,7 +42,7 @@ public:
   IndexableSmartMap   labels;
   FeatureSpace        space;
   Parameters          param;
-  SmartMap<Bitset>  internal_lexicon;
+  //SmartMap<Bitset>  internal_lexicon;
   SmartMap<Bitset>  external_lexicon;
 
 private:
