@@ -1447,4 +1447,3 @@ int XML4NLP::ClearNote(const char *cszNoteName) {
   note.nodePtr->SetAttribute(cszNoteName, "n");
   return 0;
 }
-

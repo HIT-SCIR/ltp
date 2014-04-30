@@ -35,6 +35,9 @@ Extractor::Extractor() {
   templates.push_back(new Template("6={c-1}-{c-0}"));
   templates.push_back(new Template("7={c-0}-{c+1}"));
   templates.push_back(new Template("8={c-1}-{c+1}"));
+  //templates.push_back(new Template("9={ct-1}"));
+  //templates.push_back(new Template("10={ct-0}"));
+  //templates.push_back(new Template("11={ct+1}"));
   //templates.push_back(new Template("7={c-1}-{c-0}-{c+1}"));
   //templates.push_back(new Template("9={len}"));
   //templates.push_back(new Template("9={ch-0,0}-{ch-0,n}"));
@@ -42,6 +45,7 @@ Extractor::Extractor() {
   //templates.push_back(new Template("11={ch-0,n}-{ch+1,0}"));
   templates.push_back(new Template("12={prefix}"));
   templates.push_back(new Template("13={suffix}"));
+  //templates.push_back(new Template("14={pos}"));
   //templates.push_back(new Template("14={ct-1}"));
   //templates.push_back(new Template("15={ct-0}"));
   //templates.push_back(new Template("16={ct+1}"));
@@ -70,11 +74,16 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
 
   Template::Data data;
 
+  //#define TYPE(x) (strutils::to_str(inst->wordtypes[(x)]))
+
   data.set( "c-2",  (idx-2 < 0 ? BOS : inst->forms[idx-2]) ); 
   data.set( "c-1",  (idx-1 < 0 ? BOS : inst->forms[idx-1]) );
   data.set( "c-0",  inst->forms[idx] );
   data.set( "c+1",  (idx+1 >= len ? EOS : inst->forms[idx+1]) );
   data.set( "c+2",  (idx+2 >= len ? EOS : inst->forms[idx+2]) );
+  //data.set( "ct-1", (idx-1 < 0 ? BOT : TYPE(idx-1)) );
+  //data.set( "ct-0", TYPE(idx) );
+  //data.set( "ct+1", (idx+1 >= len ? EOT : TYPE(idx+1)) );
 
   int length = inst->forms[idx].size(); length = (length < 5 ? length : 5);
   data.set( "len",  strutils::to_str(length));
@@ -108,6 +117,7 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
       cache[i].push_back(feat);
     }
   }
+
   return 0;
 }
 

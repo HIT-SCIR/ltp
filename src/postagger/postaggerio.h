@@ -33,7 +33,6 @@ public:
     }
 
     std::vector<std::string> words = split(line);
-
     for (int i = 0; i < words.size(); ++ i) {
       if (train) {
         std::vector<std::string> sep = strutils::rsplit_by_sep(words[i], "_", 1);

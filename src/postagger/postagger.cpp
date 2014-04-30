@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iomanip>
 
+
 #if _WIN32
 #include <Windows.h>
 #define sleep Sleep
@@ -17,6 +18,8 @@
 
 namespace ltp {
 namespace postagger {
+
+using namespace ltp::utility;
 
 Postagger::Postagger()
   : model(0),
@@ -43,6 +46,7 @@ Postagger::~Postagger() {
   if (decoder) {
     delete decoder;
   }
+
 }
 
 void Postagger::run(void) {
@@ -130,6 +134,7 @@ Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
 
   test_opt.test_file = "";
   test_opt.model_file = "";
+  test_opt.lexicon_file = "";
 
   if (cfg.has_section("test")) {
     __TEST__ = true;
@@ -147,6 +152,11 @@ Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
       ERROR_LOG("model-file is not configed. ");
       return false;
     }
+
+    if (cfg.get("test", "lexicon-file", strbuf)) {
+      test_opt.lexicon_file = strbuf;
+    }
+
   }
 
   __DUMP__ = false;
@@ -189,10 +199,10 @@ Postagger::read_instance(const char * train_file) {
 void
 Postagger::build_configuration(void) {
   // model->labels.push( __dummy__ );
+
   for (int i = 0; i < train_dat.size(); ++ i) {
     Instance * inst = train_dat[i];
     int len = inst->size();
-
     inst->tagsidx.resize(len);
     for (int j = 0; j < len; ++ j) {
       inst->tagsidx[j] = model->labels.push( inst->tags[j] );
@@ -434,7 +444,6 @@ Postagger::erase_rare_features(int * feature_group_updated_time) {
     }
   }
   TRACE_LOG("Building new model is done");
-
   return new_model;
 }
 
@@ -617,6 +626,7 @@ Postagger::evaluate(double &p) {
 
     extract_features(inst, false);
     calculate_scores(inst, true);
+
     decoder->decode(inst);
 
     num_recalled_tags += inst->num_corrected_predicted_tags();
@@ -651,6 +661,11 @@ Postagger::test(void) {
   TRACE_LOG("Number of features   [%d]", model->space.num_features());
   TRACE_LOG("Number of dimension  [%d]", model->space.dim());
 
+  // load exteranl lexicon
+  const char * lexicon_file =test_opt.lexicon_file.c_str();
+
+  Constrain::load_model_constrain(model,lexicon_file);
+
   const char * test_file = test_opt.test_file.c_str();
 
   ifstream ifs(test_file);
@@ -669,18 +684,24 @@ Postagger::test(void) {
   int num_tags = 0;
 
   double before = get_time();
+  Bitset * original_bitset;
 
   while ((inst = reader.next())) {
     int len = inst->size();
     inst->tagsidx.resize(len);
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
+      
+      if( int(model->external_lexicon.size()) != 0){
+        original_bitset = model->external_lexicon.get((inst->forms[i]).c_str());
+        Constrain::load_inst_constrain(inst,original_bitset);
+      }
     }
 
     extract_features(inst);
     calculate_scores(inst, true);
-    decoder->decode(inst);
 
+    decoder->decode(inst);
     build_labels(inst, inst->predicted_tags);
     writer.write(inst);
     num_recalled_tags += inst->num_corrected_predicted_tags();
@@ -696,7 +717,7 @@ Postagger::test(void) {
   TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
   TRACE_LOG("Eclipse time %lf", after - before);
 
-  sleep(1000000);
+  //sleep(1000000);
   return;
 }
 

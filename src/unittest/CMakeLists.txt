@@ -15,6 +15,12 @@ target_link_libraries (utils_strutils_unittest gtest pthread)
 set_target_properties(utils_strutils_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
+set (utils_tinybitset_unittest_SRC ./utils_tinybitset_unittest.cpp)
+add_executable (utils_tinybitset_unittest ${utils_tinybitset_unittest_SRC})
+target_link_libraries (utils_tinybitset_unittest gtest pthread)
+set_target_properties(utils_tinybitset_unittest PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
+
 set (utils_chartypes_unittest_SRC ./utils_chartypes_unittest.cpp)
 add_executable (utils_chartypes_unittest ${utils_chartypes_unittest_SRC})
 target_link_libraries (utils_chartypes_unittest gtest pthread)
