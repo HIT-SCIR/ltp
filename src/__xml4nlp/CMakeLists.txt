@@ -1,5 +1,4 @@
-INCLUDE_DIRECTORIES(./
-    ${util_DIR}
+INCLUDE_DIRECTORIES(${SOURCE_DIR}
     ${THIRDPARTY_DIR}/tinyxml)
 
 SET(xml4nlp_source

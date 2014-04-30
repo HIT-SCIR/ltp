@@ -40,26 +40,27 @@ namespace strutils { //LTP_STRING_NAMESPACE_BEGIN
  *  @return         std::string
  */
 inline std::string chomp(std::string str) {
-    int len = str.size();
+  int len = str.size();
 
-    if (len == 0) {
-        return "";
-    }
+  if (len == 0) {
+    return "";
+  }
 
-    while (str[len-1] == ' ' ||
-            str[len-1]=='\t' ||
-            str[len-1] == '\r' ||
-            str[len-1] == '\n' ) {
-        str = str.substr(0, -- len);
-    }
+  while (len -1 >=0 && (str[len-1] == ' '
+        || str[len-1]=='\t'
+        || str[len-1] == '\r'
+        || str[len-1] == '\n')) {
+    -- len;
+  }
+  str = str.substr(0, len);
 
-    while (str[0] == ' ' ||
-            str[0] == '\t' ||
-            str[0] == '\r' ||
-            str[0] == '\n') {
-        str = str.substr(1, -- len);
-    }
-    return str;
+  while (len > 0 && (str[0] == ' ' ||
+         str[0] == '\t' ||
+         str[0] == '\r' ||
+         str[0] == '\n')) {
+    str = str.substr(1, -- len);
+  }
+  return str;
 }
 
 
