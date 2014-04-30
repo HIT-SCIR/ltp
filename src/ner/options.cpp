@@ -1,4 +1,4 @@
-#include "options.h"
+#include "ner/options.h"
 
 namespace ltp {
 namespace ner {

@@ -1,9 +1,9 @@
 #ifndef __LTP_PARSER_MODEL_H__
 #define __LTP_PARSER_MODEL_H__
 
-#include "featurespace.h"
-#include "parameters.h"
-#include "options.h"
+#include "parser/featurespace.h"
+#include "parser/parameters.h"
+#include "parser/options.h"
 
 namespace ltp {
 namespace parser {

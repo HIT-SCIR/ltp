@@ -5,11 +5,11 @@
 #include <bitset>
 #include <vector>
 
-#include "settings.h"
-#include "strutils.hpp"
-#include "sbcdbc.hpp"
-#include "smartmap.hpp"
-#include "chartypes.hpp"
+#include "segmentor/settings.h"
+#include "utils/strutils.hpp"
+#include "utils/sbcdbc.hpp"
+#include "utils/smartmap.hpp"
+#include "utils/chartypes.hpp"
 
 #if _WIN32
 // disable auto-link feature in boost
@@ -40,6 +40,13 @@ static boost::regex uripattern("((https?|ftp|file)"
 static bool flags_clear_check(int * flags, int left, int right) {
   for (int i = left; i < right; ++ i) {
     if (flags[i]) return false;
+  }
+  return true;
+}
+
+static bool dll_validity_check(const std::string & str) {
+  if(str.empty()) {
+    return false;
   }
   return true;
 }

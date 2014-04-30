@@ -1,5 +1,5 @@
-#include "decoder2o.h"
-#include "options.h"
+#include "parser/decoder2o.h"
+#include "parser/options.h"
 
 namespace ltp {
 namespace parser {

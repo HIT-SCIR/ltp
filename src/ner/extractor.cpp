@@ -1,8 +1,7 @@
-#include "extractor.h"
-#include "settings.h"
-
-#include "strutils.hpp"
-#include "chartypes.hpp"
+#include "ner/extractor.h"
+#include "ner/settings.h"
+#include "utils/strutils.hpp"
+#include "utils/chartypes.hpp"
 
 namespace ltp {
 namespace ner {

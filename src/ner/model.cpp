@@ -1,4 +1,4 @@
-#include "model.h"
+#include "ner/model.h"
 
 namespace ltp {
 namespace ner {

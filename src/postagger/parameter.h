@@ -2,8 +2,8 @@
 #define __LTP_POSTAGGER_PARAMETER_H__
 
 #include <iostream>
-#include "sparsevec.h"
-#include "featurevec.h"
+#include "utils/math/sparsevec.h"
+#include "utils/math/featurevec.h"
 
 namespace ltp {
 namespace postagger {

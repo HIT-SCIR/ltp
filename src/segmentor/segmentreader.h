@@ -2,11 +2,11 @@
 #define __LTP_SEGMENTOR_READER_H__
 
 #include <iostream>
-#include "settings.h"
-#include "instance.h"
-#include "rulebase.h"
-#include "strutils.hpp"
-#include "codecs.hpp"
+#include "segmentor/settings.h"
+#include "segmentor/instance.h"
+#include "segmentor/rulebase.h"
+#include "utils/strutils.hpp"
+#include "utils/codecs.hpp"
 
 namespace ltp {
 namespace segmentor {

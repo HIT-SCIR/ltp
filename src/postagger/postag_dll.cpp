@@ -1,11 +1,11 @@
-#include "postag_dll.h"
+#include "postagger/postag_dll.h"
+#include "postagger/postagger.h"
+#include "postagger/settings.h"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
+#include "utils/sbcdbc.hpp"
+#include "utils/tinybitset.hpp"
 
-#include "postagger.h"
-#include "settings.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
-#include "sbcdbc.hpp"
 #include <iostream>
 
 using namespace ltp::utility;
@@ -78,6 +78,8 @@ int postagger_postag(void * postagger,
         const std::vector<std::string> & words,
         std::vector<std::string> & tags) {
     // std::cout << "input str = " << str << std::endl;
+    if(!ltp::postagger::rulebase::dll_validity_check(words)) 
+       return 0; 
     PostaggerWrapper * wrapper = 0;
     wrapper = reinterpret_cast<PostaggerWrapper *>(postagger);
     return wrapper->postag(words, tags);

@@ -1,8 +1,8 @@
-#ifndef __LTP_NER_FEATURE_VECTOR_H__
-#define __LTP_NER_FEATURE_VECTOR_H__
+#ifndef __LTP_FEATURE_VECTOR_H__
+#define __LTP_FEATURE_VECTOR_H__
 
 namespace ltp {
-namespace ner {
+namespace math {
 
 struct FeatureVector {
 public:
@@ -25,13 +25,13 @@ public:
   }
 
 public:
-  int      n;
-  int *    idx;
-  double * val;
-  int      loff;
+  int       n;
+  int *     idx;
+  double *  val;
+  int       loff;
 };
 
-}     //  end for namespace segmentor
+}     //  end for namespace math
 }     //  end for namespace ltp
 
-#endif  //  end for __LTP_SEGMENTOR_FEATRUE_VECTOR_H__
+#endif  //  end for __LTP_FEATRUE_VECTOR_H__

@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include "strutils.hpp"
-#include "instance.h"
+#include "utils/strutils.hpp"
+#include "parser/instance.h"
 
 namespace ltp {
 namespace parser {

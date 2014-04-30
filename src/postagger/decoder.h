@@ -4,8 +4,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include "instance.h"
-#include "mat.h"
+#include "postagger/instance.h"
+#include "utils/math/mat.h"
 
 namespace ltp {
 namespace postagger {

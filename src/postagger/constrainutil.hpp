@@ -4,12 +4,12 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "model.h"
-#include "instance.h"
-#include "logging.hpp"
-#include "tinybitset.hpp"
-#include "strutils.hpp"
-#include "sbcdbc.hpp"
+#include "postagger/model.h"
+#include "postagger/instance.h"
+#include "utils/logging.hpp"
+#include "utils/tinybitset.hpp"
+#include "utils/strutils.hpp"
+#include "utils/sbcdbc.hpp"
 
 namespace ltp {
 namespace postagger {

@@ -1,24 +1,3 @@
-/*
- *  libutility - A collection of C/C++ libraries for text processing, 
- *  argument parsing, logging and some other thing.
- *
- *  Copyright (C) 2012-2012 Yijia Liu
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 #ifndef __STRLIB_X_H__
 #define __STRLIB_X_H__
 
@@ -65,20 +44,19 @@ inline std::string chomp(std::string str) {
 
 
 /*
- * I don't know why I write this function
+ * Cut off the following string after mark
  *
  *  @param  str     std::string     the string
  *  @param  mark    std::string     the cut out mark
  *  @return         std::string     the cut string
  */
 inline std::string cutoff(std::string str, std::string mark) {
-    size_t pos = str.find(mark);
-
-    if (pos == std::string::npos) {
-        return str;
-    } else {
-        return str.substr(0, pos);
-    }
+  size_t pos = str.find(mark);
+  if (pos == std::string::npos) {
+    return str;
+  } else {
+    return str.substr(0, pos);
+  }
 }
 
 /*
@@ -91,46 +69,45 @@ inline std::string cutoff(std::string str, std::string mark) {
  *  @return             std::vector<std::string> the words
  */
 inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
-    std::vector<std::string> ret;
+  std::vector<std::string> ret;
+  int numsplit = 0;
+  int len = str.size();
 
-    int numsplit = 0;
-    int len = str.size();
+  while (str.size() > 0) {
+    size_t pos = std::string::npos;
 
-    while (str.size() > 0) {
-        size_t pos = std::string::npos;
+    for (pos = 0; pos < str.size() && (str[pos] != ' '
+          && str[pos] != '\t'
+          && str[pos] != '\r'
+          && str[pos] != '\n'); ++ pos);
 
-        for (pos = 0; pos < str.size() && (str[pos] != ' '
-                    && str[pos] != '\t'
-                    && str[pos] != '\r'
-                    && str[pos] != '\n'); ++ pos);
-
-        if (pos == str.size()) {
-            pos = std::string::npos;
-        }
-
-        if (maxsplit >= 0 && numsplit < maxsplit) {
-            ret.push_back(str.substr(0, pos));
-            ++ numsplit;
-        } else if (maxsplit >= 0 && numsplit == maxsplit) {
-            ret.push_back(str);
-            ++ numsplit;
-        } else if (maxsplit == -1) {
-            ret.push_back(str.substr(0, pos));
-            ++ numsplit;
-        }
-
-        if (pos == std::string::npos) {
-            str = "";
-        } else {
-            for (; pos < str.size() && (str[pos] == ' '
-                        || str[pos] == '\t'
-                        || str[pos] == '\n'
-                        || str[pos] == '\r'); ++ pos);
-            str = str.substr(pos);
-        }
+    if (pos == str.size()) {
+      pos = std::string::npos;
     }
 
-    return ret;
+    if (maxsplit >= 0 && numsplit < maxsplit) {
+      ret.push_back(str.substr(0, pos));
+      ++ numsplit;
+    } else if (maxsplit >= 0 && numsplit == maxsplit) {
+      ret.push_back(str);
+      ++ numsplit;
+    } else if (maxsplit == -1) {
+      ret.push_back(str.substr(0, pos));
+      ++ numsplit;
+    }
+
+    if (pos == std::string::npos) {
+      str = "";
+    } else {
+      for (; pos < str.size() && (str[pos] == ' '
+            || str[pos] == '\t'
+            || str[pos] == '\n'
+            || str[pos] == '\r'); ++ pos);
+      str = str.substr(pos);
+    }
+  }
+
+  return ret;
 }
 
 
@@ -143,59 +120,42 @@ inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
  *  @param  maxsplit    std::string     the sep upperbound
  *  @return             std::vector<std::string> the words
  */
-inline std::vector<std::string> split_by_sep(std::string str, std::string sep = "", int maxsplit = -1) {
-    std::vector<std::string> ret;
+inline std::vector<std::string> split_by_sep(std::string str,
+    std::string sep = "", int maxsplit = -1) {
+  std::vector<std::string> ret;
 
-    int numsplit = 0;
-    int len      = str.size();
-    int sep_flag = (sep != "");
+  int numsplit = 0;
+  int len      = str.size();
+  int sep_flag = (sep != "");
 
-    while (str.size() > 0) {
-        size_t pos = std::string::npos;
+  if (sep == "") {
+    return split(str, maxsplit);
+  }
 
-        if (sep_flag) {
-            pos = str.find(sep);
-        } else {
-            for (pos = 0; pos < str.size(); ++ pos) {
-                if (str[pos] == ' '
-                        || str[pos] == '\t'
-                        || str[pos] == '\r'
-                        || str[pos] == '\n') {
-                    break;
-                }
-            }
-            if (pos == str.size()) {
-                pos = std::string::npos;
-            }
-        }
+  while (str.size() > 0) {
+    size_t pos = std::string::npos;
+    pos = str.find(sep);
 
-        if (maxsplit >= 0 && numsplit < maxsplit) {
-            ret.push_back(str.substr(0, pos));
-            ++ numsplit;
-        } else if (maxsplit >= 0 && numsplit == maxsplit) {
-            ret.push_back(str);
-            ++ numsplit;
-        } else if (maxsplit == -1) {
-            ret.push_back(str.substr(0, pos));
-            ++ numsplit;
-        }
-
-        if (pos == std::string::npos) {
-            str = "";
-        } else {
-            if (sep_flag) {
-                pos = pos + sep.size();
-            } else {
-                for (; pos < str.size() && (str[pos] == ' '
-                            || str[pos] == '\t'
-                            || str[pos] == '\n'
-                            || str[pos] == '\r'); ++ pos);
-            }
-            str = str.substr(pos);
-        }
+    if (maxsplit >= 0 && numsplit < maxsplit) {
+      ret.push_back(str.substr(0, pos));
+      ++ numsplit;
+    } else if (maxsplit >= 0 && numsplit == maxsplit) {
+      ret.push_back(str);
+      pos = std::string::npos;
+      ++ numsplit;
+    } else if (maxsplit == -1) {
+      ret.push_back(str.substr(0, pos));
+      ++ numsplit;
     }
 
-    return ret;
+    if (pos == std::string::npos) {
+      str = "";
+    } else {
+      pos = pos + sep.size();
+      str = str.substr(pos);
+    }
+  }
+  return ret;
 }
 
 
@@ -209,45 +169,43 @@ inline std::vector<std::string> split_by_sep(std::string str, std::string sep = 
  *  @return             std::vector<std::string> the words
  */
 inline std::vector<std::string> rsplit(std::string str, int maxsplit = -1) {
-    std::vector<std::string> ret;
+  std::vector<std::string> ret;
 
-    int numsplit = 0;
-    int len = str.size();
+  int numsplit = 0;
+  int len = -1;
 
-    while (str.size() > 0) {
-        size_t pos = std::string::npos;
+  while ((len = str.size()) > 0) {
+    // warning: should not use size_t, because it's unsigned integer
+    int pos = 0;
+    for (pos = len - 1; pos >= 0 && (str[pos] != ' '
+          && str[pos] != '\t'
+          && str[pos] != '\r'
+          && str[pos] != '\n'); -- pos);
 
-        for (pos = 0; pos < str.size() && (str[pos] != ' '
-                    && str[pos] != '\t'
-                    && str[pos] != '\r'
-                    && str[pos] != '\n'); ++ pos);
-
-        if (pos == str.size()) {
-            pos = std::string::npos;
-        }
-
-        if (maxsplit >= 0 && numsplit < maxsplit) {
-            ret.push_back(str.substr(0, pos));
-            ++ numsplit;
-        } else if (maxsplit >= 0 && numsplit == maxsplit) {
-            ret.push_back(str);
-            ++ numsplit;
-        } else if (maxsplit == -1) {
-            ret.push_back(str.substr(0, pos));
-            ++ numsplit;
-        }
-
-        if (pos == std::string::npos) {
-            str = "";
-        } else {
-            for (; pos < str.size() && (str[pos] == ' '
-                        || str[pos] == '\t'
-                        || str[pos] == '\n'
-                        || str[pos] == '\r'); ++ pos);
-            str = str.substr(pos);
-        }
+    if (maxsplit >= 0 && numsplit < maxsplit) {
+      ret.push_back(str.substr(pos + 1));
+      ++ numsplit;
+    } else if (maxsplit >= 0 && numsplit == maxsplit) {
+      ret.push_back(str);
+      pos = -1;
+      ++ numsplit;
+    } else if (maxsplit == -1) {
+      ret.push_back(str.substr(pos + 1));
+      ++ numsplit;
     }
-    return ret;
+
+    if (pos == -1) {
+      str = "";
+    } else {
+      for (; pos >= 0 && (str[pos] == ' '
+            || str[pos] == '\t'
+            || str[pos] == '\n'
+            || str[pos] == '\r'); -- pos);
+      str = str.substr(0, pos + 1);
+    }
+  }
+  std::reverse(ret.begin(), ret.end());
+  return ret;
 }
 
 /*
@@ -325,11 +283,12 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
  *  @return         std::string     the concatenated string
  */
 inline std::string join(std::vector<std::string> sep) {
-    std::string ret = "";
-    for (unsigned int i = 0; i < sep.size(); ++ i) {
-        ret = ret + sep[i];
-    }
-    return ret;
+  std::string ret = "";
+  for (unsigned int i = 0; i < sep.size(); ++ i) {
+    // trick, append is faster than plus operator
+    ret.append(sep[i]);
+  }
+  return ret;
 }
 
 
@@ -341,12 +300,15 @@ inline std::string join(std::vector<std::string> sep) {
  *  @return         std::string     the concatenated string
  */
 inline std::string join(std::vector<std::string> sep, std::string separator) {
-    if (sep.size() == 0) return "";
-    std::string ret = sep[0];
-    for (unsigned int i = 1; i < sep.size(); ++ i) {
-        ret = ret + separator + sep[i];
-    }
-    return ret;
+  if (sep.size() == 0) {
+    return "";
+  }
+  std::string ret = sep[0];
+  for (unsigned int i = 1; i < sep.size(); ++ i) {
+    ret.append(separator);
+    ret.append(sep[i]);
+  }
+  return ret;
 }
 
 /*

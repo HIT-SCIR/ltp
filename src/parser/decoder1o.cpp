@@ -1,4 +1,4 @@
-#include "decoder1o.h"
+#include "parser/decoder1o.h"
 
 namespace ltp {
 namespace parser {

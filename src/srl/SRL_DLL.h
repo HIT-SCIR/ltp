@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
+#include "rulebase.h"
 
 using namespace std;
 

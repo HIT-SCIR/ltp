@@ -1,12 +1,10 @@
-#include "postagger.h"
-
-#include "time.hpp"
-#include "logging.hpp"
-#include "instance.h"
-#include "extractor.h"
-#include "options.h"
-
-#include "postaggerio.h"
+#include "utils/time.hpp"
+#include "utils/logging.hpp"
+#include "postagger/postagger.h"
+#include "postagger/instance.h"
+#include "postagger/extractor.h"
+#include "postagger/options.h"
+#include "postagger/postaggerio.h"
 
 #include <iostream>
 #include <fstream>

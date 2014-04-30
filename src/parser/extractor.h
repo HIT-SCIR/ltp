@@ -6,13 +6,13 @@
 #include <vector>
 #include <list>
 
-#include "collections.h"
-#include "instance.h"
+#include "parser/collections.h"
+#include "parser/instance.h"
 
-#include "strvec.hpp"
-#include "template.hpp"
-#include "strutils.hpp"
-#include "strpaste.hpp"
+#include "utils/strvec.hpp"
+#include "utils/template.hpp"
+#include "utils/strutils.hpp"
+#include "utils/strpaste.hpp"
 
 #include "debug.h"
 

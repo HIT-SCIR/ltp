@@ -1,6 +1,5 @@
-#include "featurespace.h"
-
-#include "extractor.h"
+#include "segmentor/featurespace.h"
+#include "segmentor/extractor.h"
 
 namespace ltp {
 namespace segmentor {
