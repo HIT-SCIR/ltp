@@ -15,7 +15,7 @@ namespace ltp {
 namespace postagger {
 class Constrain{
 public:
-  static bool load_model_constrain(Model * model , const char * lexicon_file = NULL) {
+  static void load_model_constrain(Model * model , const char * lexicon_file = NULL) {
      if (NULL != lexicon_file) {
         std::ifstream lfs(lexicon_file);
         if (lfs) {
@@ -60,8 +60,7 @@ public:
             }
         }
     }
-    return true;
-  }//end func load_constrain
+  }//end func load_model_constrain
   static void load_inst_constrain(Instance * inst,Bitset *  original_bitset) {
       if(original_bitset){
         inst->external_lexicon_match_state.push_back((*original_bitset));
@@ -71,7 +70,7 @@ public:
         bitset.allsetones();
         inst->external_lexicon_match_state.push_back(bitset);
       }
-  }
+  }//end func load_inst_constrain
 };
 }
 }
