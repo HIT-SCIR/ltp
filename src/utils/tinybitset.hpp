@@ -1,40 +1,47 @@
-#ifndef __TINYBITSET__
-#define __TINYBITSET__
+#ifndef __LTP_UTIL_BITSET__
+#define __LTP_UTIL_BITSET__
 
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include "math.h"
 
 namespace ltp {
 namespace utility {
 
+const int kBucketSize = int( sizeof(unsigned) ) * 8;
+const int kN = log(kBucketSize) / log(2);
+
 struct Bitset{
 private:
-  bool nonemptyflag;
+  bool emptyflag;
   unsigned bits[4];
 public:
   Bitset(){
     memset(bits,0,sizeof(bits));
-    nonemptyflag = 0;
+    emptyflag = 1;
   }
   Bitset(int val){
     memset(bits,0,sizeof(bits));
-    nonemptyflag = 0;
+    emptyflag = 1;
     set(val);
   }
-  inline bool isnotempty() const{
-    return nonemptyflag;
+  inline bool empty() const{
+    return emptyflag;
+  }
+  inline bool allsetones(){
+    memset(bits, 0xff, sizeof(bits));
+    emptyflag = 1;
   }
   inline bool set(int val){
     int bucket_cap = sizeof(bits) / sizeof(unsigned);
-    int bucket_size = int( sizeof(unsigned) ) * 8;
-    int bucket_index = val / bucket_size;
-    int bucket_off = val % bucket_size;
+    int bucket_index = val >> kN;
+    int bucket_off = val & (kBucketSize - 1);
     if (bucket_index<0 || bucket_index >= bucket_cap){
       return false;
     }
     bits[bucket_index] |= (1<<bucket_off);
-    nonemptyflag = 1;
+    emptyflag = 0;
     return true;
   }
   inline bool merge(Bitset & other){
@@ -42,14 +49,13 @@ public:
     for(int i=0;i<bucket_cap;i++){
       bits[i] |= (other.bits[i]);
     }
-    nonemptyflag |= (other.nonemptyflag);
+    emptyflag &= (other.emptyflag);
     return true;
   }
   inline bool get(int val) const{
     int bucket_cap = sizeof(bits) / sizeof(unsigned);
-    int bucket_size = int( sizeof(unsigned) ) * 8;
-    int bucket_index = val / bucket_size;
-    int bucket_off = val % bucket_size;
+    int bucket_index = val >> kN;
+    int bucket_off = val & (kBucketSize - 1);
     if (bucket_index<0 || bucket_index >= bucket_cap){
       return false;
     }
@@ -58,22 +64,9 @@ public:
     }
     return false;
   }
-  inline int getrange() {
-    return int( sizeof(bits) ) * 8;
-  }
-  inline std::vector<int> debug() const{
-      std::vector<int> tmp;
-      for(int i=0;i<128;i++){
-        if(get(i)){
-          tmp.push_back(i);
-        }
-      }
-      return tmp;
-  }
   inline std::vector<int> getbitones() const{
     std::vector<int> ones;
     int bucket_cap = sizeof(bits) / sizeof(unsigned);
-    int bucket_size = int( sizeof(unsigned) ) * 8;
     unsigned x,y;
     int curbit;
     for(int i=0;i<bucket_cap;i++){
@@ -86,7 +79,7 @@ public:
           curbit++;
         }//end while y!=0
         if(curbit != -1){
-          curbit += (bucket_size * i);
+          curbit += (kBucketSize * i);
           ones.push_back(curbit);
         }//end if
         x = x&(x-1);
@@ -100,4 +93,4 @@ public:
 
 }       //  end for namespace utility
 }       //  end for namespace ltp
-#endif    //  end for __TINYBITSET__
+#endif    //  end for __LTP_UTIL_BITSET__

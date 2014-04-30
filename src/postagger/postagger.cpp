@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iomanip>
 
+
 #if _WIN32
 #include <Windows.h>
 #define sleep Sleep
@@ -665,48 +666,7 @@ Postagger::test(void) {
   // load exteranl lexicon
   const char * lexicon_file =test_opt.lexicon_file.c_str();
 
-  if (NULL != lexicon_file) {
-      std::ifstream lfs(lexicon_file);
-      if (lfs) {
-          std::string buffer;
-          std::vector<std::string> key_values;
-          int key_values_size;
-          std::string key;
-          int value;
-          Bitset *  original_bitset;
-          while (std::getline(lfs, buffer)) {
-              buffer = ltp::strutils::chomp(buffer);
-              if (buffer.size() == 0) {
-                  continue;
-              }
-              Bitset values;
-              key_values = ltp::strutils::split(buffer);
-              key_values_size = key_values.size();
-              key = ltp::strutils::chartypes::sbc2dbc_x(key_values[0]);
-              for(int i=1;i<key_values_size;i++){
-                  value = model->labels.index(key_values[i]);
-                  if (value != -1){
-                      if(!(values.set(value))) {
-                          std::cerr << "Tag named " << key_values[i] << " for word "<< key_values[0]<< " add external lexicon error."<<std::endl;
-                      }
-                  }
-                  else {
-                      std::cerr << "Tag named " << key_values[i] << " for word "<< key_values[0]<< " is not existed in LTP labels set."<<std::endl;
-                  }
-              }
-              if(values.isnotempty()){
-                original_bitset = model->external_lexicon.get(key.c_str());
-                if(original_bitset){
-                  original_bitset->merge(values);
-                }
-                else{
-                  model->external_lexicon.set(key.c_str(),values);
-                }
-              }
-
-          }
-      }
-  }
+  Constrain::load_model_constrain(model,lexicon_file);
 
   const char * test_file = test_opt.test_file.c_str();
 
@@ -736,12 +696,7 @@ Postagger::test(void) {
       
       if( int(model->external_lexicon.size()) != 0){
         original_bitset = model->external_lexicon.get((inst->forms[i]).c_str());
-        if(original_bitset){
-          inst->external_lexicon_match_state.push_back((*original_bitset));
-        }
-        else{
-          inst->external_lexicon_match_state.push_back(Bitset());
-        }
+        Constrain::load_inst_constrain(inst,original_bitset);
       }
     }
 

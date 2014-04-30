@@ -47,19 +47,12 @@ Decoder::viterbi_decode(const Instance * inst) {
     external_lexicon_flag = true;
   }
   for (int i = 0; i < len; ++ i) {
-    if(external_lexicon_flag && inst->external_lexicon_match_state[i].isnotempty())  {
-      for (int l = 0; l < L; ++ l) {
-        if(inst->external_lexicon_match_state[i].get(l)){
-          viterbi_decode_inner(inst,i,l);
-        }
-      }
-    }
-    else{
-      for (int l = 0; l < L; ++ l) {
+    for (int l = 0; l < L; ++ l) {
+      if(  !external_lexicon_flag  || inst->external_lexicon_match_state[i].get(l)){
         viterbi_decode_inner(inst,i,l);
       }
-    }
-  }
+    }//end for l
+  }//end for i
 }
 
 void
