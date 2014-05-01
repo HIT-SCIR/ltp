@@ -51,10 +51,16 @@ target_link_libraries (segmentor_unittest segmentor gtest pthread)
 set_target_properties(segmentor_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
-set (postagger_unittest_SRC ./postagger_unittest.cpp)
-add_executable (postagger_unittest ${postagger_unittest_SRC})
-target_link_libraries (postagger_unittest postagger gtest pthread)
-set_target_properties(postagger_unittest PROPERTIES
+set (postagger_internal_unittest_SRC ./postagger_internal_unittest.cpp)
+add_executable (postagger_internal_unittest ${postagger_internal_unittest_SRC})
+target_link_libraries (postagger_internal_unittest postagger gtest pthread)
+set_target_properties(postagger_internal_unittest PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
+
+set (postagger_interface_unittest_SRC ./postagger_interface_unittest.cpp)
+add_executable (postagger_interface_unittest ${postagger_interface_unittest_SRC})
+target_link_libraries (postagger_interface_unittest postagger gtest pthread)
+set_target_properties(postagger_interface_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
 set (parser_unittest_SRC ./parser_unittest.cpp)

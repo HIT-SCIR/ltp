@@ -13,65 +13,74 @@
 
 namespace ltp {
 namespace postagger {
-class Constrain{
-public:
-  static void load_model_constrain(Model * model , const char * lexicon_file = NULL) {
-     if (NULL != lexicon_file) {
-        std::ifstream lfs(lexicon_file);
-        if (lfs) {
-            std::string buffer;
-            std::vector<std::string> key_values;
-            int key_values_size;
-            std::string key;
-            int value;
-            Bitset *  original_bitset;
-            while (std::getline(lfs, buffer)) {
-                buffer = ltp::strutils::chomp(buffer);
-                if (buffer.size() == 0) {
-                    continue;
-                }
-                Bitset values;
-                key_values = ltp::strutils::split(buffer);
-                key_values_size = key_values.size();
-                if(key_values_size == 0 || key_values_size == 1) {
-                  continue;
-                }
-                key = ltp::strutils::chartypes::sbc2dbc_x(key_values[0]);
-                for(int i=1;i<key_values_size;i++){
-                    value = model->labels.index(key_values[i]);
-                    if (value != -1){
-                        if(!(values.set(value))) {
-                            WARNING_LOG("Tag named %s for word %s add external lexicon error.",key_values[i].c_str(),key_values[0].c_str());
-                        }
-                    }
-                    else {
-                        WARNING_LOG("Tag named %s for word %s is not existed in LTP labels set.",key_values[i].c_str(),key_values[0].c_str());
-                    }
-                }
-                if(!values.empty()) {
-                  original_bitset = model->external_lexicon.get(key.c_str());
-                  if(original_bitset){
-                    original_bitset->merge(values);
-                  }
-                  else{
-                    model->external_lexicon.set(key.c_str(),values);
-                  }
-                }
-            }
-        }
+
+static int load_constrain(Model * model, const char * lexicon_file = NULL) {
+  if (NULL == lexicon_file) {
+    return -1;
+  }
+
+  std::ifstream lfs(lexicon_file);
+  if (!lfs) {
+    return -1;
+  }
+
+  std::string buffer;
+  int num_lines = 1;
+  int num_entries = 0;
+
+  while (std::getline(lfs, buffer)) {
+    buffer = ltp::strutils::chomp(buffer);
+    if (buffer.size() == 0) {
+      WARNING_LOG("line %4d: empty, can not load constrain",
+          num_lines);
+      continue;
     }
-  }//end func load_model_constrain
-  static void load_inst_constrain(Instance * inst,Bitset *  original_bitset) {
-      if(original_bitset){
-        inst->external_lexicon_match_state.push_back((*original_bitset));
+
+    Bitset mask;
+    std::vector<std::string> tokens = ltp::strutils::split(buffer);
+
+    int num_tokens = tokens.size();
+
+    if (num_tokens <= 1) {
+      WARNING_LOG("line %4d: constrain in illegal format, no postag provided",
+          num_lines);
+      continue;
+    }
+
+    std::string key = strutils::chartypes::sbc2dbc_x(tokens[0]);
+
+    for (int i = 1; i < num_tokens; ++ i) {
+      int val = model->labels.index(tokens[i]);
+
+      if (val != -1) {
+        bool success = mask.set(val);
+        if (false == success) {
+          WARNING_LOG("line %4d: failed to compile constrain (%s,%s)",
+              num_lines, tokens[i].c_str(), tokens[0].c_str());
+        }
+      } else {
+        WARNING_LOG("line %4d: postag %s not exist.",
+            num_lines, tokens[i].c_str());
       }
-      else{
-        Bitset bitset;
-        bitset.allsetones();
-        inst->external_lexicon_match_state.push_back(bitset);
+    }
+
+    if (!mask.empty()) {
+      utility::Bitset * entry = model->external_lexicon.get(key.c_str());
+
+      if (entry) {
+        entry->merge(mask);
+      } else{
+        model->external_lexicon.set(key.c_str(), mask);
       }
-  }//end func load_inst_constrain
-};
+      ++ num_entries;
+    }
+
+    ++ num_lines;
+  }
+
+  return num_entries;
+}
+
 }
 }
 

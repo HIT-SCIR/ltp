@@ -44,7 +44,8 @@ public:
     emptyflag = 0;
     return true;
   }
-  inline bool merge(Bitset & other){
+
+  inline bool merge(const Bitset & other){
     int bucket_cap = sizeof(bits) / sizeof(unsigned);
     for(int i=0;i<bucket_cap;i++){
       bits[i] |= (other.bits[i]);
@@ -52,6 +53,7 @@ public:
     emptyflag &= (other.emptyflag);
     return true;
   }
+
   inline bool get(int val) const{
     int bucket_cap = sizeof(bits) / sizeof(unsigned);
     int bucket_index = val >> kN;

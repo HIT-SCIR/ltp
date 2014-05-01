@@ -662,9 +662,9 @@ Postagger::test(void) {
   TRACE_LOG("Number of dimension  [%d]", model->space.dim());
 
   // load exteranl lexicon
-  const char * lexicon_file =test_opt.lexicon_file.c_str();
+  const char * lexicon_file = test_opt.lexicon_file.c_str();
 
-  Constrain::load_model_constrain(model,lexicon_file);
+  load_constrain(model, lexicon_file);
 
   const char * test_file = test_opt.test_file.c_str();
 
@@ -691,10 +691,21 @@ Postagger::test(void) {
     inst->tagsidx.resize(len);
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
-      
-      if( int(model->external_lexicon.size()) != 0){
-        original_bitset = model->external_lexicon.get((inst->forms[i]).c_str());
-        Constrain::load_inst_constrain(inst,original_bitset);
+    }
+
+    inst->postag_constrain.resize(len);
+    if (model->external_lexicon.size() != 0) {
+      for (int i = 0; i < len; ++ i) {
+        Bitset * mask = model->external_lexicon.get((inst->forms[i]).c_str());
+        if (NULL == mask) {
+          inst->postag_constrain[i].merge((*mask));
+        } else {
+          inst->postag_constrain[i].allsetones();
+        }
+      }
+    } else {
+      for (int i = 0; i < len; ++ i) {
+        inst->postag_constrain[i].allsetones();
       }
     }
 

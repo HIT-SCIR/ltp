@@ -4,7 +4,6 @@
 #include "utils/cfgparser.hpp"
 #include "postagger/model.h"
 #include "postagger/decoder.h"
-#include "rulebase.h"
 #include "postagger/constrainutil.hpp"
 #include "utils/smartmap.hpp"
 #include "utils/tinybitset.hpp"
