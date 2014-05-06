@@ -204,8 +204,10 @@ Postagger::build_configuration(void) {
     Instance * inst = train_dat[i];
     int len = inst->size();
     inst->tagsidx.resize(len);
+    inst->postag_constrain.resize(len);
     for (int j = 0; j < len; ++ j) {
       inst->tagsidx[j] = model->labels.push( inst->tags[j] );
+      inst->postag_constrain[j].allsetones();
     }
   }
 }
@@ -620,8 +622,10 @@ Postagger::evaluate(double &p) {
   while ((inst = reader.next())) {
     int len = inst->size();
     inst->tagsidx.resize(len);
+    inst->postag_constrain.resize(len);
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
+      inst->postag_constrain[i].allsetones();
     }
 
     extract_features(inst, false);
