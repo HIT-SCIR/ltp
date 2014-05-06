@@ -85,9 +85,17 @@ int ner_recognize(void * ner,
     const std::vector<std::string> & words,
     const std::vector<std::string> & postags,
     std::vector<std::string> & tags) {
-  if(!ltp::ner::rulebase::dll_validity_check(words,postags)) {
+
+  if (words.size() != postags.size()) {
     return 0;
   }
+
+  for (int i = 0; i < words.size(); ++ i) {
+    if (words[i].empty() || postags.empty()) {
+      return 0;
+    }
+  }
+
   NERWrapper * wrapper = 0;
   wrapper = reinterpret_cast<NERWrapper *>(ner);
   return wrapper->recognize(words, postags, tags);

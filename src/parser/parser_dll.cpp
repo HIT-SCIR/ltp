@@ -88,10 +88,15 @@ int parser_parse(void * parser,
                  const std::vector<std::string> & postags,
                  std::vector<int> & heads,
                  std::vector<std::string> & deprels) {
-  // std::cout << "input str = " << str << std::endl;
-  if(!ltp::parser::rulebase::dll_validity_check(words,postags)) {
-    return -1;
+  if (words.size() != postags.size()) {
+    return 0;
   }
+  for (int i = 0; i < words.size(); ++ i) {
+    if (words[i].empty() || postags[i].empty()) {
+      return 0;
+    }
+  }
+
   ParserWrapper * wrapper = 0;
   wrapper = reinterpret_cast<ParserWrapper *>(parser);
   return wrapper->parse(words, postags, heads, deprels);

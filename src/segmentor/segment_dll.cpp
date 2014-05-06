@@ -116,9 +116,10 @@ int segmentor_release_segmentor(void * segmentor) {
 int segmentor_segment(void * segmentor,
     const std::string & str,
     std::vector<std::string> & words) {
-  // std::cout << "input str = " << str << std::endl;
-  if(!ltp::segmentor::rulebase::dll_validity_check(str))
+  if (str.empty()) {
     return 0;
+  }
+
   SegmentorWrapper * wrapper = 0;
   wrapper = reinterpret_cast<SegmentorWrapper *>(segmentor);
   return wrapper->segment(str.c_str(), words);

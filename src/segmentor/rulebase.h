@@ -44,12 +44,6 @@ static bool flags_clear_check(int * flags, int left, int right) {
   return true;
 }
 
-static bool dll_validity_check(const std::string & str) {
-  if(str.empty()) {
-    return false;
-  }
-  return true;
-}
 
 static void flags_color(int * flags, int left, int right, int color) {
   for (int i = left; i < right; ++ i) {

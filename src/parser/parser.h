@@ -11,7 +11,6 @@
 #include "utils/cfgparser.hpp"
 #include "utils/logging.hpp"
 #include "utils/time.hpp"
-#include "rulebase.h"
 
 using namespace std;
 using namespace ltp::utility;
