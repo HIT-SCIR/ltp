@@ -42,11 +42,9 @@ void Decoder::viterbi_decode_inner(const Instance * inst,int i,int l){
 void
 Decoder::viterbi_decode(const Instance * inst) {
   int len = inst->size();
-  bool external_lexicon_flag = false;
-
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
-      if(inst->postag_constrain[i].get(l)){
+      if(inst->postag_constrain[i].get(l)) {
         viterbi_decode_inner(inst,i,l);
       }
     }//end for l
