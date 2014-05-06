@@ -59,7 +59,7 @@ static int load_constrain(Model * model, const char * lexicon_file = NULL) {
               num_lines, tokens[i].c_str(), tokens[0].c_str());
         }
       } else {
-        WARNING_LOG("line %4d: postag %s not exist.",
+        WARNING_LOG("line %4d: postag \"%s\" not exist.",
             num_lines, tokens[i].c_str());
       }
     }
@@ -84,4 +84,4 @@ static int load_constrain(Model * model, const char * lexicon_file = NULL) {
 }
 }
 
-#endif
+#endif  //  end for __LTP_POSTAGGER_CONSTRAINUTIL_H__

@@ -63,6 +63,33 @@ TEST(postag_interface_unittest, test_empty_word) {
   postagger_release_postagger(engine);
 }
 
+TEST(postag_interface_unittest, test_speed) {
+  void * engine = postagger_create_postagger("./ltp_data/pos.model");
+  EXPECT_TRUE(NULL != engine);
+
+  std::ifstream ifs("./test_data/unittest/test_data.segmented");
+  std::string line;
+  std::string word;
+  std::vector<std::string> words;
+  std::vector<std::string> tags;
+  int nr_tokens = 0;
+
+  long start_time = clock();
+  while (std::getline(ifs, line, '\n')) {
+    std::stringstream S(line);
+    words.clear();
+    tags.clear();
+    while (S >> word) {
+      words.push_back(word);
+    }
+    postagger_postag(engine, words, tags);
+    nr_tokens += words.size();
+  }
+  double throughput_per_millisecond = (nr_tokens / ((clock() -start_time) / 1000.));
+  std::cerr << throughput_per_millisecond << std::endl;
+  postagger_release_postagger(engine);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

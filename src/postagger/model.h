@@ -44,7 +44,7 @@ public:
   FeatureSpace        space;
   Parameters          param;
   //SmartMap<Bitset>  internal_lexicon;
-  SmartMap<Bitset>  external_lexicon;
+  SmartMap<Bitset>    external_lexicon;
 
 private:
   void write_uint(std::ostream & out, unsigned int val) {

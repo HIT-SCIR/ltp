@@ -35,16 +35,15 @@ TEST(template_unittest, test_template_empty) {
   EXPECT_STREQ("1=",feat.c_str());
 }
 
-TEST(template_unittest, test_template_null) {
+TEST(template_DeathTest, test_template_null) {
   Template templates("1={test}");
   Template::Data data;
   // Till now (2014-04-30) this usage will result in a core
   // dump in LTP
-  /*char * ptr = NULL;
-  data.set("test",ptr);
+  char * ptr = NULL;
+  data.set("test", ptr);
   string feat;
-  templates.render(data,feat);
-  EXPECT_STREQ("1=",feat.c_str());*/
+  ASSERT_DEATH(templates.render(data, feat), "");
 }
 
 TEST(template_unittest, test_template_chinese) {
