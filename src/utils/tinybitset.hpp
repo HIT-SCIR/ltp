@@ -10,7 +10,7 @@ namespace ltp {
 namespace utility {
 
 const int kBucketSize = int( sizeof(unsigned) ) * 8;
-const int kN = log(kBucketSize) / log(2);
+const int kN = int( log(kBucketSize)  / log(2) );
 
 struct Bitset{
 private:
