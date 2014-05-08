@@ -667,9 +667,7 @@ Postagger::test(void) {
 
   // load exteranl lexicon
   const char * lexicon_file = test_opt.lexicon_file.c_str();
-
   load_constrain(model, lexicon_file);
-
   const char * test_file = test_opt.test_file.c_str();
 
   ifstream ifs(test_file);
@@ -696,12 +694,11 @@ Postagger::test(void) {
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
     }
-
     inst->postag_constrain.resize(len);
     if (model->external_lexicon.size() != 0) {
       for (int i = 0; i < len; ++ i) {
         Bitset * mask = model->external_lexicon.get((inst->forms[i]).c_str());
-        if (NULL == mask) {
+        if (NULL != mask) {
           inst->postag_constrain[i].merge((*mask));
         } else {
           inst->postag_constrain[i].allsetones();
@@ -712,7 +709,6 @@ Postagger::test(void) {
         inst->postag_constrain[i].allsetones();
       }
     }
-
     extract_features(inst);
     calculate_scores(inst, true);
 
