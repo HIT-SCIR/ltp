@@ -2,9 +2,10 @@
 #define __LTP_POSTAGGER_DECODER_H__
 
 #include <iostream>
+#include <map>
 #include <vector>
-#include "instance.h"
-#include "mat.h"
+#include "postagger/instance.h"
+#include "utils/math/mat.h"
 
 namespace ltp {
 namespace postagger {
@@ -35,9 +36,9 @@ class Decoder {
 public:
   Decoder (int _L) : L(_L) {}
   void decode(Instance * inst);
-
 private:
   void init_lattice(const Instance * inst);
+  void viterbi_decode_inner(const Instance * inst,int i,int l);
   void viterbi_decode(const Instance * inst);
   void get_result(Instance * inst);
   void free_lattice();

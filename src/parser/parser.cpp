@@ -1,11 +1,10 @@
-#include "parser.h"
-#include "options.h"
-#include "decoder1o.h"
-#include "decoder2o.h"
-#include "conllreader.h"
-#include "conllwriter.h"
-
-#include "treeutils.hpp"
+#include "parser/parser.h"
+#include "parser/options.h"
+#include "parser/decoder1o.h"
+#include "parser/decoder2o.h"
+#include "parser/conllreader.h"
+#include "parser/conllwriter.h"
+#include "parser/treeutils.hpp"
 
 #if _WIN32
 #include <Windows.h>

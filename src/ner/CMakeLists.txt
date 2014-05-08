@@ -1,8 +1,4 @@
-include_directories (
-    ${SOURCE_DIR}/ner
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math)
-#    ${THIRDPARTY_DIR}/boost/include)
+include_directories (${SOURCE_DIR}/ ${THIRDPARTY_DIR}/boost/include/)
 
 set (ner_VERSION "0.0.1")
 

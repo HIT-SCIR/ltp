@@ -1,9 +1,13 @@
 #ifndef __LTP_POSTAGGER_POSTAGGER_H__
 #define __LTP_POSTAGGER_POSTAGGER_H__
 
-#include "cfgparser.hpp"
-#include "model.h"
-#include "decoder.h"
+#include "utils/cfgparser.hpp"
+#include "postagger/model.h"
+#include "postagger/decoder.h"
+#include "postagger/constrainutil.hpp"
+#include "utils/smartmap.hpp"
+#include "utils/tinybitset.hpp"
+
 
 namespace ltp {
 namespace postagger {

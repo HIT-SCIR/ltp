@@ -2,11 +2,11 @@
 #define __LTP_NER_IO_H__
 
 #include <iostream>
-#include "settings.h"
-#include "instance.h"
-#include "strutils.hpp"
-#include "sbcdbc.hpp"
-#include "codecs.hpp"
+#include "ner/settings.h"
+#include "ner/instance.h"
+#include "utils/strutils.hpp"
+#include "utils/sbcdbc.hpp"
+#include "utils/codecs.hpp"
 
 namespace ltp {
 namespace ner {

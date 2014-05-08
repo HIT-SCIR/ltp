@@ -5,11 +5,11 @@
 #include <bitset>
 #include <vector>
 
-#include "settings.h"
-#include "strutils.hpp"
-#include "sbcdbc.hpp"
-#include "smartmap.hpp"
-#include "chartypes.hpp"
+#include "segmentor/settings.h"
+#include "utils/strutils.hpp"
+#include "utils/sbcdbc.hpp"
+#include "utils/smartmap.hpp"
+#include "utils/chartypes.hpp"
 
 #if _WIN32
 // disable auto-link feature in boost
@@ -44,6 +44,7 @@ static bool flags_clear_check(int * flags, int left, int right) {
   }
   return true;
 }
+
 
 static void flags_color(int * flags, int left, int right, int color) {
   for (int i = left; i < right; ++ i) {

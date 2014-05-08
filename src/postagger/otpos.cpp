@@ -1,7 +1,7 @@
 #include <iostream>
-#include "cfgparser.hpp"
-#include "logging.hpp"
-#include "postagger.h"
+#include "utils/cfgparser.hpp"
+#include "utils/logging.hpp"
+#include "postagger/postagger.h"
 
 using namespace ltp::utility;
 using namespace ltp::postagger;

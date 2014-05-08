@@ -1,10 +1,9 @@
-#include "options.h"
-#include "featurespace.h"
-#include "extractor.h"
-
-#include "treeutils.hpp"
-#include "strvec.hpp"
-#include "logging.hpp"
+#include "parser/options.h"
+#include "parser/featurespace.h"
+#include "parser/extractor.h"
+#include "parser/treeutils.hpp"
+#include "utils/strvec.hpp"
+#include "utils/logging.hpp"
 
 namespace ltp {
 namespace parser {

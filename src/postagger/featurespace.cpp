@@ -1,6 +1,5 @@
-#include "featurespace.h"
-
-#include "extractor.h"
+#include "postagger/featurespace.h"
+#include "postagger/extractor.h"
 
 namespace ltp {
 namespace postagger {

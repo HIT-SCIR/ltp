@@ -1,9 +1,6 @@
-include_directories (./
-    ${SOURCE_DIR}/postagger
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math)
+include_directories (  ${SOURCE_DIR}/ )
 
-set (postagger_VERSION "0.0.1")
+set (postagger_VERSION "0.0.2")
 
 set (postagger_SRC
     options.cpp

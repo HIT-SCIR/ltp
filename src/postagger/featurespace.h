@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include "smartmap.hpp"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace postagger {

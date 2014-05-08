@@ -5,9 +5,9 @@
  * Author: LIU, Yijia
  */
 #include <iostream>
-#include "cfgparser.hpp"
-#include "logging.hpp"
-#include "parser.h"
+#include "utils/cfgparser.hpp"
+#include "utils/logging.hpp"
+#include "parser/parser.h"
 
 using namespace ltp::parser;
 

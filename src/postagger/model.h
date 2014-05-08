@@ -1,10 +1,11 @@
 #ifndef __LTP_POSTAGGER_MODEL_H__
 #define __LTP_POSTAGGER_MODEL_H__
 
-#include "featurespace.h"
-#include "parameter.h"
+#include "postagger/featurespace.h"
+#include "postagger/parameter.h"
 
-#include "smartmap.hpp"
+#include "utils/smartmap.hpp"
+#include "utils/tinybitset.hpp"
 
 namespace ltp {
 namespace postagger {
@@ -42,6 +43,8 @@ public:
   IndexableSmartMap   labels;
   FeatureSpace        space;
   Parameters          param;
+  //SmartMap<Bitset>  internal_lexicon;
+  SmartMap<Bitset>    external_lexicon;
 
 private:
   void write_uint(std::ostream & out, unsigned int val) {
