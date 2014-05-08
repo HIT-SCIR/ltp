@@ -1,5 +1,5 @@
-#ifndef __LTP_UTILITY_ARGTABLE_HPP__
-#define __LTP_UTILITY_ARGTABLE_HPP__
+#ifndef __LTP_UTILS_ARGTABLE_HPP__
+#define __LTP_UTILS_ARGTABLE_HPP__
 
 #include <iostream>
 #include <cstring>
@@ -16,7 +16,7 @@ public:
         ARG_DBL,
         ARG_STR};
 
-    /*
+    /**
      * The constructor
      */
     OptionParser() : usage(0) {
@@ -30,7 +30,7 @@ public:
         }
     }
 
-    /*
+    /**
      * The destructor
      */
     ~OptionParser() {
@@ -41,7 +41,7 @@ public:
         if (usage) delete [](usage);
     }
 
-    /*
+    /**
      * Add an option.
      *
      *  @param[in]  short_opt   short option name for the option.
@@ -80,7 +80,7 @@ public:
         entries.push_back( entry );
     }
 
-    /*
+    /**
      * Parse the option from command line argument.
      *
      *  @param[in]  argc    number of arguments.
@@ -130,7 +130,7 @@ public:
         return 0;
     }
 
-    /*
+    /**
      * Print the glossary for the option.
      */
     void print_glossary() {
@@ -150,7 +150,7 @@ public:
         fprintf(stderr, "\n");
     }
 
-    /*
+    /**
      * Return the pointer to the value
      *
      *  @param[in]  dest_name   destination name for the option.
@@ -231,4 +231,4 @@ private:
 
 }       //  end for namespace utility
 }       //  end for namespace ltp
-#endif  //  end for
+#endif  //  end for __LTP_UTILS_ARGTABLE_HPP__

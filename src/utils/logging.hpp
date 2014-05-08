@@ -1,26 +1,5 @@
-/*
- *  libutilities - A collection of C/C++ libraries for text processing,
- *  argument parsing, logging and some other thing.
- *
- *  Copyright (C) 2012-2012 Yijia Liu
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
-#ifndef __UL_LOGGING_X_H__
-#define __UL_LOGGING_X_H__
+#ifndef __LTP_UTILS_LOGGING_HPP__
+#define __LTP_UTILS_LOGGING_HPP__
 
 #include "spthread.hpp"
 
@@ -43,7 +22,7 @@
 template<typename T>
 class ul_logger {
 public:
-    /*
+    /**
      * Get instance of logger
      *
      *  @return     ul_logger   the logger instance
@@ -61,7 +40,7 @@ public:
         return _instance;
     }
 
-    /*
+    /**
      * If the logger haven't been instantiatd, instantiate with log file
      * path and write log level, else return
      *
@@ -86,7 +65,7 @@ public:
     }
 
 protected:
-    /*
+    /**
      * method for allocate a logger
      *
      *  @param  filename    the filename for log file
@@ -127,7 +106,7 @@ protected:
     }
 
 public:
-    /*
+    /**
      * function for writing log
      *
      *  @param  lvl     log level
@@ -174,7 +153,8 @@ public:
         va_end(lst);
         return;
     }
-    /*
+
+    /**
      *
      *
      *
@@ -247,5 +227,5 @@ private:
 template<typename T> ul_logger<T> *   ul_logger<T>::_instance = NULL;
 template<typename T> spthread_mutex_t ul_logger<T>::mutex;
 
-#endif  // end for __UL_LOGGING_X_H__
+#endif  // end for __LTP_UTILS_LOGGING_HPP__
 
