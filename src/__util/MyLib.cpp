@@ -21,7 +21,7 @@ void replace_char_by_char(string &str, char c1, char c2)
 }
 
 void split_bychars(const string& str, vector<string> & vec, const char *sep)
-{	//assert(vec.empty());
+{   //assert(vec.empty());
     vec.clear();
     string::size_type pos1 = 0, pos2 = 0;
     string word;
@@ -58,7 +58,6 @@ bool my_getline(ifstream &inf, string &line)
     while (end >= 0 && (line[end] == '\r' || line[end] == '\n')) {
         line.erase(end--);
     }
-
     return true;
 }
 
@@ -132,7 +131,7 @@ void split_pair_vector(const vector< pair<int, string> > &vecPair, vector<int> &
 }
 
 void split_bychar(const string& str, vector<string>& vec,
-        const char separator)
+         const char separator)
 {
     //assert(vec.empty());
     vec.clear();
@@ -208,13 +207,13 @@ void split_sentence(const string& line, vector<string>& vecSentence)
     split_to_pair(line, vecPair);
     int size = vecPair.size();
     string sentence = "";
-
+    
     for(int i = 0; i < size; i++)
     {
-        if (vecPair[i].first == "??" || vecPair[i].first == "??" || vecPair[i].first == "??") 
+        if (vecPair[i].first == "。" || vecPair[i].first == "！" || vecPair[i].first == "？") 
         {
             sentence += vecPair[i].first + "/" + vecPair[i].second + " ";
-            if (i+1 < size && vecPair[i+1].first == "??") 
+            if (i+1 < size && vecPair[i+1].first == "”") 
             {
                 sentence += vecPair[i+1].first + "/" + vecPair[i+1].second + " ";
                 i++;
@@ -241,7 +240,7 @@ void chomp(string& str)
     else
     {
         str = str.substr(pos1, pos2-pos1+1);
-    }	
+    }   
 }
 
 int common_substr_len(string str1, string str2)
@@ -272,13 +271,13 @@ int common_substr_len(string str1, string str2)
                 {
                     maxSubstrLen = substrLen;
                 }
-
+                
                 if (maxSubstrLen >= minLen-posBeg-1) 
                 {
                     return maxSubstrLen;
-                }				
+                }               
             }
-        }		
+        }       
     }
     return 0;
 }
@@ -306,7 +305,7 @@ bool is_chinese_char(string& str)
     }
 }
 
-string separators = "???????????????????????????????棯??\",.?!:'/;??()%"; //all defined separators
+string separators = "。，？！、：—“”《》（）％￥℃／·\",.?!:'/;；()%"; //all defined separators
 
 bool is_separator(string& str)
 {
@@ -353,7 +352,7 @@ void split_to_sentence_by_period(const string& line, vector<string>& vecSentence
     int pos1 = 0, pos2 = 0;
     string sentence;
 
-    while((pos2 = find_GB_char(line, "??", pos1)) != -1)
+    while((pos2 = find_GB_char(line, "。", pos1)) != -1)
     {
         sentence = line.substr(pos1, pos2-pos1+2);
         pos1 = pos2 + 2;
@@ -385,10 +384,10 @@ void split_by_separator(const string& str, vector<string>& vec, const string sep
 
 bool is_chinese_number(const string& str)
 {
-    if (str == "һ" || str == "??" || str == "??" || str == "??" || str == "??" ||
-            str == "??" || str == "??" || str == "??" || str == "??" || str == "ʮ" ||
-            str == "��" || str == "??" || str == "??" || str == "??" || str == "??" ||
-            str == "ǧ" || str == "??" || str == "??") 
+    if (str == "一" || str == "二" || str == "三" || str == "四" || str == "五" ||
+        str == "六" || str == "七" || str == "八" || str == "九" || str == "十" ||
+        str == "两" || str == "几" || str == "零" || str == "〇" || str == "百" ||
+        str == "千" || str == "万" || str == "亿") 
     {
         return true;
     }
@@ -400,9 +399,9 @@ bool is_chinese_number(const string& str)
 
 //void compute_time()
 //{
-//	clock_t tick = clock();
-//	double t = (double)tick / CLK_TCK;
-//	cout << endl << "The time used: " << t << " seconds." << endl;
+//  clock_t tick = clock();
+//  double t = (double)tick / CLK_TCK;
+//  cout << endl << "The time used: " << t << " seconds." << endl;
 //}
 
 string word(string& word_pos)
@@ -446,4 +445,3 @@ void getCharacters_gbk(const string &str, vector<string> &vecCharacter) {
         pos += char_num;
     }
 }
-

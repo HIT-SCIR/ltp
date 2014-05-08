@@ -49,7 +49,7 @@ public:
     if (model->external_lexicon.size() != 0) {
       for (int i = 0; i < len; ++ i) {
         Bitset * mask = model->external_lexicon.get((inst->forms[i]).c_str());
-        if (NULL == mask) {
+        if (NULL != mask) {
           inst->postag_constrain[i].merge((*mask));
         } else {
           inst->postag_constrain[i].allsetones();
