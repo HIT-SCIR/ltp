@@ -29,7 +29,7 @@ public:
     }
 
     if (ltp::postagger::load_constrain(model,lexicon_file) < 0) {
-      return false;
+      WARNING_LOG("No constraints is loaded.");
     }
 
     return true;
