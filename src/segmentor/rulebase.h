@@ -33,7 +33,8 @@ const unsigned HAVE_ENG_ON_RIGHT   = (1<<6);
 const unsigned HAVE_URI_ON_LEFT  = (1<<7);
 const unsigned HAVE_URI_ON_RIGHT   = (1<<8);
 
-static boost::regex engpattern("(([A-Za-z]+)([\\-'\\.][A-Za-z]+)*)");
+static boost::regex engpattern("([A-Za-z0-9\\.]*[A-Za-z\\-]((—||[\\-'\\.])[A-Za-z0-9]+)*)");
+//static boost::regex engpattern("(([A-Za-z]+)([\\-'\\.][A-Za-z]+)*)");
 static boost::regex uripattern("((https?|ftp|file)"
     "://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|])");
 

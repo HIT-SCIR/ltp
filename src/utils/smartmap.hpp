@@ -1,25 +1,5 @@
-/*
- *  libutility - A collection of C/C++ libraries for text processing, 
- *  argument parsing, logging and some other thing.
- *
- *  Copyright (C) 2012-2013 Yijia Liu
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-#ifndef __SMARTMAP_HPP__
-#define __SMARTMAP_HPP__
+#ifndef __LTP_UTILS_SMARTMAP_HPP__
+#define __LTP_UTILS_SMARTMAP_HPP__
 
 #include <iostream>
 #include <algorithm>
@@ -136,7 +116,7 @@ public:
         clear();
     }
 
-    /*
+    /**
      * Set the key, value pair to SmartMap, Return true on
      * successfully set, otherwise false
      *
@@ -251,7 +231,7 @@ public:
         return ret;
     }
 
-    /*
+    /**
      * Get value of the key. Store the value to val and return
      * true when the key exist. Otherwise false
      *
@@ -271,7 +251,7 @@ public:
         return true;
     }
 
-    /*
+    /**
      * Get value of the key. Return the value's pointer when 
      * the key exist. Otherwise NULL
      *
@@ -312,7 +292,7 @@ public:
         return _hash_buffer[p].__freq;
     }
 
-    /*
+    /**
      * Return whether the key exist.
      *
      *  @param[in]  key         the key
@@ -358,7 +338,7 @@ public:
         }
     }
 
-    /*
+    /**
      * Get number of entries
      *
      *  @return int     the number of entries.
@@ -376,7 +356,7 @@ public:
     }
 
 
-    /*
+    /**
      * Dump out SmartMap
      *
      *  @param[in/out]  out     the output file stream
@@ -400,7 +380,7 @@ public:
         out.write(reinterpret_cast<const char *>(_val_buffer),      sizeof(T) * _num_entries);
     }
 
-    /*
+    /**
      * Load SmartMap dump from disk
      *
      *  @param[in]  in      the input file stream
@@ -503,7 +483,7 @@ protected:
     hash_node_t *   _latest_hash_node;
 
 protected:
-    /*
+    /**
      * internal function for appending a (key, value, frequence) 
      * tuple into the pool
      *
@@ -574,7 +554,7 @@ protected:
         ++ (_hash_buckets_volumn[idx]);
     }
 
-    /*
+    /**
      * Internal function for find a key in hash table. Return the
      * position of the key in hash buffer. If key not found, 
      * return -1.
@@ -635,7 +615,7 @@ private:
     int * entries;
 
 public:
-    /*
+    /**
      * push a key to the labelcollections
      *
      *  @param[in]  key     the key
@@ -673,7 +653,7 @@ public:
         return push(key.c_str());
     }
 
-    /*
+    /**
      * get the key whose index is i
      *
      *  @param[in]  i               the index
@@ -687,7 +667,7 @@ public:
         }
     }
 
-    /*
+    /**
      * get the index of the key. if the key doesn't exist, return -1
      *
      *  @param[in]  key             the key
@@ -706,7 +686,7 @@ public:
         return index(key.c_str());
     }
 
-    /*
+    /**
      * dump the collection to output stream
      *
      *  @param[out] out     the output stream
@@ -716,7 +696,7 @@ public:
         out.write(reinterpret_cast<const char *>(entries), sizeof(int) * _num_entries);
     }
 
-    /*
+    /**
      * load the collections from input stream.
      *
      *  @param[in]  in      the input stream.
