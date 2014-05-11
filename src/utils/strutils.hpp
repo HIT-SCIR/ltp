@@ -12,7 +12,7 @@
 namespace ltp { //LTP_NAMESPACE_BEGIN
 namespace strutils { //LTP_STRING_NAMESPACE_BEGIN
 
-/*
+/**
  * chomp a string
  *
  *  @param  str     std::string
@@ -43,7 +43,7 @@ inline std::string chomp(std::string str) {
 }
 
 
-/*
+/**
  * Cut off the following string after mark
  *
  *  @param  str     std::string     the string
@@ -59,7 +59,7 @@ inline std::string cutoff(std::string str, std::string mark) {
   }
 }
 
-/*
+/**
  * Return a list of words of string str, the word are separated by
  * separator.
  *
@@ -111,7 +111,7 @@ inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
 }
 
 
-/*
+/**
  * Return a list of words of string str, the word are separated by
  * separator.
  *
@@ -159,7 +159,7 @@ inline std::vector<std::string> split_by_sep(std::string str,
 }
 
 
-/*
+/**
  * Return a list of words of string str, the word are separated by
  * separator.
  *
@@ -208,7 +208,7 @@ inline std::vector<std::string> rsplit(std::string str, int maxsplit = -1) {
   return ret;
 }
 
-/*
+/**
  * Return a list of words of string str, the word are separated by
  * separator.
  *
@@ -276,7 +276,7 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
     return ret;
 }
 
-/*
+/**
  * Concatenate a list of words
  *
  *  @param  words   std::vector<std::string>    the words
@@ -292,7 +292,7 @@ inline std::string join(std::vector<std::string> sep) {
 }
 
 
-/*
+/**
  * Concatenate a list of words invertening the sep
  *
  *  @param  words   std::vector<std::string>    the words
@@ -311,7 +311,7 @@ inline std::string join(std::vector<std::string> sep, std::string separator) {
   return ret;
 }
 
-/*
+/**
  * Return True if string starts with the prefix, otherwise return False
  *
  *  @param  str     const std::string&      the string
@@ -336,7 +336,7 @@ inline bool endswith(const std::string &str, const std::string &suffix) {
 }
 
 
-/*
+/**
  * Return True if string is integer
  *
  *  @param  str     const std::string&      the string
@@ -356,7 +356,7 @@ inline bool is_int(const std::string &str) {
     return true;
 }
 
-/*
+/**
  * Return True if string is double
  *
  *  @param  str     const std::string&      the string
@@ -381,7 +381,7 @@ inline bool is_double(const std::string &str) {
     return true;
 }
 
-/*
+/**
  * Convert a string to a plain integer
  *
  *  @param  str     const std::string&      the string
@@ -402,7 +402,7 @@ inline int to_int(const std::string &str) {
     return sign * ret;
 }
 
-/*
+/**
  * Convert a string to a double float
  *
  *  @param  str     const std::string&      the string
@@ -449,7 +449,7 @@ inline void clean(std::string &str) {
 }
 
 
-/*
+/**
  *
  *
  *

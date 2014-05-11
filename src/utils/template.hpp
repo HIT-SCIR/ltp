@@ -1,8 +1,6 @@
-/*
- * A light weight template engine which support few syntax.
- * It's designed for feature extraction in various NLP tasks.
- * Speed is mainly concerned.
- */
+// A light weight template engine which support few syntax.
+// It's designed for feature extraction in various NLP tasks.
+// Speed is mainly concerned.
 #ifndef __TEMPLATE_HPP__
 #define __TEMPLATE_HPP__
 
@@ -103,7 +101,7 @@ public:
   // The template data class
   class Data {
   public:
-    /*
+    /**
      * Constructor for Template::Data
      */
     // make a copy from the Token_Cache and linke all value
@@ -128,7 +126,7 @@ public:
       delete [](_values);
     }
 
-    /*
+    /**
      * set (key, value) pair to the Template::Data
      *
      *  @param[in]  key     the key
@@ -153,7 +151,7 @@ public:
       return false;
     }
 
-    /*
+    /**
      * A string wrapper for bool set(const char * key, const char * val)
      *
      *  @param[in]  key     the key
@@ -242,7 +240,7 @@ public:
     }
   }
 
-  /*
+  /**
    * Generate the template from templates and save it into a string
    *
    *  @param[in]  data    the template data

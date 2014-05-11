@@ -1,9 +1,7 @@
-/*
- * This code is modified from @file utf.h in @project zpar<
- * 
- *  @author: ZHANG, Yue <http://www.sutd.edu.sg/yuezhang.aspx>
- *  @modifier: LIU, Yijia <yjliu@ir.hit.edu.cn>
- */
+// This code is modified from @file utf.h in zpar project
+//
+//  @author: ZHANG, Yue <http://www.sutd.edu.sg/yuezhang.aspx>
+//  @modifier: LIU, Yijia <yjliu@ir.hit.edu.cn>
 #ifndef __CODECS_HPP__
 #define __CODECS_HPP__
 
