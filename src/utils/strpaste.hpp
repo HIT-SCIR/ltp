@@ -1,3 +1,4 @@
+// This serial function is use for optimizing the string concatenation
 #ifndef __STRING_PASTE_HPP__
 #define __STRING_PASTE_HPP__
 
