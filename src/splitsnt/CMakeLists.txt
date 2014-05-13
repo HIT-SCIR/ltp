@@ -13,4 +13,6 @@ set_target_properties (splitsnt_shared_lib    PROPERTIES
     VERSION         ${splitsnt_VERSION}
     OUTPUT_NAME     splitsnt)
 
-
+configure_file (
+    SplitSentence.h
+    ${INCLUDE_OUTPUT_PATH}/ltp/SplitSentence.h)

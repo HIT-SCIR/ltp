@@ -31,12 +31,30 @@ int DoSRL(
         const vector< pair<int, string> > &parse,
         vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult)
 {
-    if(!ltp::srl::rulebase::dll_validity_check(words,POSs,NEs,parse)) {
-        return -1;
+  if (words.size() != POSs.size()
+      || words.size() != parse.size()
+      || words.size() != NEs.size()) {
+    return -1;
+  }
+
+  int len = words.size();
+  for (int i = 0; i < len; ++ i) {
+    if (words[i].empty() || POSs[i].empty() || NEs.empty()) {
+      return -1;
     }
-    tmp_vecSRLResult.clear();
-    if (0 == g_depSRL.GetSRLResult(words, POSs, NEs, parse, tmp_vecSRLResult)) return -1;;
-    return tmp_vecSRLResult.size();
+    int father = parse[i].first;
+    if (father < -1 || father >= len || parse[i].second.empty()) {
+      return -1;
+    }
+  }
+
+  tmp_vecSRLResult.clear();
+
+  if (0 == g_depSRL.GetSRLResult(words, POSs, NEs, parse, tmp_vecSRLResult)) {
+    return -1;
+  }
+
+  return tmp_vecSRLResult.size();
 }
 
 int GetSRLResult_size(

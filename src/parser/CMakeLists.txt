@@ -33,4 +33,4 @@ set_target_properties (lgdpj
 
 configure_file (
     parser_dll.h
-    ${INCLUDE_OUTPUT_PATH}/parser_dll.h)
+    ${INCLUDE_OUTPUT_PATH}/ltp/parser_dll.h)

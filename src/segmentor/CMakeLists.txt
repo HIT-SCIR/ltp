@@ -49,4 +49,4 @@ set_target_properties (otcws
 
 configure_file (
     segment_dll.h
-    ${INCLUDE_OUTPUT_PATH}/segment_dll.h)
+    ${INCLUDE_OUTPUT_PATH}/ltp/segment_dll.h)

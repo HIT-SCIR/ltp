@@ -39,4 +39,4 @@ set_target_properties (otpos
 
 configure_file (
     postag_dll.h
-    ${INCLUDE_OUTPUT_PATH}/postag_dll.h)
+    ${INCLUDE_OUTPUT_PATH}/ltp/postag_dll.h)
