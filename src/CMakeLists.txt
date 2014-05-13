@@ -19,10 +19,10 @@ add_subdirectory ("ner")
 add_subdirectory ("parser")
 add_subdirectory ("srl")
 add_subdirectory ("__ltp_dll")
-add_subdirectory ("unittest")
 
 # mongoose server is not supported in windows
 if (NOT WIN32)
+add_subdirectory ("unittest")
 add_subdirectory ("server")
 endif()
 

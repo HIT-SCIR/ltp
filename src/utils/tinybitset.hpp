@@ -10,7 +10,9 @@ namespace ltp {
 namespace utility {
 
 const int kBucketSize = int( sizeof(unsigned) ) * 8;
-const int kN = int( log(kBucketSize)  / log(2) );
+const int kN1 = (kBucketSize - 1) - (((kBucketSize - 1) >> 1) & 0x55555555);
+const int kN2 = (kN1 & 0x33333333) + ((kN1 >> 2) & 0x33333333);
+const int kN = (((kN2 + (kN2 >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;;
 
 struct Bitset{
 private:
@@ -29,10 +31,12 @@ public:
   inline bool empty() const{
     return emptyflag;
   }
-  inline bool allsetones(){
+
+  inline void allsetones(){
     memset(bits, 0xff, sizeof(bits));
     emptyflag = 1;
   }
+
   inline bool set(int val){
     int bucket_cap = sizeof(bits) / sizeof(unsigned);
     int bucket_index = val >> kN;

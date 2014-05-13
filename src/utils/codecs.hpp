@@ -35,6 +35,7 @@ public:
     if (str[payload.first]) {
       find_second_by_first();
     }
+	return (*this);
   }
 
   iterator& operator ++ (int dummy) {
@@ -42,6 +43,7 @@ public:
     if (str[payload.first]) {
       find_second_by_first();
     }
+	return (*this);
   }
 
   std::pair<int, int> operator * () const {
@@ -196,7 +198,7 @@ bool tail(const std::string & s,
 
 inline
 bool isclear(const std::string & s, int encoding=UTF8) {
-  int idx = 0;
+  unsigned idx = 0;
   if (encoding == UTF8) {
     while (idx<s.length()) {
       if ((s[idx]&0x80)==0) {
