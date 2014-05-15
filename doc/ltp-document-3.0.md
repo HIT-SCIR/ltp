@@ -1,10 +1,11 @@
 LTP使用文档v3.0
 ===============
- 
+
 #### 作者
- 
-* 刘一佳 << yjliu@ir.hit.edu.cn>> 2013年7月17日创建文档
- 
+
+* 牛国成 << gcniu@ir.hit.edu.cn >> 2014年5月10日，增加词性词典相关文档
+* 刘一佳 << yjliu@ir.hit.edu.cn >> 2013年7月17日，创建文档
+
 版权所有：哈尔滨工业大学社会计算与信息检索研究中心
 
 ## 目录
@@ -907,7 +908,7 @@ otcws主要通过配置文件指定执行的工作，其中主要有两类配置
 其中，
 
 * [train] 配置组指定执行训练
-	* ttain-file 配置项指定训练集文件
+	* train-file 配置项指定训练集文件
 	* holdout-file 配置项指定开发集文件
 	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 	* model-name 指定输出模型文件名
