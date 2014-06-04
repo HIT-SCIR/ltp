@@ -1,10 +1,9 @@
 #ifndef __LTP_SEGMENTOR_MODEL_H__
 #define __LTP_SEGMENTOR_MODEL_H__
 
-#include "featurespace.h"
-#include "parameter.h"
-
-#include "smartmap.hpp"
+#include "segmentor/featurespace.h"
+#include "segmentor/parameter.h"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace segmentor {

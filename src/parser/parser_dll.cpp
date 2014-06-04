@@ -1,10 +1,8 @@
-#include "parser_dll.h"
-
-#include "parser.h"
-#include "settings.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
+#include "parser/parser_dll.h"
+#include "parser/parser.h"
+#include "parser/settings.h"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
 
 #include <iostream>
 
@@ -35,9 +33,6 @@ public:
             const std::vector<std::string> & postags,
             std::vector<int> & heads,
             std::vector<std::string> & deprels) {
-    if (words.size() != postags.size()) {
-      return -1;
-    }
 
     ltp::parser::Instance * inst = new ltp::parser::Instance;
     inst->forms.push_back( ltp::parser::ROOT_FORM );
@@ -93,7 +88,15 @@ int parser_parse(void * parser,
                  const std::vector<std::string> & postags,
                  std::vector<int> & heads,
                  std::vector<std::string> & deprels) {
-  // std::cout << "input str = " << str << std::endl;
+  if (words.size() != postags.size()) {
+    return 0;
+  }
+  for (int i = 0; i < words.size(); ++ i) {
+    if (words[i].empty() || postags[i].empty()) {
+      return 0;
+    }
+  }
+
   ParserWrapper * wrapper = 0;
   wrapper = reinterpret_cast<ParserWrapper *>(parser);
   return wrapper->parse(words, postags, heads, deprels);

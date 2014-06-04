@@ -2,12 +2,15 @@
 #define __LTP_POSTAGGER_INSTANCE_H__
 
 #include <iostream>
-#include "featurevec.h"
-#include "mat.h"
-#include "sparsevec.h"
+#include "utils/math/mat.h"
+#include "utils/math/sparsevec.h"
+#include "utils/math/featurevec.h"
+#include "utils/tinybitset.hpp"
 
 namespace ltp {
 namespace postagger {
+
+using namespace ltp::utility;
 
 class Instance {
 public:
@@ -58,15 +61,18 @@ public:
 public:
   std::vector< std::string >  raw_forms;
   std::vector< std::string >  forms;
+  //std::vector< int >          wordtypes;
   std::vector< std::string >  tags;
   std::vector< int >          tagsidx;
   std::vector< std::string >  predicted_tags;
   std::vector< int >          predicted_tagsidx;
 
+  std::vector< Bitset >       postag_constrain;   /*< the postag constrain for decode */
+
   math::SparseVec             features;           /*< the gold features */
   math::SparseVec             predicted_features; /*< the predicted features */
 
-  math::Mat< FeatureVector *> uni_features;
+  math::Mat< math::FeatureVector *> uni_features;
   math::Mat< double > uni_scores;
   math::Mat< double > bi_scores;
 

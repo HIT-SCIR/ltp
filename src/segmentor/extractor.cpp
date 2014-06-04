@@ -1,8 +1,7 @@
-#include "extractor.h"
-#include "settings.h"
-
-#include "strutils.hpp"
-#include "chartypes.hpp"
+#include "segmentor/extractor.h"
+#include "segmentor/settings.h"
+#include "utils/strutils.hpp"
+#include "utils/chartypes.hpp"
 
 namespace ltp {
 namespace segmentor {

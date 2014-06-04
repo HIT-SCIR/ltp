@@ -1,4 +1,4 @@
-#include "model.h"
+#include "postagger/model.h"
 
 namespace ltp {
 namespace postagger {

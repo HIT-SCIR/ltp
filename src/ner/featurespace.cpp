@@ -1,6 +1,5 @@
-#include "featurespace.h"
-
-#include "extractor.h"
+#include "ner/featurespace.h"
+#include "ner/extractor.h"
 
 namespace ltp {
 namespace ner {

@@ -387,7 +387,7 @@ bool is_chinese_number(const string& str)
 {
     if (str == "Ò»" || str == "??" || str == "??" || str == "??" || str == "??" ||
             str == "??" || str == "??" || str == "??" || str == "??" || str == "Ê®" ||
-            str == "Á½" || str == "??" || str == "??" || str == "??" || str == "??" ||
+            str == "ï¿½ï¿½" || str == "??" || str == "??" || str == "??" || str == "??" ||
             str == "Ç§" || str == "??" || str == "??") 
     {
         return true;

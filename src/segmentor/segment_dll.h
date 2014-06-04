@@ -25,8 +25,9 @@
 /*
  * create a new parser
  *
- *  @param[in]  path  the path of the model
- *  @return   void *  the pointer to the segmentor
+ *  @param[in]  path          the path to the model
+ *  @param[in]  lexicon_file  the path to the lexicon file
+ *  @return     void *        the pointer to the segmentor
  */
 SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path,
                                                     const char * lexicon_file = NULL);
@@ -34,16 +35,18 @@ SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path,
 /*
  * release the segmentor resources
  *
- *  @param[in]  segmentor   the segmentor
- *  @return   int     i don't know
+ *  @param[in]  segmentor     the segmentor
+ *  @return     int           i don't know
  */
 SEGMENTOR_DLL_API int segmentor_release_segmentor(void * parser); 
+
 /*
  * run segment on the given segmentor
  *
- *  @param[in]  line    the string to be segmented
- *  @param[out] words     the words of the input line
- *  @return   int     the number of word tokens
+ *  @param[in]  line        the string to be segmented
+ *  @param[out] words       the words of the input line
+ *  @return     int         the number of word tokens, if the input is not legal
+ *                          return 0;
  */
 SEGMENTOR_DLL_API int segmentor_segment(void * parser,
                                         const std::string & line,

@@ -1,12 +1,11 @@
 #include "ner.h"
 
-#include "time.hpp"
-#include "logging.hpp"
-#include "instance.h"
-#include "extractor.h"
-#include "options.h"
-
-#include "nerio.h"
+#include "utils/time.hpp"
+#include "utils/logging.hpp"
+#include "ner/instance.h"
+#include "ner/extractor.h"
+#include "ner/options.h"
+#include "ner/nerio.h"
 
 #include <iostream>
 #include <sstream>

@@ -1,4 +1,4 @@
-#include "options.h"
+#include "postagger/options.h"
 
 namespace ltp {
 namespace postagger {

@@ -38,7 +38,8 @@ NER_DLL_API int ner_release_recognizer(void * ner);
  *
  *  @param[in]  line        the string to be segmented
  *  @param[out] words       the words of the input line
- *  @return     int         the number of word tokens
+ *  @return     int         the number of word tokens, if the input arguments
+ *                          is not legal, return 0
  */
 NER_DLL_API int ner_recognize(void * ner,
                               const std::vector<std::string> & words,

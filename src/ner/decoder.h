@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include "instance.h"
-#include "mat.h"
-#include "rulebase.h"
+#include "ner/instance.h"
+#include "ner/rulebase.h"
+#include "utils/math/mat.h"
 
 namespace ltp {
 namespace ner {

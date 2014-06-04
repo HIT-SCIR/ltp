@@ -4,13 +4,12 @@
 #include <iostream>
 #include <fstream>
 
-#include "codecs.hpp"
-#include "strutils.hpp"
-#include "logging.hpp"
-
-#include "settings.h"
-#include "instance.h"
-#include "options.h"
+#include "utils/codecs.hpp"
+#include "utils/strutils.hpp"
+#include "utils/logging.hpp"
+#include "parser/settings.h"
+#include "parser/instance.h"
+#include "parser/options.h"
 
 namespace ltp {
 namespace parser {

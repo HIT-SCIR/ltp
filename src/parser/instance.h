@@ -5,9 +5,9 @@
 #include <string>
 #include <set>
 
-#include "mat.h"
-#include "sparsevec.h"
-#include "featurevec.h"
+#include "utils/math/mat.h"
+#include "utils/math/sparsevec.h"
+#include "utils/math/featurevec.h"
 
 namespace ltp {
 namespace parser {

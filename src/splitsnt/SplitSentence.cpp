@@ -1,8 +1,6 @@
-#include "SplitSentence.h"
-//#include "SentenceIterator.h"
-#include <string.h>
-#include "strutils.hpp"
-#include "sentsplit.hpp"
+#include "splitsnt/SplitSentence.h"
+#include "utils/strutils.hpp"
+#include "utils/sentsplit.hpp"
 
 //using namespace util;
 

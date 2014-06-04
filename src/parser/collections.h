@@ -3,10 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include "stringmap.hpp"
-#include "smartmap.hpp"
-
-#include "instance.h"
+#include "utils/stringmap.hpp"
+#include "utils/smartmap.hpp"
+#include "parser/instance.h"
 
 namespace ltp {
 namespace parser {
