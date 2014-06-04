@@ -35,7 +35,7 @@ public:
     if (str[payload.first]) {
       find_second_by_first();
     }
-	return (*this);
+    return (*this);
   }
 
   iterator& operator ++ (int dummy) {
@@ -43,7 +43,7 @@ public:
     if (str[payload.first]) {
       find_second_by_first();
     }
-	return (*this);
+    return (*this);
   }
 
   std::pair<int, int> operator * () const {
