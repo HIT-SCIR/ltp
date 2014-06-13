@@ -1,4 +1,4 @@
-#include "options.h"
+#include "segmentor/options.h"
 
 namespace ltp {
 namespace segmentor {

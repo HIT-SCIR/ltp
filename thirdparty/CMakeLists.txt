@@ -1,5 +1,4 @@
 add_subdirectory (boost)
-#add_subdirectory (crfpp)
 add_subdirectory (maxent)
 add_subdirectory (tinyxml)
-#add_subdirectory (svmlight)
+add_subdirectory (gtest)

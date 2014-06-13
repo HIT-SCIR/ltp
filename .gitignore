@@ -24,21 +24,28 @@ config.h
 include/
 lib/
 bin/
-lgdpj
-lgsrl
-otcws
-otpos
-otner
-maxent
-cws
-cws_cmdline
-multi_cws_cmdline
-pos
-par
-ner
+tools/train/lgdpj
+tools/train/lgsrl
+tools/train/otcws
+tools/train/otpos
+tools/train/otner
+tools/train/maxent
+examples/cws
+examples/cws_cmdline
+examples/multi_cws_cmdline
+examples/pos
+examples/pos_cmdline
+examples/multi_pos_cmdline
+examples/par
+examples/ner
 
 ###############
 # data file   #
 ###############
 new_ltp_data/
 ltp_data/
+
+##################
+# running folder #
+##################
+dummy/

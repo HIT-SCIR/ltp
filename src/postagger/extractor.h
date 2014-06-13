@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include "instance.h"
 
-#include "template.hpp"
-#include "strvec.hpp"
+#include "postagger/instance.h"
+#include "utils/template.hpp"
+#include "utils/strvec.hpp"
 
 namespace ltp {
 namespace postagger {
@@ -16,18 +16,18 @@ using namespace ltp::utility;
 
 class Extractor {
 public:
-    static Extractor * extractor();
-    static int num_templates();
-    static int extract1o(Instance * inst, int idx, vector< StringVec > & cache);
+  static Extractor * extractor();
+  static int num_templates();
+  static int extract1o(Instance * inst, int idx, vector< StringVec > & cache);
 protected:
-    Extractor();
-    ~Extractor();
+  Extractor();
+  ~Extractor();
 private:
-    static Extractor * instance_;
-    static vector< Template * > templates;
+  static Extractor * instance_;
+  static vector< Template * > templates;
 };
 
-}       //  end for namespace postagger
-}       //  end for namespace ltp 
+}     //  end for namespace postagger
+}     //  end for namespace ltp 
 
 #endif  //  end for __LTP_POSTAGGER_EXTRACTOR_H__

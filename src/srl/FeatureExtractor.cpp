@@ -254,7 +254,8 @@ void FeatureExtractor::set_feature_set_(
                 node_vs_predicate_features.insert(feature_number);
                 break;
             default:
-                throw runtime_error("Unknown feature type for" + feature_number);
+                std::stringstream S; S << feature_number;
+                throw runtime_error("Unknown feature type for" + S.str());
         }
     }
 
@@ -446,7 +447,7 @@ void FeatureExtractor::calc_node_vs_predicate_features_(const vector<int>& node_
     nodes_queue.push(node_iter);
 
     // traverse
-    while (nodes_queue.size())
+    while (!nodes_queue.empty())
     {
         // fetch a node from the queue
         node_iter = nodes_queue.front();

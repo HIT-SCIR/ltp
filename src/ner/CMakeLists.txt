@@ -1,8 +1,4 @@
-include_directories (
-    ${SOURCE_DIR}/ner
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math)
-#    ${THIRDPARTY_DIR}/boost/include)
+include_directories (${SOURCE_DIR}/ ${THIRDPARTY_DIR}/boost/include/)
 
 set (ner_VERSION "0.0.1")
 
@@ -34,4 +30,4 @@ set_target_properties (otner
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 configure_file (
     ner_dll.h
-    ${INCLUDE_OUTPUT_PATH}/ner_dll.h)
+    ${INCLUDE_OUTPUT_PATH}/ltp/ner_dll.h)

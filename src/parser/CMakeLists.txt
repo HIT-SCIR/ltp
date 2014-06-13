@@ -1,9 +1,6 @@
 # example of configure time generate header
 
-include_directories (./ 
-    ${SOURCE_DIR}/parser 
-    ${SOURCE_DIR}/utils 
-    ${SOURCE_DIR}/utils/math)
+include_directories (${SOURCE_DIR}/)
 
 set (lgdpj_VERSION "0.0.1")
 
@@ -36,4 +33,4 @@ set_target_properties (lgdpj
 
 configure_file (
     parser_dll.h
-    ${INCLUDE_OUTPUT_PATH}/parser_dll.h)
+    ${INCLUDE_OUTPUT_PATH}/ltp/parser_dll.h)

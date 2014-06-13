@@ -7,6 +7,19 @@ compiler:
 before_install:
     - sudo apt-get install gfortran
     - sudo apt-get install cmake
+env:
+    global:
+        - secure: "VdY9DQK8PdZ5cBpn9qG+8KqyC7BFuYPNwU4f5n19nto62V6ifU5XOLBkxCF36bSF8C4Nf0y0uDdj4gqMnL7OqgwFjucBRQLOuk/10uuy3azEjGzTxePgXlYw15XmMEpWy3hvxEfFqvonJ0g9+fZjKeEmbASVixIbWpYN/pIy2jQ="
+
+addons:
+    coverity_scan:
+        project:
+            name: "HIT-SCIR/ltp"
+            description: "Language Technology Platform"
+        notification_email: oneplus.lau@gmail.com
+        build_command_prepend: "./configure"
+        build_command: "make -j4"
+        branch_pattern: master
 
 script:
     - ./configure

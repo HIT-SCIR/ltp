@@ -21,10 +21,16 @@ int DepSRL::LoadResource(const string &ConfigDir)
     m_selectFeats = ConfigDir + "/srl.cfg";
     // load srl and prg model
     m_srlModel = new maxent::ME_Model;
-    m_srlModel->load(ConfigDir + "/srl.model");
+    bool tag = m_srlModel->load(ConfigDir + "/srl.model");
+    if(!tag) {
+      return 0;
+    }
 
     m_prgModel = new maxent::ME_Model;
-    m_prgModel->load(ConfigDir + "/prg.model");
+    tag = m_prgModel->load(ConfigDir + "/prg.model");
+    if(!tag) {
+      return 0;
+    }
 
     m_resourceLoaded = true;
 
@@ -468,7 +474,7 @@ void DepSRL::GetParAndRel(const vector< pair<int, string> >& vecParser,
         pairParser = *itParser;
         vecParent.push_back(pairParser.first);
         vecRelation.push_back(pairParser.second);
-        itParser++;
+        ++ itParser;
     }
 }
 
@@ -486,8 +492,8 @@ void DepSRL::GetPredicateFromSentence(const vector<string>& vecPos,
             vecPredicate.push_back(index);
         }
 
-        index++;
-        itPos++;
+        ++ index;
+        ++ itPos;
     }
 }
 
@@ -763,7 +769,7 @@ bool DepSRL::IsMaxPropGreaterThreshold(
             return 1;
         }
 
-        itIndex++;
+        ++ itIndex;
     }
 
     return 0;

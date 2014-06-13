@@ -45,7 +45,7 @@ private:
     internal_sections_t sec;
 
 public:
-    /*
+    /**
      * constructor function for ConfigParser,
      * construct config items from file
      *
@@ -109,7 +109,7 @@ public:
         }
     }
 
-    /*
+    /**
      * string wrapper for constructor
      *
      *  @param[in]  filename    the filename

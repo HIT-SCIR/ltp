@@ -38,7 +38,8 @@ PARSER_DLL_API int parser_release_parser(void * parser);
  *
  *  @param[in]  words       the string to be segmented
  *  @param[out] tags        the words of the input line
- *  @return     int         the number of word tokens
+ *  @return     int         the number of word tokens, if input arguments
+ *                          are not legal, return 0
  */
 PARSER_DLL_API int parser_parse(void * parser,
         const std::vector< std::string > & words,

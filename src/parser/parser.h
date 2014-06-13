@@ -1,18 +1,16 @@
-#ifndef __PARSER_H__
-#define __PARSER_H__
+#ifndef __LTP_PARSER_PARSER_H__
+#define __LTP_PARSER_PARSER_H__
 
 #include <iostream>
 
-#include "instance.h"
-#include "model.h"
-#include "extractor.h"
-#include "decoder.h"
-
-#include "cfgparser.hpp"
-#include "logging.hpp"
-#include "time.hpp"
-
-#include "debug.h"
+#include "parser/instance.h"
+#include "parser/model.h"
+#include "parser/extractor.h"
+#include "parser/decoder.h"
+#include "parser/debug.h"
+#include "utils/cfgparser.hpp"
+#include "utils/logging.hpp"
+#include "utils/time.hpp"
 
 using namespace std;
 using namespace ltp::utility;
@@ -25,105 +23,120 @@ class Parser{
 
 /* Parser Options */
 private:
-    bool            __TRAIN__;
-    bool            __TEST__;
+  bool      __TRAIN__;
+  bool      __TEST__;
 
 public:
-    Parser();
+  Parser();
 
-    Parser( ConfigParser& cfg );
+  Parser( ConfigParser& cfg );
 
-    ~Parser();
+  ~Parser();
 
-    bool operator! () const {
-        return _valid;
+  bool operator! () const {
+    return _valid;
+  }
+
+  void run() {
+    /* running train process */
+    if (__TRAIN__) {
+      train();
     }
 
-    void run() {
-        /* running train process */
-        if (__TRAIN__) {
-            train();
-        }
-
-        /* running test process */
-        if (__TEST__) {
-            test();
-        }
+    /* running test process */
+    if (__TEST__) {
+      test();
     }
+  }
 
 private:
-    bool _valid; /* indicating if the parser is valid */
-    vector<Instance *> train_dat;
+  bool _valid; /* indicating if the parser is valid */
+  vector<Instance *> train_dat;
 
 protected:
-    Model * model;
-    Decoder * decoder;
+  Model * model;
+  Decoder * decoder;
 private:
-    void init_opt();
+  void init_opt();
 
-    bool parse_cfg(ConfigParser& cfg);
+  bool parse_cfg(ConfigParser& cfg);
 
-    bool read_instances(const char * filename, vector<Instance *>& dat);
+  bool read_instances(const char * filename, vector<Instance *>& dat);
 
-    void build_feature_space(void);
+  void build_feature_space(void);
 
-    void build_feature_space_truncate(Model * m);
+  void build_feature_space_truncate(Model * m);
 
-    void build_configuration(void);
+  void build_configuration(void);
 
-    void extract_features(vector<Instance *>& dat);
+  void extract_features(vector<Instance *>& dat);
 
-    void build_gold_features(void);
+  void build_gold_features(void);
 
-    void train(void);
+  void train(void);
 
-    void evaluate(void);
+  void evaluate(double &las,double &uas);
 
-    void test(void);
+  void test(void);
 
-    void collect_unlabeled_features_of_one_instance(Instance * inst,
-            const vector<int> & heads,
-            SparseVec & vec);
+  void collect_unlabeled_features_of_one_instance(Instance * inst,
+                                                  const vector<int> & heads,
+                                                  SparseVec & vec);
 
-    void collect_labeled_features_of_one_instance(Instance * inst,
-            const vector<int> & heads,
-            const vector<int> & deprelsidx,
-            SparseVec & vec);
+  void collect_labeled_features_of_one_instance(Instance * inst,
+                                                const vector<int> & heads,
+                                                const vector<int> & deprelsidx,
+                                                SparseVec & vec);
 
-    void collect_features_of_one_instance(Instance * inst, 
-            bool gold = false);
+  void collect_features_of_one_instance(Instance * inst,
+                                        bool gold = false);
 
-    /*
-     * perform the feature space truncation
-     *
-     *  @param[out]     new_model   the pointer to the new model
-     *  @param[in]      gid         the index of the group.
-     */
-    void copy_featurespace(Model * new_model, int gid);
+  /*
+   * perform the feature space truncation
+   *
+   *  @param[out]   new_model   the pointer to the new model
+   *  @param[in]    gid         the index of the group.
+   *  @param[in]    nr_updates  feature group updated times
+   */
+  void copy_featurespace(Model * new_model,
+                         int gid,
+                         const int * nr_updates = NULL);
 
-    /*
-     * perform the parameter truncation.
-     *
-     *  @param[in/out]  new_model   the pointer to the output model
-     *  @param[in]      gid         the index of the group.
-     */
-    void copy_parameters(Model * new_model, int gid);
+  /*
+   * perform the parameter truncation.
+   *
+   *  @param[in/out]  new_model   the pointer to the output model
+   *  @param[in]      gid         the index of the group.
+   */
+  void copy_parameters(Model * new_model, int gid);
 
-    /*
-     * perform model truncation and return a new model
-     *
-     *  @return     Model *     pointer to the new model
-     */
-    Model * truncate();
+  /*
+   * perform model truncation and return a new model
+   *
+   *  @param[in]  nr_updates  updated time of the feature
+   *  @return     Model *     pointer to the new model
+   */
+  Model * erase_rare_features(const int * nr_updates = NULL);
 
+  /*
+   * decode the group information for feature represented in sparse vector,
+   * increase their updated time
+   *
+   *  @param[in]  vec           the feature vector
+   *  @param[out] updated_time  the updated time
+   */
+  void increase_group_updated_time(const ltp::math::SparseVec & vec,
+                                   int * feature_group_updated_time);
 protected:
-    Decoder * build_decoder(void);
-    void extract_features(Instance * inst);
+  Decoder * build_decoder(void);
+  void extract_features(Instance * inst);
 
-    void calculate_score(Instance * inst, const Parameters& param, bool use_avg = false);
+  void calculate_score(Instance * inst,
+                       const Parameters & param,
+                       bool use_avg = false);
 
 };  //  end for class Parser
 }   //  end for namespace parser
 }   //  end for namespace ltp
 
-#endif  // end for __PARSER_H__
+#endif  // end for __LTP_PARSER_PARSER_H__

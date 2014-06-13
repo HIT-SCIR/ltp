@@ -61,7 +61,7 @@ int MyTree::GetLeftChild(const int nodeID) const
             break;
         }
 
-        itChildren++;
+        ++ itChildren;
     }
 
     return leftChild;
@@ -89,7 +89,7 @@ int MyTree::GetRightChild(const int nodeID) const
             break;
         }
 
-        itChildren++;
+        ++ itChildren;
     }
 
     return rightChild;
@@ -125,7 +125,7 @@ int MyTree::GetLeftSib(const int nodeID) const
             break;
         }
 
-        itDequeChildren++;
+        ++ itDequeChildren;
     }
 
     return leftID;
@@ -157,7 +157,7 @@ int MyTree::GetRightSib(const int nodeID) const
             rightID = *itDequeChildren;
             break;
         }
-        itDequeChildren++;
+        ++ itDequeChildren;
     }
 
     return rightID;
@@ -247,7 +247,7 @@ void MyTree::GetAllNodePath(
     while(itDequeChildren != dequeChildren.end())
     {
         queDepNode.push(*itDequeChildren);
-        itDequeChildren++;
+        ++ itDequeChildren;
     }
 
     while(!queDepNode.empty())
@@ -275,7 +275,7 @@ void MyTree::GetAllNodePath(
         while(itDequeChildren != dequeChildren.end())
         {
             queDepNode.push(*itDequeChildren);
-            itDequeChildren++;
+            ++ itDequeChildren;
         }
     }
 }
@@ -454,9 +454,9 @@ void MyTree::InitTree(const LTPData* ltpData)
             m_rootID = index;
         }
 
-        itParent++;
-        itRelation++;
-        index++;
+        ++ itParent;
+        ++ itRelation;
+        ++ index;
     }
     m_depTree.nodeNum = index;
 
@@ -511,8 +511,8 @@ bool MyTree::UpdateTree()
                 }
             }
 
-            itDepNode++;
-            curIndex++; //next node
+            ++ itDepNode;
+            ++ curIndex; //next node
         } //interior while
 
         //for debug

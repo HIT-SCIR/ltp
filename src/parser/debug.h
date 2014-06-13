@@ -2,7 +2,7 @@
 #define __DEBUG_H__
 
 #include <cassert>
-#include "instance.h"
+#include "parser/instance.h"
 
 namespace ltp {
 namespace parser {
