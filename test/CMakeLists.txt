@@ -26,7 +26,7 @@ set (ltp_test_LIBS
 maxent_static_lib
 util_static_lib
 ltp
-splitsnt
+splitsnt_static_lib
 segmentor_static_lib
 postagger_static_lib
 parser_static_lib
