@@ -4,9 +4,9 @@
 #include <iostream>
 #include <vector>
 
-#include "instance.h"
-#include "collections.h"
-#include "smartmap.hpp"
+#include "parser/instance.h"
+#include "parser/collections.h"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace parser {

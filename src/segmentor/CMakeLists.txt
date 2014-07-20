@@ -1,8 +1,4 @@
-include_directories (
-    ${SOURCE_DIR}/segmentor
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/utils/math
-    ${THIRDPARTY_DIR}/boost/include)
+include_directories ( ${SOURCE_DIR} ${THIRDPARTY_DIR}/boost/include )
 
 set (segment_VERSION "0.0.1")
 
@@ -53,4 +49,4 @@ set_target_properties (otcws
 
 configure_file (
     segment_dll.h
-    ${INCLUDE_OUTPUT_PATH}/segment_dll.h)
+    ${INCLUDE_OUTPUT_PATH}/ltp/segment_dll.h)

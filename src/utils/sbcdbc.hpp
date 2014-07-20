@@ -2,6 +2,7 @@
 #define __LTP_STRUTILS_SBC_DBC_HPP__
 
 #include "codecs.hpp"
+#include "chartypes.hpp"
 #include "chartypes.tab"
 
 namespace ltp {
@@ -68,9 +69,59 @@ inline void sbc2dbc_x(const std::string & x, std::string & y, int encoding=strut
     }
 }
 
+inline void sbc2dbc_x_wt(const std::string & x, std::string & y, int &wordtype, int encoding=strutils::codecs::UTF8) {
+    int len = x.size();
+    int i = 0;
+    std::string tmp = "";
+    bool flag = true;
+    int pre = -1,cur = -1;
+    y.clear();
+    while (i<len) {
+        if (encoding==strutils::codecs::UTF8) {
+            if ((x[i]&0x80)==0) {
+                tmp = sbc2dbc(x.substr(i, 1));
+                y.append(tmp);
+                ++i;
+            } else if ((x[i]&0xE0)==0xC0) {
+                tmp = sbc2dbc(x.substr(i, 2));
+                y.append(tmp);
+                i+=2;
+            } else if ((x[i]&0xF0)==0xE0) {
+                tmp = sbc2dbc(x.substr(i, 3));
+                y.append(tmp);
+                i+=3;
+            } else if ((x[i]&0xF8)==0xF0) {
+                tmp = sbc2dbc(x.substr(i, 4));
+                y.append(tmp);
+                i+=4;
+            } else {
+                flag = false;
+                y = x;
+                i=len;
+            }
+            if(flag){
+                cur = chartype(tmp);
+                flag = (pre!=-1 && pre != cur) ? (!flag) : (flag);
+                pre = cur;
+            }
+        } else if (encoding==strutils::codecs::GBK) {
+            // not implemented
+        }
+    }
+    if(flag && cur != -1){
+        wordtype = cur;
+    }
+}
+
 inline std::string sbc2dbc_x(const std::string & x, int encoding=strutils::codecs::UTF8) {
     std::string y;
     sbc2dbc_x(x, y, encoding);
+    return y;
+}
+
+inline std::string sbc2dbc_x_wt(const std::string & x, int &wordtype, int encoding=strutils::codecs::UTF8) {
+    std::string y;
+    sbc2dbc_x_wt(x, y, wordtype, encoding);
     return y;
 }
 

@@ -1,9 +1,9 @@
 #ifndef __LTP_PARSER_DECODER_H__
 #define __LTP_PARSER_DECODER_H__
 
-#include "instance.h"
-#include "settings.h"
-#include "options.h"
+#include "parser/instance.h"
+#include "parser/settings.h"
+#include "parser/options.h"
 #include <iostream>
 #include <list>
 

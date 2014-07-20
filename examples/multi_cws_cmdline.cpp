@@ -19,6 +19,7 @@
 #include <list>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <cstdlib>
 
 #include "segment_dll.h"
 #include "tinythread.h"

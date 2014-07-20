@@ -5,6 +5,7 @@ srl-config = conf/srl/assets/srl.cfg
 srl-feature-dir = build/srl/srl-features.train
 srl-instance-file = build/srl/srl-instances.train/train.inst
 srl-model-file = build/srl/srl.model
+dst-config-dir = build/srl/
 solver-type = 0  # L1-owlqn
 #solver-type = 1 # L1-sgd
 #solver-type = 2 # L2-lbfgs

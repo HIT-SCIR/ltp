@@ -1,12 +1,11 @@
 #ifndef __LTP_PARSER_DECODER_1_O_H__
 #define __LTP_PARSER_DECODER_1_O_H__
 
-#include "instance.h"
-#include "decoder.h"
-#include "mat.h"
-#include "options.h"
-
-#include "debug.h"
+#include "parser/instance.h"
+#include "parser/decoder.h"
+#include "parser/options.h"
+#include "parser/debug.h"
+#include "utils/math/mat.h"
 
 namespace ltp {
 namespace parser {

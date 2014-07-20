@@ -1,6 +1,6 @@
-#include "extractor.h"
-#include "options.h"
-#include "settings.h"
+#include "parser/extractor.h"
+#include "parser/options.h"
+#include "parser/settings.h"
 
 #define LEN(x)    (x.size())
 #define LAST(x)   ((x)[(x).size()-1])

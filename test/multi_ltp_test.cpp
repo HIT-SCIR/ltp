@@ -102,7 +102,9 @@ void multithreaded_ltp( void * args) {
         XML4NLP xml4nlp;
         xml4nlp.CreateDOMFromString(sentence);
 
-        if(type == "ws"){
+        if (type == "sp"){
+            engine->splitSentence_dummy(xml4nlp);
+        } else if(type == "ws"){
             engine->wordseg(xml4nlp);
         } else if(type == "pos"){
             engine->postag(xml4nlp);
@@ -117,14 +119,35 @@ void multithreaded_ltp( void * args) {
         }
 
         string result;
-        vector<string> words;
-        xml4nlp.GetWordsFromSentence(words, 0);
-        size_t ii = 0;
-        for (; ii < words.size() - 1; ++ii)
-            result += words[ii] + " ";
-        result += words[ii];
-        // xml4nlp.SaveDOM(result);
+        // for segmentation only
+
+        if (type == "sp")
+        {
+            vector<string> sents;
+            xml4nlp.GetSentencesFromParagraph(sents, 0);
+            size_t jj = 0;
+            for (; jj < sents.size() - 1; ++jj)
+            {
+                result += sents[jj];
+                result += "\n";
+            }
+            result += sents[jj];
+        }
+
+        if (type == "ws")
+        {
+            vector<string> words;
+            xml4nlp.GetWordsFromSentence(words, 0);
+            size_t ii = 0;
+            for (; ii < words.size()-1; ++ii)
+                result += words[ii] + " ";
+            result += words[ii];
+        }
+
+        /*
+        xml4nlp.SaveDOM(result);
         xml4nlp.ClearDOM();
+        */
 
         dispatcher->output(ret, result);
     }

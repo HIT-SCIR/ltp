@@ -1,10 +1,9 @@
 #ifndef __LTP_NER_MODEL_H__
 #define __LTP_NER_MODEL_H__
 
-#include "featurespace.h"
-#include "parameter.h"
-
-#include "smartmap.hpp"
+#include "ner/featurespace.h"
+#include "ner/parameter.h"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace ner {

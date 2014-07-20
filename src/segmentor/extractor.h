@@ -3,10 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include "instance.h"
-
-#include "template.hpp"
-#include "strvec.hpp"
+#include "segmentor/instance.h"
+#include "utils/template.hpp"
+#include "utils/strvec.hpp"
 
 namespace ltp {
 namespace segmentor {

@@ -6,10 +6,10 @@
 #include <bitset>
 #include <vector>
 
-#include "settings.h"
-#include "sbcdbc.hpp"
-#include "smartmap.hpp"
-#include "chartypes.hpp"
+#include "ner/settings.h"
+#include "utils/sbcdbc.hpp"
+#include "utils/smartmap.hpp"
+#include "utils/chartypes.hpp"
 
 namespace ltp {
 namespace ner {

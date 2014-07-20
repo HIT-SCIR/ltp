@@ -1,10 +1,10 @@
 #ifndef __LTP_SEGMENTOR_SEGMENTOR_H__
 #define __LTP_SEGMENTOR_SEGMENTOR_H__
 
-#include "cfgparser.hpp"
-#include "model.h"
-#include "decoder.h"
-#include "rulebase.h"
+#include "utils/cfgparser.hpp"
+#include "segmentor/model.h"
+#include "segmentor/decoder.h"
+#include "segmentor/rulebase.h"
 
 namespace ltp {
 namespace segmentor {
@@ -15,73 +15,93 @@ public:
   Segmentor(ltp::utility::ConfigParser & cfg);
   ~Segmentor();
 
+  /**
+   * The only publich method in the Segmentor class. Parameters are passed to
+   * the segmentor by a ::utility::ConfigParser class.
+   */
   void run();
 
 private:
-  /*
-   * parse the configuration, return true on success, otherwise false
+  /**
+   * Parse the configuration
    *
    *  @param[in]  cfg         the config class
    *  @return     bool        return true on success, otherwise false
    */
   bool parse_cfg(ltp::utility::ConfigParser & cfg);
 
-  /*
-   * read instances from file and store them in train_dat
+
+  /**
+   * Read instances from file and store them in train_dat
    *
    *  @param[in]  file_name   the filename
    *  @return     bool        true on success, otherwise false
    */
   bool read_instance( const char * file_name );
 
-  /*
-   * build tag sets, collect internal word map, record word frequency.
+
+  /**
+   * Build configuration before model training. Three things are done
+   * during the building configuration pharse:
+   *
+   *  1. Build tag sets;
+   *  2. Collect internal word map;
+   *  3. Record word frequency.
    */
   void build_configuration(void);
 
-  /*
-   *
+
+  /**
+   * Build feature space,
    *
    */
   void build_feature_space(void);
 
-  /*
-   * the training process
+
+  /**
+   * The main training process, the training scheme can be summarized as
+   *
+   *  1. Building configuration
+   *  2. Building feature space
+   *  3. Building updated time counter
+   *  4. Iterate over the 
    */
   void train(void);
 
+
   /*
-   * the evaluating process
+   * The main evaluating process.
+   *
+   *  @param[out]   p   The precise
+   *  @param[out]   r   The recall
+   *  @param[out]   f   The F-score
    */
   void evaluate(double &p, double &r, double &f);
 
-  /*
-   * the testing process
+
+  /**
+   * The main testing process
    */
   void test(void);
 
-  /*
-   * the dumping model process
+
+  /**
+   * The dumping model process
    */
   void dump(void);
 
-  /*
-   * do feature selection by erasing the rare feature. create a new model
-   * without rare feature (only witness a few times) according the original
-   * model.
-   *
-   *  @param[in]  nr_updates  the number of update times
-   *  @return     Model       the model without rare feature
-   */
-  Model * erase_rare_features(const int * nr_updates = NULL);
 protected:
-  /*
-   * extract features from one instance,
+
+  /**
+   * Extract features from one instance,
    *
+   *  @param[in/out]  inst    The instance
+   *  @param[in]      create  If create is true, create feature for new
+   *                          feature, otherwise not create.
    */
   void extract_features(Instance * inst, bool create = false);
 
-  /*
+  /**
    * build words from tags for certain instance
    *
    *  @param[in/out]  inst      the instance
@@ -96,7 +116,7 @@ protected:
                    int beg_tag0,
                    int beg_tag1 = -1);
 
-  /*
+  /**
    * cache all the score for the certain instance.
    *
    *  @param[in/out]  inst      the instance
@@ -104,7 +124,8 @@ protected:
    */
   void calculate_scores(Instance * inst, bool use_avg);
 
-  /*
+
+  /**
    * collect feature when given the tags index
    *
    *  @param[in]    inst    the instance
@@ -115,20 +136,30 @@ protected:
                         const std::vector<int> & tagsidx,
                         ltp::math::SparseVec & vec);
 
-
-  /*
-   * decode the group information for feature represented in sparse vector,
+  /**
+   * Decode the group information for feature represented in sparse vector,
    * increase their updated time
    *
    *  @param[in]  vec           the feature vector
    *  @param[out] updated_time  the updated time
    */
   void increase_group_updated_time(const ltp::math::SparseVec & vec,
-                                   int * feature_group_updated_time);
+                                   int * updated_time);
+
+  /**
+   * do feature selection by erasing the rare feature. create a new model
+   * without rare feature (only witness a few times) according the original
+   * model.
+   *
+   *  @param[in]  nr_updates  the number of update times
+   *  @return     Model       the model without rare feature
+   */
+  Model * erase_rare_features(const int * nr_updates = NULL);
+
 private:
-  bool  __TRAIN__;
-  bool  __TEST__;
-  bool  __DUMP__;
+  bool  __TRAIN__;  /*< The training flag */
+  bool  __TEST__;   /*< The testing flag */
+  bool  __DUMP__;   /*< The dump flag */
 
 private:
   std::vector< Instance * > train_dat;

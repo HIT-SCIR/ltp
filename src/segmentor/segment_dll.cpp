@@ -1,11 +1,9 @@
-#include "segment_dll.h"
-
-#include "segmentor.h"
-#include "settings.h"
+#include "segmentor/segment_dll.h"
+#include "segmentor/segmentor.h"
+#include "segmentor/settings.h"
 //#include "instance.h"
-
-#include "logging.hpp"
-#include "codecs.hpp"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
 
 #include <iostream>
 
@@ -64,7 +62,7 @@ public:
         inst->forms,
         inst->chartypes);
 
-    if (-1 == ret) {
+    if (-1 == ret || 0 == ret) {
       delete inst;
       words.clear();
       return 0;
@@ -118,7 +116,10 @@ int segmentor_release_segmentor(void * segmentor) {
 int segmentor_segment(void * segmentor,
     const std::string & str,
     std::vector<std::string> & words) {
-  // std::cout << "input str = " << str << std::endl;
+  if (str.empty()) {
+    return 0;
+  }
+
   SegmentorWrapper * wrapper = 0;
   wrapper = reinterpret_cast<SegmentorWrapper *>(segmentor);
   return wrapper->segment(str.c_str(), words);

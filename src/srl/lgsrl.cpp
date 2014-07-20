@@ -104,6 +104,13 @@ bool parse_cfg(ConfigParser & cfg)
             return false;
         }
 
+        if (cfg.get("train-srl", "dst-config-dir", strbuf)) {
+            train_opt.dst_config_dir = strbuf;
+        } else {
+            ERROR_LOG("[SRL] dst_config_dir config item is not found");
+            return false;
+        }
+
         if (cfg.get_integer("train-srl", "solver-type", intbuf)) {
             switch (intbuf) {
                 case 0: me_srl_param.solver_type = L1_OWLQN; break;
@@ -173,6 +180,13 @@ bool parse_cfg(ConfigParser & cfg)
             return false;
         }
 
+        if (cfg.get("train-prg", "dst-config-dir", strbuf)) {
+            train_opt.dst_config_dir = strbuf;
+        } else {
+            ERROR_LOG("[PRG] dst_config_dir config item is not found");
+            return false;
+        }
+
         if (cfg.get_integer("train-prg", "solver-type", intbuf)) {
             switch (intbuf) {
                 case 0: me_prg_param.solver_type = L1_OWLQN; break;
@@ -236,6 +250,28 @@ bool parse_cfg(ConfigParser & cfg)
             return false;
         }
     }
+
+    return true;
+}
+
+bool copy_cfg(const string & src_cfg,
+            const string & dst_cfg)
+{
+    ifstream fsrc(src_cfg.c_str());
+    ofstream fdst(dst_cfg.c_str());
+
+    if (!fdst)
+    {
+        ERROR_LOG("Cannot open [%s]", dst_cfg.c_str());
+        return false;
+    }
+
+    string line;
+    while (getline(fsrc, line))
+        fdst << line << endl;
+
+    fsrc.close();
+    fdst.close();
 
     return true;
 }
@@ -673,6 +709,8 @@ int main(int argc, char *argv[])
         train(prg_model,
                 train_opt.prg_instance_file,
                 train_opt.prg_model_file);
+        copy_cfg(train_opt.core_config,
+                train_opt.dst_config_dir + "/Chinese.xml");
     }
 
     if (__TRAIN_SRL__) {
@@ -689,6 +727,8 @@ int main(int argc, char *argv[])
         train(srl_model,
                 train_opt.srl_instance_file,
                 train_opt.srl_model_file);
+        copy_cfg(train_opt.srl_config,
+                train_opt.dst_config_dir + "/srl.cfg");
     }
 
     if (__TEST__) {

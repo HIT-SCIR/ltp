@@ -9,7 +9,7 @@
  */
 
 #include "Xml4nlp.h"
-#include "MyLib.h"
+#include "__util/MyLib.h"
 
 const char * const NOTE_SENT    = "sent";
 const char * const NOTE_WORD    = "word";
@@ -1204,13 +1204,28 @@ bool XML4NLP::LTMLValidation() {
 
 #define END }}}
 
-  FOREACH(p, s, w)
+  FOREACH(p, s, w) 
     // segment check
-    if ((state & 0x02) && (!w.wordPtr->Attribute(TAG_CONT)))        { return false; }
-    if ((state & 0x04) && (!w.wordPtr->Attribute(TAG_POS)))         { return false; }
-    if ((state & 0x08) && (!w.wordPtr->Attribute(TAG_PSR_PARENT)))  { return false; }
-    if ((state & 0x08) && (!w.wordPtr->Attribute(TAG_PSR_RELATE)))  { return false; }
-    if ((state & 0x10) && (!w.wordPtr->Attribute(TAG_NE)))          { return false; }
+    const char * buffer = NULL;
+    buffer = w.wordPtr->Attribute(TAG_CONT);
+    if ((state & 0x02) 
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
+
+    buffer = w.wordPtr->Attribute(TAG_POS);
+    if ((state & 0x04)
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
+
+    buffer = w.wordPtr->Attribute(TAG_PSR_PARENT);
+    if ((state & 0x08) 
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
+
+    buffer = w.wordPtr->Attribute(TAG_PSR_RELATE);
+    if ((state & 0x08)
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
+
+    buffer = w.wordPtr->Attribute(TAG_NE);
+    if ((state & 0x10)
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
   END
 
 #undef END
@@ -1432,4 +1447,3 @@ int XML4NLP::ClearNote(const char *cszNoteName) {
   note.nodePtr->SetAttribute(cszNoteName, "n");
   return 0;
 }
-

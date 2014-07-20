@@ -1,13 +1,11 @@
-#include "segmentor.h"
-
-#include "time.hpp"
-#include "logging.hpp"
-#include "instance.h"
-#include "extractor.h"
-#include "options.h"
-
-#include "segmentreader.h"
-#include "segmentwriter.h"
+#include "utils/time.hpp"
+#include "utils/logging.hpp"
+#include "segmentor/segmentor.h"
+#include "segmentor/instance.h"
+#include "segmentor/extractor.h"
+#include "segmentor/options.h"
+#include "segmentor/segmentreader.h"
+#include "segmentor/segmentwriter.h"
 
 #include <iostream>
 #include <fstream>

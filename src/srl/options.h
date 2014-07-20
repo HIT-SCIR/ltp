@@ -14,6 +14,7 @@ struct TrainOptions {
     std::string     prg_instance_file;
     std::string     srl_model_file;
     std::string     prg_model_file;
+    std::string     dst_config_dir; // destination cfgs
 };
 
 struct TestOptions {

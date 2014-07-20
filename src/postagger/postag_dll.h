@@ -20,10 +20,12 @@
 /*
  * create a new postagger
  *
- *  @param[in] path the path of the model
- *  @return void * the pointer to the segmentor
+ *  @param[in]  path        the path to the model file
+ *  @param[in]  constrains  the path to constrains file
+ *  @return     void *      the pointer to the segmentor
  */
-POSTAGGER_DLL_API void * postagger_create_postagger(const char * path);
+POSTAGGER_DLL_API void * postagger_create_postagger(const char * path,
+    const char * lexicon_file = NULL);
 
 /*
  * release the postagger resources
@@ -38,10 +40,11 @@ POSTAGGER_DLL_API int postagger_release_postagger(void * postagger);
  *
  *  @param[in]  words       the string to be segmented
  *  @param[out] tags        the words of the input line
- *  @return     int         the number of word tokens
+ *  @return     int         the number of word tokens, if the input not
+ *                          legal, return 0
  */
 POSTAGGER_DLL_API int postagger_postag(void * postagger,
-        const std::vector< std::string > & words,
-        std::vector<std::string> & tags);
+    const std::vector< std::string > & words,
+    std::vector<std::string> & tags);
 
 #endif  //  end for __LTP_POSTAG_DLL_H__

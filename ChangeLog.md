@@ -209,11 +209,9 @@ float CParser::Smoothen(float ftd, float ftt, float ftttt, float ftw, float fwt,
 * 胡禹轩修改了srl中overlapped的bug
 * 上午修改IRLAS_DLL_x.cpp的时候使用到了MyLib.cpp。但是ltp中有很多MyLib.cpp，如：
 
-```
-_irlas/MyLib.cpp
-__util/MyLib.cpp
-_parser/MyLib.cpp
-```
+  * _irlas/MyLib.cpp
+  * __util/MyLib.cpp
+  * _parser/MyLib.cpp
 
 等，现在还没有统一。
 * 我简单的将_irlas/MyLib.cpp替换__util/MyLib.cpp，导致出现了新的bug。因为_irlas/MyLib.cpp和__util/MyLib.cpp中convert_to_pair的实现不相同。完成功能是：`、/wp => [、][wp]`，_irlas/MyLib.cpp中的实现是错误的。
@@ -278,7 +276,9 @@ string itos(int i);
 ```
     char* presult = new char[5000];
 ```
+
 当句子过长的时候，会出现内存越界。修改为：
+
 ```
     int nChar = 0;
     for (int i=0; i<(int)vecWord.size(); ++i)    {
@@ -302,17 +302,17 @@ string itos(int i);
 
 2007-11-22
 ----------
-SDS中：`void SDS_TS::SelectSnt()`
-定义：
+SDS中：`void SDS_TS::SelectSnt()` 定义：
+
 ```
     unsigned sntNum;
 ```
 但是后面用到：
 ```
-                            sntNum = m_vctSntPairs_Score[summarySntNum].m_nSntNum - 1;
-                            if(sntNum >= 0) {
-                                ...
-                            }
+    sntNum = m_vctSntPairs_Score[summarySntNum].m_nSntNum - 1;
+    if(sntNum >= 0) {
+        ...
+    }
 ```
 此时当`m_vctSntPairs_Score[summarySntNum].m_nSntNum == 0`时：`sntNum = 0xFFFF;`
 
@@ -323,8 +323,7 @@ SDS中：`void SDS_TS::SelectSnt()`
 
 2007-11-22
 ----------
-* Parser中：parser_dll_x.cpp中`void Parse(vector < string >& vecWord, vector < string >& vecPOS, vector < pair<int,string> >& vecParse)`中
-原来为：
+* parser_dll_x.cpp中`void Parse(vector < string >& vecWord, vector < string >& vecPOS, vector < pair<int,string> >& vecParse)`中原来为：
 ```
     char * csOutput = new char[vecWord.size() * 50];
 ```
@@ -336,9 +335,8 @@ SDS中：`void SDS_TS::SelectSnt()`
     }
     char * csOutput = new char[nChar * 2 + vecWord.size() * 32];
 ```
-因为有的时候会输入：
-```"------------------------------------"```
-或者很长的数字串，这样会造成内存越界问题。
+
+因为有的时候会输入`"------------------------------------"`或者很长的数字串，这样会造成内存越界问题。
 
 2007-11-21
 ----------

@@ -809,7 +809,7 @@ private:
   static const char * const TAG_PARA;
   static const char * const TAG_SENT;
   static const char * const TAG_WORD;
-  static const char * const TAG_CONT;		//sent, word
+  static const char * const TAG_CONT;   //sent, word
   static const char * const TAG_POS;
   static const char * const TAG_NE;
   static const char * const TAG_WSD;
@@ -818,9 +818,9 @@ private:
   static const char * const TAG_PSR_RELATE;
   static const char * const TAG_SRL_ARG;
   static const char * const TAG_SRL_TYPE;
-  static const char * const TAG_BEGIN;	// cr, srl
-  static const char * const TAG_END;		// cr, srl
-  static const char * const TAG_ID;		// para, sent, word
+  static const char * const TAG_BEGIN;  // cr, srl
+  static const char * const TAG_END;    // cr, srl
+  static const char * const TAG_ID;   // para, sent, word
 };
 
 #endif    //  end for __LTP_XML4NLP_H__
