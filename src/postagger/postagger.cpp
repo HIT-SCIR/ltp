@@ -658,7 +658,7 @@ Postagger::test(void) {
   ifstream ifs(test_file);
 
   if (!ifs) {
-    ERROR_LOG("Failed to open holdout file.");
+    ERROR_LOG("Failed to open test file.");
     return;
   }
 
