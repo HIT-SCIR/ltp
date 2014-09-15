@@ -88,10 +88,10 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
   int length = inst->forms[idx].size(); length = (length < 5 ? length : 5);
   data.set( "len",  strutils::to_str(length));
 
-  data.set( "ch-1,n", (idx-1 < 0 ? BOC : inst->chars[idx-1][inst->chars[idx-1].size()-1]));
-  data.set( "ch-0,0", inst->chars[idx][0] );
-  data.set( "ch-0,n", inst->chars[idx][inst->chars[idx].size()-1]);
-  data.set( "ch+1,0", (idx+1 >= len ? EOC : inst->chars[idx+1][0]));
+  // data.set( "ch-1,n", (idx-1 < 0 ? BOC : inst->chars[idx-1][inst->chars[idx-1].size()-1]));
+  // data.set( "ch-0,0", inst->chars[idx][0] );
+  // data.set( "ch-0,n", inst->chars[idx][inst->chars[idx].size()-1]);
+  // data.set( "ch+1,0", (idx+1 >= len ? EOC : inst->chars[idx+1][0]));
 
   string feat;
   feat.reserve(1024);
