@@ -52,16 +52,16 @@ multi_pos_cmdline: multi_pos_cmdline.cpp
 
 ner: ner.cpp
 	g++ -o ner ner.cpp -I./ \
-		-I../src/ner/ \
+		-I../include \
 		-L../lib/ -lner
 
 par: par.cpp
 	g++ -o par par.cpp -I./ \
-		-I../src/parser/ \
+		-I../include \
 		-L../lib -lparser
 srl: srl.cpp
 	g++ -o srl srl.cpp -I./ \
-		-I../src/srl/ \
+		-I../include \
 		-L../lib -lsrl
 
 .PHONY: clean

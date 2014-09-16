@@ -16,7 +16,7 @@
 #include <string>
 #include <sys/time.h>
 #include <sys/types.h>
-#include "segment_dll.h"
+#include "ltp/segment_dll.h"
 
 double get_time(void) {
   struct timeval tv;

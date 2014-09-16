@@ -21,9 +21,9 @@
 #include <sys/types.h>
 #include <cstdlib>
 
-#include "segment_dll.h"
 #include "tinythread.h"
 #include "fast_mutex.h"
+#include "ltp/segment_dll.h"
 
 using namespace std;
 using namespace tthread;

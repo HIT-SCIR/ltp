@@ -20,9 +20,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-#include "postag_dll.h"
 #include "tinythread.h"
 #include "fast_mutex.h"
+#include "ltp/postag_dll.h"
 
 using namespace std;
 using namespace tthread;

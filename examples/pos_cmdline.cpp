@@ -18,7 +18,7 @@
 #include <string>
 #include <sys/time.h>
 #include <sys/types.h>
-#include "postag_dll.h"
+#include "ltp/postag_dll.h"
 
 double get_time(void) {
   struct timeval tv;
@@ -27,7 +27,7 @@ double get_time(void) {
 }
 
 int main(int argc, char * argv[]) {
-  if (argc < 1 || (0 == strcmp(argv[1], "-h"))) {
+  if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
     std::cerr << "Example: ./pos_cmdline [model path]" << std::endl;
     std::cerr << std::endl;
     std::cerr << "This program recieve input word sequence from stdin." << std::endl;

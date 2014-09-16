@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "SRL_DLL.h"
+#include "ltp/SRL_DLL.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {
@@ -25,7 +25,7 @@ int main(int argc, char * argv[]) {
   for(int i = 0;i<srl.size();++i) {
     std::cout<<srl[i].first<<":"<<std::endl;
     for(int j = 0;j<srl[i].second.size();++j) {
-      std::cout<<"	tpye = "<<srl[i].second[j].first
+      std::cout<<"\ttype = "<<srl[i].second[j].first
                <<" beg = "<<srl[i].second[j].second.first 
                <<" end = "<<srl[i].second[j].second.second
                <<std::endl; 
