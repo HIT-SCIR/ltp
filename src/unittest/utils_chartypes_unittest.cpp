@@ -33,16 +33,17 @@ TEST(chartypes_unittest, dbc_digit_test) {
       ltp::strutils::chartypes::chartype("１"));
 }
 
-const int kNumRepeat = 1000000;
-const int kNumSpecialCharacters = 11;
-const char * kSpecialCharacters[] = {
-  "a", "Ａ", ",", "。", "，", "？", "1",
-  "1234", "１", "letter", "中文单词",
-};
-
 // The chartype function should be able to parse at least 5,000 token
 // per millisecond
 TEST(chartypes_unittest, performance_test) {
+  const int kNumRepeat = 1000000;
+  const int kNumSpecialCharacters = 11;
+
+  const char * kSpecialCharacters[] = {
+    "a", "Ａ", ",", "。", "，", "？", "1",
+    "1234", "１", "letter", "中文单词",
+  };
+
   long start_time = clock();
   for (int i = 0; i < kNumRepeat; ++ i) {
     for (int j = 0; j < kNumSpecialCharacters; ++ j) {
@@ -51,6 +52,9 @@ TEST(chartypes_unittest, performance_test) {
   }
   long throughput_per_millisecond = ((kNumRepeat * kNumSpecialCharacters)
       / ((clock() -start_time) / 1000));
+  std::cout << "#throughput ltp::strutils::chartypes::chartype : "
+    << throughput_per_millisecond << std::endl;
+
   EXPECT_LT(5000, throughput_per_millisecond);
 }
 

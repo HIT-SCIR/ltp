@@ -10,61 +10,24 @@
 #ifndef __STRING_MAP_HPP__
 #define __STRING_MAP_HPP__
 
-#ifdef _WIN32
-#include <hash_map>
-#else
-#include <tr1/unordered_map>
-#endif
-
 #include <string.h>
 #include <stdlib.h>
+#include "unordered_map.hpp"
+#include "hasher.hpp"
 
 namespace ltp {
 namespace utility {
-
-typedef struct CharArrayEqualFunc {
-  bool operator() (const char * s1, const char * s2) const {
-    return (strcmp(s1, s2) == 0);
-  }
-} char_array_equal;
-
-typedef struct CharArrayHashFunc
-#ifdef _WIN32
-  : public stdext::hash_compare<const char *>
-#endif
-{
-  // hash function from Mihai
-  /*size_t operator() (const char* s) const {
-    size_t hashTemp = 0;
-    for (unsigned int i = 0; s[i]; ++ i) {
-      if (0 > hashTemp) hashTemp = (hashTemp << 1) + 1;
-      else hashTemp = hashTemp << 1;
-      hashTemp ^= s[i];
-    }
-    return hashTemp;
-  }*/
-
-  size_t operator() (const char* s) const {
-    size_t hashTemp = 0;
-    while (*s) {
-      hashTemp = hashTemp * 101 + *s ++;
-    }
-    return hashTemp;
-  }
-
-  bool operator() (const char * s1, const char * s2) const {
-    return (strcmp(s1, s2) < 0);
-  }
-} char_array_hash;
 
 template <class T>
 class StringMap {
 public:
 #ifdef _WIN32
-  typedef stdext::hash_map<const char *, T, char_array_hash> internal_map_t;
+  typedef stdext::hash_map<const char *, T,
+          __Default_CharArray_HashFunction> internal_map_t;
 #else
   typedef std::tr1::unordered_map<const char *, T,
-          char_array_hash, char_array_equal> internal_map_t;
+          __Default_CharArray_HashFunction,
+          __Default_CharArray_EqualFunction> internal_map_t;
 #endif  // end for _WIN32
 
   typedef typename internal_map_t::iterator       iterator;

@@ -10,7 +10,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <map>
-#include "utils/stringmap.hpp"
+#include "unordered_map.hpp"
+#include "hasher.hpp"
 
 namespace ltp {
 namespace utility {
@@ -21,10 +22,12 @@ template <typename T>
 class __Template_Token_Cache {
 private:
 #ifdef _WIN32
-  typedef stdext::hash_map<const char *, int, char_array_hash> indexing_t;
+  typedef stdext::hash_map<const char *, int,
+          __Default_CharArray_HashFunction> indexing_t;
 #else
   typedef std::tr1::unordered_map<const char *, int,
-          char_array_hash, char_array_equal> indexing_t;
+          __Default_CharArray_HashFunction,
+          __Default_CharArray_EqualFunction> indexing_t;
 #endif  // end for _WIN32
 
 public:

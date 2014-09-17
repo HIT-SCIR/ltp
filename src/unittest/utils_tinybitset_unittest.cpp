@@ -92,6 +92,24 @@ TEST(tinybitset_unittest, test_bitset_mergetest) {
   EXPECT_EQ(34,bitones[2]);
 }
 
+TEST(tinybitset_unittest, get_performance_test) {
+  const int kNumRepeat = 1000000000;
+  long start_time = clock();
+
+  Bitset mask(127);
+  for (int i = 0; i < kNumRepeat; ++ i) {
+    if (mask.get(0)) {
+      //
+    }
+  }
+
+  long throughput_per_millisecond = (kNumRepeat / (double(clock() -start_time) / 1000));
+  std::cout << "#throughput ltp::utility:Bitset::get : "
+    << throughput_per_millisecond << std::endl;
+  EXPECT_LT(5000, throughput_per_millisecond);
+}
+
+
 int main(int argc, char ** argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

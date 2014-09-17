@@ -26,6 +26,12 @@ target_link_libraries (utils_chartypes_unittest gtest pthread)
 set_target_properties(utils_chartypes_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
+set (utils_sbcdbc_unittest_SRC ./utils_sbcdbc_unittest.cpp)
+add_executable (utils_sbcdbc_unittest ${utils_sbcdbc_unittest_SRC})
+target_link_libraries (utils_sbcdbc_unittest gtest pthread)
+set_target_properties(utils_sbcdbc_unittest PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
+
 set (utils_codecs_unittest_SRC ./utils_codecs_unittest.cpp)
 add_executable (utils_codecs_unittest ${utils_codecs_unittest_SRC})
 target_link_libraries (utils_codecs_unittest gtest pthread)

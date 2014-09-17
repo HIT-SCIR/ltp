@@ -4,23 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
-#ifdef _WIN32
-#include <hash_map>
-#else
-#include <tr1/unordered_map>
-struct StringHashFunc{
-  size_t operator()(const std::string& s) const {
-    unsigned int _seed = 131; // 31 131 1313 13131 131313 etc..
-    unsigned int _hash = 0;
-    for(std::size_t i = 0; i < s.size(); i++) {
-      _hash = (_hash * _seed) + s[i];
-    }
-    return size_t(_hash);
-  }
-};
-#endif
-
+#include "hasher.hpp"
+#include "unordered_map.hpp"
 #include "strutils.hpp"
 
 namespace ltp { //LTP_NAMESPACE_BEGIN
@@ -38,8 +23,10 @@ private:
   typedef stdext::hash_map<std::string, std::string>        internal_entries_t;
   typedef stdext::hash_map<std::string, internal_entries_t> internal_sections_t;
 #else
-  typedef std::tr1::unordered_map<std::string, std::string, StringHashFunc> internal_entries_t;
-  typedef std::tr1::unordered_map<std::string, internal_entries_t, StringHashFunc> internal_sections_t;
+  typedef std::tr1::unordered_map<std::string, std::string,
+          __Default_String_HashFunction> internal_entries_t;
+  typedef std::tr1::unordered_map<std::string, internal_entries_t,
+          __Default_String_HashFunction> internal_sections_t;
 #endif  //  end for _WIN32
 
   internal_sections_t sec;

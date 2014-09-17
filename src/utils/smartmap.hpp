@@ -5,25 +5,10 @@
 #include <algorithm>
 #include <vector>
 #include <cstring>
+#include "utils/hasher.hpp"
 
 namespace ltp {
 namespace utility {
-
-struct __SmartMap_Default_HashFunction {
-  size_t operator () (const char * s) const {
-    unsigned int hash = 0;
-    while (*s) {
-      hash = hash * 101 + *s ++;
-    }
-    return size_t(hash);
-  }
-};
-
-struct __SmartMap_Default_StringEqual {
-  bool operator () (const char * s1, const char * s2) const {
-    return (strcmp(s1, s2) == 0);
-  }
-};
 
 struct __SmartMap_Hash_Node {
 public:
@@ -74,8 +59,8 @@ struct __SmartMap_Const_Iterator {
 };
 
 template <class T = int, 
-         class HashFunction = __SmartMap_Default_HashFunction, 
-         class StringEqual  = __SmartMap_Default_StringEqual>
+         class HashFunction = __Default_CharArray_HashFunction, 
+         class StringEqual  = __Default_CharArray_EqualFunction>
 class SmartMap {
 public:
   typedef __SmartMap_Hash_Node            hash_node_t;
