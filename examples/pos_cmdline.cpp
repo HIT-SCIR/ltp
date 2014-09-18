@@ -65,14 +65,14 @@ int main(int argc, char * argv[]) {
     for (int i = 0; i < len; ++ i) {
       std::cout << words[i] << "_" << postags[i];
       if (i+1 == len) std::cout <<std::endl;
-      else std::cout<< "|";
+      else std::cout<< "\t";
     }
   }
 
   postagger_release_postagger(engine);
 
   tm = get_time() - tm;
-  std::cerr << "TRACE: consume "
+  std::cerr << "TRACE: pos-tm-consume "
     << tm 
     << " seconds."
     << std::endl;

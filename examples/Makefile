@@ -1,21 +1,22 @@
 #################################################
 # Example for call LTP libraries under UNIX     #
 #################################################
-
+cc=g++
+ccflags=-O2
 all: cws cws_cmdline multi_cws_cmdline \
 	pos pos_cmdline multi_pos_cmdline \
-	par \
+	par par_cmdline \
 	ner \
 	srl 
 
 cws: cws.cpp
-	g++ -o cws cws.cpp -I./ \
+	${cc} ${ccflags} -o cws cws.cpp -I./ \
 		-I../include/ \
 		-I../thirdparty/boost/include \
 		-L../lib/ -lsegmentor -lboost_regex
 
 cws_cmdline: cws_cmdline.cpp
-	g++ -o cws_cmdline cws_cmdline.cpp -I./ \
+	${cc} ${ccflags} -o cws_cmdline cws_cmdline.cpp -I./ \
 		-I../include/ \
 		-I../thirdparty/boost/include \
 		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
@@ -24,7 +25,7 @@ cws_cmdline: cws_cmdline.cpp
 # tinythread is directly invoked into the example
 #
 multi_cws_cmdline: multi_cws_cmdline.cpp
-	g++ -o multi_cws_cmdline multi_cws_cmdline.cpp \
+	${cc} ${ccflags}  -o multi_cws_cmdline multi_cws_cmdline.cpp \
 		../thirdparty/tinythreadpp/tinythread.cpp \
 		-I./ \
 		-I../include/ \
@@ -33,17 +34,17 @@ multi_cws_cmdline: multi_cws_cmdline.cpp
 		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy -lpthread
 
 pos: pos.cpp
-	g++ -o pos pos.cpp -I./ \
+	${cc} ${ccflags} -o pos pos.cpp -I./ \
 		-I../include/ \
 		-L../lib/ -lpostagger
 
 pos_cmdline: pos_cmdline.cpp
-	g++ -o pos_cmdline pos_cmdline.cpp -I./ \
+	${cc} ${ccflags} -o pos_cmdline pos_cmdline.cpp -I./ \
 		-I../include/ \
 		-Wl,-dn -L../lib/ -lpostagger -Wl,-dy
 
 multi_pos_cmdline: multi_pos_cmdline.cpp
-	g++ -o multi_pos_cmdline multi_pos_cmdline.cpp \
+	${cc} ${ccflags} -o multi_pos_cmdline multi_pos_cmdline.cpp \
 		../thirdparty/tinythreadpp/tinythread.cpp \
 		-I./ \
 		-I../include/ \
@@ -51,16 +52,22 @@ multi_pos_cmdline: multi_pos_cmdline.cpp
 		-Wl,-dn -L../lib/ -lpostagger -Wl,-dy -lpthread
 
 ner: ner.cpp
-	g++ -o ner ner.cpp -I./ \
+	${cc} ${ccflags} -o ner ner.cpp -I./ \
 		-I../include \
 		-L../lib/ -lner
 
 par: par.cpp
-	g++ -o par par.cpp -I./ \
+	${cc} ${ccflags} -o par par.cpp -I./ \
 		-I../include \
 		-L../lib -lparser
+
+par_cmdline: par_cmdline.cpp
+	${cc} ${ccflags} -o par_cmdline par_cmdline.cpp -I./ \
+		-I../include/ \
+		-Wl,-dn -L../lib/ -lparser -Wl,-dy
+
 srl: srl.cpp
-	g++ -o srl srl.cpp -I./ \
+	${cc} ${ccflags} -o srl srl.cpp -I./ \
 		-I../include \
 		-L../lib -lsrl
 
@@ -69,10 +76,11 @@ srl: srl.cpp
 clean:
 	rm cws
 	rm cws_cmdline
+	rm multi_cws_cmdline
 	rm pos
 	rm pos_cmdline
+	rm multi_pos_cmdline
 	rm ner
 	rm par
+	rm par_cmdline
 	rm srl
-	rm multi_cws_cmdline
-	rm multi_pos_cmdline
