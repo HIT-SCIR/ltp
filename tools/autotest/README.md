@@ -17,6 +17,15 @@ If some the packages are not available, certain test will be skipped.
 
 Please setup the model into the `ltp_data` directory.
 
+## Run it
+
+by 
+```
+./autotest.py
+```
+
+for detailed arguments, please use `./autotest.py -h`
+
 ## Output
 
 This test suite will automatically generate the following reports:
