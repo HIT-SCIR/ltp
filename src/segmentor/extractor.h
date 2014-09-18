@@ -15,14 +15,13 @@ using namespace ltp::utility;
 
 class Extractor {
 public:
-  static Extractor * extractor();
+  static Extractor& extractor();
   static int num_templates();
   static int extract1o(Instance * inst, int idx, vector< StringVec > & cache);
 protected:
   Extractor();
   ~Extractor();
 private:
-  static Extractor * instance_;
   static vector< Template * > templates;
 };
 

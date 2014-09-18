@@ -78,7 +78,6 @@ Segmentor::run(void) {
 bool
 Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
   std::string strbuf;
-  int         intbuf;
 
   train_opt.train_file              = "";
   train_opt.holdout_file            = "";
@@ -89,6 +88,8 @@ Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
   train_opt.rare_feature_threshold  = 0;
 
   if (cfg.has_section("train")) {
+    int intbuf;
+
     TRACE_LOG("Training mode specified.");
     __TRAIN__ = true;
 
@@ -216,7 +217,6 @@ Segmentor::build_configuration(void) {
     //
     Instance * inst = train_dat[i];
     int len = inst->words.size();
-    int buff = 0;
 
     for (int j = 0; j < len; ++ j) {
       wordfreq.set(inst->words[j].c_str(), true);
@@ -387,7 +387,6 @@ void
 Segmentor::build_feature_space(void) {
   // build feature space, it a wrapper for
   // featurespace.build_feature_space
-  int N = Extractor::num_templates();
   int L = model->num_labels();
   model->space.set_num_labels(L);
 

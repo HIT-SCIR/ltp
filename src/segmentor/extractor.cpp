@@ -6,22 +6,15 @@
 namespace ltp {
 namespace segmentor {
 
-Extractor * Extractor::instance_ = 0;
 std::vector<Template *> Extractor::templates;
 
-Extractor * Extractor::extractor() {
-  if (0 == instance_) {
-    instance_ = new Extractor;
-  }
-
+Extractor& Extractor::extractor() {
+  static Extractor instance_;
   return instance_;
 }
 
 int Extractor::num_templates() {
-  if (0 == instance_) {
-    instance_ = new Extractor;
-  }
-
+  extractor();
   return templates.size();
 }
 

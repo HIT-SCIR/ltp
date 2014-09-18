@@ -435,9 +435,7 @@ int LTP::srl(XML4NLP & xml) {
   if ( xml.QueryNote(NOTE_SRL) ) return 0;
 
   // dependency
-  int ret = -1;
-
-  ret = ner(xml);
+  int ret = ner(xml);
   if (0 != ret) {
     ERROR_LOG("in LTP::srl, failed to perform ner preprocess");
     return ret;

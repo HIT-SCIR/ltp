@@ -23,15 +23,15 @@ using namespace ltp::strutils;
 
 class Extractor {
 public:
-    Extractor() {}
-    virtual ~Extractor() {}
+  Extractor() {}
+  virtual ~Extractor() {}
 
-    // virtual static int extract1o(Instance * inst, int hid, vector<string> & cache) {}
-    // virtual static int extract2o(Instance * inst, int hid, int cid, vector<string> & cache) {}
-    // virtual static int extract3o(Instance * inst, int hid, int cid, int gid, vector<string> & cache) {}
+  // virtual static int extract1o(Instance * inst, int hid, vector<string> & cache) {}
+  // virtual static int extract2o(Instance * inst, int hid, int cid, vector<string> & cache) {}
+  // virtual static int extract3o(Instance * inst, int hid, int cid, int gid, vector<string> & cache) {}
 protected:
-    static void __GET_DIRECTION(int head_id, int child_id, string& direction); 
-    static void __GET_DISTANCE_1_2_36_7(int head_id, int child_id, string& distance);
+  static void __GET_DIRECTION(int head_id, int child_id, string& direction); 
+  static void __GET_DISTANCE_1_2_36_7(int head_id, int child_id, string& distance);
 };  //  end for class Extractor
 
 
@@ -51,18 +51,18 @@ protected:
  */
 class POSUExtractor : public Extractor {
 public:
-    static int extract1o(Instance * inst, int hid, vector<string> & cache);
-    static int extract2o(Instance * inst,
-                         int hid,
-                         int cid,
-                         vector<string> & cache);
-    static int extract3o(Instance * inst,
-                         int hid,
-                         int cid,
-                         int sid,
-                         vector<string> & cache);
+  static int extract1o(Instance * inst, int hid, vector<string> & cache);
+  static int extract2o(Instance * inst,
+                       int hid,
+                       int cid,
+                       vector<string> & cache);
+  static int extract3o(Instance * inst,
+                       int hid,
+                       int cid,
+                       int sid,
+                       vector<string> & cache);
 private:
-    static const string prefix;
+  static const string prefix;
 };  //  end for class PosUnigramExtractor
 
 
@@ -71,12 +71,11 @@ private:
  */
 class POSBigramExtractor : public Extractor {
 public:
-    POSBigramExtractor() : prefix("") { }
-
-    int extract(Instance * inst) {
-    }   //  end for int extract
+  POSBigramExtractor() : prefix("") { }
+  int extract(Instance * inst) {
+  }   //  end for int extract
 private:
-    const string prefix;
+  const string prefix;
 };  //  end for class POSBigramExtractor
 
 /*
@@ -118,17 +117,16 @@ private:
  */
 class DEPExtractor : public Extractor {
 public:
-    static DEPExtractor * extractor();
-    static int num_templates();
-    static int extract1o(Instance * inst, int hid, vector<string> & cache);
-    static int extract2o(Instance * inst, int hid, int cid, vector< StringVec > & cache);
-    static int extract3o(Instance * inst, int hid, int cid, int gid, vector<string> & cache);
+  static DEPExtractor& extractor();
+  static int num_templates();
+  static int extract1o(Instance * inst, int hid, vector<string> & cache);
+  static int extract2o(Instance * inst, int hid, int cid, vector< StringVec > & cache);
+  static int extract3o(Instance * inst, int hid, int cid, int gid, vector<string> & cache);
 protected:
-    DEPExtractor();
-    ~DEPExtractor();
+  DEPExtractor();
+  ~DEPExtractor();
 private:
-    static DEPExtractor * instance_;
-    static vector<Template *>    templates;
+  static vector<Template *>    templates;
 };  //  end for class DependencyExtractor
 
 /*
@@ -169,26 +167,25 @@ private:
  */
 class SIBExtractor : public Extractor {
 public:
-    static SIBExtractor * extractor();
-    static int num_templates();
-    static int extract1o(Instance * inst,
-                         int hid,
-                         vector<string> & cache);
-    static int extract2o(Instance * inst,
-                         int hid,
-                         int cid,
-                         vector<string> & cache);
-    static int extract3o(Instance * inst,
-                         int hid,
-                         int cid,
-                         int sid,
-                         vector< StringVec > & cache);
+  static SIBExtractor& extractor();
+  static int num_templates();
+  static int extract1o(Instance * inst,
+                       int hid,
+                       vector<string> & cache);
+  static int extract2o(Instance * inst,
+                       int hid,
+                       int cid,
+                       vector<string> & cache);
+  static int extract3o(Instance * inst,
+                       int hid,
+                       int cid,
+                       int sid,
+                       vector< StringVec > & cache);
 protected:
-    SIBExtractor();
-    ~SIBExtractor();
+  SIBExtractor();
+  ~SIBExtractor();
 private:
-    static SIBExtractor * instance_;
-    static vector<Template *> templates;
+  static vector<Template *> templates;
 };  //  end for SiblingExtractor
 
 /*
@@ -231,20 +228,19 @@ private:
 
 class GRDExtractor : public Extractor {
 public:
-    static GRDExtractor * extractor();
-    static int num_templates();
-    static int extract3o(Instance * inst,
-                         int hid,
-                         int cid,
-                         int gid,
-                         vector< StringVec > & cache);
+  static GRDExtractor& extractor();
+  static int num_templates();
+  static int extract3o(Instance * inst,
+                       int hid,
+                       int cid,
+                       int gid,
+                       vector< StringVec > & cache);
 protected:
-    GRDExtractor();
-    ~GRDExtractor();
+  GRDExtractor();
+  ~GRDExtractor();
 
 private:
-    static GRDExtractor * instance_;
-    static vector<Template *> templates;
+  static vector<Template *> templates;
 };  //  end for GRDExtractor
 
 }   //  end for namespace parser

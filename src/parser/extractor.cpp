@@ -52,7 +52,6 @@ const string POSUExtractor::prefix = "PU-";
 // ================================================================ //
 
 // Initialize the static member
-DEPExtractor * DEPExtractor::instance_ = 0;
 vector<Template *> DEPExtractor::templates;
 
 // Constructor for DEPExtractor, initialize templates for dependency
@@ -246,20 +245,14 @@ DEPExtractor::~DEPExtractor() {
 }
 
 // accessment function, which return the singleton class
-DEPExtractor * DEPExtractor::extractor() {
-  if (0 == instance_) {
-    instance_ = new DEPExtractor;
-  }
-
+DEPExtractor& DEPExtractor::extractor() {
+  static DEPExtractor instance_;
   return instance_;
 }
 
 // get number of templates
 int DEPExtractor::num_templates() {
-  if (0 == instance_) {
-    instance_ = new DEPExtractor;
-  }
-
+  extractor();
   return templates.size();
 }
 
@@ -350,23 +343,19 @@ int DEPExtractor::extract2o(Instance * inst, int hid, int cid, vector< StringVec
 }
 
 // ================================================================ //
-// Sibling Features Extractor                     //
-//  feature templates is listed in `extractor.h`          //
+// Sibling Features Extractor                                       //
+//  feature templates is listed in `extractor.h`                    //
 //  the SIBExtractor is a singleton, which only be construct once   //
-//  during the life of the program.                 //
+//  during the life of the program.                                 //
 // ================================================================ //
 
 // Initialize the static member, 
-SIBExtractor * SIBExtractor::instance_ = 0;
 vector<Template *> SIBExtractor::templates;
 
 // the constructor function.
 // guarantee that it's a singleton.
-SIBExtractor * SIBExtractor::extractor() {
-  if (0 == instance_) {
-    instance_ = new SIBExtractor;
-  }
-
+SIBExtractor& SIBExtractor::extractor() {
+  static SIBExtractor instance_;
   return instance_;
 }
 
@@ -463,10 +452,7 @@ SIBExtractor::~SIBExtractor() {
 }
 
 int SIBExtractor::num_templates() {
-  if (0 == instance_) {
-    instance_ = new SIBExtractor;
-  }
-
+  extractor();
   return templates.size();
 }
 
@@ -509,24 +495,21 @@ int SIBExtractor::extract3o(Instance * inst, int hid, int cid, int sid, vector< 
     cache[i].push_back(feat);
   }
 
-	return 0;
+  return 0;
 }
 
 // ================================================================ //
-// Grand Features Extractor                     //
-//  feature templates is listed in `extractor.h`          //
+// Grand Features Extractor                                         //
+//  feature templates is listed in `extractor.h`                    //
 //  the GRDExtractor is a singleton, which only be construct once   //
-//  during the life of the program.                 //
+//  during the life of the program.                                 //
 // ================================================================ //
 
 // Initialize the static member,
-GRDExtractor * GRDExtractor::instance_ = 0;
 vector<Template *> GRDExtractor::templates;
 
-GRDExtractor * GRDExtractor::extractor() {
-  if (0 == instance_) {
-    instance_ = new GRDExtractor;
-  }
+GRDExtractor& GRDExtractor::extractor() {
+  static GRDExtractor instance_;
   return instance_;
 }
 
@@ -575,10 +558,7 @@ GRDExtractor::~GRDExtractor() {
 }
 
 int GRDExtractor::num_templates() {
-  if (0 == instance_) {
-    instance_ = new GRDExtractor;
-  }
-
+  extractor();
   return templates.size();
 }
 

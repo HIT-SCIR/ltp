@@ -70,7 +70,7 @@ int FeatureSpace::build_feature_space(int num_deprels,
         std::vector< StringVec > cache;
         cache.resize( N );
 
-        DEPExtractor::extractor()->extract2o(inst, hid, cid, cache);
+        DEPExtractor::extract2o(inst, hid, cid, cache);
         for (int k = 0; k < cache.size(); ++ k) {
           for (int itx = 0; itx < cache[k].size(); ++ itx) {
             retrieve(DEP, k, cache[k][itx], true);

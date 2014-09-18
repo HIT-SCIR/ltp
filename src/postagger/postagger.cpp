@@ -73,8 +73,6 @@ void Postagger::run(void) {
 bool
 Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
   std::string strbuf;
-  int         intbuf;
-
   __TRAIN__ = false;
 
   train_opt.train_file             = "";
@@ -86,6 +84,8 @@ Postagger::parse_cfg(ltp::utility::ConfigParser & cfg) {
   train_opt.rare_feature_threshold = 0;
 
   if (cfg.has_section("train")) {
+    int intbuf;
+
     TRACE_LOG("Training mode specified.");
     __TRAIN__ = true;
 
@@ -686,7 +686,6 @@ Postagger::test(void) {
   int num_tags = 0;
 
   double before = get_time();
-  Bitset * original_bitset;
 
   while ((inst = reader.next())) {
     int len = inst->size();
