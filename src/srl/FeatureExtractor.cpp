@@ -142,6 +142,8 @@ void FeatureCollection::add_feature_(
         case FEAT_TYPE_NODE_VS_PRED:
             m_node_vs_predicate_features.push_back(feature_number);
             break;
+        default:
+            break;
     }
 }
 
