@@ -72,8 +72,7 @@ private:
 class POSBigramExtractor : public Extractor {
 public:
   POSBigramExtractor() : prefix("") { }
-  int extract(Instance * inst) {
-  }   //  end for int extract
+  int extract(Instance * inst);
 private:
   const string prefix;
 };  //  end for class POSBigramExtractor
