@@ -1,23 +1,35 @@
 #ifndef __HASHER_HPP__
 #define __HASHER_HPP__
 
+#ifdef _WIN32
+  #include <hash_map>
+#endif
+
 #include <cstring>
 
 namespace ltp {
 namespace utility {
 
-struct __Default_CharArray_HashFunction {
-  size_t operator () (const char * s) const {
+struct __Default_CharArray_HashFunction 
+#ifdef _WIN32
+  : public stdext::hash_compare<const char *>
+#endif
+{
+  size_t operator () (const char* s) const {
     unsigned int hash = 0;
     while (*s) {
       hash = hash * 101 + *s ++;
     }
     return size_t(hash);
   }
+
+  bool operator() (const char* s1, const char* s2) const {
+    return (strcmp(s1, s2) < 0);
+  }
 };
 
 struct __Default_CharArray_EqualFunction {
-  bool operator () (const char * s1, const char * s2) const {
+  bool operator () (const char* s1, const char* s2) const {
     return (strcmp(s1, s2) == 0);
   }
 };

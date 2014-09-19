@@ -2,10 +2,11 @@
 #define __TIME_HPP__
 
 #if _WIN32
-  #include <time.h>
-  static const unsigned __int64 epoch = ((unsigned __int64) 116444736000000000ULL);
+// [FROM]! http://stackoverflow.com/questions/1372480/
+#define _WINSOCKAPI_    // stops windows.h including winsock.h
+#include <windows.h>
 #else
-  #include <sys/time.h>
+#include <sys/time.h>
 #endif	//	end for _WIN32
 
 #include <sys/types.h>
@@ -19,19 +20,21 @@ namespace utility {
 
 inline double get_time(void) {
 #if _WIN32
-  // From: http://stackoverflow.com/questions/1676036/
-  FILETIME        file_time;
-  SYSTEMTIME      system_time;
-  ULARGE_INTEGER  ularge;
+  time_t clock;
+  struct tm tm;
+  SYSTEMTIME wtm;
 
-  GetSystemTime(&system_time);
-  SystemTimeToFileTime(&system_time, &file_time);
-  ularge.LowPart = file_time.dwLowDateTime;
-  ularge.HighPart = file_time.dwHighDateTime;
-
-  double tv_sec = (long) ((ularge.QuadPart - epoch) / 10000000L);
-  double tv_usec = (long) (system_time.wMilliseconds * 1000);
-
+  GetLocalTime(&wtm);
+  tm.tm_year = wtm.wYear - 1900;
+  tm.tm_mon  = wtm.wMonth - 1;
+  tm.tm_mday = wtm.wDay;
+  tm.tm_hour = wtm.wHour;
+  tm.tm_min  = wtm.wMinute;
+  tm.tm_sec  = wtm.wSecond;
+  tm.tm_isdst= -1;
+  clock = mktime(&tm);
+  double tv_sec = clock;
+  double tv_usec = wtm.wMilliseconds * 1000;
   return tv_sec + (tv_usec / 1000000.0);
 #else
   struct timeval tv;
