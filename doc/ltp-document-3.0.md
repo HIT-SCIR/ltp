@@ -699,7 +699,13 @@ print content
 
 在LTP中，词性标注、句法分析两个模块还存在模型比较大的问题。为了缩小模型的大小，我们参考[Learning Sparser Perceptron Model](http://www.cs.bgu.ac.il/~yoavg/publications/acl2011sparse.pdf)，将其中提到的特征裁剪策略加入了LTP。
 
-由于LTP所采用的在线机器学习框架的特征映射方式是以特征前缀为单位进行映射的，所以裁剪时的策略也是如果该前缀的更新次数比较小，就裁剪。
+具体来讲，LTP特征映射是以特征前缀为单位进行组织的。对应的，我们裁剪了同一前缀下更新次数较少的所有特征。
+
+## 测试设置
+
+下述实验的测试硬件环境如下：
+* CPU: Intel(R) Xeon(R) CPU E5-1620 0 @ 3.60GHz
+* RAM: 128G
 
 ## 分词模块
 
@@ -724,14 +730,12 @@ print content
 在统计模型中融合词典的方法是将最大正向匹配得到的词特征
 
 | 类别 | 特征 |
-| --- | --- 
+| --- | --- |
 | begin-of-lexicon-word | ch[0] is preffix of words in lexicon? |
 | middle-of-lexicon-word | ch[0] is middle of words in lexicon? |
 | end-of-lexicon-word | ch[0] is suffix of words in lexicon? |
 
-基础模型在几种数据集上的性能如下：
-
-### 人民日报
+基础模型在人民日报测试数据上的性能如下：
 
 语料信息：人民日报1998年2月-6月(后10%数据作为开发集)作为训练数据，1月作为测试数据。
 
@@ -742,36 +746,8 @@ print content
 | 开发集 | 0.973152 | 0.972430 | 0.972791 |
 | 测试集 | 0.972316 | 0.970354 | 0.972433 |
 
-* 运行时内存：520540/1024=508.3m
-* 速度：5543456/30.598697s=176.91k/s
-
-### CTB5
-
-CTB5数据来源于，训练集和测试集按照官方文档中建议的划分方法划分。
-
-* 准确率为：
-
-| P | R | F |
-|---|---|---|
-|开发集 | 0.941426 | 0.937309 | 0.939363 |
-|测试集 | 0.967235 | 0.973737 | 0.970475 |
-
-* 运行时内存：141980/1024=138.65M
-* 速度：50518/0.344988 s=143.00k/s
-
-### CTB6
-
-CTB6数据来源于，训练集和测试集按照官方文档中建议的划分方法划分。
-
-* 准确率为：
-
-| P | R | F |
-|---|---|---|
-|开发集|0.933438 | 0.940648 | 0.937029 |
-|测试集|0.932683 | 0.938023 | 0.935345 |
-
-* 运行时内存：116332/1024=113.6M
-* 速度：484016/2.515181 s=187.9k/s
+* 运行时内存：124M
+* 速度：392.5K/sec
 
 ## 词性标注模块
 
@@ -789,9 +765,7 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 | prefix | ch[0,0],ch[0,0:1],ch[0,0:2]|
 | suffix | ch[0,n-2:n],ch[0,n-1:n],ch[0,n]|
 
-基础模型在几种数据集上的性能如下：
-
-### 人民日报
+基础模型在人民日报数据集上的性能如下：
 
 语料信息：人民日报1998年2月-6月(后10%数据作为开发集)作为训练数据，1月作为测试数据。
 
@@ -802,36 +776,8 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 |开发集 | 0.979621 |
 |测试集 | 0.978337 |
 
-* 运行时内存：1732584/1024=1691.97m
-* 速度：5543456/51.003626s=106.14k/s
-
-### CTB5
-
-CTB5数据来源于，训练集和测试集按照官方文档中建议的划分方法划分。
-
-* 准确率为：
-
-| | P |
-| --- | --- |
-|开发集 | 0.953819 |
-|测试集 | 0.946179 |
-
-* 运行时内存：356760/1024=348.40M
-* 速度：50518/0.527107 s=93.59k/s
-
-### CTB6
-
-CTB6数据来源于，训练集和测试集按照官方文档中建议的划分方法划分。
-
-* 准确率为：
-
-| | P |
-| --- | --- |
-|开发集 | 0.939930 |
-|测试集 | 0.938439 |
-
-* 运行时内存：460116/1024=449.33M
-* 速度：484016/5.735547 s=82.41k/s
+* 运行时内存：276M
+* 速度：169.5K/sec
 
 ## 命名实体识别模块
 
@@ -839,15 +785,14 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 
 对于模型参数，我们采用在线机器学习算法框架从标注数据中学习参数。对于词性标注模型，我们使用的模型特征有：
 
+| 类别 | 特征 |
+| --- | --- 
 |word-unigram | w[-2], w[-1], w[0], w[1], w[2] |
-|---|---|
 |word-bigram	 | w[-2]w[-1],w[-1]w[0],w[0]w[1],w[1]w[2] |
 |postag-unigram | p[-2],p[-1],p[0],p[1],p[2] |
 |postag-bigram | p[-1]p[0],p[0]p[1] |
 
-基础模型在几种数据集上的性能如下：
-
-### 人民日报
+基础模型在人民日报数据集上的性能如下：
 
 语料信息：人民日报1998年1月做训练（后10%数据作为开发集），6月前10000句做测试作为训练数据。
 
@@ -869,17 +814,28 @@ CTB6数据来源于，训练集和测试集按照官方文档中建议的划分�
 * 二阶利用子孙信息解码(2o-sib)
 * 二阶利用子孙和父子信息(2o-carreras)
 
-三种不同的解码方式。依存句法分析模块中使用的特征请参考：
+三种不同的解码方式。依存句法分析模块中使用的特征请参考对应的[代码](https://github.com/HIT-SCIR/ltp/blob/master/src/parser/extractor.cpp)。
 
-在LDC数据集上，三种不同解码方式对应的性能如下表所示。
+在[Chinese Dependency Treebank(CDT)](https://catalog.ldc.upenn.edu/LDC2012T05)数据集上，三种不同解码方式对应的性能如下表所示，其中运行速度和内存开销从CDT测试集（平均29.13词/句）上结果中获得。
 
 | model | 1o | | 2o-sib | | 2o-carreras | |
 | ----- | --- | ---| ----- |---| ---------- |---|
-| | Uas | Las | Uas | Las | Uas | Las |
-|Dev | 0.8190 | 0.7893 | 0.8501 | 0.8213 | 0.8582 | 0.8294 |
-|Test | 0.8118 | 0.7813 | 0.8421 | 0.8106 | 0.8447 | 0.8138 |
-|Speed | 49.4 sent./s | | 9.4 sent./s | | 3.3 sent./s |
-|Mem. | 0.825g | | 1.3g | | 1.6g |
+| | UAS | LAS | UAS | LAS | UAS | LAS |
+|开发集 | 0.8192 | 0.7904 | 0.8501 | 0.8213 | 0.8582 | 0.8294 |
+|测试集 | 0.8118 | 0.7813 | 0.8421 | 0.8106 | 0.8447 | 0.8138 |
+|速度 | 81.71 sent./s | | 15.21 sent./s | |  |
+|运行时内存 | 338.06M | | 974.64M | |  |
+
+特征裁剪对于句法分析模块的运行时内存开销（亦即模型大小）有较大的影响。在进行特征裁剪后，上表性能变化为：
+
+| model | 1o | | 2o-sib | | 2o-carreras | |
+| ----- | --- | ---| ----- |---| ---------- |---|
+|裁剪阈值| 5 | | 3 | | | |
+| | UAS | LAS | UAS | LAS | UAS | LAS |
+|开发集 | 0.8172 | 0.7886 | 0.8497 | 0.8214 | | |
+|测试集 | 0.8096 | 0.7790 | 0.8408 | 0.8089 | | |
+|速度 | 82.85 sent./s | | 14.84 sent./s | |  |
+|运行时内存 | 221.18M | | 584.29M | |  |
 
 ## 语义角色标注模块
 
@@ -1122,13 +1078,13 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 依存句法分析结果将输入到标准io中。
 
 # 发表论文
-* Meishan Zhang, Zhilong Deng，Wanxiang Che, Ting Liu. [Combining Statistical Model and Dictionary for Domain Adaption of Chinese Word Segmentation](http://ir.hit.edu.cn/~mszhang/Conll06Tolgdpj.jar). Journal of Chinese Information Processing. 2012, 26 (2) : 8-12 (in Chinese)
-* Zhenghua Li, Min Zhang, Wanxiang Che, Ting Liu, Wenliang Chen, Haizhou Li. [Joint Models for Chinese POS Tagging and Dependency Parsing](http://ir.hit.edu.cn/~lzh/papers/zhenghua-D11-joint%20pos%20and%20dp.pdf). In Proceedings of the 2011Conference on Empirical Methods in Natural Language Processing (EMNLP 2011). 2011.07, pp. 1180-1191. Edinburgh, Scotland, UK.
-* Wanxiang Che, Zhenghua Li, Ting Liu. [LTP: A Chinese Language Technology Platform](http://www.aclweb.org/anthology/C/C10/C10-3.pdf#page=16). In Proceedings of the Coling 2010:Demonstrations. 2010.08, pp13-16, Beijing, China.
-* Che. Wanxiang, Zhenghua Li, Yongqiang Li, Yuhang Guo, Bing Qin, Ting Liu. 2009. [Multilingual dependency-based syntactic and semantic parsing](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.165.1686&rep=rep1&type=pdf#page=61). In CoNLL 2009, pages 49-54, Boulder, Colorado, June. 
-* Guo, Yuhang, Wanxiang Che, Yuxuan Hu, Wei Zhang, and Ting Liu. 2007. [Hit-ir-wsd: A wsd system for english lexical sample task](http://acl.ldc.upenn.edu/W/W07/W07-2034.pdf). In SemEval-2007, pages 165–168.
-* Liu, Ting, Jinshan Ma, and Sheng Li. 2006. [Building a dependency treebank for improving Chinese parser](http://ir.hit.edu.cn/phpwebsite/index.php?module=documents&JAS_DocumentManager_op=downloadFile&JAS_File_id=255#page=43). Journal of Chinese Language and Computing, 16(4):207–224.
-* Lijie Wang, Wanxiang Che, and Ting Liu. 2009. An SVMTool-based Chinese POS Tagger. Journal of Chinese Information Processing, 23(4):16–22.
+* Meishan Zhang, Zhilong Deng，Wanxiang Che, and Ting Liu. [Combining Statistical Model and Dictionary for Domain Adaption of Chinese Word Segmentation](http://ir.hit.edu.cn/~mszhang/Conll06Tolgdpj.jar). _Journal of Chinese Information Processing_. 2012, 26 (2) : 8-12 (in Chinese)
+* Zhenghua Li, Min Zhang, Wanxiang Che, Ting Liu, Wenliang Chen, and Haizhou Li. [Joint Models for Chinese POS Tagging and Dependency Parsing](http://ir.hit.edu.cn/~lzh/papers/zhenghua-D11-joint%20pos%20and%20dp.pdf). In _Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing (EMNLP 2011)_. 2011.07, pp. 1180-1191. Edinburgh, Scotland, UK.
+* Wanxiang Che, Zhenghua Li, and Ting Liu. [LTP: A Chinese Language Technology Platform](http://www.aclweb.org/anthology/C/C10/C10-3.pdf#page=16). In _Proceedings of the Coling 2010:Demonstrations_. 2010.08, pp13-16, Beijing, China.
+* Wanxiang Che, Zhenghua Li, Yongqiang Li, Yuhang Guo, Bing Qin and Ting Liu. 2009. [Multilingual dependency-based syntactic and semantic parsing](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.165.1686&rep=rep1&type=pdf#page=61). In _CoNLL 2009_, pages 49-54, Boulder, Colorado, June. 
+* Yuhang Guo, Wanxiang Che, Yuxuan Hu, Wei Zhang, and Ting Liu. 2007. [Hit-ir-wsd: A wsd system for english lexical sample task](http://acl.ldc.upenn.edu/W/W07/W07-2034.pdf). In SemEval-2007, pages 165–168.
+* Ting Liu, Jinshan Ma, and Sheng Li. 2006. [Building a dependency treebank for improving Chinese parser](http://ir.hit.edu.cn/phpwebsite/index.php?module=documents&JAS_DocumentManager_op=downloadFile&JAS_File_id=255#page=43). _Journal of Chinese Language and Computing_, 16(4):207–224.
+* Lijie Wang, Wanxiang Che, and Ting Liu. 2009. An SVMTool-based Chinese POS Tagger. _Journal of Chinese Information Processing_, 23(4):16–22.
 
 # 附录
 ## 分词标注集
