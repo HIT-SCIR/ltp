@@ -244,6 +244,8 @@ void LTPResource::ReleaseSRLResource() {
     return;
   }
 
+  TRACE_LOG("SRL is released");
+
   m_isSRLResourceLoaded = false;
   return;
 }

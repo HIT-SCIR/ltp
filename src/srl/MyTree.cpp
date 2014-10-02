@@ -397,6 +397,7 @@ bool MyTree::IsLeaf(const int nodeID) const
 bool MyTree::BuildDepTree(const LTPData* ltpData)
 {
     InitTree(ltpData);
+
     return UpdateTree();
 }
 
@@ -461,7 +462,8 @@ void MyTree::InitTree(const LTPData* ltpData)
     m_depTree.nodeNum = index;
 
     //get the children for every node
-    for(int id = 0; id <m_depTree.nodeNum; id++)
+    // size_t id = 0;
+    for(size_t id = 0; id <m_depTree.nodeNum; id++)
     {
         index =  m_depTree.vecDepNode.at(id).parent;
         if(index >= 0) //except the root node and punc nodes
