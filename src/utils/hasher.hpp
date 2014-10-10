@@ -1,7 +1,7 @@
 #ifndef __HASHER_HPP__
 #define __HASHER_HPP__
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
   #include <hash_map>
 #endif
 
@@ -10,8 +10,8 @@
 namespace ltp {
 namespace utility {
 
-struct __Default_CharArray_HashFunction 
-#ifdef _WIN32
+struct __Default_CharArray_HashFunction
+#if defined(_MSC_VER)
   : public stdext::hash_compare<const char *>
 #endif
 {

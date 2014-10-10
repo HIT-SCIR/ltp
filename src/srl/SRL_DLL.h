@@ -12,7 +12,7 @@ using namespace std;
 #define SRL_DLL_API
 #define SRL_DLL_API_EXPORT
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
     #undef SRL_DLL_API
     #ifdef SRL_DLL_API_EXPORT
         #define SRL_DLL_API extern "C" _declspec(dllexport)

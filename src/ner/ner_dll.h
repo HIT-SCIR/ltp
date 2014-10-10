@@ -7,7 +7,7 @@
 #define NER_DLL_API
 #define NER_DLL_API_EXPORT
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #undef NER_DLL_API
 #ifdef NER_DLL_API_EXPORT
     #define NER_DLL_API extern "C" _declspec(dllexport)

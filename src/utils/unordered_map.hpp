@@ -2,7 +2,7 @@
 #ifndef __UTILS_UNORDERED_MAP_HPP__
 #define __UTILS_UNORDERED_MAP_HPP__
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
   #include <hash_map>
 #else
   #include <tr1/unordered_map>

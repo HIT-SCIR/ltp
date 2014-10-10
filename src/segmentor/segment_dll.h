@@ -12,7 +12,7 @@
 #define SEGMENTOR_DLL_API
 #define SEGMENTOR_DLL_API_EXPORT
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #undef SEGMENTOR_DLL_API
 #ifdef SEGMENTOR_DLL_API_EXPORT
   #define SEGMENTOR_DLL_API extern "C" _declspec(dllexport)
@@ -38,7 +38,7 @@ SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path,
  *  @param[in]  segmentor     the segmentor
  *  @return     int           i don't know
  */
-SEGMENTOR_DLL_API int segmentor_release_segmentor(void * parser); 
+SEGMENTOR_DLL_API int segmentor_release_segmentor(void * parser);
 
 /*
  * run segment on the given segmentor

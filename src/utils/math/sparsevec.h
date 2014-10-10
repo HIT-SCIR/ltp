@@ -2,22 +2,16 @@
 #define __SPARSE_VECTOR_H__
 
 #include "featurevec.h"
+#include "utils/unordered_map.hpp"
 #include <iostream>
 #include <string>
-
-#ifdef _WIN32
-#include <hash_map>
-#else
-//#include <ext/hash_map>
-#include <tr1/unordered_map>
-#endif
 
 namespace ltp {
 namespace math {
 
 class SparseVec {
 public:
-#ifdef _WIN32
+#if defined(_MSC_VER)
   typedef stdext::hash_map<int,double> internal_sparsevec_t;
 #else
   typedef std::tr1::unordered_map<int, double> internal_sparsevec_t;
@@ -115,9 +109,9 @@ public:
     }
   }
 
-  inline void add(const int * idx, 
+  inline void add(const int * idx,
       const double * val,
-      const int n, 
+      const int n,
       const int loff,
       const double scale) {
     if (!idx) {

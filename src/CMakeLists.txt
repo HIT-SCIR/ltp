@@ -21,7 +21,7 @@ add_subdirectory ("srl")
 add_subdirectory ("__ltp_dll")
 
 # mongoose server is not supported in windows
-if (NOT WIN32)
+if (UNIX)
 add_subdirectory ("unittest")
 add_subdirectory ("server")
 endif()

@@ -10,6 +10,7 @@
 
 #include "Xml4nlp.h"
 #include "__util/MyLib.h"
+#include <cstring>
 
 const char * const NOTE_SENT    = "sent";
 const char * const NOTE_WORD    = "word";
@@ -1143,6 +1144,14 @@ int XML4NLP::BuildDOMFrame() {
   return 0;
 }
 
+#if defined(_WIN32) && !defined(_MSC_VER)
+static size_t strnlen(const char *s, size_t max) {
+  register const char *p;
+  for(p = s; *p && max--; ++p);
+  return(p - s);
+}
+#endif // defined
+
 bool XML4NLP::LTMLValidation() {
   // there should not be any attributes in `<xml4nlp>`
   // but it wont matter
@@ -1204,11 +1213,11 @@ bool XML4NLP::LTMLValidation() {
 
 #define END }}}
 
-  FOREACH(p, s, w) 
+  FOREACH(p, s, w)
     // segment check
     const char * buffer = NULL;
     buffer = w.wordPtr->Attribute(TAG_CONT);
-    if ((state & 0x02) 
+    if ((state & 0x02)
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
     buffer = w.wordPtr->Attribute(TAG_POS);
@@ -1216,7 +1225,7 @@ bool XML4NLP::LTMLValidation() {
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
     buffer = w.wordPtr->Attribute(TAG_PSR_PARENT);
-    if ((state & 0x08) 
+    if ((state & 0x08)
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
     buffer = w.wordPtr->Attribute(TAG_PSR_RELATE);
