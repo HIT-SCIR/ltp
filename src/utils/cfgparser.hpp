@@ -19,7 +19,7 @@ private:
   int _num_entries;
   bool _valid;
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
   typedef stdext::hash_map<std::string, std::string>        internal_entries_t;
   typedef stdext::hash_map<std::string, internal_entries_t> internal_sections_t;
 #else

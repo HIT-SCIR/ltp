@@ -7,7 +7,7 @@
 #define PARSER_DLL_API
 #define PARSER_DLL_API_EXPORT
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #undef PARSER_DLL_API
 #ifdef PARSER_DLL_API_EXPORT
     #define PARSER_DLL_API extern "C" _declspec(dllexport)
@@ -27,7 +27,7 @@ PARSER_DLL_API void * parser_create_parser(const char * path);
 
 /*
  * release the postagger resources
- * 
+ *
  *  @param[in]  segmentor   the segmentor
  *  @return     int         i don't know
  */

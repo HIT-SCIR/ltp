@@ -10,7 +10,7 @@ namespace ltp {
 namespace strutils {
 namespace chartypes {
 
-enum{ 
+enum{
   // level 1
   CHAR_LETTER = 1,
   CHAR_DIGIT = 2,
@@ -83,7 +83,7 @@ protected:
   }
 
 private:
-#ifdef _WIN32
+#if defined(_MSC_VER)
   typedef stdext::hash_map<const char *, int,
         utility::__Default_CharArray_HashFunction> internal_collection_t;
 #else

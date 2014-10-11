@@ -1,8 +1,8 @@
-// A light weight template engine which support few template functions.
-// It's designed for feature extraction in various NLP tasks. Speed is mainly concerned.
-// Since template is treated as an internal program-specified, we didnt use the safe
-// functions like strnlen, strncmp, strncpy just for consideration of speed.
-
+//! A light weight template engine which support few template functions. It's
+//! designed for feature extraction in various NLP tasks. Speed is mainly
+//! concerned. Since template is treated as an internal program-specified, we
+//! didn't use the safe functions like strnlen, strncmp, strncpy just for
+//! consideration of speed.
 #ifndef __TEMPLATE_HPP__
 #define __TEMPLATE_HPP__
 
@@ -21,7 +21,7 @@ namespace utility {
 template <typename T>
 class __Template_Token_Cache {
 private:
-#ifdef _WIN32
+#if defined(_MSC_VER)
   typedef stdext::hash_map<const char *, int,
           __Default_CharArray_HashFunction> indexing_t;
 #else

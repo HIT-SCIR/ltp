@@ -21,7 +21,7 @@ namespace utility {
 template <class T>
 class StringMap {
 public:
-#ifdef _WIN32
+#if defined(_MSC_VER)
   typedef stdext::hash_map<const char *, T,
           __Default_CharArray_HashFunction> internal_map_t;
 #else

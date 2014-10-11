@@ -7,7 +7,7 @@
 #define POSTAGGER_DLL_API
 #define POSTAGGER_DLL_API_EXPORT
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #undef POSTAGGER_DLL_API
 #ifdef POSTAGGER_DLL_API_EXPORT
     #define POSTAGGER_DLL_API extern "C" _declspec(dllexport)
@@ -29,7 +29,7 @@ POSTAGGER_DLL_API void * postagger_create_postagger(const char * path,
 
 /*
  * release the postagger resources
- * 
+ *
  *  @param[in]  segmentor   the segmentor
  *  @return     int         i don't know
  */

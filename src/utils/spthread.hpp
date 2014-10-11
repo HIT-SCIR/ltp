@@ -15,7 +15,7 @@
  | Used in linux and mac os                 |
  + ======================================== +
  */
-#ifndef WIN32
+#if !defined(_WIN32) && !defined(_WIN64)
 
 #include <pthread.h>
 #include <unistd.h>
