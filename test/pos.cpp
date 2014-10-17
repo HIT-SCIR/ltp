@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "ltp/postag_dll.h"
+#include "postag_dll.h"
 
 int main(int argc, char * argv[]) {
     if (argc < 1) {
