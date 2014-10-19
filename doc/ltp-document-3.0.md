@@ -14,8 +14,8 @@ LTP使用文档v3.0
 * [简介](#简介)
 * [开始使用ltp](#开始使用ltp)
 * [使用ltp_test以及模型](#使用ltp_test以及模型)
-* [使用ltp动态库](#使用ltp动态库)
 * [编程接口](#编程接口)
+* [使用ltp动态库](#使用ltp动态库)
 * [使用其他语言调用ltp](#使用其他语言调用ltp)
 * [使用ltp_server](#使用ltp_server)
 * [实现原理与性能](#实现原理与性能)
@@ -72,25 +72,25 @@ LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安
 
 或者在命令行build 路径下运行
 
-    cmake ..
+	cmake ..
 
-    第二步：编译
+第二步：编译
 
-    构建后得到ALL_BUILD、RUN_TESTS、ZERO_CHECK三个VC Project。使用VS打开ALL_BUILD项目，选择Release(*)方式构建项目。
+构建后得到ALL_BUILD、RUN_TESTS、ZERO_CHECK三个VC Project。使用VS打开ALL_BUILD项目，选择Release(*)方式构建项目。
 
-    (注*：boost::multi_array与VS2010不兼容的bug已经在3.1.0中得到修复，3.1.x及以上版本已经可以使用Debug方式构建，但出于效率考虑，仍旧建议使用Release方式构建。)
+(注*：boost::multi_array与VS2010不兼容的bug已经在3.1.0中得到修复，3.1.x及以上版本已经可以使用Debug方式构建，但出于效率考虑，仍旧建议使用Release方式构建。)
 
 ### Linux，Mac OSX和Cygwin编译
 
 Linux、Mac OSX(*)和Cygwin的用户，可以直接在项目根目录下使用命令
 
 
-    ./configure
-        make
+	./configure
+	make
 
-        (注：Mac OSX如果要编译example下的示例程序，请加入-std=c++11 -stdlib=libstdc++ -Wno-error=c++11-narrowing选项)
+(注：Mac OSX如果要编译example下的示例程序，请加入-std=c++11 -stdlib=libstdc++ -Wno-error=c++11-narrowing选项)
 
-        进行编译。
+进行编译。
 
 ## 简单地试用
 
@@ -149,25 +149,25 @@ ltp提供一整套算法逻辑以及模型，其中的模型包括：
 
 ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型，依照指定方法执行分析的功能。ltp_test加载的模型通过配置文件指定。配置文件的样例如下：
 
-    segmentor-model = ltp_data/cws.model
-        postagger-model = ltp_data/pos.model
-            parser-model = ltp_data/parser.model
-                ner-model = ltp_data/ner.model
-                    srl-data = ltp_data/srl_data
+	segmentor-model = ltp_data/cws.model
+	postagger-model = ltp_data/pos.model
+	parser-model = ltp_data/parser.model
+	ner-model = ltp_data/ner.model
+	srl-data = ltp_data/srl_data
 
-                    其中，
+其中，
 
-                    * segmentor-model项指定分词模型
-                    * postagger-model项指定词性标注模型
-                    * parser-model项指定依存句法分析模型
-                    * ner-model项指定命名实体识别模型
-                    * srl-data项指定语言角色标注模型
+* segmentor-model项指定分词模型
+* postagger-model项指定词性标注模型
+* parser-model项指定依存句法分析模型
+* ner-model项指定命名实体识别模型
+* srl-data项指定语言角色标注模型
 
-                    ltp_test的使用方法如下：
+ltp_test的使用方法如下：
 
-                        ./bin/ltp_test [配置文件] [分析目标] [待分析文件]
+	./bin/ltp_test [配置文件] [分析目标] [待分析文件]
 
-                        分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考理解Web Service Client结果一节。
+分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考理解Web Service Client结果一节。
 
 ## Window动态链接库
 
@@ -178,7 +178,6 @@ ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型
 自3.0.0及以后版本，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式。
 
 由于Windows终端采用gbk编码显示，运行ltp_test后会在终端输出乱码。您可以将标准输出重定向到文件，以UTF8方式查看文件，就可以解决乱码的问题。
-
 
 # 编程接口
 下面的文档将介绍使用LTP编译产生的静态链接库编写程序的方法。
@@ -244,34 +243,34 @@ ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型
 
 一个简单的实例程序可以说明分词接口的用法：
 
-    #include <iostream>
-        #include <string>
-            #include "segment_dll.h"
-                
-                    int main(int argc, char * argv[]) {
-                                if (argc < 2) {
-                                                std::cerr << "cws [model path]" << std::endl;
-                                                            return 1;
-                                                                    }
-                                                                        
-                                                                                void * engine = segmentor_create_segmentor(argv[1]);
-                                                                                        if (!engine) {
-                                                                                                        return -1;
-                                                                                                                }
-                                                                                                                        std::vector<std::string> words;
-                                                                                                                                int len = segmentor_segment(engine, 
-                                                                                                                                                "爱上一匹野马，可我的家里没有草原。", words);
-                                                                                                                                        for (int i = 0; i < len; ++ i) {
-                                                                                                                                                        std::cout << words[i] << "|";
-                                                                                                                                                                }
-                                                                                                                                                                        std::cout << std::endl;
-                                                                                                                                                                                segmentor_release_segmentor(engine);
-                                                                                                                                                                                        return 0;
-                                                                                                                                                                                            }
+	#include <iostream>
+	#include <string>
+	#include "segment_dll.h"
+	
+	int main(int argc, char * argv[]) {
+	    if (argc < 2) {
+	        std::cerr << "cws [model path]" << std::endl;
+	        return 1;
+	    }
+	
+	    void * engine = segmentor_create_segmentor(argv[1]);
+	    if (!engine) {
+	        return -1;
+	    }
+	    std::vector<std::string> words;
+	    int len = segmentor_segment(engine, 
+	            "爱上一匹野马，可我的家里没有草原。", words);
+	    for (int i = 0; i < len; ++ i) {
+	        std::cout << words[i] << "|";
+	    }
+	    std::cout << std::endl;
+	    segmentor_release_segmentor(engine);
+	    return 0;
+	}
 
-                                                                                                                                                                                            实例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将分词器指针存储在engine中。第16行运行分词逻辑，并将结果存储在名为words的std::vector<std::string>中。第22行释放分词模型。
+实例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将分词器指针存储在engine中。第16行运行分词逻辑，并将结果存储在名为words的std::vector<std::string>中。第22行释放分词模型。
 
-                                                                                                                                                                                            调用分词接口的程序在编译的时，需要链接segmentor.a(MSVC下需链接segmentor.lib)。
+调用分词接口的程序在编译的时，需要链接segmentor.a(MSVC下需链接segmentor.lib)。
 
 ## 词性标注接口
 
@@ -292,90 +291,90 @@ ltp_test是一个整合ltp中各模块的命令行工具。他完成加载模型
 
 lexicon_file参数指定的外部词典文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。
 
-    雷人 v a
-        】 wp
+	雷人 v a
+	】 wp
 
-        返回值：
+返回值：
 
-        返回一个指向词性标注器的指针。
+返回一个指向词性标注器的指针。
 
-        **int postagger_release_postagger**
+**int postagger_release_postagger**
 
-        功能：
+功能：
 
-        释放模型文件，销毁分词器。
+释放模型文件，销毁分词器。
 
-        参数：
+参数：
 
-        |参数名 | 参数描述 |
-        |-------|----------|
-        | void * postagger | 待销毁的词性标注器的指针|
+|参数名 | 参数描述 |
+|-------|----------|
+| void * postagger | 待销毁的词性标注器的指针|
 
-        返回值：
+返回值：
 
-        销毁成功时返回0，否则返回-1
+销毁成功时返回0，否则返回-1
 
-        **int postagger_postag**
+**int postagger_postag**
 
-        功能：
+功能：
 
-        调用词性标注接口
+调用词性标注接口
 
-        参数：
+参数：
 
-        |参数名 | 参数描述 |
-        |-------|----------|
-        |void * postagger | 词性标注器的指针 |
-        |const std::vector< std::string > & words | 待标注的词序列 |
-        |std::vector<std::string> & tags | 词性标注结果，序列中的第i个元素是第i个词的词性 |
+|参数名 | 参数描述 |
+|-------|----------|
+|void * postagger | 词性标注器的指针 |
+|const std::vector< std::string > & words | 待标注的词序列 |
+|std::vector<std::string> & tags | 词性标注结果，序列中的第i个元素是第i个词的词性 |
 
-        返回值：
+返回值：
 
-        返回结果中词的个数
+返回结果中词的个数
 
 ### 示例程序
 
 一个简单的实例程序可以说明词性标注接口的用法：
 
-    #include <iostream>
-        #include <vector>
-            
-                #include "postag_dll.h"
-                    
-                        int main(int argc, char * argv[]) {
-                                    if (argc < 1) {
-                                                    return -1;
-                                                            }
-                                                                
-                                                                        void * engine = postagger_create_postagger(argv[1]);
-                                                                                if (!engine) {
-                                                                                                return -1;
-                                                                                                        }
-                                                                                                            
-                                                                                                                    std::vector<std::string> words;
-                                                                                                                        
-                                                                                                                                words.push_back("我");
-                                                                                                                                        words.push_back("是");
-                                                                                                                                                words.push_back("中国人");
-                                                                                                                                                    
-                                                                                                                                                            std::vector<std::string> tags;
-                                                                                                                                                                
-                                                                                                                                                                        postagger_postag(engine, words, tags);
-                                                                                                                                                                            
-                                                                                                                                                                                    for (int i = 0; i < tags.size(); ++ i) {
-                                                                                                                                                                                                    std::cout << words[i] << "/" << tags[i];
-                                                                                                                                                                                                                if (i == tags.size() - 1) std::cout << std::endl;
-                                                                                                                                                                                                                            else std::cout << " ";
-                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                    postagger_release_postagger(engine);
-                                                                                                                                                                                                                                                            return 0;
-                                                                                                                                                                                                                                                                }
+	#include <iostream>
+	#include <vector>
+	
+	#include "postag_dll.h"
+	
+	int main(int argc, char * argv[]) {
+	    if (argc < 1) {
+	        return -1;
+	    }
+	
+	    void * engine = postagger_create_postagger(argv[1]);
+	    if (!engine) {
+	        return -1;
+	    }
+	
+	    std::vector<std::string> words;
+	
+	    words.push_back("我");
+	    words.push_back("是");
+	    words.push_back("中国人");
+	
+	    std::vector<std::string> tags;
+	
+	    postagger_postag(engine, words, tags);
+	
+	    for (int i = 0; i < tags.size(); ++ i) {
+	        std::cout << words[i] << "/" << tags[i];
+	        if (i == tags.size() - 1) std::cout << std::endl;
+	        else std::cout << " ";
+	
+	    }
+	
+	    postagger_release_postagger(engine);
+	    return 0;
+	}
 
-                                                                                                                                                                                                                                                                实例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将词性标注器指针存储在engine中。第18至20行构造分词序列，第24行运行词性标注逻辑，并将结果存储在名为tags的std::vector<std::string>中。第33行释放分词模型。
+实例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将词性标注器指针存储在engine中。第18至20行构造分词序列，第24行运行词性标注逻辑，并将结果存储在名为tags的std::vector<std::string>中。第33行释放分词模型。
 
-                                                                                                                                                                                                                                                                调用词性标注接口的程序在编译的时，需要链接postagger.a(MSVC下需链接postagger.lib)。
+调用词性标注接口的程序在编译的时，需要链接postagger.a(MSVC下需链接postagger.lib)。
 
 ## 命名实体识别接口
 
@@ -436,52 +435,52 @@ lexicon_file参数指定的外部词典文件样例如下所示。每行指定�
 
 ### 示例程序
 
-    #include <iostream>
-        #include <vector>
-            
-                #include "ner_dll.h"
-                    
-                        int main(int argc, char * argv[]) {
-                                    if (argc < 2) {
-                                                    std::cerr << "usage: ./ner [model_path]" << std::endl;
-                                                                return -1;
-                                                                        }
-                                                                            
-                                                                                    void * engine = ner_create_recognizer(argv[1]);
-                                                                                            if (!engine) {
-                                                                                                            std::cerr << "failed to load model" << std::endl;
-                                                                                                                        return -1;
-                                                                                                                                }
-                                                                                                                                    
-                                                                                                                                            std::vector<std::string> words;
-                                                                                                                                                    std::vector<std::string> postags;
-                                                                                                                                                        
-                                                                                                                                                                words.push_back("中国");    postags.push_back("ns");
-                                                                                                                                                                        words.push_back("国际");    postags.push_back("n");
-                                                                                                                                                                                words.push_back("广播");    postags.push_back("n");
-                                                                                                                                                                                        words.push_back("电台");    postags.push_back("n");
-                                                                                                                                                                                                words.push_back("创办");    postags.push_back("v");
-                                                                                                                                                                                                        words.push_back("于");      postags.push_back("p");
-                                                                                                                                                                                                                words.push_back("1941年");  postags.push_back("m");
-                                                                                                                                                                                                                        words.push_back("12月");    postags.push_back("m");
-                                                                                                                                                                                                                                words.push_back("3日");     postags.push_back("m");
-                                                                                                                                                                                                                                        words.push_back("。");      postags.push_back("wp");
-                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                    std::vector<std::string>    tags;
-                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                ner_recognize(engine, words, postags, tags);
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                            for (int i = 0; i < tags.size(); ++ i) {
-                                                                                                                                                                                                                                                                                            std::cout << words[i] << "\t" << postags[i] << "\t" << tags[i] << std::endl;
-                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                ner_release_recognizer(engine);
-                                                                                                                                                                                                                                                                                                                        return 0;
-                                                                                                                                                                                                                                                                                                                            }
+	#include <iostream>
+	#include <vector>
+	
+	#include "ner_dll.h"
+	
+	int main(int argc, char * argv[]) {
+	    if (argc < 2) {
+	        std::cerr << "usage: ./ner [model_path]" << std::endl;
+	        return -1;
+	    }
+	
+	    void * engine = ner_create_recognizer(argv[1]);
+	    if (!engine) {
+	        std::cerr << "failed to load model" << std::endl;
+	        return -1;
+	    }
+	
+	    std::vector<std::string> words;
+	    std::vector<std::string> postags;
+	
+	    words.push_back("中国");    postags.push_back("ns");
+	    words.push_back("国际");    postags.push_back("n");
+	    words.push_back("广播");    postags.push_back("n");
+	    words.push_back("电台");    postags.push_back("n");
+	    words.push_back("创办");    postags.push_back("v");
+	    words.push_back("于");      postags.push_back("p");
+	    words.push_back("1941年");  postags.push_back("m");
+	    words.push_back("12月");    postags.push_back("m");
+	    words.push_back("3日");     postags.push_back("m");
+	    words.push_back("。");      postags.push_back("wp");
+	
+	    std::vector<std::string>    tags;
+	
+	    ner_recognize(engine, words, postags, tags);
+	
+	    for (int i = 0; i < tags.size(); ++ i) {
+	        std::cout << words[i] << "\t" << postags[i] << "\t" << tags[i] << std::endl;
+	    }
+	
+	    ner_release_recognizer(engine);
+	    return 0;
+	}
 
-                                                                                                                                                                                                                                                                                                                            示例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将命名实体识别器指针存储在engine中。第21至30行构造分词序列words和词性标注序列postags，第34行运行词性标注逻辑，并将结果存储在名为tags的std::vector<std::string>中。第40行释放分词模型。
+示例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将命名实体识别器指针存储在engine中。第21至30行构造分词序列words和词性标注序列postags，第34行运行词性标注逻辑，并将结果存储在名为tags的std::vector<std::string>中。第40行释放分词模型。
 
-                                                                                                                                                                                                                                                                                                                            调用命名实体识别接口的程序在编译的时，需要链接ner.a（MSVC下需链接ner.lib）。
+调用命名实体识别接口的程序在编译的时，需要链接ner.a（MSVC下需链接ner.lib）。
 
 ## 依存句法分析接口
 
@@ -543,64 +542,68 @@ lexicon_file参数指定的外部词典文件样例如下所示。每行指定�
 
 一个简单的实例程序可以说明依存句法分析接口的用法：
 
-    #include <iostream>
-        #include <vector>
-            
-                #include "parser_dll.h"
-                    
-                        int main(int argc, char * argv[]) {
-                                    if (argc < 2) {
-                                                    return -1;
-                                                            }
-                                                                
-                                                                        void * engine = parser_create_parser(argv[1]);
-                                                                                if (!engine) {
-                                                                                                return -1;
-                                                                                                        }
-                                                                                                            
-                                                                                                                    std::vector<std::string> words;
-                                                                                                                            std::vector<std::string> postags;
-                                                                                                                                
-                                                                                                                                        words.push_back("一把手");      postags.push_back("n");
-                                                                                                                                                words.push_back("亲自");        postags.push_back("d");
-                                                                                                                                                        words.push_back("过问");        postags.push_back("v");
-                                                                                                                                                                words.push_back("。");          postags.push_back("wp");
-                                                                                                                                                                    
-                                                                                                                                                                            std::vector<int>            heads;
-                                                                                                                                                                                    std::vector<std::string>    deprels;
-                                                                                                                                                                                        
-                                                                                                                                                                                                parser_parse(engine, words, postags, heads, deprels);
-                                                                                                                                                                                                    
-                                                                                                                                                                                                            for (int i = 0; i < heads.size(); ++ i) {
-                                                                                                                                                                                                                            std::cout << words[i] << "\t" << postags[i] << "\t" 
-                                                                                                                                                                                                                                            << heads[i] << "\t" << deprels[i] << std::endl;
-                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                parser_release_parser(engine);
-                                                                                                                                                                                                                                                                        return 0;
-                                                                                                                                                                                                                                                                            }
+	#include <iostream>
+	#include <vector>
+	
+	#include "parser_dll.h"
+	
+	int main(int argc, char * argv[]) {
+	    if (argc < 2) {
+	        return -1;
+	    }
+	
+	    void * engine = parser_create_parser(argv[1]);
+	    if (!engine) {
+	        return -1;
+	    }
+	
+	    std::vector<std::string> words;
+	    std::vector<std::string> postags;
+	
+	    words.push_back("一把手");      postags.push_back("n");
+	    words.push_back("亲自");        postags.push_back("d");
+	    words.push_back("过问");        postags.push_back("v");
+	    words.push_back("。");          postags.push_back("wp");
+	
+	    std::vector<int>            heads;
+	    std::vector<std::string>    deprels;
+	
+	    parser_parse(engine, words, postags, heads, deprels);
+	
+	    for (int i = 0; i < heads.size(); ++ i) {
+	        std::cout << words[i] << "\t" << postags[i] << "\t" 
+	            << heads[i] << "\t" << deprels[i] << std::endl;
+	    }
+	
+	    parser_release_parser(engine);
+	    return 0;
+	}
 
-                                                                                                                                                                                                                                                                            示例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将依存句法分析器指针存储在engine中。第19至22行构造分词序列words和词性标注序列postags，第27行运行词性标注逻辑，并将依存弧关系存储在heads中，将依存弧关系类型存储在deprels中。第34行释放依存句法分析模型。
+示例程序通过命令行参数指定模型文件路径。第11行加载模型文件，并将依存句法分析器指针存储在engine中。第19至22行构造分词序列words和词性标注序列postags，第27行运行词性标注逻辑，并将依存弧关系存储在heads中，将依存弧关系类型存储在deprels中。第34行释放依存句法分析模型。
 
-                                                                                                                                                                                                                                                                            调用依存句法分析接口的程序在编译的时，需要链接parser.a(MSVC下需链接parser.lib)。
+调用依存句法分析接口的程序在编译的时，需要链接parser.a(MSVC下需链接parser.lib)。
 
 ## 语义角色标注接口
+
 #使用ltp动态库
+
 C++在使用动态库时需要制定头文件路径和动态库路径。由于ltp各模块类似，下面的介绍以使用分词为例。
 ### Windows(MSVC)
+
 以VS2008为例，构建步骤如下：
+
 1.将include、lib文件夹拷贝至工程根目录。
+
 2.将头文件和动态库导入工程
 * 右键工程->properties->c/c++->general->additional include directories 添加..\include
 * 右键工程->properties->linker->general->additional library directories 添加..\lib
 * 右键工程->properties->linker->input->additional additional dependencies添加..\lib\segmentor.lib
 
 ### Linux，Mac OSX和Cygwin
+
 我们假定您下载并将LTP放置于/path/to/your/ltp-project路径下,那么编译调用分词动态库的程序cws.cpp的示例如下
 
     g++ -o cws cws.cpp -I /path/to/your/ltp-project/include/ -I /path/to/your/ltp-project/thirdparty/boost/include -WL,-dn -L /path/to/your/ltp-project/lib/ -lsegmentor -lboost_regex -WL,-dy
-
-
 
 # 使用其他语言调用ltp
 如果您希望在本地使用除C++之外的其他语言调用ltp，我们针对常用语言对ltp进行了封装。
@@ -642,44 +645,44 @@ client提交的post请求主要有以下几个字段。
 
 LTP 数据表示标准称为LTML。下图是LTML的一个简单例子：
 
-    <?xml version="1.0" encoding="utf-8" ?>
-        <xml4nlp>
-                <note sent="y" word="y" pos="y" ne="y" parser="y" wsd="y" srl="y" />
-                        <doc>
-                                    <para id="0">
-                                                    <sent id="0" cont="我们都是中国人">
-                                                                        <word id="0" cont="我们" pos="r" ne="O" parent="2" relate="SBV" />
-                                                                                            <word id="1" cont="都" pos="d" ne="O" parent="2" relate="ADV" />
-                                                                                                                <word id="2" cont="是"  pos="v" ne="O" parent="-1" relate="HED">
-                                                                                                                                        <arg id="0" type="A0" beg="0" end="0" />
-                                                                                                                                                                <arg id="1" type="AM-ADV" beg="1" end="1" />
-                                                                                                                                                                                    </word>
-                                                                                                                                                                                                        <word id="3" cont="中国" pos="ns" ne="S-Ns" parent="4" relate="ATT" />
-                                                                                                                                                                                                                            <word id="4" cont="人" pos="n" ne="O" parent="2" relate="VOB" />
-                                                                                                                                                                                                                                            </sent>
-                                                                                                                                                                                                                                                        </para>
-                                                                                                                                                                                                                                                                </doc>
-                                                                                                                                                                                                                                                                    </xml4nlp>
-                                                                                                                                                                                                                                                                    LTML 标准要求如下：结点标签分别为 xml4nlp, note, doc, para, sent, word, arg 共七种结点标签：
+	<?xml version="1.0" encoding="utf-8" ?>
+	<xml4nlp>
+	    <note sent="y" word="y" pos="y" ne="y" parser="y" wsd="y" srl="y" />
+	    <doc>
+	        <para id="0">
+	            <sent id="0" cont="我们都是中国人">
+	                <word id="0" cont="我们" pos="r" ne="O" parent="2" relate="SBV" />
+	                <word id="1" cont="都" pos="d" ne="O" parent="2" relate="ADV" />
+	                <word id="2" cont="是"  pos="v" ne="O" parent="-1" relate="HED">
+	                    <arg id="0" type="A0" beg="0" end="0" />
+	                    <arg id="1" type="AM-ADV" beg="1" end="1" />
+	                </word>
+	                <word id="3" cont="中国" pos="ns" ne="S-Ns" parent="4" relate="ATT" />
+	                <word id="4" cont="人" pos="n" ne="O" parent="2" relate="VOB" />
+	            </sent>
+	        </para>
+	    </doc>
+	</xml4nlp>
+LTML 标准要求如下：结点标签分别为 xml4nlp, note, doc, para, sent, word, arg 共七种结点标签：
 
-                                                                                                                                                                                                                                                                    1. xml4nlp 为根结点，无任何属性值；
-                                                                                                                                                                                                                                                                    2. note 为标记结点，具有的属性分别为：sent, word, pos, ne, parser, srl；分别代表分句，分词，词性标注，命名实体识别，依存句法分析，词义消歧，语义角色标注；值为”n”，表明未做，值为”y”则表示完成，如pos=”y”，表示已经完成了词性标注；
-                                                                                                                                                                                                                                                                    3. doc 为篇章结点，以段落为单位包含文本内容；无任何属性值；
-                                                                                                                                                                                                                                                                    4. para 为段落结点，需含id 属性，其值从0 开始；
-                                                                                                                                                                                                                                                                    5. sent 为句子结点，需含属性为id，cont；id 为段落中句子序号，其值从0 开始；cont 为句子内容；
-                                                                                                                                                                                                                                                                    6. word 为分词结点，需含属性为id, cont；id 为句子中的词的序号，其值从0 开始，cont为分词内容；可选属性为 pos, ne, parent, relate；pos 的内容为词性标注内容；ne 为命名实体内容；parent 与relate 成对出现，parent 为依存句法分析的父亲结点id 号，relate 为相对应的关系；
-                                                                                                                                                                                                                                                                    7. arg 为语义角色信息结点，任何一个谓词都会带有若干个该结点；其属性为id, type, beg，end；id 为序号，从0 开始；type 代表角色名称；beg 为开始的词序号，end 为结束的序号；
+1. xml4nlp 为根结点，无任何属性值；
+2. note 为标记结点，具有的属性分别为：sent, word, pos, ne, parser, srl；分别代表分句，分词，词性标注，命名实体识别，依存句法分析，词义消歧，语义角色标注；值为”n”，表明未做，值为”y”则表示完成，如pos=”y”，表示已经完成了词性标注；
+3. doc 为篇章结点，以段落为单位包含文本内容；无任何属性值；
+4. para 为段落结点，需含id 属性，其值从0 开始；
+5. sent 为句子结点，需含属性为id，cont；id 为段落中句子序号，其值从0 开始；cont 为句子内容；
+6. word 为分词结点，需含属性为id, cont；id 为句子中的词的序号，其值从0 开始，cont为分词内容；可选属性为 pos, ne, parent, relate；pos 的内容为词性标注内容；ne 为命名实体内容；parent 与relate 成对出现，parent 为依存句法分析的父亲结点id 号，relate 为相对应的关系；
+7. arg 为语义角色信息结点，任何一个谓词都会带有若干个该结点；其属性为id, type, beg，end；id 为序号，从0 开始；type 代表角色名称；beg 为开始的词序号，end 为结束的序号；
 
-                                                                                                                                                                                                                                                                    各结点及属性的逻辑关系说明如下：
+各结点及属性的逻辑关系说明如下：
 
-                                                                                                                                                                                                                                                                    1. 各结点层次关系可以从图中清楚获得，凡带有id 属性的结点是可以包含多个；
-                                                                                                                                                                                                                                                                    2. 如果sent=”n”即未完成分句，则不应包含sent 及其下结点；
-                                                                                                                                                                                                                                                                    3. 如果sent=”y” word=”n”即完成分句，未完成分词，则不应包含word 及其下结点；
-                                                                                                                                                                                                                                                                    4. 其它情况均是在sent=”y” word=”y”的情况下：
-                                                                                                                                                                                                                                                                        1. 如果 pos=”y”则分词结点中必须包含pos 属性；
-                                                                                                                                                                                                                                                                            2. 如果 ne=”y”则分词结点中必须包含ne 属性；
-                                                                                                                                                                                                                                                                                3. 如果 parser=”y”则分词结点中必须包含parent 及relate 属性；
-                                                                                                                                                                                                                                                                                    4. 如果 srl=”y”则凡是谓词(predicate)的分词会包含若干个arg 结点；
+1. 各结点层次关系可以从图中清楚获得，凡带有id 属性的结点是可以包含多个；
+2. 如果sent=”n”即未完成分句，则不应包含sent 及其下结点；
+3. 如果sent=”y” word=”n”即完成分句，未完成分词，则不应包含word 及其下结点；
+4. 其它情况均是在sent=”y” word=”y”的情况下：
+	1. 如果 pos=”y”则分词结点中必须包含pos 属性；
+	2. 如果 ne=”y”则分词结点中必须包含ne 属性；
+	3. 如果 parser=”y”则分词结点中必须包含parent 及relate 属性；
+	4. 如果 srl=”y”则凡是谓词(predicate)的分词会包含若干个arg 结点；
 
 ### 示例程序
 
@@ -693,25 +696,25 @@ import urllib, urllib2
 uri_base = "http://127.0.0.1:12345/ltp"
 
 data = {
-        's': '我爱北京天安门',
-            'x': 'n',
-                't': 'all'}
-                 
-                 request = urllib2.Request(uri_base)
-                 params = urllib.urlencode(data)
-                 response = urllib2.urlopen(request, params)
-                 content = response.read().strip()
-                 print content
-                 ```
+    's': '我爱北京天安门',
+    'x': 'n',
+    't': 'all'}
+ 
+request = urllib2.Request(uri_base)
+params = urllib.urlencode(data)
+response = urllib2.urlopen(request, params)
+content = response.read().strip()
+print content
+```
 ### 错误返回
 
-                 如果请求有不符合格式要求，LTP Server会返回400错误。下面的表格显示了LTP Server返回的错误类型以及原因呢。
+如果请求有不符合格式要求，LTP Server会返回400错误。下面的表格显示了LTP Server返回的错误类型以及原因呢。
 
-                 |code | reason | 解释 |
-                 |-----|--------|-----|
-                 |400 | EMPTY SENTENCE | 输入句子为空 |
-                 |400 | ENCODING NOT IN UTF8 | 输入句子非UTF8编码 |
-                 |400 | BAD XML FORMAT | 输入句子不符合LTML格式 |
+|code | reason | 解释 |
+|-----|--------|-----|
+|400 | EMPTY SENTENCE | 输入句子为空 |
+|400 | ENCODING NOT IN UTF8 | 输入句子非UTF8编码 |
+|400 | BAD XML FORMAT | 输入句子不符合LTML格式 |
 
 # 实现原理与性能
 ## 在线学习算法框架
@@ -815,7 +818,7 @@ data = {
 | 类别 | 特征 |
 | --- | --- 
 |word-unigram | w[-2], w[-1], w[0], w[1], w[2] |
-|word-bigram     | w[-2]w[-1],w[-1]w[0],w[0]w[1],w[1]w[2] |
+|word-bigram	 | w[-2]w[-1],w[-1]w[0],w[0]w[1],w[1]w[2] |
 |postag-unigram | p[-2],p[-1],p[0],p[1],p[2] |
 |postag-bigram | p[-1]p[0],p[0]p[1] |
 
@@ -881,49 +884,49 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 
 编译之后，在tools/train下面会产生名为otcws的二进制程序。调用方法是
 
-    ./otcws [config_file]
+	./otcws [config_file]
 
-    otcws分别支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
+otcws分别支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
 
-        对外    ，  他们    代表    国家    。
+	对外	，	他们	代表	国家	。
 
-        otcws主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+otcws主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
 
-        训练配置的配置文件样例如下所示。
+训练配置的配置文件样例如下所示。
 
-            [train]
-                train-file = data/ctb5-train.seg
-                    holdout-file = data/ctb5-holdout.seg
-                        algorithm = pa 
-                            model-name = model/ctb5-seg
-                                max-iter = 5
-                                    rare-feature-threshold = 0
+	[train]
+	train-file = data/ctb5-train.seg
+	holdout-file = data/ctb5-holdout.seg
+	algorithm = pa 
+	model-name = model/ctb5-seg
+	max-iter = 5
+	rare-feature-threshold = 0
 
-                                    其中，
+其中，
 
-                                    * [train] 配置组指定执行训练
-                                        * train-file 配置项指定训练集文件
-                                            * holdout-file 配置项指定开发集文件
-                                                * algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-                                                    * model-name 指定输出模型文件名
-                                                        * max-iter 指定最大迭代次数
-                                                            * rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
+* [train] 配置组指定执行训练
+	* train-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
+	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
 
-                                                            测试配置的配置文件样例如下所示。
+测试配置的配置文件样例如下所示。
 
-                                                                [test]
-                                                                    test-file = data/ctb5-test.seg
-                                                                        model-file = model/ctb5-seg.4.model
+	[test]
+	test-file = data/ctb5-test.seg
+	model-file = model/ctb5-seg.4.model
 
-                                                                        其中，
+其中，
 
-                                                                        * [test] 配置组指定执行测试
-                                                                            * test-file 指定测试文件
-                                                                                * model-file 指定模型文件位置
-                                                                                    
-                                                                                    切分结果将输入到标准io中。
+* [test] 配置组指定执行测试
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
+	
+切分结果将输入到标准io中。
 
-                                                                                    (*[train]与[test]两个配置组不能同时存在)
+(*[train]与[test]两个配置组不能同时存在)
 
 ## 词性标注训练套件otpos用法
 
@@ -931,55 +934,55 @@ otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp�
 
 编译之后，在tools/train下面会产生名为otpos的二进制程序。调用方法是
 
-    ./otpos [config_file]
+	./otpos [config_file]
 
-    otpos分别支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下：
+otpos分别支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下：
 
-        对外_v  ，_wp   他们_r  代表_v  国家_n  。_wp
+	对外_v	，_wp	他们_r	代表_v	国家_n	。_wp
 
-        otpos主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+otpos主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
 
-        训练配置的配置文件样例如下所示。
+训练配置的配置文件样例如下所示。
 
-            [train]
-                train-file = data/ctb5-train.pos
-                    holdout-file = data/ctb5-holdout.pos
-                        algorithm = pa
-                            model-name = model/ctb5-pos
-                                max-iter = 5
+	[train]
+	train-file = data/ctb5-train.pos
+	holdout-file = data/ctb5-holdout.pos
+	algorithm = pa
+	model-name = model/ctb5-pos
+	max-iter = 5
 
-                                其中，
+其中，
 
-                                * [train] 配置组指定执行训练
-                                    * train-file 配置项指定训练集文件
-                                        * holdout-file 配置项指定开发集文件
-                                            * algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-                                                * model-name 指定输出模型文件名
-                                                    * max-iter 指定最大迭代次数
-                                                        * rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
+* [train] 配置组指定执行训练
+	* train-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
+	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
 
-                                                        测试配置的配置文件样例如下所示。
+测试配置的配置文件样例如下所示。
 
-                                                            [test]
-                                                                test-file = data/ctb5-test.pos
-                                                                    model-file = model/ctb5-pos.3.model
-                                                                        lexicon-file = lexicon/pos-lexicon.constrain
+	[test]
+	test-file = data/ctb5-test.pos
+	model-file = model/ctb5-pos.3.model
+	lexicon-file = lexicon/pos-lexicon.constrain
 
-                                                                        其中，
+其中，
 
-                                                                        * [test] 配置组指定执行测试
-                                                                            * test-file 指定测试文件
-                                                                                * model-file 指定模型文件位置
-                                                                                    * lexicon-file 指定外部词典文件位置（此项可以不配置）
+* [test] 配置组指定执行测试
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
+	* lexicon-file 指定外部词典文件位置（此项可以不配置）
 
-                                                                                    lexicon-file文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。
+lexicon-file文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。
 
-                                                                                        雷人 v a
-                                                                                            】 wp
+	雷人 v a
+	】 wp
 
-                                                                                            词性标注结果将输入到标准io中。
+词性标注结果将输入到标准io中。
 
-                                                                                            (*[train]与[test]两个配置组不能同时存在)
+(*[train]与[test]两个配置组不能同时存在)
 
 ## 命名实体识别训练套件otner用法
 
@@ -987,47 +990,47 @@ otner是ltp命名实体识别模型的训练套件，用户可以使用otner训�
 
 编译之后，在tools/train下面会产生名为otner的二进制程序。调用方法是
 
-    ./otner [config_file]
+	./otner [config_file]
 
-    otner分别支持从人工标注的数据中训练命名实体识别模型和调用命名实体识别模型对句子进行标注。人工标注的句子的样例如下：
+otner分别支持从人工标注的数据中训练命名实体识别模型和调用命名实体识别模型对句子进行标注。人工标注的句子的样例如下：
 
-        党中央/ni#B-Ni 国务院/ni#E-Ni 要求/v#O ，/wp#O 动员/v#O 全党/n#O 和/c#O 全/a#O社会/n#O 的/u#O 力量/n#O
+	党中央/ni#B-Ni 国务院/ni#E-Ni 要求/v#O ，/wp#O 动员/v#O 全党/n#O 和/c#O 全/a#O社会/n#O 的/u#O 力量/n#O
 
-        Otner主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+Otner主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
 
-        训练配置的配置文件样例如下所示。
+训练配置的配置文件样例如下所示。
 
-            [train]
-                train-file = data/ctb5-train.ner
-                    holdout-file = data/ctb5-holdout.ner
-                        algorithm = pa 
-                            model-name = model/ctb5-ner
-                                max-iter = 5
+	[train]
+	train-file = data/ctb5-train.ner
+	holdout-file = data/ctb5-holdout.ner
+	algorithm = pa 
+	model-name = model/ctb5-ner
+	max-iter = 5
 
-                                其中，
+其中，
 
-                                * [train] 配置组指定执行训练
-                                    * train-file 配置项指定训练集文件
-                                        * holdout-file 配置项指定开发集文件
-                                            * algorithm 指定参数学习方法，现在otner支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
-                                                * model-name 指定输出模型文件名
-                                                    * max-iter 指定最大迭代次数
+* [train] 配置组指定执行训练
+	* train-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otner支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
 
-                                                    测试配置的配置文件样例如下所示。
+测试配置的配置文件样例如下所示。
 
-                                                        [test]
-                                                            test-file = data/ctb5-test.ner
-                                                                model-file = model/ctb5-ner.4.model
+	[test]
+	test-file = data/ctb5-test.ner
+	model-file = model/ctb5-ner.4.model
 
-                                                                其中，
+其中，
 
-                                                                * [test] 配置组指定执行测试
-                                                                    * test-file 指定测试文件
-                                                                        * model-file 指定模型文件位置
+* [test] 配置组指定执行测试
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
 
-                                                                        命名实体识别结果将输入到标准io中。
+命名实体识别结果将输入到标准io中。
 
-                                                                        （*[train]与[test]两个配置组不能同时存在）
+（*[train]与[test]两个配置组不能同时存在）
 
 ## 依存句法分析训练套件lgdpj用法
 
@@ -1035,74 +1038,74 @@ lgdpj是ltp依存句法分析模型的训练套件，用户可以使用lgdpj训�
 
 编译之后，在tools/train下面会产生名为lgdpj的二进制程序。调用方法是
 
-    ./lgdpj [config_file]
+	./lgdpj [config_file]
 
-    lgdpj分别支持从人工标注依存句法的数据中训练依存句法分析模型和调用依存句法分析模型对句子进行依存句法分析。人工标注的词性标注依存句法的句子遵从conll格式，其样例如下：
+lgdpj分别支持从人工标注依存句法的数据中训练依存句法分析模型和调用依存句法分析模型对句子进行依存句法分析。人工标注的词性标注依存句法的句子遵从conll格式，其样例如下：
 
-        1       对外    _       v       _       _       4       ADV     _       _
-            2       ，      _       wp      _       _       1       WP      _       _
-                3       他们    _       r       _       _       4       SBV     _       _
-                    4       代表    _       v       _       _       0       HED     _       _
-                        5       国家    _       n       _       _       4       VOB     _       _
-                            6       。      _       wp      _       _       4       WP      _       _
+	1       对外    _       v       _       _       4       ADV     _       _
+	2       ，      _       wp      _       _       1       WP      _       _
+	3       他们    _       r       _       _       4       SBV     _       _
+	4       代表    _       v       _       _       0       HED     _       _
+	5       国家    _       n       _       _       4       VOB     _       _
+	6       。      _       wp      _       _       4       WP      _       _
 
-                            lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
 
-                            训练配置的配置文件样例如下所示。
+训练配置的配置文件样例如下所示。
 
-                                [model]
-                                    labeled = 1
-                                        decoder-name = 2o-carreras
-                                            
-                                                [feature]
-                                                    use-postag-unigram = 0
-                                                        use-dependency = 1
-                                                            use-dependency-unigram = 1
-                                                                use-dependency-bigram = 1
-                                                                    use-dependency-surrounding = 1
-                                                                        use-dependency-between = 1
-                                                                            use-sibling = 1
-                                                                                use-sibling-basic = 1
-                                                                                    use-sibling-linear = 1
-                                                                                        use-grand = 1
-                                                                                            use-grand-basic = 1
-                                                                                                use-grand-linear = 1
-                                                                                                    
-                                                                                                        [train]
-                                                                                                            train-file = data/conll/ldc-train.conll
-                                                                                                                holdout-file = data/conll/ldc-holdout.conll
-                                                                                                                    max-iter = 5 
-                                                                                                                        algorithm = pa
-                                                                                                                            model-name = model/parser/ldc-o2carreras
-                                                                                                                                rare-feature-threshold = 0
+	[model]
+	labeled = 1
+	decoder-name = 2o-carreras
+	
+	[feature]
+	use-postag-unigram = 0
+	use-dependency = 1
+	use-dependency-unigram = 1
+	use-dependency-bigram = 1
+	use-dependency-surrounding = 1
+	use-dependency-between = 1
+	use-sibling = 1
+	use-sibling-basic = 1
+	use-sibling-linear = 1
+	use-grand = 1
+	use-grand-basic = 1
+	use-grand-linear = 1
+	
+	[train]
+	train-file = data/conll/ldc-train.conll
+	holdout-file = data/conll/ldc-holdout.conll
+	max-iter = 5 
+	algorithm = pa
+	model-name = model/parser/ldc-o2carreras
+	rare-feature-threshold = 0
 
-                                                                                                                                其中，
+其中，
 
-                                                                                                                                * [mode] 配置组中
-                                                                                                                                    * labeled 表示是否使用有label的依存句法分析
-                                                                                                                                        * decoder-name 表示采用的解码算法，现在lgdpj支持三种解码算法，分别是1o，2o-sib，2o-carreras
-                                                                                                                                        * [feature] 配置组指定使用的特征
-                                                                                                                                        * [train] 配置组指定执行训练
-                                                                                                                                            * train-file 配置项指定训练集文件
-                                                                                                                                                * holdout-file 配置项指定开发集文件
-                                                                                                                                                    * algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-                                                                                                                                                        * model-name 指定输出模型文件名
-                                                                                                                                                            * max-iter 指定最大迭代次数
-                                                                                                                                                                * rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
+* [mode] 配置组中
+	* labeled 表示是否使用有label的依存句法分析
+	* decoder-name 表示采用的解码算法，现在lgdpj支持三种解码算法，分别是1o，2o-sib，2o-carreras
+* [feature] 配置组指定使用的特征
+* [train] 配置组指定执行训练
+	* train-file 配置项指定训练集文件
+	* holdout-file 配置项指定开发集文件
+	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* model-name 指定输出模型文件名
+	* max-iter 指定最大迭代次数
+	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
 
-                                                                                                                                                                测试配置的配置文件样例如下所示。
+测试配置的配置文件样例如下所示。
 
-                                                                                                                                                                    [test]
-                                                                                                                                                                        test-file = data/conll/ldc-test.conll
-                                                                                                                                                                            model-file = model/parser/ldc-o2carreras.2.model
+	[test]
+	test-file = data/conll/ldc-test.conll
+	model-file = model/parser/ldc-o2carreras.2.model
 
-                                                                                                                                                                            其中，
+其中，
 
-                                                                                                                                                                            * [test] 配置组指定执行测试
-                                                                                                                                                                                * test-file 指定测试文件
-                                                                                                                                                                                    * model-file 指定模型文件位置
+* [test] 配置组指定执行测试
+	* test-file 指定测试文件
+	* model-file 指定模型文件位置
 
-                                                                                                                                                                                    依存句法分析结果将输入到标准io中。
+依存句法分析结果将输入到标准io中。
 
 # 发表论文
 * Meishan Zhang, Zhilong Deng，Wanxiang Che, and Ting Liu. [Combining Statistical Model and Dictionary for Domain Adaption of Chinese Word Segmentation](http://ir.hit.edu.cn/~mszhang/Conll06Tolgdpj.jar). _Journal of Chinese Information Processing_. 2012, 26 (2) : 8-12 (in Chinese)
@@ -1125,24 +1128,24 @@ lgdpj是ltp依存句法分析模型的训练套件，用户可以使用lgdpj训�
  
 ## 词性标注集
 
- LTP 使用的是863 词性标注集，其各个词性含义如下表。
+LTP 使用的是863 词性标注集，其各个词性含义如下表。
 
- | Tag | Description         | Example    | Tag | Description       | Example    |
- | --- | ------------------- | ---------- | --- | ----------------- | ---------- |
- | a   | adjective           | 美丽       | ni  | organization name | 保险公司   |
- | b   | other noun-modifier | 大型, 西式 | nl  | location noun     | 城郊       |
- | c   | conjunction         | 和, 虽然   | ns  | geographical name | 北京       |
- | d   | adverb              | 很         | nt  | temporal noun     | 近日, 明代 |
- | e   | exclamation         | 哎         | nz  | other proper noun | 诺贝尔奖   |
- | g   | morpheme            | 茨, 甥     | o   | onomatopoeia      | 哗啦       |
- | h   | prefix              | 阿, 伪     | p   | preposition       | 在, 把     |
- | i   | idiom               | 百花齐放   | q   | quantity          | 个         |
- | j   | abbreviation        | 公检法     | r   | pronoun           | 我们       |
- | k   | suffix              | 界, 率     | u   | auxiliary         | 的, 地     |
- | m   | number              | 一, 第一   | v   | verb              | 跑, 学习   |
- | n   | general noun        | 苹果       | wp  | punctuation       | ，。！     |
- | nd  | direction noun      | 右侧       | ws  | foreign words     | CPU        |
- | nh  | person name         | 杜甫, 汤姆 | x   | non-lexeme        | 萄, 翱     |
+| Tag | Description         | Example    | Tag | Description       | Example    |
+| --- | ------------------- | ---------- | --- | ----------------- | ---------- |
+| a   | adjective           | 美丽       | ni  | organization name | 保险公司   |
+| b   | other noun-modifier | 大型, 西式 | nl  | location noun     | 城郊       |
+| c   | conjunction         | 和, 虽然   | ns  | geographical name | 北京       |
+| d   | adverb              | 很         | nt  | temporal noun     | 近日, 明代 |
+| e   | exclamation         | 哎         | nz  | other proper noun | 诺贝尔奖   |
+| g   | morpheme            | 茨, 甥     | o   | onomatopoeia      | 哗啦       |
+| h   | prefix              | 阿, 伪     | p   | preposition       | 在, 把     |
+| i   | idiom               | 百花齐放   | q   | quantity          | 个         |
+| j   | abbreviation        | 公检法     | r   | pronoun           | 我们       |
+| k   | suffix              | 界, 率     | u   | auxiliary         | 的, 地     |
+| m   | number              | 一, 第一   | v   | verb              | 跑, 学习   |
+| n   | general noun        | 苹果       | wp  | punctuation       | ，。！     |
+| nd  | direction noun      | 右侧       | ws  | foreign words     | CPU        |
+| nh  | person name         | 杜甫, 汤姆 | x   | non-lexeme        | 萄, 翱     |
 
 ## 命名实体识别标注集
 
@@ -1182,5 +1185,4 @@ LTP中的NE 模块识别三种NE，分别如下：
 | 右附加关系 | RAD | right adjunct              | 孩子们 (孩子 --> 们)       |
 | 独立结构   | IS  | independent structure      | 两个单句在结构上彼此独立   |
 | 核心关系   | HED | head                       | 指整个句子的核心           |
-
 
