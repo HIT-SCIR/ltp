@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
 
+新闻
+----
+
+第一届语言技术平台（LTP）用户大会将于2014年10月31日上午在北京召开，欢迎大家参加！会议详细信息见[http://ir.hit.edu.cn/ltp-2014/](http://ir.hit.edu.cn/ltp-2014/)，有意者请于10月20日之前填写[在线会议注册表](http://www.mikecrm.com/f.php?t=emJ0fp)。
+
+
 简介
 ----
 
