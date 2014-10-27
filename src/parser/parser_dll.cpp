@@ -70,6 +70,7 @@ void * parser_create_parser(const char * path) {
   ParserWrapper * wrapper = new ParserWrapper();
 
   if (!wrapper->load(path)) {
+	 delete wrapper;
     return 0;
   }
   return reinterpret_cast<void *>(wrapper);

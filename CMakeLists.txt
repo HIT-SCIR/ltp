@@ -13,9 +13,15 @@ if (MINGW)
   set(CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing -fpermissive")
 endif (MINGW)
 
+IF(CMAKE_CL_64)  
+    SET(PLATFORM x64)      
+ELSE(CMAKE_CL_64)  
+    SET(PLATFORM x86)  
+ENDIF(CMAKE_CL_64) 
+
 # -- config output directories
-set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set (LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/${PLATFORM})
+set (LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib/${PLATFORM})
 set (INCLUDE_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/include)
 
 # -- config source directories
