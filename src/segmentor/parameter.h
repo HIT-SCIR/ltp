@@ -115,9 +115,26 @@ public:
     return ret;
   }
 
+  double dot_flush_time(const FeatureVector * vec, int beg_time, int end_time) const {
+    double ret = 0;
+    for (int i = 0; i < vec->n; ++ i) {
+      int idx = vec->idx[i] + vec->loff;
+      if (vec->val) {
+        ret += (_W_sum[idx] + _W[idx] * (end_time - beg_time) * vec->val[i]);
+      } else {
+        ret += (_W_sum[idx] + _W[idx] * (end_time - beg_time));
+      }
+    }
+    return ret;
+  }
+
   double dot(const int idx, bool use_avg = false) const {
     const double * const p = (use_avg ? _W_sum : _W);
     return p[idx];
+  }
+
+  double dot_flush_time(const int idx, int beg_time, int end_time) const {
+    return _W_sum[idx] + _W[idx] * (end_time - beg_time);
   }
 
   void flush(int now) {
@@ -127,13 +144,13 @@ public:
     }
   }
 
-  void dump(std::ostream & out, bool use_avg = true) {
-    const double * p = (use_avg ? _W_sum : _W);
+  void dump(std::ostream & out) {
     char chunk[16] = {'p', 'a', 'r', 'a', 'm', 0};
     out.write(chunk, 16);
     out.write(reinterpret_cast<const char *>(&_dim), sizeof(int));
     if (_dim > 0) {
-      out.write(reinterpret_cast<const char *>(p), sizeof(double) * _dim);
+      out.write(reinterpret_cast<const char *>(_W), sizeof(double) * _dim);
+      out.write(reinterpret_cast<const char *>(_W_sum), sizeof(double) * _dim);
     }
   }
 
@@ -147,8 +164,9 @@ public:
     in.read(reinterpret_cast<char *>(&_dim), sizeof(int));
     if (_dim > 0) {
       _W = new double[_dim];
+      _W_sum = new double[_dim];
       in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
-      _W_sum = _W;
+      in.read(reinterpret_cast<char *>(_W_sum), sizeof(double) * _dim);
     }
 
     return true;

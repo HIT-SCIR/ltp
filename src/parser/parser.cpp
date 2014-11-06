@@ -1233,7 +1233,7 @@ Parser::test() {
         total_rels);
   }
 
-  sleep(1000000);
+  //sleep(1000000);
 }
 
 // Enumerate all the subtree in the whole tree space (without specifed tree),

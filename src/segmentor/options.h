@@ -14,6 +14,7 @@ struct TrainOptions {
   std::string       train_file;
   std::string       holdout_file;
   std::string       model_name;
+  std::string       personal_model_name;
   std::string       algorithm;
   int               max_iter;
   int               display_interval;
@@ -23,6 +24,7 @@ struct TrainOptions {
 struct TestOptions {
   std::string       test_file;
   std::string       model_file;
+  std::string       personal_model_file;
   std::string       lexicon_file;
 };
 

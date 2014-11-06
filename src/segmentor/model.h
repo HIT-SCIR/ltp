@@ -39,6 +39,7 @@ public:
   bool load(std::istream & ifs);
 
 public:
+  int               end_time;
   IndexableSmartMap labels;
   FeatureSpace      space;
   Parameters        param;

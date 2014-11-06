@@ -14,6 +14,7 @@ Model::save(std::ostream & ofs) {
   // write a signature into the file
   char chunk[16] = {'o','t','c','w','s', '\0'};
   ofs.write(chunk, 16);
+  ofs.write(reinterpret_cast<const char *>(&end_time), sizeof(int));
 
   int off = ofs.tellp();
 
@@ -54,6 +55,7 @@ Model::load(std::istream & ifs) {
   if (strcmp(chunk, "otcws")) {
     return false;
   }
+  ifs.read(reinterpret_cast<char *>(&end_time), sizeof(int));
 
   unsigned labels_offset  = read_uint(ifs);
   unsigned lexicon_offset   = read_uint(ifs);

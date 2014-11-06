@@ -679,6 +679,9 @@ void NER::test(void) {
   NERReader reader(ifs);
   NERWriter writer(cout);
   Instance * inst = NULL;
+  int beg_tag0 = (model->labels.index( "B-Nh" ) / __num_ne_types__);
+  int beg_tag1 = (model->labels.index( "S-Nh" ) / __num_ne_types__);
+  int beg_tag2 = (model->labels.index( "O" ) / __num_ne_types__);
 
   // int beg_tag0 = model->labels.index( __b__ );
   // int beg_tag1 = model->labels.index( __s__ );
@@ -693,6 +696,10 @@ void NER::test(void) {
     calculate_scores(inst, true);
     decoder->decode(inst);
 
+    inst->predicted_tags.resize(len);
+    for(int i = 0; i < len; ++i) {
+      inst->predicted_tags[i] = model->labels.at(inst->predicted_tagsidx[i]);
+    }
     writer.write(inst);
     delete inst;
   }
@@ -700,7 +707,7 @@ void NER::test(void) {
   double after = get_time();
   TRACE_LOG("Eclipse time %lf", after - before);
 
-  sleep(1000000);
+//  sleep(1000000);
   return;
 }
 
