@@ -1,0 +1,4 @@
+[test]
+model-file = sample/seg/exaple-test.seg
+p-model-file = build/cws/exaple-personal.0.model
+test-file = build/cws/exaple-seg.0.model
