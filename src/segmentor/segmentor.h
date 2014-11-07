@@ -53,11 +53,29 @@ protected:
 
 
   /**
-   * Build feature space,
-   *
+   * Build feature space.
    */
   virtual void build_feature_space(void);
 
+  /**
+   * Perform startup preparation for the training phase.
+   */
+  virtual bool train_startup(void);
+
+  /**
+   *
+   *
+   *
+   */
+  virtual void train_passive_aggressive(int nr_errors);
+
+  /**
+   *
+   *
+   */
+  virtual void train_averaged_perceptron();
+
+  //virtual void train_passive_aggressive(math::SparseVec&
 
   /**
    * The main training process, the training scheme can be summarized as
@@ -166,6 +184,9 @@ protected:
   bool  __TEST__;   /*< The testing flag */
   bool  __DUMP__;   /*< The dump flag */
 
+  //!
+  int timestamp;
+
   //! The training options.
   TrainOptions* train_opt;
 
@@ -188,10 +209,11 @@ protected:
   std::vector< Instance * > train_dat;
 
   //! the gold features.
-  math::SparseVec       features;
-
+  math::SparseVec correct_features;
   //! the predicted features.
-  math::SparseVec       predicted_features;
+  math::SparseVec predicted_features;
+  //!
+  math::SparseVec updated_features;
 
   //math::SparseVec       personal_features;           /*< the gold features */
   //math::SparseVec       personal_predicted_features; /*< the predicted features */

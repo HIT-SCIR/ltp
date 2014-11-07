@@ -299,7 +299,7 @@ Segmentor::cleanup_decode_context(void) {
   }
 
   uni_features.dealloc();
-  features.zero();
+  correct_features.zero();
   predicted_features.zero();
 }
 
@@ -605,8 +605,39 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
   return new_model;
 }
 
+bool
+Segmentor::train_startup() {
+  //
+};
+
+void
+Segmentor::train_passive_aggressive(int nr_errors) {
+  //double error = train_dat[i]->num_errors();
+  double error = nr_errors;
+  double score = model->param.dot(updated_features, false);
+  double norm  = updated_features.L2();
+
+  double step = 0.;
+  if (norm < EPS) {
+    step = 0;
+  } else {
+    step = (error - score) / norm;
+  }
+
+  model->param.add(updated_features, timestamp, step);
+}
+
+void
+Segmentor::train_averaged_perceptron() {
+  model->param.add(updated_features, timestamp, 1.);
+}
+
 void
 Segmentor::train(void) {
+  if (!train_startup()) {
+    return;
+  }
+
   const char * train_file = train_opt->train_file.c_str();
 
   // read in training instance
@@ -666,56 +697,29 @@ Segmentor::train(void) {
       TRACE_LOG("Training iteraition [%d]", (iter + 1));
 
       for (int i = 0; i < train_dat.size(); ++ i) {
-        // extract_features(train_dat[i]);
+        timestamp = iter * train_dat.size() + i + 1;
 
         Instance * inst = train_dat[i];
         extract_features(inst);
         calculate_scores(inst, false);
         decoder->decode(inst);
 
-        collect_features(inst, inst->tagsidx, features);
+        collect_features(inst, inst->tagsidx, correct_features);
         collect_features(inst, inst->predicted_tagsidx, predicted_features);
 
+        updated_features.zero();
+        updated_features.add(correct_features, 1.);
+        updated_features.add(predicted_features, -1.);
+
+        if (feature_group_updated_time) {
+          increase_group_updated_time(updated_features,
+              feature_group_updated_time);
+        }
+
         if (train_opt->algorithm == "pa") {
-          math::SparseVec update_features;
-          update_features.zero();
-          update_features.add(features, 1.);
-          update_features.add(predicted_features, -1.);
-
-          if (feature_group_updated_time) {
-            increase_group_updated_time(update_features,
-                                        feature_group_updated_time);
-          }
-
-          double error = train_dat[i]->num_errors();
-          double score = model->param.dot(update_features, false);
-          double norm  = update_features.L2();
-
-          double step = 0.;
-          if (norm < EPS) {
-            step = 0;
-          } else {
-            step = (error - score) / norm;
-          }
-
-          model->param.add(update_features,
-                           iter * train_dat.size() + i + 1,
-                           step);
-
+          train_passive_aggressive(train_dat[i]->num_errors());
         } else if (train_opt->algorithm == "ap") {
-          math::SparseVec update_features;
-          update_features.zero();
-          update_features.add(features, 1.);
-          update_features.add(predicted_features, -1.);
-
-          if (feature_group_updated_time) {
-            increase_group_updated_time(update_features,
-                                        feature_group_updated_time);
-          }
-
-          model->param.add(update_features,
-                           iter * train_dat.size() + i + 1,
-                           1.);
+          train_averaged_perceptron();
         }
 
         cleanup_decode_context();
