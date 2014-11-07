@@ -472,11 +472,13 @@ Segmentor::calculate_scores(Instance * inst, bool use_avg) {
 }
 
 void
-Segmentor::collect_features(Instance * inst,
-                            const std::vector<int> & tagsidx,
-                            math::SparseVec & vec) {
-  int len = inst->size();
+Segmentor::collect_features(const math::Mat< math::FeatureVector* >& uni_features,
+    Model * model,
+    Instance * inst,
+    const std::vector<int> & tagsidx,
+    math::SparseVec & vec) {
 
+  int len = inst->size();
   vec.zero();
   for (int i = 0; i < len; ++ i) {
     int l = tagsidx[i];
@@ -605,10 +607,15 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
   return new_model;
 }
 
-bool
-Segmentor::train_startup() {
-  //
-};
+void
+Segmentor::collect_correct_and_predicted_features(Instance* inst) {
+  collect_features(uni_features, model, inst, inst->tagsidx, correct_features);
+  collect_features(uni_features, model, inst, inst->predicted_tagsidx, predicted_features);
+
+  updated_features.zero();
+  updated_features.add(correct_features, 1.);
+  updated_features.add(predicted_features, -1.);
+}
 
 void
 Segmentor::train_passive_aggressive(int nr_errors) {
@@ -632,9 +639,14 @@ Segmentor::train_averaged_perceptron() {
   model->param.add(updated_features, timestamp, 1.);
 }
 
+bool
+Segmentor::train_setup() {
+  return true;
+};
+
 void
 Segmentor::train(void) {
-  if (!train_startup()) {
+  if (!train_setup()) {
     return;
   }
 
@@ -704,12 +716,7 @@ Segmentor::train(void) {
         calculate_scores(inst, false);
         decoder->decode(inst);
 
-        collect_features(inst, inst->tagsidx, correct_features);
-        collect_features(inst, inst->predicted_tagsidx, predicted_features);
-
-        updated_features.zero();
-        updated_features.add(correct_features, 1.);
-        updated_features.add(predicted_features, -1.);
+        collect_correct_and_predicted_features(inst);
 
         if (feature_group_updated_time) {
           increase_group_updated_time(updated_features,
@@ -832,8 +839,17 @@ Segmentor::evaluate(double &p, double &r, double &f) {
   return;
 }
 
+bool
+Segmentor::test_setup() {
+  return true;
+}
+
 void
 Segmentor::test(void) {
+  if (!test_setup()) {
+    return;
+  }
+
   // load model
   const char * model_file = test_opt->model_file.c_str();
   std::ifstream mfs(model_file, std::ifstream::binary);

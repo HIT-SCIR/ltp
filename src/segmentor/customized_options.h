@@ -16,6 +16,9 @@ struct CustomizedTestOptions : public TestOptions {
   std::string baseline_model_file;
 };
 
+struct CustomizedDumpOptions : public DumpOptions {
+};
+
 } //  end for namespace segmentor
 } //  end for namespace ltp
 

@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]) {
     return -1;
   }
 
-  Personal_Segmentor segmentor(cfg);
+  CustomizedSegmentor segmentor(cfg);
   segmentor.run();
   return 0;
 }

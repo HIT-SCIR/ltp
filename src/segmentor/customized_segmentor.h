@@ -31,17 +31,39 @@ protected:
   void extract_features(Instance * inst, bool create = false);
 
   //!
-  void build_feature_space(void);
   void calculate_scores(Instance * inst, bool use_avg);
-  void collect_features(Instance * inst, const std::vector<int> & tagsidx, math::SparseVec & vec, math::SparseVec & personal_vec);
-  Model * erase_rare_features(const int * feature_updated_times);
-  void train(void);
+
+  //!
+  void collect_correct_and_predicted_features(Instance * inst);
+
+  //
+  bool train_setup(void);
+
+  //!
+  void train_passive_aggressive(int nr_errors);
+
+  //!
+  void train_averaged_perceptron(void);
+
+  //!
   void evaluate(double &p, double &r, double &f);
-  void test(void);
-  void dump();
+
+  bool test_setup(void);
 
 protected:
   Model * baseline_model;
+
+  //!
+  math::SparseVec baseline_correct_features;
+
+  //!
+  math::SparseVec baseline_predicted_features;
+
+  //!
+  math::SparseVec baseline_updated_features;
+
+  //!
+  math::Mat< math::FeatureVector * > baseline_uni_features;
 
   CustomizedTrainOptions train_opts;
   CustomizedTestOptions test_opts;
