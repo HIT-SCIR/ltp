@@ -1,6 +1,6 @@
 #include "utils/time.hpp"
 #include "utils/logging.hpp"
-#include "segmentor/personal_segmentor.h"
+#include "segmentor/customized_segmentor.h"
 #include "segmentor/instance.h"
 #include "segmentor/extractor.h"
 #include "segmentor/options.h"
@@ -21,204 +21,69 @@
 namespace ltp {
 namespace segmentor {
 
-Personal_Segmentor::Personal_Segmentor() :
-   personal_model(0){
+namespace utils = ltp::utility;
+
+CustomizedSegmentor::CustomizedSegmentor()
+  : baseline_model(0) {
 }
 
-Personal_Segmentor::Personal_Segmentor(ltp::utility::ConfigParser & cfg) :
-  personal_model(0){
+CustomizedSegmentor::CustomizedSegmentor(utils::ConfigParser& cfg)
+  : baseline_model(0) {
+  train_opt = new CustomizedTrainOptions;
+  test_opt = new CustomizedTestOptions;
+  dump_opt = new CustomizedDumpOptions;
   parse_cfg(cfg);
 }
 
-Personal_Segmentor::~Personal_Segmentor() {
+CustomizedSegmentor::~CustomizedSegmentor() {
   if (personal_model) {
     delete personal_model;
   }
 }
 
 bool
-Personal_Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
+CustomizedSegmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
+  Segmentor::parse_cfg(cfg);
+
   std::string strbuf;
 
-  train_opt.train_file              = "";
-  train_opt.holdout_file            = "";
-  train_opt.algorithm               = "pa";
-  train_opt.model_name              = "";
-  train_opt.personal_model_name     = "";
-  train_opt.max_iter                = 10;
-  train_opt.display_interval        = 5000;
-  train_opt.rare_feature_threshold  = 0;
-
+  train_opt->baseline_model_name = "";
   if (cfg.has_section("train")) {
     int intbuf;
 
-    TRACE_LOG("Training mode specified.");
-    __TRAIN__ = true;
-
-    if (cfg.get("train", "train-file", strbuf)) {
-      train_opt.train_file = strbuf;
+    if(cfg.get("train", "baseline-model-name",strbuf)) {
+      train_opt->baseline_model_name = strbuf;
     } else {
-      ERROR_LOG("train-file config item is not found.");
-      return false;
-    }
-
-    if (cfg.get("train", "holdout-file", strbuf)) {
-      train_opt.holdout_file = strbuf;
-    } else {
-      ERROR_LOG("holdout-file config item is not found.");
-      return false;
-    }
-
-    if (cfg.get("train", "algorithm", strbuf)) {
-      train_opt.algorithm = strbuf;
-    } else {
-      WARNING_LOG("algorithm is not configed, [PA] is set as default");
-    }
-
-    if (cfg.get("train", "rare-feature-threshold", strbuf)) {
-      train_opt.rare_feature_threshold = atoi(strbuf.c_str());
-    } else {
-      WARNING_LOG("rare feature threshold is not configed, 10 is set as default");
-    }
-
-    train_opt.model_name = train_opt.train_file + "." + train_opt.algorithm;
-    if (cfg.get("train", "model-name", strbuf)) {
-      train_opt.model_name = strbuf;
-    } else {
-      WARNING_LOG("model name is not configed, [%s] is set as default",
-                  train_opt.model_name.c_str());
-    }
-
-    if (cfg.get_integer("train", "max-iter", intbuf)) {
-      train_opt.max_iter = intbuf;
-    } else {
-      WARNING_LOG("max-iter is not configed, [10] is set as default.");
-    }
-
-    if(cfg.get("train", "p-model-name",strbuf)) {
-      train_opt.personal_model_name = strbuf;
-    } else {
-      WARNING_LOG("p model name is not configed, [%s] is set as default",
-                  train_opt.personal_model_name.c_str());
+      WARNING_LOG("baseline model name is not configed, [%s] is set as default",
+                  train_opt->baseline_model_name.c_str());
     }
   }
-  test_opt.test_file    = "";
-  test_opt.model_file   = "";
-  test_opt.personal_model_file   = "";
-  test_opt.lexicon_file = "";
 
+  test_opt.baseline_model_name = "";
   if (cfg.has_section("test")) {
-    __TEST__ = true;
-
-    if (cfg.get("test", "test-file", strbuf)) {
-      test_opt.test_file = strbuf;
-    } else {
-      ERROR_LOG("test-file config item is not set.");
-      return false;
-    }
-
-    if (cfg.get("test", "model-file", strbuf)) {
-      test_opt.model_file = strbuf;
-    } else {
-      ERROR_LOG("model-file is not configed.");
-      return false;
-    }
-
-    if (cfg.get("test", "p-model-file", strbuf)) {
-      test_opt.personal_model_file = strbuf;
+    if (cfg.get("test", "baseline-model-file", strbuf)) {
+      test_opt->baseline_model_name= strbuf;
     } else {
       ERROR_LOG("personal-model-file is not configed.");
       return false;
     }
-    if (cfg.get("test", "lexicon-file", strbuf)) {
-      test_opt.lexicon_file = strbuf;
-    }
   }
-
-  dump_opt.model_file = "";
-  if (cfg.has_section("dump")) {
-    __DUMP__ = true;
-
-    if (cfg.get("dump", "model-file", strbuf)) {
-      dump_opt.model_file = strbuf;
-    } else {
-      ERROR_LOG("model-file is not configed.");
-      return false;
-    }
-  }
-
   return true;
 }
 
 void
-Personal_Segmentor::build_configuration(void) {
-  // model->labels.push( __dummy__ );
-  for (int i = 0; i < model->labels.size(); ++i) {
-    const char * key = model->labels.at(i);
-    personal_model->labels.push(key);
-  }
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    Instance * inst = train_dat[i];
-    int len = inst->size();
-
-    inst->tagsidx.resize(len);
-    for (int j = 0; j < len; ++ j) {
-      // build labels dictionary
-      inst->tagsidx[j] = personal_model->labels.push( inst->tags[j] );
-    }
-
-  }
-  TRACE_LOG("Label sets is built");
-
-  SmartMap<bool> wordfreq;
-  long long total_freq = 0;
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    //
-    Instance * inst = train_dat[i];
-    int len = inst->words.size();
-
-    for (int j = 0; j < len; ++ j) {
-      wordfreq.set(inst->words[j].c_str(), true);
-    }
-    total_freq += inst->words.size();
+CustomizedSegmentor::build_configuration(void) {
+  // First, inherit the tag set from the baseline model.
+  for (int i = 0; i < baseline_model->labels.size(); ++i) {
+    const char * key = baseline_model->labels.at(i);
+    model->labels.push(key);
   }
 
-  std::vector<int> freqs;
-  for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
-      itx != wordfreq.end();
-      ++ itx) {
-    freqs.push_back(itx.frequency());
-  }
-
-  long long accumulate_freq = 0;
-  std::sort(freqs.begin(), freqs.end(), std::greater<int>());
-  int target = freqs[int(freqs.size() * 0.2)];
-  for (int i = 0; i < freqs.size(); ++ i) {
-    accumulate_freq += freqs[i];
-    if (accumulate_freq > total_freq * 0.9) {
-      target = freqs[i];
-      break;
-    }
-  }
-
-  for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
-      itx != wordfreq.end();
-      ++ itx) {
-    if (itx.frequency() >= target && strutils::codecs::length(itx.key()) > 1) {
-    // if (itx.frequency() >= target) {
-      personal_model->internal_lexicon.set(itx.key(), true);
-    }
-  }
-
-  TRACE_LOG("Collecting interanl lexicon is done.");
-  TRACE_LOG("Total word frequency : %ld", total_freq);
-  TRACE_LOG("Vocabulary size: %d", wordfreq.size());
-  TRACE_LOG("Trancation word frequency : %d", target);
-  TRACE_LOG("Internal lexicon size : %d", personal_model->internal_lexicon.size());
+  Segmentor::build_configuration();
 }
 
 void
-Personal_Segmentor::extract_features(Instance * inst, bool create) {
+CustomizedSegmentor::extract_features(Instance * inst, bool create) {
   const int N = Extractor::num_templates();
   const int L = model->num_labels();
 
@@ -360,7 +225,7 @@ Personal_Segmentor::extract_features(Instance * inst, bool create) {
 }
 
 void
-Personal_Segmentor::build_feature_space(void) {
+CustomizedSegmentor::build_feature_space(void) {
   // build feature space, it a wrapper for
   // featurespace.build_feature_space
   int L = personal_model->num_labels();
@@ -375,7 +240,7 @@ Personal_Segmentor::build_feature_space(void) {
 }
 
 void
-Personal_Segmentor::calculate_scores(Instance * inst, bool use_avg) {
+CustomizedSegmentor::calculate_scores(Instance * inst, bool use_avg) {
   int len = inst->size();
   int L = model->num_labels();
   for (int i = 0; i < len; ++ i) {
@@ -418,10 +283,10 @@ Personal_Segmentor::calculate_scores(Instance * inst, bool use_avg) {
 }
 
 void
-Personal_Segmentor::collect_features(Instance * inst,
-                            const std::vector<int> & tagsidx,
-                            math::SparseVec & vec,
-                            math::SparseVec & personal_vec) {
+CustomizedSegmentor::collect_features(Instance * inst,
+    const std::vector<int> & tagsidx,
+    math::SparseVec & vec,
+    math::SparseVec & personal_vec) {
   int len = inst->size();
 
   vec.zero();
@@ -464,7 +329,7 @@ Personal_Segmentor::collect_features(Instance * inst,
 //      lower than the pre-defined threshold.
 
 Model *
-Personal_Segmentor::erase_rare_features(const int * feature_updated_times) {
+CustomizedSegmentor::erase_rare_features(const int * feature_updated_times) {
   Model * new_model = new Model;
   // copy the label indexable map to the new model
   for (int i = 0; i < personal_model->labels.size(); ++ i) {
@@ -734,7 +599,7 @@ Personal_Segmentor::train(void) {
 }
 
 void
-Personal_Segmentor::evaluate(double &p, double &r, double &f) {
+CustomizedSegmentor::evaluate(double &p, double &r, double &f) {
   const char * holdout_file = train_opt.holdout_file.c_str();
 
   ifstream ifs(holdout_file);
@@ -793,7 +658,7 @@ Personal_Segmentor::evaluate(double &p, double &r, double &f) {
 }
 
 void
-Personal_Segmentor::test(void) {
+CustomizedSegmentor::test(void) {
   // load model
   const char * model_file = test_opt.model_file.c_str();
   ifstream mfs(model_file, std::ifstream::binary);
@@ -902,52 +767,9 @@ Personal_Segmentor::test(void) {
   return;
 }
 
-
-void Personal_Segmentor::dump() {
-  // load model
-  const char * model_file = dump_opt.model_file.c_str();
-  ifstream mfs(model_file, std::ifstream::binary);
-
-  if (!mfs) {
-    ERROR_LOG("Failed to load model");
-    return;
-  }
-
-  model = new Model;
-  if (!model->load(mfs)) {
-    ERROR_LOG("Failed to load model");
-    return;
-  }
-
-  int L = model->num_labels();
-  TRACE_LOG("Number of labels     [%d]", model->num_labels());
-  TRACE_LOG("Number of features   [%d]", model->space.num_features());
-  TRACE_LOG("Number of dimension  [%d]", model->space.dim());
-
-  for (FeatureSpaceIterator itx = model->space.begin();
-       itx != model->space.end();
-       ++ itx) {
-    const char * key = itx.key();
-    int tid = itx.tid();
-    int id = model->space.index(tid, key);
-
-    for (int l = 0; l < L; ++ l) {
-      std::cout << key
-                << " ( " << id + l << " ) "
-                << " --> "
-                << model->param.dot(id + l)
-                << std::endl;
-    }
-  }
-
-  for (int pl = 0; pl < L; ++ pl) {
-    for (int l = 0; l < L; ++ l) {
-      int id = model->space.index(pl, l);
-      std::cout << pl << " --> " << l
-                << " " << model->param.dot(id)
-                << std::endl;
-    }
-  }
+void
+CustomizedSegmentor::dump() {
+  WARNING_LOG("not implemented.");
 }
 
 }     //  end for namespace segmentor

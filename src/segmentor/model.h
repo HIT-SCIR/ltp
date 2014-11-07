@@ -8,14 +8,14 @@
 namespace ltp {
 namespace segmentor {
 
-using namespace ltp::utility;
+namespace utils = ltp::utility;
 
 class Model {
 public:
   Model();
   ~Model();
 
-  /*
+  /**
    * get number of labels;
    *
    *  @return   int   the number of labels
@@ -24,14 +24,14 @@ public:
     return labels.size();
   }
 
-  /*
+  /**
    * save the model to a output stream
    *
    *  @param[out] ofs   the output stream
    */
   void save(std::ostream & ofs);
 
-  /*
+  /**
    * load the model from an input stream
    *
    *  @param[in]  ifs   the input stream
@@ -39,13 +39,13 @@ public:
   bool load(std::istream & ifs);
 
 public:
-  int               end_time;
-  IndexableSmartMap labels;
-  FeatureSpace      space;
-  Parameters        param;
+  int end_time;
+  FeatureSpace              space;
+  Parameters                param;
+  utils::IndexableSmartMap  labels;
 
-  SmartMap<bool>    internal_lexicon;
-  SmartMap<bool>    external_lexicon;
+  utils::SmartMap<bool>     internal_lexicon;
+  utils::SmartMap<bool>     external_lexicon;
 
 private:
   void write_uint(std::ostream & out, unsigned int val) {

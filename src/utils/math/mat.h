@@ -7,8 +7,6 @@
 namespace ltp {
 namespace math {
 
-using namespace std;
-
 /*
  * A class for vector
  */

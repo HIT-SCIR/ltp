@@ -3,7 +3,6 @@ include_directories ( ${SOURCE_DIR} ${THIRDPARTY_DIR}/boost/include )
 set (segment_VERSION "0.0.1")
 
 set (segment_SRC
-    options.cpp
     decoder.cpp
     featurespace.cpp
     model.cpp
@@ -36,12 +35,13 @@ set_target_properties (segmentor_shared_lib PROPERTIES
 # TOOLKIT
 # -----------------------------------------------
 add_executable (otcws otcws.cpp ${segment_SRC})
-add_executable (personal_otcws personal_otcws.cpp ${segment_SRC} personal_segmentor.cpp)
-message (STATUS ${LIBRARY_OUTPUT_PATH} )
-link_directories ( ${LIBRARY_OUTPUT_PATH} )
+#add_executable (otcws-inc otcws_inc.cpp ${segment_SRC} customized_segmentor.cpp)
 
+message (STATUS ${LIBRARY_OUTPUT_PATH} )
+
+link_directories ( ${LIBRARY_OUTPUT_PATH} )
 target_link_libraries (otcws boost_regex_static_lib)
-target_link_libraries (personal_otcws boost_regex_static_lib)
+#target_link_libraries (otcws-inc boost_regex_static_lib)
 
 # redirect the output binary to tools/train
 set_target_properties (otcws
@@ -49,10 +49,11 @@ set_target_properties (otcws
     OUTPUT_NAME otcws
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
-set_target_properties (personal_otcws
-    PROPERTIES
-    OUTPUT_NAME personal_otcws
-    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+#set_target_properties (otcws-inc
+#    PROPERTIES
+#    OUTPUT_NAME otcws-inc
+#    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
+
 configure_file (
     segment_dll.h
     ${INCLUDE_OUTPUT_PATH}/ltp/segment_dll.h)

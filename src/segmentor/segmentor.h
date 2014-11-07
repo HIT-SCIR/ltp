@@ -3,6 +3,7 @@
 
 #include "utils/cfgparser.hpp"
 #include "segmentor/model.h"
+#include "segmentor/options.h"
 #include "segmentor/decoder.h"
 #include "segmentor/rulebase.h"
 
@@ -155,15 +156,50 @@ protected:
    */
   virtual Model * erase_rare_features(const int * nr_updates = NULL);
 
+  /**
+   * Remove the unigram features, bigram features from
+   */
+  void cleanup_decode_context(void);
+
 protected:
   bool  __TRAIN__;  /*< The training flag */
   bool  __TEST__;   /*< The testing flag */
   bool  __DUMP__;   /*< The dump flag */
 
-  Model *              model;
-  Decoder *            decoder;
+  //! The training options.
+  TrainOptions* train_opt;
+
+  //! The testing options.
+  TestOptions* test_opt;
+
+  //! The dump options.
+  DumpOptions* dump_opt;
+
+  //! The model.
+  Model * model;
+
+  //! The pointer to the decoder;
+  Decoder * decoder;
+
+  //! The pointer to the basic_rule;
   rulebase::RuleBase * baseAll;
+
+  //! The collection of the training data.
   std::vector< Instance * > train_dat;
+
+  //! the gold features.
+  math::SparseVec       features;
+
+  //! the predicted features.
+  math::SparseVec       predicted_features;
+
+  //math::SparseVec       personal_features;           /*< the gold features */
+  //math::SparseVec       personal_predicted_features; /*< the predicted features */
+
+  //! The feature cache.
+  math::Mat< math::FeatureVector *> uni_features;
+
+  //math::Mat< math::FeatureVector *> personal_uni_features;
 };
 
 }     //  end for namespace segmentor
