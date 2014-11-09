@@ -11,11 +11,9 @@
 namespace ltp {
 namespace segmentor {
 
-using namespace ltp::strutils;
-
 class SegmentReader {
 public:
-  SegmentReader(istream & _ifs, bool _segmented = false, int _style = 4) : 
+  SegmentReader(std::istream & _ifs, bool _segmented = false, int _style = 4) :
     ifs(_ifs),
     segmented(_segmented),
     style(_style) {}
@@ -27,17 +25,15 @@ public:
 
     Instance * inst = new Instance;
     std::string  line;
-
     std::getline(ifs, line);
-
-    line = chomp(line);
+    line = strutils::chomp(line);
     if (line.size() == 0) {
       delete inst;
       return 0;
     }
 
     if (segmented) {
-      std::vector<std::string> words = split(line);
+      std::vector<std::string> words = strutils::split(line);
       inst->words = words;
 
       for (int i = 0; i < words.size(); ++ i) {
@@ -110,9 +106,9 @@ public:
     return inst;
   }
 private:
-  istream &   ifs;
-  int     style;
-  bool    segmented;
+  std::istream& ifs;
+  int style;
+  bool segmented;
 };
 
 }       //  end for namespace segmentor

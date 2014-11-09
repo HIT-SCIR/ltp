@@ -8,8 +8,6 @@
 namespace ltp {
 namespace segmentor {
 
-using namespace ltp::math;
-
 class Parameters {
 public:
   int _dim;
@@ -76,8 +74,8 @@ public:
     _W_time[idx]  = now;
   }
 
-  void add(const SparseVec & vec, int now, double scale = 1.) {
-    for (SparseVec::const_iterator itx = vec.begin();
+  void add(const math::SparseVec & vec, int now, double scale = 1.) {
+    for (math::SparseVec::const_iterator itx = vec.begin();
         itx != vec.end();
         ++ itx) {
       int idx = itx->first;
@@ -91,10 +89,10 @@ public:
     }
   }
 
-  double dot(const SparseVec & vec, bool use_avg = false) const {
+  double dot(const math::SparseVec & vec, bool use_avg = false) const {
     const double * const p = (use_avg ? _W_sum : _W);
     double ret = 0.;
-    for (SparseVec::const_iterator itx = vec.begin();
+    for (math::SparseVec::const_iterator itx = vec.begin();
         itx != vec.end();
         ++ itx) {
       ret += p[itx->first] * itx->second;
@@ -102,7 +100,7 @@ public:
     return ret;
   }
 
-  double dot(const FeatureVector * vec, bool use_avg = false) const {
+  double dot(const math::FeatureVector * vec, bool use_avg = false) const {
     const double * const p = (use_avg ? _W_sum : _W);
     double ret = 0.;
     for (int i = 0; i < vec->n; ++ i) {
@@ -115,7 +113,7 @@ public:
     return ret;
   }
 
-  double dot_flush_time(const FeatureVector * vec, int beg_time, int end_time) const {
+  double dot_flush_time(const math::FeatureVector * vec, int beg_time, int end_time) const {
     double ret = 0;
     for (int i = 0; i < vec->n; ++ i) {
       int idx = vec->idx[i] + vec->loff;

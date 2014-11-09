@@ -3,6 +3,7 @@
 
 #include "utils/cfgparser.hpp"
 #include "segmentor/model.h"
+#include "segmentor/options.h"
 #include "segmentor/decoder.h"
 #include "segmentor/rulebase.h"
 
@@ -52,11 +53,26 @@ protected:
 
 
   /**
-   * Build feature space,
-   *
+   * Build feature space.
    */
   virtual void build_feature_space(void);
 
+  /**
+   * Perform setup preparation for the training phase.
+   */
+  virtual bool train_setup(void);
+
+  /**
+   * Perform the passive aggressive training.
+   *
+   *  @param[in]  nr_errors The number of errors.
+   */
+  virtual void train_passive_aggressive(int nr_errors);
+
+  /**
+   * Perform the averaged perceptron training.
+   */
+  virtual void train_averaged_perceptron();
 
   /**
    * The main training process, the training scheme can be summarized as
@@ -78,17 +94,20 @@ protected:
    */
   virtual void evaluate(double &p, double &r, double &f);
 
+  /**
+   * Perform setup preparation for the training phase.
+   */
+  virtual bool test_setup(void);
 
   /**
    * The main testing process
    */
-  virtual void test(void);
-
+  void test(void);
 
   /**
    * The dumping model process
    */
-  virtual void dump(void);
+  void dump(void);
 
 
   /**
@@ -131,9 +150,19 @@ protected:
    *  @param[in]    tagsidx the tags index
    *  @param[out]   vec     the output sparse vector
    */
-  virtual void collect_features(Instance * inst,
+  void collect_features(const math::Mat< math::FeatureVector* >& uni_features,
+                        Model* model,
+                        Instance* inst,
                         const std::vector<int> & tagsidx,
                         ltp::math::SparseVec & vec);
+
+  /**
+   *
+   *
+   *
+   *
+   */
+  virtual void collect_correct_and_predicted_features(Instance * inst);
 
   /**
    * Decode the group information for feature represented in sparse vector,
@@ -155,15 +184,49 @@ protected:
    */
   virtual Model * erase_rare_features(const int * nr_updates = NULL);
 
+  /**
+   * Remove the unigram features, bigram features from
+   */
+  void cleanup_decode_context(void);
+
 protected:
   bool  __TRAIN__;  /*< The training flag */
   bool  __TEST__;   /*< The testing flag */
   bool  __DUMP__;   /*< The dump flag */
 
-  Model *              model;
-  Decoder *            decoder;
+  //!
+  int timestamp;
+
+  //! The training options.
+  TrainOptions* train_opt;
+
+  //! The testing options.
+  TestOptions* test_opt;
+
+  //! The dump options.
+  DumpOptions* dump_opt;
+
+  //! The model.
+  Model * model;
+
+  //! The pointer to the decoder;
+  Decoder * decoder;
+
+  //! The pointer to the basic_rule;
   rulebase::RuleBase * baseAll;
+
+  //! The collection of the training data.
   std::vector< Instance * > train_dat;
+
+  //! the gold features.
+  math::SparseVec correct_features;
+  //! the predicted features.
+  math::SparseVec predicted_features;
+  //!
+  math::SparseVec updated_features;
+
+  //! The feature cache.
+  math::Mat< math::FeatureVector *> uni_features;
 };
 
 }     //  end for namespace segmentor

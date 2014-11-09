@@ -1,5 +1,6 @@
 #include "utils/time.hpp"
 #include "utils/logging.hpp"
+#include "utils/strvec.hpp"
 #include "segmentor/segmentor.h"
 #include "segmentor/instance.h"
 #include "segmentor/extractor.h"
@@ -21,26 +22,46 @@
 namespace ltp {
 namespace segmentor {
 
-Segmentor::Segmentor() :
-   model(0),
-   decoder(0),
-   baseAll(0),
-   __TRAIN__(false),
-   __TEST__(false),
-   __DUMP__(false) {
+namespace utils = ltp::utility;
+
+Segmentor::Segmentor()
+  : model(0),
+  train_opt(0),  //! bend the train options on API interface.
+  test_opt(0),
+  dump_opt(0),
+  decoder(0),
+  baseAll(0),
+  __TRAIN__(false),
+  __TEST__(false),
+  __DUMP__(false) {
 }
 
-Segmentor::Segmentor(ltp::utility::ConfigParser & cfg) :
+Segmentor::Segmentor(utils::ConfigParser & cfg) :
   model(0),
   decoder(0),
   baseAll(0),
   __TRAIN__(false),
   __TEST__(false),
   __DUMP__(false) {
+  train_opt = new TrainOptions;
+  test_opt = new TestOptions;
+  dump_opt = new DumpOptions;
   parse_cfg(cfg);
 }
 
 Segmentor::~Segmentor() {
+  if (train_opt) {
+    delete train_opt;
+  }
+
+  if (test_opt) {
+    delete test_opt;
+  }
+
+  if (dump_opt) {
+    delete dump_opt;
+  }
+
   if (model) {
     delete model;
   }
@@ -76,16 +97,16 @@ Segmentor::run(void) {
 }
 
 bool
-Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
+Segmentor::parse_cfg(utils::ConfigParser & cfg) {
   std::string strbuf;
 
-  train_opt.train_file              = "";
-  train_opt.holdout_file            = "";
-  train_opt.algorithm               = "pa";
-  train_opt.model_name              = "";
-  train_opt.max_iter                = 10;
-  train_opt.display_interval        = 5000;
-  train_opt.rare_feature_threshold  = 0;
+  train_opt->train_file = "";
+  train_opt->holdout_file = "";
+  train_opt->algorithm = "pa";
+  train_opt->model_name = "";
+  train_opt->max_iter = 10;
+  train_opt->display_interval = 5000;
+  train_opt->rare_feature_threshold = 0;
 
   if (cfg.has_section("train")) {
     int intbuf;
@@ -94,78 +115,78 @@ Segmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
     __TRAIN__ = true;
 
     if (cfg.get("train", "train-file", strbuf)) {
-      train_opt.train_file = strbuf;
+      train_opt->train_file = strbuf;
     } else {
       ERROR_LOG("train-file config item is not found.");
       return false;
     }
 
     if (cfg.get("train", "holdout-file", strbuf)) {
-      train_opt.holdout_file = strbuf;
+      train_opt->holdout_file = strbuf;
     } else {
       ERROR_LOG("holdout-file config item is not found.");
       return false;
     }
 
     if (cfg.get("train", "algorithm", strbuf)) {
-      train_opt.algorithm = strbuf;
+      train_opt->algorithm = strbuf;
     } else {
       WARNING_LOG("algorithm is not configed, [PA] is set as default");
     }
 
     if (cfg.get("train", "rare-feature-threshold", strbuf)) {
-      train_opt.rare_feature_threshold = atoi(strbuf.c_str());
+      train_opt->rare_feature_threshold = atoi(strbuf.c_str());
     } else {
       WARNING_LOG("rare feature threshold is not configed, 10 is set as default");
     }
 
-    train_opt.model_name = train_opt.train_file + "." + train_opt.algorithm;
+    train_opt->model_name = train_opt->train_file + "." + train_opt->algorithm;
     if (cfg.get("train", "model-name", strbuf)) {
-      train_opt.model_name = strbuf;
+      train_opt->model_name = strbuf;
     } else {
       WARNING_LOG("model name is not configed, [%s] is set as default",
-                  train_opt.model_name.c_str());
+                  train_opt->model_name.c_str());
     }
 
     if (cfg.get_integer("train", "max-iter", intbuf)) {
-      train_opt.max_iter = intbuf;
+      train_opt->max_iter = intbuf;
     } else {
       WARNING_LOG("max-iter is not configed, [10] is set as default.");
     }
   }
 
-  test_opt.test_file    = "";
-  test_opt.model_file   = "";
-  test_opt.lexicon_file = "";
+  test_opt->test_file    = "";
+  test_opt->model_file   = "";
+  test_opt->lexicon_file = "";
 
   if (cfg.has_section("test")) {
     __TEST__ = true;
 
     if (cfg.get("test", "test-file", strbuf)) {
-      test_opt.test_file = strbuf;
+      test_opt->test_file = strbuf;
     } else {
       ERROR_LOG("test-file config item is not set.");
       return false;
     }
 
     if (cfg.get("test", "model-file", strbuf)) {
-      test_opt.model_file = strbuf;
+      test_opt->model_file = strbuf;
     } else {
       ERROR_LOG("model-file is not configed.");
       return false;
     }
 
     if (cfg.get("test", "lexicon-file", strbuf)) {
-      test_opt.lexicon_file = strbuf;
+      test_opt->lexicon_file = strbuf;
     }
   }
 
-  dump_opt.model_file = "";
+  dump_opt->model_file = "";
   if (cfg.has_section("dump")) {
     __DUMP__ = true;
 
     if (cfg.get("dump", "model-file", strbuf)) {
-      dump_opt.model_file = strbuf;
+      dump_opt->model_file = strbuf;
     } else {
       ERROR_LOG("model-file is not configed.");
       return false;
@@ -211,7 +232,7 @@ Segmentor::build_configuration(void) {
   }
   TRACE_LOG("Label sets is built");
 
-  SmartMap<bool> wordfreq;
+  utils::SmartMap<bool> wordfreq;
   long long total_freq = 0;
   for (int i = 0; i < train_dat.size(); ++ i) {
     //
@@ -225,7 +246,7 @@ Segmentor::build_configuration(void) {
   }
 
   std::vector<int> freqs;
-  for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
+  for (utils::SmartMap<bool>::const_iterator itx = wordfreq.begin();
       itx != wordfreq.end();
       ++ itx) {
     freqs.push_back(itx.frequency());
@@ -242,7 +263,7 @@ Segmentor::build_configuration(void) {
     }
   }
 
-  for (SmartMap<bool>::const_iterator itx = wordfreq.begin();
+  for (utils::SmartMap<bool>::const_iterator itx = wordfreq.begin();
       itx != wordfreq.end();
       ++ itx) {
     if (itx.frequency() >= target && strutils::codecs::length(itx.key()) > 1) {
@@ -259,20 +280,43 @@ Segmentor::build_configuration(void) {
 }
 
 void
+Segmentor::cleanup_decode_context(void) {
+  if (uni_features.total_size() > 0) {
+    int d1 = uni_features.nrows();
+    int d2 = uni_features.ncols();
+
+    for (int i = 0; i < d1; ++ i) {
+      if (uni_features[i][0]) {
+        uni_features[i][0]->clear();
+      }
+
+      for (int j = 0; j < d2; ++ j) {
+        if (uni_features[i][j]) {
+          delete uni_features[i][j];
+        }
+      }
+    }
+  }
+
+  uni_features.dealloc();
+  correct_features.zero();
+  predicted_features.zero();
+}
+
+void
 Segmentor::extract_features(Instance * inst, bool create) {
   const int N = Extractor::num_templates();
   const int L = model->num_labels();
 
-  vector< StringVec > cache;
-  vector< int > cache_again;
+  std::vector< utils::StringVec > cache;
+  std::vector< int > cache_again;
 
   cache.resize(N);
   int len = inst->size();
 
   // allocate the uni_features
-  inst->uni_features.resize(len, L);  inst->uni_features = 0;
-  inst->uni_scores.resize(len, L);  inst->uni_scores = NEG_INF;
-  inst->bi_scores.resize(L, L);     inst->bi_scores = NEG_INF;
+  uni_features.resize(len, L);
+  uni_features = 0;
 
   // cache lexicon features.
   if (0 == inst->lexicon_match_state.size()) {
@@ -342,18 +386,18 @@ Segmentor::extract_features(Instance * inst, bool create) {
         idx[j] = cache_again[j];
       }
 
-      inst->uni_features[pos][l] = new FeatureVector;
-      inst->uni_features[pos][l]->n = num_feat;
-      inst->uni_features[pos][l]->val = 0;
-      inst->uni_features[pos][l]->loff = 0;
-      inst->uni_features[pos][l]->idx = idx;
+      uni_features[pos][l] = new math::FeatureVector;
+      uni_features[pos][l]->n = num_feat;
+      uni_features[pos][l]->val = 0;
+      uni_features[pos][l]->loff = 0;
+      uni_features[pos][l]->idx = idx;
 
       for (l = 1; l < L; ++ l) {
-        inst->uni_features[pos][l] = new FeatureVector;
-        inst->uni_features[pos][l]->n = num_feat;
-        inst->uni_features[pos][l]->idx = idx;
-        inst->uni_features[pos][l]->val = 0;
-        inst->uni_features[pos][l]->loff = l;
+        uni_features[pos][l] = new math::FeatureVector;
+        uni_features[pos][l]->n = num_feat;
+        uni_features[pos][l]->idx = idx;
+        uni_features[pos][l]->val = 0;
+        uni_features[pos][l]->loff = l;
       }
     }
   }
@@ -392,7 +436,9 @@ Segmentor::build_feature_space(void) {
 
   for (int i = 0; i < train_dat.size(); ++ i) {
     extract_features(train_dat[i], true);
-    if ((i + 1) % train_opt.display_interval == 0) {
+    cleanup_decode_context();
+
+    if ((i + 1) % train_opt->display_interval == 0) {
       TRACE_LOG("[%d] instances is extracted.", (i+1));
     }
   }
@@ -402,14 +448,18 @@ void
 Segmentor::calculate_scores(Instance * inst, bool use_avg) {
   int len = inst->size();
   int L = model->num_labels();
+
+  inst->uni_scores.resize(len, L);  inst->uni_scores = NEG_INF;
+  inst->bi_scores.resize(L, L);     inst->bi_scores = NEG_INF;
+
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
-      FeatureVector * fv = inst->uni_features[i][l];
+      math::FeatureVector * fv = uni_features[i][l];
       if (!fv) {
         continue;
       }
 
-      inst->uni_scores[i][l] = model->param.dot(inst->uni_features[i][l], use_avg);
+      inst->uni_scores[i][l] = model->param.dot(uni_features[i][l], use_avg);
     }
   }
 
@@ -422,15 +472,17 @@ Segmentor::calculate_scores(Instance * inst, bool use_avg) {
 }
 
 void
-Segmentor::collect_features(Instance * inst,
-                            const std::vector<int> & tagsidx,
-                            math::SparseVec & vec) {
-  int len = inst->size();
+Segmentor::collect_features(const math::Mat< math::FeatureVector* >& uni_features,
+    Model * model,
+    Instance * inst,
+    const std::vector<int> & tagsidx,
+    math::SparseVec & vec) {
 
+  int len = inst->size();
   vec.zero();
   for (int i = 0; i < len; ++ i) {
     int l = tagsidx[i];
-    const FeatureVector * fv = inst->uni_features[i][l];
+    const math::FeatureVector * fv = uni_features[i][l];
 
     if (!fv) {
       continue;
@@ -504,7 +556,7 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
     // Check if this feature's updated time.
     int idx = model->space.retrieve(tid, key, false);
     if (feature_updated_times
-        && (feature_updated_times[idx] < train_opt.rare_feature_threshold)) {
+        && (feature_updated_times[idx] < train_opt->rare_feature_threshold)) {
       continue;
     }
 
@@ -545,7 +597,7 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
   }
   TRACE_LOG("Building new model is done");
 
-  for (SmartMap<bool>::const_iterator itx = model->internal_lexicon.begin();
+  for (utils::SmartMap<bool>::const_iterator itx = model->internal_lexicon.begin();
       itx != model->internal_lexicon.end();
       ++ itx) {
     new_model->internal_lexicon.set(itx.key(), true);
@@ -556,8 +608,49 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
 }
 
 void
+Segmentor::collect_correct_and_predicted_features(Instance* inst) {
+  collect_features(uni_features, model, inst, inst->tagsidx, correct_features);
+  collect_features(uni_features, model, inst, inst->predicted_tagsidx, predicted_features);
+
+  updated_features.zero();
+  updated_features.add(correct_features, 1.);
+  updated_features.add(predicted_features, -1.);
+}
+
+void
+Segmentor::train_passive_aggressive(int nr_errors) {
+  //double error = train_dat[i]->num_errors();
+  double error = nr_errors;
+  double score = model->param.dot(updated_features, false);
+  double norm  = updated_features.L2();
+
+  double step = 0.;
+  if (norm < EPS) {
+    step = 0;
+  } else {
+    step = (error - score) / norm;
+  }
+
+  model->param.add(updated_features, timestamp, step);
+}
+
+void
+Segmentor::train_averaged_perceptron() {
+  model->param.add(updated_features, timestamp, 1.);
+}
+
+bool
+Segmentor::train_setup() {
+  return true;
+};
+
+void
 Segmentor::train(void) {
-  const char * train_file = train_opt.train_file.c_str();
+  if (!train_setup()) {
+    return;
+  }
+
+  const char * train_file = train_opt->train_file.c_str();
 
   // read in training instance
   if (!read_instance(train_file)) {
@@ -587,7 +680,7 @@ Segmentor::train(void) {
 
   // If the rare feature threshold is used, allocate memory for the
   // feature group updated time.
-  if (train_opt.rare_feature_threshold > 0) {
+  if (train_opt->rare_feature_threshold > 0) {
     feature_group_updated_time = new int[nr_feature_groups];
     for (int i = 0; i < nr_feature_groups; ++ i) {
       feature_group_updated_time[i] = 0;
@@ -596,9 +689,9 @@ Segmentor::train(void) {
 
   TRACE_LOG("Allocate [%d] update counters.", nr_feature_groups);
 
-  SegmentWriter writer(cout);
+  SegmentWriter writer(std::cout);
 
-  if (train_opt.algorithm == "mira") {
+  if (train_opt->algorithm == "mira") {
     // use mira to train model
     // it's still not implemented.
   } else {
@@ -612,74 +705,44 @@ Segmentor::train(void) {
     double best_r = -1.;
     double best_f = -1.;
 
-    for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
+    for (int iter = 0; iter < train_opt->max_iter; ++ iter) {
       TRACE_LOG("Training iteraition [%d]", (iter + 1));
 
       for (int i = 0; i < train_dat.size(); ++ i) {
-        // extract_features(train_dat[i]);
+        timestamp = iter * train_dat.size() + i + 1;
 
         Instance * inst = train_dat[i];
+        extract_features(inst);
         calculate_scores(inst, false);
         decoder->decode(inst);
 
-        if (inst->features.dim() == 0) {
-          collect_features(inst, inst->tagsidx, inst->features);
-        }
-        collect_features(inst, inst->predicted_tagsidx, inst->predicted_features);
+        collect_correct_and_predicted_features(inst);
 
-        if (train_opt.algorithm == "pa") {
-          SparseVec update_features;
-          update_features.zero();
-          update_features.add(train_dat[i]->features, 1.);
-          update_features.add(train_dat[i]->predicted_features, -1.);
-
-          if (feature_group_updated_time) {
-            increase_group_updated_time(update_features,
-                                        feature_group_updated_time);
-          }
-
-          double error = train_dat[i]->num_errors();
-          double score = model->param.dot(update_features, false);
-          double norm  = update_features.L2();
-
-          double step = 0.;
-          if (norm < EPS) {
-            step = 0;
-          } else {
-            step = (error - score) / norm;
-          }
-
-          model->param.add(update_features,
-                           iter * train_dat.size() + i + 1,
-                           step);
-
-        } else if (train_opt.algorithm == "ap") {
-          SparseVec update_features;
-          update_features.zero();
-          update_features.add(train_dat[i]->features, 1.);
-          update_features.add(train_dat[i]->predicted_features, -1.);
-
-          if (feature_group_updated_time) {
-            increase_group_updated_time(update_features,
-                                        feature_group_updated_time);
-          }
-
-          model->param.add(update_features,
-                           iter * train_dat.size() + i + 1,
-                           1.);
+        if (feature_group_updated_time) {
+          increase_group_updated_time(updated_features,
+              feature_group_updated_time);
         }
 
-        if ((i+1) % train_opt.display_interval == 0) {
+        if (train_opt->algorithm == "pa") {
+          train_passive_aggressive(train_dat[i]->num_errors());
+        } else if (train_opt->algorithm == "ap") {
+          train_averaged_perceptron();
+        }
+
+        cleanup_decode_context();
+
+        if ((i+1) % train_opt->display_interval == 0) {
           TRACE_LOG("[%d] instances is trained.", i+1);
         }
       }
+
       model->param.flush( train_dat.size() * (iter + 1) );
       model->end_time = train_dat.size() * (iter + 1);
 
       Model * new_model = NULL;
       new_model = erase_rare_features(feature_group_updated_time);
 
-      swap(model, new_model);
+      std::swap(model, new_model);
 
       double p, r, f;
       evaluate(p,r,f);
@@ -691,13 +754,13 @@ Segmentor::train(void) {
         best_iteration = iter;
       }
 
-      std::string saved_model_file = (train_opt.model_name
+      std::string saved_model_file = (train_opt->model_name
                                       + "."
                                       + strutils::to_str(iter)
                                       + ".model");
       std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
 
-      swap(model, new_model);
+      std::swap(model, new_model);
       new_model->save(ofs);
       delete new_model;
       TRACE_LOG("Model for iteration [%d] is saved to [%s]",
@@ -719,9 +782,9 @@ Segmentor::train(void) {
 
 void
 Segmentor::evaluate(double &p, double &r, double &f) {
-  const char * holdout_file = train_opt.holdout_file.c_str();
+  const char * holdout_file = train_opt->holdout_file.c_str();
 
-  ifstream ifs(holdout_file);
+  std::ifstream ifs(holdout_file);
 
   if (!ifs) {
     ERROR_LOG("Failed to open holdout file.");
@@ -747,8 +810,8 @@ Segmentor::evaluate(double &p, double &r, double &f) {
 
     extract_features(inst);
     calculate_scores(inst, true);
-
     decoder->decode(inst);
+    cleanup_decode_context();
 
     if (inst->words.size() == 0) {
       build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
@@ -776,11 +839,20 @@ Segmentor::evaluate(double &p, double &r, double &f) {
   return;
 }
 
+bool
+Segmentor::test_setup() {
+  return true;
+}
+
 void
 Segmentor::test(void) {
+  if (!test_setup()) {
+    return;
+  }
+
   // load model
-  const char * model_file = test_opt.model_file.c_str();
-  ifstream mfs(model_file, std::ifstream::binary);
+  const char * model_file = test_opt->model_file.c_str();
+  std::ifstream mfs(model_file, std::ifstream::binary);
 
   if (!mfs) {
     ERROR_LOG("Failed to load model");
@@ -798,10 +870,10 @@ Segmentor::test(void) {
   TRACE_LOG("Number of dimension  [%d]", model->space.dim());
 
   // load exteranl lexicon
-  const char * lexicon_file =test_opt.lexicon_file.c_str();
+  const char * lexicon_file =test_opt->lexicon_file.c_str();
 
   if (NULL != lexicon_file) {
-    ifstream lfs(lexicon_file);
+    std::ifstream lfs(lexicon_file);
 
     if (lfs) {
       std::string buffer;
@@ -815,9 +887,9 @@ Segmentor::test(void) {
     }
   }
 
-  const char * test_file = test_opt.test_file.c_str();
+  const char * test_file = test_opt->test_file.c_str();
 
-  ifstream ifs(test_file);
+  std::ifstream ifs(test_file);
 
   if (!ifs) {
     ERROR_LOG("Failed to open holdout file.");
@@ -827,13 +899,13 @@ Segmentor::test(void) {
   rulebase::RuleBase base(model->labels);
   Decoder * decoder = new Decoder(model->num_labels(), base);
   SegmentReader reader(ifs);
-  SegmentWriter writer(cout);
+  SegmentWriter writer(std::cout);
   Instance * inst = NULL;
 
   int beg_tag0 = model->labels.index( __b__ );
   int beg_tag1 = model->labels.index( __s__ );
 
-  double before = get_time();
+  double before = utils::get_time();
 
   while ((inst = reader.next())) {
     int len = inst->size();
@@ -842,6 +914,7 @@ Segmentor::test(void) {
     extract_features(inst);
     calculate_scores(inst, true);
     decoder->decode(inst);
+    cleanup_decode_context();
 
     build_words(inst,
                 inst->predicted_tagsidx,
@@ -849,11 +922,12 @@ Segmentor::test(void) {
                 beg_tag0,
                 beg_tag1);
 
+
     writer.write(inst);
     delete inst;
   }
 
-  double after = get_time();
+  double after = utils::get_time();
   TRACE_LOG("Eclipse time %lf", after - before);
   return;
 }
@@ -861,8 +935,8 @@ Segmentor::test(void) {
 
 void Segmentor::dump() {
   // load model
-  const char * model_file = dump_opt.model_file.c_str();
-  ifstream mfs(model_file, std::ifstream::binary);
+  const char * model_file = dump_opt->model_file.c_str();
+  std::ifstream mfs(model_file, std::ifstream::binary);
 
   if (!mfs) {
     ERROR_LOG("Failed to load model");
