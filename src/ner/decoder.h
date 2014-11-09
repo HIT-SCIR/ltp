@@ -13,13 +13,13 @@ namespace ner {
 // data structure for lattice item
 class LatticeItem {
 public:
-    LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev) : 
+    LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev) :
         i(_i),
         l(_l),
         score(_score),
         prev(_prev) {}
 
-    LatticeItem (int _l, double _score) : 
+    LatticeItem (int _l, double _score) :
         i(0),
         l(_l),
         score(_score),
@@ -34,7 +34,7 @@ public:
 
 class Decoder {
 public:
-    Decoder (int _L, rulebase::RuleBase & _base) : L(_L), base(_base) {}
+    Decoder (int _l, rulebase::RuleBase & _base) : L(_l), base(_base) {}
     void decode(Instance * inst);
 
 private:
@@ -61,7 +61,7 @@ private:
     }
 };
 
-// maintain kest best list of 
+// maintain kest best list of
 /*class KBestDecoder {
 public:
     typedef std::vector< std::vector<int> > KBestDecodeResult;

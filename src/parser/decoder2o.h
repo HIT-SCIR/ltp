@@ -9,7 +9,7 @@ namespace parser {
 // 2nd-order decoder with dependency features and sibling features
 class Decoder2O : public Decoder {
 public:
-  Decoder2O(int _L = 1) : L(_L) {}
+  Decoder2O(int _l = 1) : L(_l) {}
 
 public:
   void init_lattice(const Instance * inst);
@@ -27,7 +27,7 @@ private:
 // 2nd-order decoder with dependency, sibling and grand features
 class Decoder2OCarreras : public Decoder {
 public:
-  Decoder2OCarreras(int _L = 1) : L(_L) {}
+  Decoder2OCarreras(int _l = 1) : L(_l) {}
 
 public:
   void init_lattice(const Instance * inst);
