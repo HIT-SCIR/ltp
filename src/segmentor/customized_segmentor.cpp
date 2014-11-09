@@ -92,6 +92,7 @@ CustomizedSegmentor::extract_features(Instance* inst, bool create) {
   baseline_uni_features = 0;
 
   std::vector< utils::StringVec > cache;
+  cache.resize(N);
   std::vector< int > cache_again;
 
   if (0 == inst->lexicon_match_state.size()) {
@@ -146,7 +147,7 @@ CustomizedSegmentor::extract_features(Instance* inst, bool create) {
       for (int tid = 0; tid < cache.size(); ++ tid) {
         for (int itx = 0; itx < cache[tid].size(); ++ itx) {
           if (create) {
-            baseline_model->space.retrieve(tid, cache[tid][itx], true);
+            baseline_model->space.retrieve(tid, cache[tid][itx], false);
           }
 
           int idx = baseline_model->space.index(tid, cache[tid][itx]);
@@ -189,9 +190,12 @@ CustomizedSegmentor::extract_features(Instance* inst, bool create) {
 void
 CustomizedSegmentor::calculate_scores(Instance * inst, bool use_avg) {
   //bool use_avg = 0;
-
   int len = inst->size();
   int L = model->num_labels();
+
+  inst->uni_scores.resize(len, L);  inst->uni_scores = NEG_INF;
+  inst->bi_scores.resize(L, L);     inst->bi_scores = NEG_INF;
+
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
       math::FeatureVector * fv = baseline_uni_features[i][l];
@@ -200,9 +204,9 @@ CustomizedSegmentor::calculate_scores(Instance * inst, bool use_avg) {
       }
 
       if(!use_avg) {
-        inst->uni_scores[i][l] = model->param.dot(uni_features[i][l], false);
+        inst->uni_scores[i][l] = baseline_model->param.dot(fv, false);
       } else {
-        inst->uni_scores[i][l] = model->param.dot_flush_time(uni_features[i][l],
+        inst->uni_scores[i][l] = baseline_model->param.dot_flush_time(fv,
             baseline_model->end_time,
             model->end_time);
       }
@@ -221,9 +225,9 @@ CustomizedSegmentor::calculate_scores(Instance * inst, bool use_avg) {
       int idx = model->space.index(pl, l);
 
       if(!use_avg) {
-        inst->bi_scores[pl][l] = model->param.dot(idx, false);
+        inst->bi_scores[pl][l] = baseline_model->param.dot(idx, false);
       } else {
-        inst->bi_scores[pl][l] = model->param.dot_flush_time(idx, 
+        inst->bi_scores[pl][l] = baseline_model->param.dot_flush_time(idx, 
             baseline_model->end_time,
             model->end_time);
       }
