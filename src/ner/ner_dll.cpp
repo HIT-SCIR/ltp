@@ -67,7 +67,7 @@ void * ner_create_recognizer(const char * path) {
   NERWrapper * wrapper = new NERWrapper();
 
   if (!wrapper->load(path)) {
-	delete wrapper;
+    delete wrapper;
     return 0;
   }
 

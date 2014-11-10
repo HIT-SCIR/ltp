@@ -4,7 +4,7 @@
 #define SPLIT_SENTENCE_DLL_API
 #define SPLIT_SENTENCE_DLL_API_EXPORT
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #undef SPLIT_SENTENCE_DLL_API
 #ifdef SPLIT_SENTENCE_DLL_API_EXPORT
     #define SPLIT_SENTENCE_DLL_API extern "C" _declspec(dllexport)
