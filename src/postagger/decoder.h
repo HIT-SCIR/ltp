@@ -13,13 +13,13 @@ namespace postagger {
 // data structure for lattice item
 class LatticeItem {
 public:
-  LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev) 
+  LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev)
     : i(_i),
       l(_l),
       score(_score),
       prev(_prev) {}
 
-  LatticeItem (int _l, double _score) 
+  LatticeItem (int _l, double _score)
     : i(0),
       l(_l),
       score(_score),
@@ -34,7 +34,7 @@ public:
 
 class Decoder {
 public:
-  Decoder (int _L) : L(_L) {}
+  Decoder (int _l) : L(_l) {}
   void decode(Instance * inst);
 private:
   void init_lattice(const Instance * inst);
