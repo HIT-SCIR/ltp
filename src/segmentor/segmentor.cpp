@@ -645,9 +645,15 @@ Segmentor::train_setup() {
 };
 
 int
-Segmentor::flush_time(void) {
+Segmentor::get_timestamp(void) {
   return timestamp;
 }
+
+void
+Segmentor::set_timestamp(int ts) {
+  timestamp = ts;
+}
+
 void
 Segmentor::train(void) {
   if (!train_setup()) {
@@ -713,7 +719,7 @@ Segmentor::train(void) {
       TRACE_LOG("Training iteraition [%d]", (iter + 1));
 
       for (int i = 0; i < train_dat.size(); ++ i) {
-        timestamp = iter * train_dat.size() + i + 1;
+        set_timestamp(iter * train_dat.size() + i + 1);
 
         Instance * inst = train_dat[i];
         extract_features(inst);
@@ -740,9 +746,8 @@ Segmentor::train(void) {
         }
       }
 
-      int t = flush_time();
-      model->param.flush(t);
-      model->end_time = t;
+      model->param.flush(get_timestamp());
+      model->end_time = get_timestamp();
 
       Model * new_model = NULL;
       new_model = erase_rare_features(feature_group_updated_time);
