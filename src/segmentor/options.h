@@ -18,6 +18,7 @@ struct TrainOptions {
   int               max_iter;
   int               display_interval;
   int               rare_feature_threshold;
+  bool              enable_incremental_training;
 };
 
 struct TestOptions {

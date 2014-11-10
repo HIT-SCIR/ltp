@@ -107,6 +107,7 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
   train_opt->max_iter = 10;
   train_opt->display_interval = 5000;
   train_opt->rare_feature_threshold = 0;
+  train_opt->enable_incremental_training = 0;
 
   if (cfg.has_section("train")) {
     int intbuf;
@@ -152,6 +153,10 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
       train_opt->max_iter = intbuf;
     } else {
       WARNING_LOG("max-iter is not configed, [10] is set as default.");
+    }
+
+    if (cfg.get_integer("train", "enable-incremental-training", intbuf)) {
+      train_opt->enable_incremental_training = (intbuf == 1);
     }
   }
 
@@ -771,7 +776,7 @@ Segmentor::train(void) {
       std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
 
       std::swap(model, new_model);
-      new_model->save(ofs);
+      new_model->save(ofs, train_opt->enable_incremental_training);
       delete new_model;
       TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                 iter + 1,

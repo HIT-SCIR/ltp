@@ -2,8 +2,13 @@
 #define __LTP_SEGMENTOR_PARAMETER_H__
 
 #include <iostream>
+#include <cstring>
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
+
+#define SEGMENTOR_PARAM         "param"         // for model version lower than 3.2.0
+#define SEGMENTOR_PARAM_FULL    "param-full"
+#define SEGMENTOR_PARAM_MINIMAL "param-minimal"
 
 namespace ltp {
 namespace segmentor {
@@ -142,29 +147,49 @@ public:
     }
   }
 
-  void dump(std::ostream & out) {
-    char chunk[16] = {'p', 'a', 'r', 'a', 'm', 0};
+  //! Dump the model. since version 3.2.0, fully dumped model is supported.
+  //! using a tag full to distinguish between old and new model.
+  void dump(std::ostream & out, bool full) {
+    char chunk[16];
+
+    if (full) {
+      strncpy(chunk, SEGMENTOR_PARAM_FULL,16);
+    } else {
+      strncpy(chunk, SEGMENTOR_PARAM_MINIMAL, 16);
+    }
+
     out.write(chunk, 16);
     out.write(reinterpret_cast<const char *>(&_dim), sizeof(int));
     if (_dim > 0) {
-      out.write(reinterpret_cast<const char *>(_W), sizeof(double) * _dim);
+      if (full) {
+        out.write(reinterpret_cast<const char *>(_W), sizeof(double) * _dim);
+      }
       out.write(reinterpret_cast<const char *>(_W_sum), sizeof(double) * _dim);
     }
   }
 
-  bool load(std::istream & in) {
+  bool load(std::istream & in, bool full) {
     char chunk[16];
+
     in.read(chunk, 16);
-    if (strcmp(chunk, "param")) {
+    if ((!strcmp(chunk, SEGMENTOR_PARAM_FULL) && full) ||
+        (!strcmp(chunk, SEGMENTOR_PARAM_MINIMAL) && !full)) {
       return false;
     }
 
     in.read(reinterpret_cast<char *>(&_dim), sizeof(int));
+
     if (_dim > 0) {
-      _W = new double[_dim];
-      _W_sum = new double[_dim];
-      in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
-      in.read(reinterpret_cast<char *>(_W_sum), sizeof(double) * _dim);
+      if (full) {
+        _W = new double[_dim];
+        _W_sum = new double[_dim];
+        in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
+        in.read(reinterpret_cast<char *>(_W_sum), sizeof(double) * _dim);
+      } else {
+        _W = new double[_dim];
+        in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
+        _W_sum = _W;
+      }
     }
 
     return true;

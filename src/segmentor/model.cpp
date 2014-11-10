@@ -1,4 +1,9 @@
 #include "model.h"
+#include <cstring>
+
+#define SEGMENTOR_MODEL         "otcws"         // for model version lower than 3.2.0
+#define SEGMENTOR_MODEL_FULL    "otcws-full"
+#define SEGMENTOR_MODEL_MINIMAL "otcws-minimal"
 
 namespace ltp {
 namespace segmentor {
@@ -10,11 +15,20 @@ Model::~Model() {
 }
 
 void
-Model::save(std::ostream & ofs) {
+Model::save(std::ostream & ofs, bool full) {
   // write a signature into the file
-  char chunk[16] = {'o','t','c','w','s', '\0'};
+  char chunk[16];
+  if (full) {
+    strncpy(chunk, SEGMENTOR_MODEL_FULL, 16);
+  } else {
+    strncpy(chunk, SEGMENTOR_MODEL_MINIMAL, 16);
+  }
+
   ofs.write(chunk, 16);
-  ofs.write(reinterpret_cast<const char *>(&end_time), sizeof(int));
+
+  if (full) {
+    ofs.write(reinterpret_cast<const char *>(&end_time), sizeof(int));
+  }
 
   int off = ofs.tellp();
 
@@ -38,7 +52,7 @@ Model::save(std::ostream & ofs) {
   space.dump(ofs);
 
   parameter_offset = ofs.tellp();
-  param.dump(ofs);
+  param.dump(ofs, full);
 
   ofs.seekp(off);
   write_uint(ofs, labels_offset);
@@ -52,12 +66,23 @@ Model::load(std::istream & ifs) {
   char chunk[16];
   ifs.read(chunk, 16);
 
-  if (strcmp(chunk, "otcws")) {
+  bool full = false;
+  if (!strcmp(chunk, SEGMENTOR_MODEL_FULL)) {
+    full = true;
+  } else if (!strcmp(chunk, SEGMENTOR_MODEL) ||
+      !strcmp(chunk, SEGMENTOR_MODEL_MINIMAL)) {
+    full = false;
+  } else {
     return false;
   }
-  ifs.read(reinterpret_cast<char *>(&end_time), sizeof(int));
 
-  unsigned labels_offset  = read_uint(ifs);
+  if (full) {
+    ifs.read(reinterpret_cast<char *>(&end_time), sizeof(int));
+  } else {
+    end_time = 0;
+  }
+
+  unsigned labels_offset    = read_uint(ifs);
   unsigned lexicon_offset   = read_uint(ifs);
   unsigned feature_offset   = read_uint(ifs);
   unsigned parameter_offset = read_uint(ifs);
@@ -78,7 +103,7 @@ Model::load(std::istream & ifs) {
   }
 
   ifs.seekg(parameter_offset);
-  if (!param.load(ifs)) {
+  if (!param.load(ifs, full)) {
     return false;
   }
 

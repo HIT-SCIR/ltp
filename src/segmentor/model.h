@@ -28,8 +28,9 @@ public:
    * save the model to a output stream
    *
    *  @param[out] ofs   the output stream
+   *  @param[in]  full  use to specify if dump full model.
    */
-  void save(std::ostream & ofs);
+  void save(std::ostream & ofs, bool full);
 
   /**
    * load the model from an input stream
