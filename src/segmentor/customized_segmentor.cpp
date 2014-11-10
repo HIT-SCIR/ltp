@@ -222,7 +222,7 @@ CustomizedSegmentor::calculate_scores(Instance * inst, bool use_avg) {
 
   for (int pl = 0; pl < L; ++ pl) {
     for (int l = 0; l < L; ++ l) {
-      int idx = model->space.index(pl, l);
+      int idx = baseline_model->space.index(pl, l);
 
       if(!use_avg) {
         inst->bi_scores[pl][l] = baseline_model->param.dot(idx, false);
@@ -276,6 +276,11 @@ CustomizedSegmentor::train_setup() {
   }
 
   return true;
+}
+
+int
+CustomizedSegmentor::flush_time(void) {
+  return timestamp + baseline_model->end_time;
 }
 
 void

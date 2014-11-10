@@ -46,6 +46,9 @@ protected:
   void train_averaged_perceptron(void);
 
   //!
+  int flush_time(void);
+
+  //!
   void evaluate(double &p, double &r, double &f);
 
   bool test_setup(void);

@@ -644,6 +644,10 @@ Segmentor::train_setup() {
   return true;
 };
 
+int
+Segmentor::flush_time(void) {
+  return timestamp;
+}
 void
 Segmentor::train(void) {
   if (!train_setup()) {
@@ -736,8 +740,9 @@ Segmentor::train(void) {
         }
       }
 
-      model->param.flush( train_dat.size() * (iter + 1) );
-      model->end_time = train_dat.size() * (iter + 1);
+      int t = flush_time();
+      model->param.flush(t);
+      model->end_time = t;
 
       Model * new_model = NULL;
       new_model = erase_rare_features(feature_group_updated_time);

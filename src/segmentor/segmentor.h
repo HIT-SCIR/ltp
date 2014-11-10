@@ -75,6 +75,11 @@ protected:
   virtual void train_averaged_perceptron();
 
   /**
+   * Return the flush time after each iteration.
+   */
+  virtual int flush_time(void);
+
+  /**
    * The main training process, the training scheme can be summarized as
    *
    *  1. Building configuration
