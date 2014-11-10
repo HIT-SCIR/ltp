@@ -87,7 +87,7 @@ public:
   }
 
   int cleanup() {
-    if (uni_features.total_size() > 0) {
+    /*if (uni_features.total_size() > 0) {
       int d1 = uni_features.nrows();
       int d2 = uni_features.ncols();
 
@@ -103,13 +103,31 @@ public:
       }
     }
 
+    if (personal_uni_features.total_size() > 0) {
+      int d1 = personal_uni_features.nrows();
+      int d2 = personal_uni_features.ncols();
+
+      for (int i = 0; i < d1; ++i) {
+        if (personal_uni_features[i][0]) {
+          personal_uni_features[i][0]->clear();
+        }
+        for (int j = 0; j < d2; ++j) {
+          if (personal_uni_features[i][j]) {
+            delete personal_uni_features[i][j];
+          }
+        }
+      }
+    }
+
     uni_features.dealloc();
+    //personal_uni_features.dealloc();
+    features.zero();
+    //personal_features.zero();
+    predicted_features.zero();
+    //personal_predicted_features.zero(); */
+
     uni_scores.dealloc();
     bi_scores.dealloc();
-
-    features.zero();
-    predicted_features.zero();
-
     return 0;
   }
 public:
@@ -124,10 +142,6 @@ public:
   std::vector< std::string >  predicted_words;
   std::vector< int >          lexicon_match_state;
 
-  math::SparseVec       features;           /*< the gold features */
-  math::SparseVec       predicted_features; /*< the predicted features */
-
-  math::Mat< math::FeatureVector *> uni_features;
   math::Mat< double > uni_scores;
   math::Mat< double > bi_scores;
 };

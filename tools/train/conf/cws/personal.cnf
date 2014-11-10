@@ -1,0 +1,8 @@
+[train]
+train-file = sample/seg/example-train.seg
+holdout-file = sample/seg/example-holdout.seg
+algorithm = pa
+model-name = build/cws/example-seg
+p-model-name = build/cws/example-personalj
+max-iter = 5
+rare-feature-threshold = 0

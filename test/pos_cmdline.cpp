@@ -18,7 +18,7 @@
 #include <string>
 #include <sys/time.h>
 #include <sys/types.h>
-#include "ltp/postag_dll.h"
+#include "postag_dll.h"
 
 double get_time(void) {
   struct timeval tv;

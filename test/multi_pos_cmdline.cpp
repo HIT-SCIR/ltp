@@ -22,7 +22,7 @@
 
 #include "tinythread.h"
 #include "fast_mutex.h"
-#include "ltp/postag_dll.h"
+#include "postag_dll.h"
 
 using namespace std;
 using namespace tthread;
@@ -101,7 +101,7 @@ void multithreaded_postag( void * args) {
 }
 
 int main(int argc, char ** argv) {
-    if (argc < 1 || (0 == strcmp(argv[1], "-h"))) {
+    if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
         std::cerr << "Usage: ./multi_pos_cmdline [model path]" << std::endl;
         std::cerr << std::endl;
         std::cerr << "This program recieve input word sequence from stdin." << std::endl;

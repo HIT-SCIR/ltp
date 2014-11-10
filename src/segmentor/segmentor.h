@@ -3,6 +3,7 @@
 
 #include "utils/cfgparser.hpp"
 #include "segmentor/model.h"
+#include "segmentor/options.h"
 #include "segmentor/decoder.h"
 #include "segmentor/rulebase.h"
 
@@ -21,14 +22,14 @@ public:
    */
   void run();
 
-private:
+protected:
   /**
    * Parse the configuration
    *
    *  @param[in]  cfg         the config class
    *  @return     bool        return true on success, otherwise false
    */
-  bool parse_cfg(ltp::utility::ConfigParser & cfg);
+  virtual bool parse_cfg(ltp::utility::ConfigParser & cfg);
 
 
   /**
@@ -48,15 +49,40 @@ private:
    *  2. Collect internal word map;
    *  3. Record word frequency.
    */
-  void build_configuration(void);
+  virtual void build_configuration(void);
 
 
   /**
-   * Build feature space,
+   * Build feature space.
+   */
+  virtual void build_feature_space(void);
+
+  /**
+   * Perform setup preparation for the training phase.
+   */
+  virtual bool train_setup(void);
+
+  /**
+   * Perform the passive aggressive training.
+   *
+   *  @param[in]  nr_errors The number of errors.
+   */
+  virtual void train_passive_aggressive(int nr_errors);
+
+  /**
+   * Perform the averaged perceptron training.
+   */
+  virtual void train_averaged_perceptron();
+
+  /**
+   * Return the flush time after each iteration.
+   */
+  virtual int get_timestamp(void);
+
+  /**
    *
    */
-  void build_feature_space(void);
-
+  virtual void set_timestamp(int ts);
 
   /**
    * The main training process, the training scheme can be summarized as
@@ -66,7 +92,7 @@ private:
    *  3. Building updated time counter
    *  4. Iterate over the 
    */
-  void train(void);
+  virtual void train(void);
 
 
   /*
@@ -76,21 +102,23 @@ private:
    *  @param[out]   r   The recall
    *  @param[out]   f   The F-score
    */
-  void evaluate(double &p, double &r, double &f);
+  virtual void evaluate(double &p, double &r, double &f);
 
+  /**
+   * Perform setup preparation for the training phase.
+   */
+  virtual bool test_setup(void);
 
   /**
    * The main testing process
    */
   void test(void);
 
-
   /**
    * The dumping model process
    */
   void dump(void);
 
-protected:
 
   /**
    * Extract features from one instance,
@@ -99,7 +127,7 @@ protected:
    *  @param[in]      create  If create is true, create feature for new
    *                          feature, otherwise not create.
    */
-  void extract_features(Instance * inst, bool create = false);
+  virtual void extract_features(Instance * inst, bool create = false);
 
   /**
    * build words from tags for certain instance
@@ -122,7 +150,7 @@ protected:
    *  @param[in/out]  inst      the instance
    *  @param[in]      use_avg   use to specify use average parameter
    */
-  void calculate_scores(Instance * inst, bool use_avg);
+  virtual void calculate_scores(Instance * inst, bool use_avg);
 
 
   /**
@@ -132,9 +160,19 @@ protected:
    *  @param[in]    tagsidx the tags index
    *  @param[out]   vec     the output sparse vector
    */
-  void collect_features(Instance * inst,
+  void collect_features(const math::Mat< math::FeatureVector* >& uni_features,
+                        Model* model,
+                        Instance* inst,
                         const std::vector<int> & tagsidx,
                         ltp::math::SparseVec & vec);
+
+  /**
+   *
+   *
+   *
+   *
+   */
+  virtual void collect_correct_and_predicted_features(Instance * inst);
 
   /**
    * Decode the group information for feature represented in sparse vector,
@@ -154,20 +192,51 @@ protected:
    *  @param[in]  nr_updates  the number of update times
    *  @return     Model       the model without rare feature
    */
-  Model * erase_rare_features(const int * nr_updates = NULL);
+  virtual Model * erase_rare_features(const int * nr_updates = NULL);
 
-private:
+  /**
+   * Remove the unigram features, bigram features from
+   */
+  void cleanup_decode_context(void);
+
+protected:
   bool  __TRAIN__;  /*< The training flag */
   bool  __TEST__;   /*< The testing flag */
   bool  __DUMP__;   /*< The dump flag */
 
-private:
+  //!
+  int timestamp;
+
+  //! The training options.
+  TrainOptions* train_opt;
+
+  //! The testing options.
+  TestOptions* test_opt;
+
+  //! The dump options.
+  DumpOptions* dump_opt;
+
+  //! The model.
+  Model * model;
+
+  //! The pointer to the decoder;
+  Decoder * decoder;
+
+  //! The pointer to the basic_rule;
+  rulebase::RuleBase * baseAll;
+
+  //! The collection of the training data.
   std::vector< Instance * > train_dat;
 
-protected:
-  Model *              model;
-  Decoder *            decoder;
-  rulebase::RuleBase * baseAll;
+  //! the gold features.
+  math::SparseVec correct_features;
+  //! the predicted features.
+  math::SparseVec predicted_features;
+  //!
+  math::SparseVec updated_features;
+
+  //! The feature cache.
+  math::Mat< math::FeatureVector *> uni_features;
 };
 
 }     //  end for namespace segmentor

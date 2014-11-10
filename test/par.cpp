@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "ltp/parser_dll.h"
+#include "parser_dll.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {

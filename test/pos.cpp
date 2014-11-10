@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 
-#include "ltp/postag_dll.h"
+#include "postag_dll.h"
 
 int main(int argc, char * argv[]) {
-    if (argc < 1) {
+    if (argc < 2) {
         std::cerr << "pos [model path]" << std::endl;
         return -1;
     }
