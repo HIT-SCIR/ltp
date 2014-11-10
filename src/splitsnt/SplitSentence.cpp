@@ -4,7 +4,7 @@
 
 //using namespace util;
 
-int SplitSentence( const std::string& strPara, std::vector<std::string>& vecSentence ) {
+SPLIT_SENTENCE_DLL_API int SplitSentence(const std::string& strPara, std::vector<std::string>& vecSentence) {
     ltp::Chinese::split_sentence(strPara, vecSentence);
 
     for (int i = 0; i < vecSentence.size(); ++ i) {

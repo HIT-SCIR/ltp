@@ -24,7 +24,7 @@
  *  @param[in]  paragraph   The string to the paragraph
  *  @param[out] sentences   The splited sentences
  */
-int SplitSentence(const std::string & paragraph,
+SPLIT_SENTENCE_DLL_API int SplitSentence(const std::string & paragraph,
     std::vector<std::string> & sentences);
 
 #endif //__SPLIT_SENTENCE_H__

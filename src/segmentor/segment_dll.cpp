@@ -99,6 +99,7 @@ void * segmentor_create_segmentor(const char * path, const char * lexicon_file) 
   SegmentorWrapper * wrapper = new SegmentorWrapper();
 
   if (!wrapper->load(path, lexicon_file)) {
+	delete wrapper;
     return 0;
   }
 
