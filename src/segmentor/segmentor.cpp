@@ -73,6 +73,8 @@ Segmentor::~Segmentor() {
   if(baseAll) {
     delete baseAll;
   }
+
+  cleanup_decode_context();
 }
 
 void

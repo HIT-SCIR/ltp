@@ -82,6 +82,7 @@ public:
                                            beg_tag0,
                                            beg_tag1);
 
+    ltp::segmentor::Segmentor::cleanup_decode_context();
     delete inst;
     return words.size();
   }
