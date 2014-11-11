@@ -14,10 +14,10 @@ using namespace ltp::math;
 
 class Decoder1O : public Decoder {
 public:
-  Decoder1O(int _L = 1) : L(_L) {}
+  Decoder1O(int _l = 1) : L(_l) {}
 
 protected:
-  void init_lattice(const Instance * inst); 
+  void init_lattice(const Instance * inst);
   void decode_projective(const Instance * inst);
   void get_result(Instance * inst);
   void free_lattice();

@@ -77,7 +77,12 @@ protected:
   /**
    * Return the flush time after each iteration.
    */
-  virtual int flush_time(void);
+  virtual int get_timestamp(void);
+
+  /**
+   *
+   */
+  virtual void set_timestamp(int ts);
 
   /**
    * The main training process, the training scheme can be summarized as

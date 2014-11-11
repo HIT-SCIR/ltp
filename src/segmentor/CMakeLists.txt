@@ -48,13 +48,13 @@ set_target_properties (otcws
 # -----------------------------------------------
 # TOOLKIT #2
 # -----------------------------------------------
-add_executable (otcws-inc otcws_inc.cpp ${segment_SRC} customized_segmentor.cpp)
+add_executable (otcws-customized otcws_customized.cpp ${segment_SRC} customized_segmentor.cpp)
 
-target_link_libraries (otcws-inc boost_regex_static_lib)
+target_link_libraries (otcws-customized boost_regex_static_lib)
 
-set_target_properties (otcws-inc
+set_target_properties (otcws-customized
     PROPERTIES
-    OUTPUT_NAME otcws-inc
+    OUTPUT_NAME otcws-customized
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
 

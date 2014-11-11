@@ -46,7 +46,7 @@ protected:
   void train_averaged_perceptron(void);
 
   //!
-  int flush_time(void);
+  int get_timestamp(void);
 
   //!
   void evaluate(double &p, double &r, double &f);

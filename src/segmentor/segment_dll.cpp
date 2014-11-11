@@ -82,6 +82,7 @@ public:
                                            beg_tag0,
                                            beg_tag1);
 
+    ltp::segmentor::Segmentor::cleanup_decode_context();
     delete inst;
     return words.size();
   }
@@ -99,6 +100,7 @@ void * segmentor_create_segmentor(const char * path, const char * lexicon_file) 
   SegmentorWrapper * wrapper = new SegmentorWrapper();
 
   if (!wrapper->load(path, lexicon_file)) {
+    delete wrapper;
     return 0;
   }
 

@@ -73,6 +73,8 @@ Segmentor::~Segmentor() {
   if(baseAll) {
     delete baseAll;
   }
+
+  cleanup_decode_context();
 }
 
 void
@@ -107,6 +109,7 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
   train_opt->max_iter = 10;
   train_opt->display_interval = 5000;
   train_opt->rare_feature_threshold = 0;
+  train_opt->enable_incremental_training = 0;
 
   if (cfg.has_section("train")) {
     int intbuf;
@@ -152,6 +155,10 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
       train_opt->max_iter = intbuf;
     } else {
       WARNING_LOG("max-iter is not configed, [10] is set as default.");
+    }
+
+    if (cfg.get_integer("train", "enable-incremental-training", intbuf)) {
+      train_opt->enable_incremental_training = (intbuf == 1);
     }
   }
 
@@ -645,9 +652,15 @@ Segmentor::train_setup() {
 };
 
 int
-Segmentor::flush_time(void) {
+Segmentor::get_timestamp(void) {
   return timestamp;
 }
+
+void
+Segmentor::set_timestamp(int ts) {
+  timestamp = ts;
+}
+
 void
 Segmentor::train(void) {
   if (!train_setup()) {
@@ -713,7 +726,7 @@ Segmentor::train(void) {
       TRACE_LOG("Training iteraition [%d]", (iter + 1));
 
       for (int i = 0; i < train_dat.size(); ++ i) {
-        timestamp = iter * train_dat.size() + i + 1;
+        set_timestamp(iter * train_dat.size() + i + 1);
 
         Instance * inst = train_dat[i];
         extract_features(inst);
@@ -740,9 +753,8 @@ Segmentor::train(void) {
         }
       }
 
-      int t = flush_time();
-      model->param.flush(t);
-      model->end_time = t;
+      model->param.flush(get_timestamp());
+      model->end_time = get_timestamp();
 
       Model * new_model = NULL;
       new_model = erase_rare_features(feature_group_updated_time);
@@ -766,7 +778,7 @@ Segmentor::train(void) {
       std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
 
       std::swap(model, new_model);
-      new_model->save(ofs);
+      new_model->save(ofs, train_opt->enable_incremental_training);
       delete new_model;
       TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                 iter + 1,

@@ -76,6 +76,7 @@ void * postagger_create_postagger(const char * path, const char * lexicon_file) 
   PostaggerWrapper * wrapper = new PostaggerWrapper();
 
   if (!wrapper->load(path, lexicon_file)) {
+    delete wrapper;
     return 0;
   }
   return reinterpret_cast<void *>(wrapper);

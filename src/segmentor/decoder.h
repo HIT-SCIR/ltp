@@ -34,7 +34,7 @@ public:
 
 class Decoder {
 public:
-  Decoder (int _L, rulebase::RuleBase & _base) : L(_L), base(_base) {}
+  Decoder (int _l, rulebase::RuleBase & _base) : L(_l), base(_base) {}
   void decode(Instance * inst);
 
 private:

@@ -279,7 +279,7 @@ CustomizedSegmentor::train_setup() {
 }
 
 int
-CustomizedSegmentor::flush_time(void) {
+CustomizedSegmentor::get_timestamp(void) {
   return timestamp + baseline_model->end_time;
 }
 
