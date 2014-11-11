@@ -275,6 +275,11 @@ CustomizedSegmentor::train_setup() {
     return false;
   }
 
+  if (!baseline_model->full) {
+    ERROR_LOG("Baseline model must be full");
+    return false;
+  }
+
   return true;
 }
 
