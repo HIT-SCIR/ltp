@@ -4,15 +4,8 @@
 #include <ctime>
 #include <cstring>
 #include <string>
-#include <sys/time.h>
-#include <sys/types.h>
-#include "ltp/parser_dll.h"
-
-double get_time(void) {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_sec + (tv.tv_usec / 1000000.0);
-}
+#include "time.hpp"
+#include "parser_dll.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {
@@ -32,7 +25,7 @@ int main(int argc, char * argv[]) {
   std::vector<std::string> deprels;
   
   std::cerr << "TRACE: Model is loaded" << std::endl;
-  double tm = get_time();
+  double tm = ltp::utility::get_time();
 
   while (std::getline(std::cin, line, '\n')) {
     if (line.size() == 0) { continue; }
@@ -58,7 +51,7 @@ int main(int argc, char * argv[]) {
 
   parser_release_parser(engine);
 
-  tm = get_time() - tm;
+  tm = ltp::utility::get_time() - tm;
   std::cerr << "TRACE: par-tm-consume "
             << tm
             << " seconds."

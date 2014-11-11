@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "segment_dll.h"
+#include "ltp/segment_dll.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {

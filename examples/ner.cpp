@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "ner_dll.h"
+#include "ltp/ner_dll.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {
