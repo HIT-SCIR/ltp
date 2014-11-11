@@ -6,3 +6,4 @@ model-name = build/cws/example-seg-customized
 baseline-model-name = build/cws/example-seg.0.model
 max-iter = 5
 rare-feature-threshold = 0
+enable-incremental-training = 1

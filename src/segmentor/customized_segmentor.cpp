@@ -276,7 +276,11 @@ CustomizedSegmentor::train_setup() {
   }
 
   if (!baseline_model->full) {
-    ERROR_LOG("Baseline model must be full");
+    ERROR_LOG("Baseline model should be fully dumped version.");
+    WARNING_LOG("Model trained by LTP version lower than 3.2.0 or be");
+    WARNING_LOG("- configed by 'enable-incremental-training = 1' is not fully dumped.");
+    WARNING_LOG("Please retrain your model with LTP above 3.2.0 and ");
+    WARNING_LOG("- 'enable-incremental-training = 1' ");
     return false;
   }
 
