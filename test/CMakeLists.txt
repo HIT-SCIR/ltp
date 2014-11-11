@@ -46,7 +46,7 @@ srl_static_lib
 xml4nlp
 boost_regex_static_lib)
 
-if (NOT WIN32) 
+if (UNIX) 
 set (ltp_test_LIBS ${ltp_test_LIBS} pthread)
 endif()
 
@@ -54,14 +54,14 @@ set (cws_cmdline_LIBS
     segmentor_static_lib
     boost_regex_static_lib)
 
-if (NOT WIN32) 
+if (UNIX) 
 set (cws_cmdline_LIBS ${cws_cmdline_LIBS} pthread)
 endif()
 
 set (pos_cmdline_LIBS
 postagger_static_lib)
 
-if (NOT WIN32) 
+if (UNIX) 
 set (pos_cmdline_LIBS ${pos_cmdline_LIBS} pthread)
 endif()
 
@@ -74,7 +74,7 @@ target_link_libraries (par_cmdline parser_static_lib)
 #
 # multithreaded ltp test is not supported in Windows
 # 
-if (NOT WIN32) 
+if (UNIX) 
 add_executable (multi_ltp_test ${multi_ltp_test_SRC})
 target_link_libraries (multi_ltp_test ${ltp_test_LIBS} pthread)
 endif()
