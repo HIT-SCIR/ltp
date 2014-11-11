@@ -172,8 +172,8 @@ public:
     char chunk[16];
 
     in.read(chunk, 16);
-    if ((!strcmp(chunk, SEGMENTOR_PARAM_FULL) && full) ||
-        (!strcmp(chunk, SEGMENTOR_PARAM_MINIMAL) && !full)) {
+    if (!((!strcmp(chunk, SEGMENTOR_PARAM_FULL) && full) ||
+        (!strcmp(chunk, SEGMENTOR_PARAM_MINIMAL) && !full))) {
       return false;
     }
 

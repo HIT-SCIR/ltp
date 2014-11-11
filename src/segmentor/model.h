@@ -30,7 +30,7 @@ public:
    *  @param[out] ofs   the output stream
    *  @param[in]  full  use to specify if dump full model.
    */
-  void save(std::ostream & ofs, bool full);
+  void save(std::ostream & ofs);
 
   /**
    * load the model from an input stream
@@ -40,7 +40,8 @@ public:
   bool load(std::istream & ifs);
 
 public:
-  int end_time;
+  int                       end_time;
+  bool                      full;
   FeatureSpace              space;
   Parameters                param;
   utils::IndexableSmartMap  labels;

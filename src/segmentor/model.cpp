@@ -8,14 +8,15 @@
 namespace ltp {
 namespace segmentor {
 
-Model::Model() {
+Model::Model() :
+  full(false) {
 }
 
 Model::~Model() {
 }
 
 void
-Model::save(std::ostream & ofs, bool full) {
+Model::save(std::ostream & ofs) {
   // write a signature into the file
   char chunk[16];
   if (full) {
@@ -66,7 +67,6 @@ Model::load(std::istream & ifs) {
   char chunk[16];
   ifs.read(chunk, 16);
 
-  bool full = false;
   if (!strcmp(chunk, SEGMENTOR_MODEL_FULL)) {
     full = true;
   } else if (!strcmp(chunk, SEGMENTOR_MODEL) ||

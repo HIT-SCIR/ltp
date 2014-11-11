@@ -226,6 +226,8 @@ Segmentor::read_instance(const char * train_file) {
 void
 Segmentor::build_configuration(void) {
   // model->labels.push( __dummy__ );
+  model->full = train_opt->enable_incremental_training;
+
   for (int i = 0; i < train_dat.size(); ++ i) {
     Instance * inst = train_dat[i];
     int len = inst->size();
@@ -610,6 +612,7 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
     new_model->internal_lexicon.set(itx.key(), true);
   }
   new_model->end_time = model->end_time;
+  new_model->full = model->full;
 
   return new_model;
 }
@@ -778,7 +781,7 @@ Segmentor::train(void) {
       std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
 
       std::swap(model, new_model);
-      new_model->save(ofs, train_opt->enable_incremental_training);
+      new_model->save(ofs);
       delete new_model;
       TRACE_LOG("Model for iteration [%d] is saved to [%s]",
                 iter + 1,
