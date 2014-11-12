@@ -16,15 +16,8 @@
 #include <ctime>
 #include <cstring>
 #include <string>
-#include <sys/time.h>
-#include <sys/types.h>
+#include "time.hpp"
 #include "postag_dll.h"
-
-double get_time(void) {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_sec + (tv.tv_usec / 1000000.0);
-}
 
 int main(int argc, char * argv[]) {
   if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
@@ -48,7 +41,7 @@ int main(int argc, char * argv[]) {
   std::vector<std::string> postags;
 
   std::cerr << "TRACE: Model is loaded" << std::endl;
-  double tm = get_time();
+  double tm = ltp::utility::get_time();
 
   while (std::getline(std::cin, line, '\n')) {
     std::stringstream S(line);
@@ -71,7 +64,7 @@ int main(int argc, char * argv[]) {
 
   postagger_release_postagger(engine);
 
-  tm = get_time() - tm;
+  tm = ltp::utility::get_time() - tm;
   std::cerr << "TRACE: pos-tm-consume "
     << tm 
     << " seconds."

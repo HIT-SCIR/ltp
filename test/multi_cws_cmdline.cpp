@@ -15,10 +15,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <string>
 #include <vector>
 #include <list>
-#include <sys/time.h>
-#include <sys/types.h>
+#include "time.hpp"
 #include <cstdlib>
 
 #include "tinythread.h"
@@ -29,12 +29,6 @@ using namespace std;
 using namespace tthread;
 
 const int MAX_LEN = 1024;
-
-double get_time(void) {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_sec + (tv.tv_usec / 1000000.0);
-}
 
 class Dispatcher {
 public:
@@ -124,7 +118,7 @@ int main(int argc, char ** argv) {
 
   Dispatcher* dispatcher = new Dispatcher( engine );
 
-  double tm = get_time();
+  double tm = ltp::utility::get_time();
   list<thread *> thread_list;
   for (int i = 0; i < num_threads; ++ i) {
     thread* t = new thread( multithreaded_segment, (void *)dispatcher );
@@ -138,7 +132,7 @@ int main(int argc, char ** argv) {
     delete t;
   }
 
-  tm = get_time() - tm;
+  tm = ltp::utility::get_time() - tm;
   std::cerr << "TRACE: consume "
             << tm 
             << " seconds."

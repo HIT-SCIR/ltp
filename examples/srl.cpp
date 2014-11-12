@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "SRL_DLL.h"
+#include "ltp/SRL_DLL.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {
