@@ -25,6 +25,7 @@ public:
     model = new ltp::segmentor::Model;
     if (!model->load(mfs)) {
       delete model;
+      model = 0;
       return false;
     }
 
