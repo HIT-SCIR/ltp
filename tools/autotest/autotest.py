@@ -224,7 +224,7 @@ def speed_check(rootdir, outputdir, input_path, verbose=False):
         return
 
     def build(exe_prefix, model_prefix):
-        exe = os.path.join(rootdir, "examples", ("%s_cmdline" % exe_prefix))
+        exe = os.path.join(rootdir, "bin", "examples", ("%s_cmdline" % exe_prefix))
         model = os.path.join(rootdir, "ltp_data", ("%s.model" % model_prefix))
         out = os.path.join(TMPDIR, "ltp.autotest.%s.out" % exe_prefix)
         return (exe, model, out)

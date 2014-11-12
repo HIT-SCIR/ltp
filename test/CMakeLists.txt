@@ -15,14 +15,14 @@ include_directories (./
     ${THIRDPARTY_DIR}/tinyxml)
 
 set (ltp_test_SRC           ltp_test.cpp)
-set (multi_ltp_test_SRC     multi_ltp_test.cpp 
+set (multi_ltp_test_SRC     multi_ltp_test.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 #set (ltp_test_xml_SRC       ltp_test_xml.cpp)
 #set (ltp_test2_SRC          ltp_test2.cpp)
 
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
-set (ltp_test_LIBS 
+set (ltp_test_LIBS
 maxent_static_lib
 util_static_lib
 ltp
@@ -38,27 +38,25 @@ add_executable (ltp_test ${ltp_test_SRC})
 target_link_libraries (ltp_test ${ltp_test_LIBS})
 
 add_executable (cws_cmdline cws_cmdline.cpp)
-target_link_libraries (cws_cmdline segmentor_static_lib 
+target_link_libraries (cws_cmdline segmentor_static_lib
     boost_regex_static_lib)
 set_target_properties(cws_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/exmaples/)
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 add_executable (pos_cmdline pos_cmdline.cpp)
 target_link_libraries (pos_cmdline postagger_static_lib)
 set_target_properties(pos_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/exmaples/)
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 add_executable (par_cmdline par_cmdline.cpp)
 target_link_libraries (par_cmdline parser_static_lib)
 set_target_properties(par_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/exmaples/)
-#add_executable (ltp_test_xml ${ltp_test_xml_SRC})
-#add_executable (ltp_test2    ${ltp_test2_SRC})
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
-#
+# --------------------------------------------------
 # multithreaded ltp test is not supported in Windows
-# 
-if (UNIX) 
+# --------------------------------------------------
+if (UNIX)
 add_executable (multi_ltp_test ${multi_ltp_test_SRC})
 target_link_libraries (multi_ltp_test ${ltp_test_LIBS} pthread)
 
@@ -68,46 +66,14 @@ target_link_libraries (multi_cws_cmdline segmentor_static_lib
     boost_regex_static_lib
     pthread)
 set_target_properties(multi_cws_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/exmaples/)
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 add_executable (multi_pos_cmdline multi_pos_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 target_link_libraries (multi_pos_cmdline postagger_static_lib pthread)
 set_target_properties(multi_pos_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/exmaples/)
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 endif()
-
-#target_link_libraries (ltp_test2
-#    maxent
-#    crfpp
-#    util
-#    ltp
-#    splitsnt
-#    crfwordseg
-#    postagger
-#    gparser
-#    ner
-#    srl
-#    xml4nlp
-#    dl
-#    pthread
-#    boost_regex)
-
-#target_link_libraries (ltp_test_xml
-#    maxent
-#    crfpp
-#    util
-#    ltp
-#    splitsnt
-#    crfwordseg
-#    postagger
-#    gparser
-#    ner
-#    srl
-#    xml4nlp
-#    dl
-#    pthread
-#    boost_regex)
 
 #add_test (NAME ltp_test
 #    COMMAND "${CMAKE_COMMAND}"
