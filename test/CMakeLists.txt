@@ -56,23 +56,31 @@ set_target_properties(par_cmdline PROPERTIES
 # --------------------------------------------------
 # multithreaded ltp test is not supported in Windows
 # --------------------------------------------------
-if (UNIX)
 add_executable (multi_ltp_test ${multi_ltp_test_SRC})
-target_link_libraries (multi_ltp_test ${ltp_test_LIBS} pthread)
-
 add_executable (multi_cws_cmdline multi_cws_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
+set_target_properties(multi_cws_cmdline PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+add_executable (multi_pos_cmdline multi_pos_cmdline.cpp
+    ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
+set_target_properties(multi_pos_cmdline PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+
+if (UNIX)
+target_link_libraries (multi_ltp_test ${ltp_test_LIBS} pthread)
+
 target_link_libraries (multi_cws_cmdline segmentor_static_lib
     boost_regex_static_lib
     pthread)
-set_target_properties(multi_cws_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
-add_executable (multi_pos_cmdline multi_pos_cmdline.cpp
-    ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 target_link_libraries (multi_pos_cmdline postagger_static_lib pthread)
-set_target_properties(multi_pos_cmdline PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+else ()
+target_link_libraries (multi_ltp_test ${ltp_test_LIBS})
+
+target_link_libraries (multi_cws_cmdline segmentor_static_lib
+    boost_regex_static_lib)
+
+target_link_libraries (multi_pos_cmdline postagger_static_lib)
 endif()
 
 #add_test (NAME ltp_test

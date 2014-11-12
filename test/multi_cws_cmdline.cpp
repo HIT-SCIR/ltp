@@ -6,7 +6,7 @@
  *  @dependency package: tinythread - a portable c++ wrapper for
  *                       multi-thread library.
  *  @author:             LIU, Yijia
- *  @data:               2013-09-24
+ *  @date:               2013-09-24
  *
  * This program is special designed for UNIX user, for get time
  * is not compilable under MSVC
@@ -22,7 +22,6 @@
 #include <cstdlib>
 
 #include "tinythread.h"
-#include "fast_mutex.h"
 #include "segment_dll.h"
 
 using namespace std;
@@ -38,7 +37,7 @@ public:
 
   int next(string &sentence) {
     sentence = "";
-    lock_guard<fast_mutex> guard(_mutex);
+    lock_guard<mutex> guard(_mutex);
     if (!getline(cin, sentence, '\n')) {
       return -1;
     }
@@ -46,7 +45,7 @@ public:
   }
 
   void output(const vector<string> &result) {
-    lock_guard<fast_mutex> guard(_mutex);
+    lock_guard<mutex> guard(_mutex);
     for (int i = 0; i < result.size(); ++ i) {
       cout << result[i];
       cout << (i == result.size() - 1 ? '\n' : '\t');
@@ -59,9 +58,9 @@ public:
   }
 
 private:
-  fast_mutex      _mutex;
-  void *          _model;
-  string          _sentence;
+  mutex  _mutex;
+  void * _model;
+  string _sentence;
 };
 
 void multithreaded_segment( void * args) {

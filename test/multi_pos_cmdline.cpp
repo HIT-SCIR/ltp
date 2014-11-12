@@ -18,9 +18,7 @@
 #include <vector>
 #include <list>
 #include "time.hpp"
-
 #include "tinythread.h"
-#include "fast_mutex.h"
 #include "postag_dll.h"
 
 using namespace std;
@@ -37,7 +35,7 @@ public:
     int next(std::vector<std::string> &words) {
         std::string line;
         std::string word;
-        lock_guard<fast_mutex> guard(_mutex);
+        lock_guard<mutex> guard(_mutex);
         if (getline(std::cin, line, '\n')) {
             std::stringstream S(line);
             words.clear();
@@ -50,7 +48,7 @@ public:
 
     void output(const std::vector<std::string> & words,
             const std::vector<std::string> &postags) {
-        lock_guard<fast_mutex> guard(_mutex);
+        lock_guard<mutex> guard(_mutex);
         if (words.size() != postags.size()) {
             return;
         }
@@ -67,9 +65,9 @@ public:
     }
 
 private:
-    fast_mutex      _mutex;
-    void *          _model;
-    string          _sentence;
+    mutex  _mutex;
+    void * _model;
+    string _sentence;
 };
 
 void multithreaded_postag( void * args) {
