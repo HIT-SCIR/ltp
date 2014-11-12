@@ -5,13 +5,15 @@ import time
 import logging
 import subprocess
 import cStringIO as StringIO
+import tempfile
 from ConfigParser import ConfigParser
 from optparse import OptionParser
 
 FORMAT = "[%(levelname)5s] %(asctime)-15s - %(message)s"
 logging.basicConfig(format=FORMAT, level=logging.DEBUG, datefmt="%Y-%m-%d %H:%M:%S")
 
-DUMMY = open("/dev/null", "w")
+DUMMY = open(os.devnull, "w")
+TMPDIR= tempfile.gettempdir()
 SRC_EXTENSIONS = (".h", ".hpp", ".c", ".cpp")
 SRC_EXLUDES = ("mongoose.h", "mongoose.c")
 
@@ -45,13 +47,17 @@ def static_code_check(rootdir, outputdir, verbose=False):
     outputdir: str
         The detail output dir.
     '''
+    if os.name == 'nt':
+        logging.info("cppcheck: windows cppcheck is not supported.")
+        return
+
     if not which("cppcheck"):
         logging.warn("cppcheck not installed.")
         logging.info("skip static code checking.")
         return
 
     sourcedir = os.path.join(opts.rootdir, "src")
-    sourcelist_path = "/tmp/ltp.autotest.sourcefile.list"
+    sourcelist_path = os.path.join(TMPDIR, "ltp.autotest.sourcefile.list")
     sourcelist_ofs = open(sourcelist_path, "w")
     for path, subdirs, files in os.walk(sourcedir, topdown=True):
         for filename in files:
@@ -86,6 +92,9 @@ def static_code_check(rootdir, outputdir, verbose=False):
 
 def executable_check(rootdir, outputdir, input_path, verbose=False):
     ltp_test_exe = os.path.join(rootdir, "bin/ltp_test")
+    if os.name == 'nt':
+        ltp_test_exe += '.exe'
+
     if not which(ltp_test_exe):
         logging.error("ltp_test: ltp_test is not executable.")
         logging.info("ltp_test: all dynamic checks are skipped.")
@@ -96,7 +105,7 @@ def executable_check(rootdir, outputdir, input_path, verbose=False):
     cfg = ConfigParser()
     cfg.readfp(StringIO.StringIO(cfg_str))
 
-    config_path = "/tmp/ltp.autotest.ltp.conf"
+    config_path = os.path.join(TMPDIR, "ltp.autotest.ltp.conf")
     cofs = open(config_path, "w")
     print >> cofs, "target = all"
 
@@ -122,12 +131,16 @@ def executable_check(rootdir, outputdir, input_path, verbose=False):
 
 
 def memory_leak_check(rootdir, outputdir, input_path, verbose=False):
+    if os.name == 'nt':
+        logging.info("memcheck: windows memcheck is not supported.")
+        return
+
     if not which("valgrind"):
         logging.error("memcheck: valgrind is not installed")
         logging.info("memcheck: memcheck is skipped.")
         return
     ltp_test_exe = os.path.join(rootdir, "bin/ltp_test")
-    config_path = "/tmp/ltp.autotest.ltp.conf"
+    config_path = os.path.join(TMPDIR, "ltp.autotest.ltp.conf")
     if not os.path.isfile(config_path):
         logging.error("memcheck: config file is not generated.")
         logging.info("memcheck: memcheck is skipped.")
@@ -155,17 +168,21 @@ def memory_leak_check(rootdir, outputdir, input_path, verbose=False):
 
 
 def callgrind_check(rootdir, outputdir, input_path, verbose=False):
+    if os.name == 'nt':
+        logging.info("callgrind: windows calgrind check is not supported.")
+        return
+
     if not which("valgrind"):
         logging.error("callgrind: valgrind is not installed.")
         logging.info("callgrind: callgrind check is skipped.")
         return
     ltp_test_exe = os.path.join(rootdir, "bin/ltp_test")
-    config_path = "/tmp/ltp.autotest.ltp.conf"
+    config_path = os.path.join(TMPDIR, "ltp.autotest.ltp.conf")
     if not os.path.isfile(config_path):
         logging.error("callgrind: config file is not generated.")
         logging.info("callgrind: memcheck is skipped.")
         return
-    callgrind_out_file = "/tmp/ltp.autotest.callgrind.out"
+    callgrind_out_file = os.path.join(TMPDIR, "ltp.autotest.callgrind.out")
     command = ["valgrind", "--tool=callgrind", "--callgrind-out-file=%s" % callgrind_out_file,
             ltp_test_exe, config_path, "srl", input_path]
     callgrind_lfs = open(os.path.join(outputdir, "callgrind.log"), "w")
@@ -188,7 +205,7 @@ def callgrind_check(rootdir, outputdir, input_path, verbose=False):
         logging.info("callgrind: callgrind visualization is cancealed.")
         return
 
-    gprof2dot_dot = "/tmp/ltp.autotest.dot"
+    gprof2dot_dot = os.path.join(TMPDIR, "ltp.autotest.dot")
     command = ["python", gprof2dot_script, "--format=callgrind",
             "--output=%s" % gprof2dot_dot, "-w", callgrind_out_file]
     logging.info("callgrind: gprof2dot.py converting callgrind output to dot.")
@@ -202,10 +219,14 @@ def callgrind_check(rootdir, outputdir, input_path, verbose=False):
 
 
 def speed_check(rootdir, outputdir, input_path, verbose=False):
+    if os.name == 'nt':
+        logging.info("speed: windows speed check is not supported.")
+        return
+
     def build(exe_prefix, model_prefix):
         exe = os.path.join(rootdir, "bin", "examples", ("%s_cmdline" % exe_prefix))
         model = os.path.join(rootdir, "ltp_data", ("%s.model" % model_prefix))
-        out = "/tmp/ltp.autotest.%s.out" % exe_prefix
+        out = os.path.join(TMPDIR, "ltp.autotest.%s.out" % exe_prefix)
         return (exe, model, out)
     cws_cmdline, cws_model, cws_out = build("cws", "cws")
     pos_cmdline, pos_model, pos_out = build("pos", "pos")
@@ -270,6 +291,10 @@ def speed_check(rootdir, outputdir, input_path, verbose=False):
 
 
 def server_check(rootdir, outputdir, input_path, verbose=False):
+    if os.name == 'nt':
+        logging.info("memcheck: windows memcheck is not supported.")
+        return
+
     os.chdir(rootdir)
     command = ["./bin/ltp_server"]
     p = subprocess.Popen(command, stderr=DUMMY)
