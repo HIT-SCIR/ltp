@@ -5,6 +5,7 @@
 #include "segmentor/model.h"
 #include "segmentor/options.h"
 #include "segmentor/decoder.h"
+#include "segmentor/decode_context.h"
 #include "segmentor/rulebase.h"
 
 namespace ltp {
@@ -123,11 +124,14 @@ protected:
   /**
    * Extract features from one instance,
    *
-   *  @param[in/out]  inst    The instance
+   *  @param[in]      inst    The instance
+   *  @param[out]     ctx     The result decode context.
    *  @param[in]      create  If create is true, create feature for new
    *                          feature, otherwise not create.
    */
-  virtual void extract_features(Instance * inst, bool create = false);
+  virtual void extract_features(Instance * inst,
+      DecodeContext* ctx,
+      bool create = false);
 
   /**
    * build words from tags for certain instance
@@ -148,9 +152,12 @@ protected:
    * cache all the score for the certain instance.
    *
    *  @param[in/out]  inst      the instance
+   *  @param[in]      ctx       the decode context.
    *  @param[in]      use_avg   use to specify use average parameter
    */
-  virtual void calculate_scores(Instance * inst, bool use_avg);
+  virtual void calculate_scores(Instance * inst,
+      const DecodeContext* ctx,
+      bool use_avg);
 
 
   /**
@@ -194,11 +201,6 @@ protected:
    */
   virtual Model * erase_rare_features(const int * nr_updates = NULL);
 
-  /**
-   * Remove the unigram features, bigram features from
-   */
-  void cleanup_decode_context(void);
-
 protected:
   bool  __TRAIN__;  /*< The training flag */
   bool  __TEST__;   /*< The testing flag */
@@ -228,15 +230,8 @@ protected:
   //! The collection of the training data.
   std::vector< Instance * > train_dat;
 
-  //! the gold features.
-  math::SparseVec correct_features;
-  //! the predicted features.
-  math::SparseVec predicted_features;
-  //!
-  math::SparseVec updated_features;
-
-  //! The feature cache.
-  math::Mat< math::FeatureVector *> uni_features;
+  //! The decode context
+  DecodeContext* decode_context;
 };
 
 }     //  end for namespace segmentor

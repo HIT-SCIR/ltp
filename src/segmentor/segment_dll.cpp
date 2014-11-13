@@ -7,7 +7,9 @@
 
 #include <iostream>
 
-class SegmentorWrapper : public ltp::segmentor::Segmentor {
+namespace seg = ltp::segmentor;
+
+class SegmentorWrapper : public seg::Segmentor {
 public:
   SegmentorWrapper() :
     beg_tag0(-1),
@@ -22,7 +24,7 @@ public:
       return false;
     }
 
-    model = new ltp::segmentor::Model;
+    model = new seg::Model;
     if (!model->load(mfs)) {
       delete model;
       model = 0;
@@ -46,7 +48,7 @@ public:
 
     // don't need to allocate a decoder
     // one sentence, one decoder
-    baseAll = new ltp::segmentor::rulebase::RuleBase(model->labels);
+    baseAll = new seg::rulebase::RuleBase(model->labels);
 
     beg_tag0 = model->labels.index( ltp::segmentor::__b__ );
     beg_tag1 = model->labels.index( ltp::segmentor::__s__ );
@@ -56,9 +58,9 @@ public:
 
   int segment(const char * str,
       std::vector<std::string> & words) {
-    ltp::segmentor::Instance * inst = new ltp::segmentor::Instance;
+    seg::Instance * inst = new seg::Instance;
     // ltp::strutils::codecs::decode(str, inst->forms);
-    int ret = ltp::segmentor::rulebase::preprocess(str,
+    int ret = seg::rulebase::preprocess(str,
         inst->raw_forms,
         inst->forms,
         inst->chartypes);
@@ -69,21 +71,19 @@ public:
       return 0;
     }
 
-    ltp::segmentor::Segmentor::extract_features(inst);
-    ltp::segmentor::Segmentor::calculate_scores(inst, true);
+    seg::DecodeContext* ctx = new seg::DecodeContext;
+    seg::Segmentor::extract_features(inst, ctx);
+    seg::Segmentor::calculate_scores(inst, ctx, true);
 
     // allocate a new decoder so that the segmentor support multithreaded
     // decoding. this modification was committed by niuox
-    ltp::segmentor::Decoder deco(model->num_labels(), *baseAll);
+    seg::Decoder decoder(model->num_labels(), *baseAll);
 
-    deco.decode(inst);
-    ltp::segmentor::Segmentor::build_words(inst,
-                                           inst->predicted_tagsidx,
-                                           words,
-                                           beg_tag0,
-                                           beg_tag1);
+    decoder.decode(inst);
+    seg::Segmentor::build_words(inst, inst->predicted_tagsidx,
+        words, beg_tag0, beg_tag1);
 
-    ltp::segmentor::Segmentor::cleanup_decode_context();
+    delete ctx;
     delete inst;
     return words.size();
   }
