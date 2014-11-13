@@ -53,7 +53,7 @@ Extractor::~Extractor() {
   }
 }
 
-int Extractor::extract1o(Instance * inst, int idx,
+int Extractor::extract1o(const Instance * inst, int idx,
     std::vector< utils::StringVec > & cache) {
 
   int len = inst->size();

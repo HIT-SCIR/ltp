@@ -14,7 +14,6 @@ public:
   Instance() {}
 
   ~Instance() {
-    cleanup();
   }
 
   inline size_t size() const {
@@ -86,50 +85,6 @@ public:
     return ret;
   }
 
-  int cleanup() {
-    /*if (uni_features.total_size() > 0) {
-      int d1 = uni_features.nrows();
-      int d2 = uni_features.ncols();
-
-      for (int i = 0; i < d1; ++ i) {
-        if (uni_features[i][0]) {
-          uni_features[i][0]->clear();
-        }
-        for (int j = 0; j < d2; ++ j) {
-          if (uni_features[i][j]) {
-            delete uni_features[i][j];
-          }
-        }
-      }
-    }
-
-    if (personal_uni_features.total_size() > 0) {
-      int d1 = personal_uni_features.nrows();
-      int d2 = personal_uni_features.ncols();
-
-      for (int i = 0; i < d1; ++i) {
-        if (personal_uni_features[i][0]) {
-          personal_uni_features[i][0]->clear();
-        }
-        for (int j = 0; j < d2; ++j) {
-          if (personal_uni_features[i][j]) {
-            delete personal_uni_features[i][j];
-          }
-        }
-      }
-    }
-
-    uni_features.dealloc();
-    //personal_uni_features.dealloc();
-    features.zero();
-    //personal_features.zero();
-    predicted_features.zero();
-    //personal_predicted_features.zero(); */
-
-    uni_scores.dealloc();
-    bi_scores.dealloc();
-    return 0;
-  }
 public:
   std::vector< std::string >  raw_forms;
   std::vector< std::string >  forms;
@@ -141,9 +96,6 @@ public:
   std::vector< std::string >  words;
   std::vector< std::string >  predicted_words;
   std::vector< int >          lexicon_match_state;
-
-  math::Mat< double > uni_scores;
-  math::Mat< double > bi_scores;
 };
 
 }     //  end for namespace segmentor

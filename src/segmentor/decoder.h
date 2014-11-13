@@ -5,6 +5,7 @@
 #include <vector>
 #include "segmentor/instance.h"
 #include "segmentor/rulebase.h"
+#include "segmentor/score_matrix.h"
 #include "utils/math/mat.h"
 
 namespace ltp {
@@ -35,11 +36,13 @@ public:
 class Decoder {
 public:
   Decoder (int _l, rulebase::RuleBase & _base) : L(_l), base(_base) {}
-  void decode(Instance * inst);
+
+  //!
+  void decode(Instance * inst, const ScoreMatrix* scm);
 
 private:
   void init_lattice(const Instance * inst);
-  void viterbi_decode(const Instance * inst);
+  void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
   void get_result(Instance * inst);
   void free_lattice();
 
@@ -61,29 +64,6 @@ private:
     }
   }
 };
-
-// Source code for k-best decoding, it's not implemented.
-/*
-class KBestDecoder {
-public:
-  typedef std::vector< std::vector<int> > KBestDecodeResult;
-
-public:
-  KBestDecoder (int _L) : L(_L) {}
-
-  void decode(Instance * inst, KBestDecodeResult & result);
-private:
-  void init_lattice(const Instance * inst);
-  void kbest_viterbi_decode(const Instance * inst);
-  void get_result(KBestDecodeResult & result);
-  void free_lattice();
-
-private:
-  int L;
-
-  Mat< KHeap< const LatticeItem * > > lattice;
-};
-*/
 
 }       //  end for namespace segmentor
 }       //  end for namespace ltp

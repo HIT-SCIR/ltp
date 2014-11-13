@@ -17,7 +17,10 @@ public:
   math::Mat< math::FeatureVector *> uni_features;
 
   DecodeContext() {}
-  ~DecodeContext() {}
+
+  ~DecodeContext() {
+    clear();
+  }
 
   void clear() {
     if (uni_features.total_size() > 0) {

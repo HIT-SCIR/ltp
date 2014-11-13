@@ -25,7 +25,7 @@ public:
    *  @param[in]  idx     The index of the current form.
    *  @param[out] cache   The cached.
    */
-  static int extract1o(Instance * inst, int idx,
+  static int extract1o(const Instance * inst, int idx,
       std::vector< utils::StringVec >& cache);
 protected:
   Extractor();

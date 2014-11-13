@@ -11,11 +11,14 @@ namespace seg = ltp::segmentor;
 
 class SegmentorWrapper : public seg::Segmentor {
 public:
-  SegmentorWrapper() :
-    beg_tag0(-1),
-    beg_tag1(-1) {}
+  SegmentorWrapper()
+    : beg_tag0(-1),
+    beg_tag1(-1),
+    rule(0) {}
 
-  ~SegmentorWrapper() {}
+  ~SegmentorWrapper() {
+    if (rule) { delete rule; }
+  }
 
   bool load(const char * model_file, const char * lexicon_file = NULL) {
     std::ifstream mfs(model_file, std::ifstream::binary);
@@ -46,12 +49,10 @@ public:
       }
     }
 
-    // don't need to allocate a decoder
-    // one sentence, one decoder
-    baseAll = new seg::rulebase::RuleBase(model->labels);
-
     beg_tag0 = model->labels.index( ltp::segmentor::__b__ );
     beg_tag1 = model->labels.index( ltp::segmentor::__s__ );
+
+    rule = new seg::rulebase::RuleBase(model->labels);
 
     return true;
   }
@@ -72,18 +73,20 @@ public:
     }
 
     seg::DecodeContext* ctx = new seg::DecodeContext;
-    seg::Segmentor::extract_features(inst, ctx);
-    seg::Segmentor::calculate_scores(inst, ctx, true);
+    seg::ScoreMatrix* scm = new seg::ScoreMatrix;
+    seg::Segmentor::build_lexicon_match_state(inst);
+    seg::Segmentor::extract_features(inst, seg::Segmentor::model, ctx);
+    seg::Segmentor::calculate_scores(inst, seg::Segmentor::model, ctx, true, scm);
 
     // allocate a new decoder so that the segmentor support multithreaded
     // decoding. this modification was committed by niuox
-    seg::Decoder decoder(model->num_labels(), *baseAll);
-
-    decoder.decode(inst);
+    seg::Decoder decoder(model->num_labels(), *rule);
+    decoder.decode(inst, scm);
     seg::Segmentor::build_words(inst, inst->predicted_tagsidx,
         words, beg_tag0, beg_tag1);
 
     delete ctx;
+    delete scm;
     delete inst;
     return words.size();
   }
@@ -95,6 +98,11 @@ public:
 private:
   int beg_tag0;
   int beg_tag1;
+
+  // don't need to allocate a decoder
+  // one sentence, one decoder
+  seg::rulebase::RuleBase* rule;
+
 };
 
 void * segmentor_create_segmentor(const char * path, const char * lexicon_file) {

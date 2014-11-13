@@ -31,7 +31,7 @@ Segmentor::Segmentor()
   dump_opt(0),
   decoder(0),
   decode_context(0),
-  baseAll(0),
+  score_matrix(0),
   __TRAIN__(false),
   __TEST__(false),
   __DUMP__(false) {
@@ -41,7 +41,7 @@ Segmentor::Segmentor(utils::ConfigParser & cfg) :
   model(0),
   decoder(0),
   decode_context(0),
-  baseAll(0),
+  score_matrix(0),
   __TRAIN__(false),
   __TEST__(false),
   __DUMP__(false) {
@@ -52,33 +52,13 @@ Segmentor::Segmentor(utils::ConfigParser & cfg) :
 }
 
 Segmentor::~Segmentor() {
-  if (train_opt) {
-    delete train_opt;
-  }
-
-  if (test_opt) {
-    delete test_opt;
-  }
-
-  if (dump_opt) {
-    delete dump_opt;
-  }
-
-  if (model) {
-    delete model;
-  }
-
-  if (decoder) {
-    delete decoder;
-  }
-
-  if(baseAll) {
-    delete baseAll;
-  }
-
-  if (decode_context) {
-    decode_context->clear();
-  }
+  if (train_opt)      { delete train_opt;       }
+  if (test_opt)       { delete test_opt;        }
+  if (dump_opt)       { delete dump_opt;        }
+  if (model)          { delete model;           }
+  if (decoder)        { delete decoder;         }
+  if (decode_context) { delete decode_context;  }
+  if (score_matrix)   { delete score_matrix;    }
 }
 
 void
@@ -293,11 +273,56 @@ Segmentor::build_configuration(void) {
 }
 
 void
-Segmentor::extract_features(Instance * inst,
+Segmentor::build_lexicon_match_state(Instance* inst) {
+  // cache lexicon features.
+  int len = inst->size();
+
+  if (inst->lexicon_match_state.size()) {
+    return;
+  }
+
+  inst->lexicon_match_state.resize(len, 0);
+
+  for (int i = 0; i < len; ++ i) {
+    std::string word; word.reserve(32);
+    for (int j = i; j<i+5 && j < len; ++ j) {
+      word = word + inst->forms[j];
+
+      // it's not a lexicon word
+      if (!model->internal_lexicon.get(word.c_str())
+          && !model->external_lexicon.get(word.c_str())) {
+        continue;
+      }
+
+      int l = j+1-i;
+
+      if (l > (inst->lexicon_match_state[i] & 0x0F)) {
+        inst->lexicon_match_state[i] &= 0xfff0;
+        inst->lexicon_match_state[i] |= l;
+      }
+
+      if (l > ((inst->lexicon_match_state[j]>>4) & 0x0F)) {
+        inst->lexicon_match_state[j] &= 0xff0f;
+        inst->lexicon_match_state[j] |= (l<<4);
+      }
+
+      for (int k = i+1; k < j; ++k) {
+        if (l>((inst->lexicon_match_state[k]>>8) & 0x0F)) {
+          inst->lexicon_match_state[k] &= 0xf0ff;
+          inst->lexicon_match_state[k] |= (l<<8);
+        }
+      }
+    }
+  }
+}
+
+void
+Segmentor::extract_features(const Instance * inst,
+    Model* mdl,
     DecodeContext* ctx,
     bool create) {
   const int N = Extractor::num_templates();
-  const int L = model->num_labels();
+  const int L = mdl->num_labels();
 
   std::vector< utils::StringVec > cache;
   std::vector< int > cache_again;
@@ -308,43 +333,6 @@ Segmentor::extract_features(Instance * inst,
   // allocate the uni_features
   ctx->uni_features.resize(len, L);
   ctx->uni_features = 0;
-
-  // cache lexicon features.
-  if (0 == inst->lexicon_match_state.size()) {
-    inst->lexicon_match_state.resize(len, 0);
-
-    for (int i = 0; i < len; ++ i) {
-      std::string word; word.reserve(32);
-      for (int j = i; j<i+5 && j < len; ++ j) {
-        word = word + inst->forms[j];
-
-        // it's not a lexicon word
-        if (!model->internal_lexicon.get(word.c_str())
-            && !model->external_lexicon.get(word.c_str())) {
-          continue;
-        }
-
-        int l = j+1-i;
-
-        if (l > (inst->lexicon_match_state[i] & 0x0F)) {
-          inst->lexicon_match_state[i] &= 0xfff0;
-          inst->lexicon_match_state[i] |= l;
-        }
-
-        if (l > ((inst->lexicon_match_state[j]>>4) & 0x0F)) {
-          inst->lexicon_match_state[j] &= 0xff0f;
-          inst->lexicon_match_state[j] |= (l<<4);
-        }
-
-        for (int k = i+1; k < j; ++k) {
-          if (l>((inst->lexicon_match_state[k]>>8) & 0x0F)) {
-            inst->lexicon_match_state[k] &= 0xf0ff;
-            inst->lexicon_match_state[k] |= (l<<8);
-          }
-        }
-      }
-    }
-  }
 
   for (int pos = 0; pos < len; ++ pos) {
     for (int n = 0; n < N; ++ n) {
@@ -357,10 +345,10 @@ Segmentor::extract_features(Instance * inst,
     for (int tid = 0; tid < cache.size(); ++ tid) {
       for (int itx = 0; itx < cache[tid].size(); ++ itx) {
         if (create) {
-          model->space.retrieve(tid, cache[tid][itx], true);
+          mdl->space.retrieve(tid, cache[tid][itx], true);
         }
 
-        int idx = model->space.index(tid, cache[tid][itx]);
+        int idx = mdl->space.index(tid, cache[tid][itx]);
 
         if (idx >= 0) {
           cache_again.push_back(idx);
@@ -395,12 +383,14 @@ Segmentor::extract_features(Instance * inst,
 }
 
 void
-Segmentor::build_words(Instance * inst,
-                       const std::vector<int> & tagsidx,
-                       std::vector<std::string> & words,
-                       int beg_tag0,
-                       int beg_tag1) {
+Segmentor::extract_features(const Instance* inst, bool create) {
+  extract_features(inst, model, decode_context, create);
+}
 
+void
+Segmentor::build_words(Instance * inst, const std::vector<int> & tagsidx,
+    std::vector<std::string> & words, int beg_tag0,  int beg_tag1) {
+  words.clear();
   int len = inst->size();
 
   // should check the tagsidx size
@@ -426,7 +416,8 @@ Segmentor::build_feature_space(void) {
   model->space.set_num_labels(L);
 
   for (int i = 0; i < train_dat.size(); ++ i) {
-    extract_features(train_dat[i], decode_context, true);
+    build_lexicon_match_state(train_dat[i]);
+    extract_features(train_dat[i], true);
     decode_context->clear();
 
     if ((i + 1) % train_opt->display_interval == 0) {
@@ -436,13 +427,13 @@ Segmentor::build_feature_space(void) {
 }
 
 void
-Segmentor::calculate_scores(Instance * inst, const DecodeContext* ctx,
-    bool use_avg) {
+Segmentor::calculate_scores(const Instance * inst, const Model* mdl,
+    const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm) {
   int len = inst->size();
   int L = model->num_labels();
 
-  inst->uni_scores.resize(len, L);  inst->uni_scores = NEG_INF;
-  inst->bi_scores.resize(L, L);     inst->bi_scores = NEG_INF;
+  scm->uni_scores.resize(len, L); scm->uni_scores = NEG_INF;
+  scm->bi_scores.resize(L, L);    scm->bi_scores = NEG_INF;
 
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
@@ -450,27 +441,28 @@ Segmentor::calculate_scores(Instance * inst, const DecodeContext* ctx,
       if (!fv) {
         continue;
       }
-
-      inst->uni_scores[i][l] = model->param.dot(ctx->uni_features[i][l], use_avg);
+      scm->uni_scores[i][l] = mdl->param.dot(ctx->uni_features[i][l], use_avg);
     }
   }
 
   for (int pl = 0; pl < L; ++ pl) {
     for (int l = 0; l < L; ++ l) {
-      int idx = model->space.index(pl, l);
-      inst->bi_scores[pl][l] = model->param.dot(idx, use_avg);
+      int idx = mdl->space.index(pl, l);
+      scm->bi_scores[pl][l] = mdl->param.dot(idx, use_avg);
     }
   }
 }
 
 void
-Segmentor::collect_features(const math::Mat< math::FeatureVector* >& features,
-    Model * model,
-    Instance * inst,
-    const std::vector<int> & tagsidx,
-    math::SparseVec & vec) {
+Segmentor::calculate_scores(const Instance* inst, bool use_avg) {
+  calculate_scores(inst, model, decode_context, use_avg, score_matrix);
+}
 
-  int len = inst->size();
+void
+Segmentor::collect_features(const math::Mat< math::FeatureVector* >& features,
+    const Model* mdl, const std::vector<int> & tagsidx, math::SparseVec & vec) {
+
+  int len = tagsidx.size();
   vec.zero();
   for (int i = 0; i < len; ++ i) {
     int l = tagsidx[i];
@@ -484,7 +476,7 @@ Segmentor::collect_features(const math::Mat< math::FeatureVector* >& features,
 
     if (i > 0) {
       int prev_lid = tagsidx[i-1];
-      int idx = model->space.index(prev_lid, l);
+      int idx = mdl->space.index(prev_lid, l);
       vec.add(idx, 1.);
     }
   }
@@ -602,10 +594,10 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
 
 void
 Segmentor::collect_correct_and_predicted_features(Instance* inst) {
-  collect_features(decode_context->uni_features,
-      model, inst, inst->tagsidx, decode_context->correct_features);
-  collect_features(decode_context->uni_features,
-      model, inst, inst->predicted_tagsidx, decode_context->predicted_features);
+  collect_features(decode_context->uni_features, model, inst->tagsidx,
+      decode_context->correct_features);
+  collect_features(decode_context->uni_features, model, inst->predicted_tagsidx,
+      decode_context->predicted_features);
 
   decode_context->updated_features.zero();
   decode_context->updated_features.add(decode_context->correct_features, 1.);
@@ -665,6 +657,9 @@ Segmentor::train(void) {
   TRACE_LOG("Read in [%d] instances.", train_dat.size());
 
   model = new Model;
+  decode_context = new DecodeContext;
+  score_matrix = new ScoreMatrix;
+
   // build tag dictionary, map string tag to index
   TRACE_LOG("Start build configuration");
   build_configuration();
@@ -702,7 +697,6 @@ Segmentor::train(void) {
   } else {
     // use pa or average perceptron algorithm
     rulebase::RuleBase base(model->labels);
-    decode_context = new DecodeContext;
     decoder = new Decoder(model->num_labels(), base);
     TRACE_LOG("Allocated plain decoder");
 
@@ -718,11 +712,11 @@ Segmentor::train(void) {
         set_timestamp(iter * train_dat.size() + i + 1);
 
         Instance * inst = train_dat[i];
-        extract_features(inst, decode_context);
-        calculate_scores(inst, decode_context, false);
-        decoder->decode(inst);
-
+        extract_features(inst);
+        calculate_scores(inst, false);
+        decoder->decode(inst, score_matrix);
         collect_correct_and_predicted_features(inst);
+        decode_context->clear();
 
         if (feature_group_updated_time) {
           increase_group_updated_time(decode_context->updated_features,
@@ -734,8 +728,6 @@ Segmentor::train(void) {
         } else if (train_opt->algorithm == "ap") {
           train_averaged_perceptron();
         }
-
-        decode_context->clear();
 
         if ((i+1) % train_opt->display_interval == 0) {
           TRACE_LOG("[%d] instances is trained.", i+1);
@@ -807,8 +799,6 @@ Segmentor::evaluate(double &p, double &r, double &f) {
   int beg_tag0 = model->labels.index( __b__ );
   int beg_tag1 = model->labels.index( __s__ );
 
-  decode_context = new DecodeContext;
-
   while ((inst = reader.next())) {
     int len = inst->size();
     inst->tagsidx.resize(len);
@@ -816,19 +806,14 @@ Segmentor::evaluate(double &p, double &r, double &f) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
     }
 
-    extract_features(inst, decode_context);
-    calculate_scores(inst, decode_context, true);
-    decoder->decode(inst);
+    build_lexicon_match_state(inst);
+    extract_features(inst);
+    calculate_scores(inst, true);
+    decoder->decode(inst, score_matrix);
     decode_context->clear();
 
-    if (inst->words.size() == 0) {
-      build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
-    }
-    build_words(inst,
-                inst->predicted_tagsidx,
-                inst->predicted_words,
-                beg_tag0,
-                beg_tag1);
+    build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
+    build_words(inst, inst->predicted_tagsidx, inst->predicted_words, beg_tag0, beg_tag1);
 
     num_recalled_words += inst->num_recalled_words();
     num_predicted_words += inst->num_predicted_words();
@@ -896,7 +881,6 @@ Segmentor::test(void) {
   }
 
   const char * test_file = test_opt->test_file.c_str();
-
   std::ifstream ifs(test_file);
 
   if (!ifs) {
@@ -905,7 +889,9 @@ Segmentor::test(void) {
   }
 
   rulebase::RuleBase base(model->labels);
-  Decoder * decoder = new Decoder(model->num_labels(), base);
+  decoder = new Decoder(model->num_labels(), base);
+  score_matrix = new ScoreMatrix;
+  decode_context = new DecodeContext;
   SegmentReader reader(ifs);
   SegmentWriter writer(std::cout);
   Instance * inst = NULL;
@@ -919,17 +905,14 @@ Segmentor::test(void) {
     int len = inst->size();
     inst->tagsidx.resize(len);
 
-    extract_features(inst, decode_context);
-    calculate_scores(inst, decode_context, true);
-    decoder->decode(inst);
+    build_lexicon_match_state(inst);
+    extract_features(inst);
+    calculate_scores(inst, true);
+    decoder->decode(inst, score_matrix);
     decode_context->clear();
 
-    build_words(inst,
-                inst->predicted_tagsidx,
-                inst->predicted_words,
-                beg_tag0,
-                beg_tag1);
-
+    build_words(inst, inst->predicted_tagsidx, inst->predicted_words,
+        beg_tag0, beg_tag1);
 
     writer.write(inst);
     delete inst;
