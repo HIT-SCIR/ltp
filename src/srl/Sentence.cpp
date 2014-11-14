@@ -12,8 +12,7 @@
 #include "Sentence.h"
 #include <queue>
 #include <sstream>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
+#include "boost/lexical_cast.hpp"
 
 
 #define _DEBUG_
@@ -110,8 +109,8 @@ void Sentence::from_corpus_block(
         node_queue.pop();
         node_iter = m_node_of_row[node];
 
-        BOOST_FOREACH(size_t &child, children_of_node[node])
-        {
+        for (int i = 0; i < children_of_node[node].size(); ++ i) {
+          size_t child = children_of_node[node][i];
             m_node_of_row[child] = m_parse_tree.append_child(node_iter, child);
             node_queue.push(child);
         }
