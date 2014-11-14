@@ -1,4 +1,4 @@
 [test]
-model-file = sample/seg/exaple-test.seg
-p-model-file = build/cws/exaple-personal.0.model
-test-file = build/cws/exaple-seg.0.model
+test-file = sample/seg/example-test.seg
+customized-model-file = build/cws/example-seg-customized.4.model
+baseline-model-file = build/cws/example-seg.0.model
