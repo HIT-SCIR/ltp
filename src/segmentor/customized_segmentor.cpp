@@ -24,11 +24,13 @@ namespace segmentor {
 namespace utils = ltp::utility;
 
 CustomizedSegmentor::CustomizedSegmentor()
-  : baseline_model(0) {
+  : baseline_model(0),
+  baseline_decode_context(0){
 }
 
 CustomizedSegmentor::CustomizedSegmentor(utils::ConfigParser& cfg)
-  : baseline_model(0) {
+  : baseline_model(0),
+  baseline_decode_context(0){
   train_opt = new CustomizedTrainOptions;
   test_opt = new CustomizedTestOptions;
   dump_opt = new CustomizedDumpOptions;
@@ -47,19 +49,21 @@ CustomizedSegmentor::~CustomizedSegmentor() {
 
 bool
 CustomizedSegmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
-  Segmentor::parse_cfg(cfg);
 
   std::string strbuf;
 
-  static_cast<CustomizedTrainOptions *>(train_opt)->baseline_model_name = "";
   if (cfg.has_section("train")) {
     int intbuf;
 
-    if(cfg.get("train", "baseline-model-name",strbuf)) {
-      static_cast<CustomizedTrainOptions *>(train_opt)->baseline_model_name = strbuf;
+    if(cfg.get("train", "baseline-model-file",strbuf)) {
+      static_cast<CustomizedTrainOptions *>(train_opt)->baseline_model_file = strbuf;
     } else {
-      WARNING_LOG("baseline model name is not configed, [%s] is set as default",
-                  static_cast<CustomizedTrainOptions *>(train_opt)->baseline_model_name.c_str());
+      ERROR_LOG("baseline model file is not configed.");
+      return false;
+    }
+
+    if(cfg.get("train", "customized-model-name",strbuf)) {
+      cfg.set("train", "model-name",strbuf);
     }
   }
 
@@ -68,10 +72,22 @@ CustomizedSegmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
     if (cfg.get("test", "baseline-model-file", strbuf)) {
       static_cast<CustomizedTestOptions*>(test_opt)->baseline_model_file = strbuf;
     } else {
-      ERROR_LOG("personal-model-file is not configed.");
+      ERROR_LOG("baseline-model-file is not configed.");
+      return false;
+    }
+
+    if (cfg.get("test", "customized-model-file", strbuf)) {
+      cfg.set("test", "model-file",strbuf);
+    } else {
+      ERROR_LOG("customized-model-file is not configed.");
       return false;
     }
   }
+
+  if (!Segmentor::parse_cfg(cfg)) {
+    return false;
+  }
+
   return true;
 }
 
@@ -219,7 +235,7 @@ CustomizedSegmentor::collect_correct_and_predicted_features(Instance * inst) {
 bool
 CustomizedSegmentor::train_setup() {
   const char * baseline_model_file =
-    static_cast<CustomizedTrainOptions *>(train_opt)->baseline_model_name.c_str();
+    static_cast<CustomizedTrainOptions *>(train_opt)->baseline_model_file.c_str();
 
   std::ifstream mfs(baseline_model_file, std::ifstream::binary);
   if(!mfs) {
@@ -289,6 +305,7 @@ CustomizedSegmentor::test_setup() {
     ERROR_LOG("Failed to load baseline model");
     return false;
   }
+  baseline_decode_context = new DecodeContext;
 
   return true;
 }

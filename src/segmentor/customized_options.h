@@ -8,7 +8,7 @@ namespace segmentor {
 
 struct CustomizedTrainOptions : public TrainOptions {
   //! The name of the baseline model. aka. model from phase#1
-  std::string baseline_model_name;
+  std::string baseline_model_file;
 };
 
 struct CustomizedTestOptions : public TestOptions {
