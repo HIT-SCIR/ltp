@@ -28,13 +28,19 @@ protected:
   void build_configuration(void);
 
   //!
-  void extract_features(Instance * inst, bool create = false);
+  void extract_features(const Instance * inst, bool create = false);
 
   //!
-  void calculate_scores(Instance * inst, bool use_avg);
+  void calculate_scores(const Instance * inst, bool use_avg);
 
   //!
   void collect_correct_and_predicted_features(Instance * inst);
+
+  //!
+  void build_lexicon_match_state(Instance* inst);
+
+  //!
+  void cleanup_decode_context();
 
   //
   bool train_setup(void);
@@ -49,24 +55,12 @@ protected:
   int get_timestamp(void);
 
   //!
-  void evaluate(double &p, double &r, double &f);
-
   bool test_setup(void);
 
 protected:
   Model * baseline_model;
 
-  //!
-  math::SparseVec baseline_correct_features;
-
-  //!
-  math::SparseVec baseline_predicted_features;
-
-  //!
-  math::SparseVec baseline_updated_features;
-
-  //!
-  math::Mat< math::FeatureVector * > baseline_uni_features;
+  DecodeContext* baseline_decode_context;
 
   CustomizedTrainOptions train_opts;
   CustomizedTestOptions test_opts;

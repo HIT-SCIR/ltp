@@ -5,6 +5,7 @@ set (segment_VERSION "0.1.0")
 set (segment_SRC
     decoder.cpp
     featurespace.cpp
+    rulebase.cpp
     model.cpp
     extractor.cpp
     segmentor.cpp)
@@ -48,7 +49,8 @@ set_target_properties (otcws
 # -----------------------------------------------
 # TOOLKIT #2
 # -----------------------------------------------
-add_executable (otcws-customized otcws_customized.cpp ${segment_SRC} customized_segmentor.cpp)
+add_executable (otcws-customized otcws_customized.cpp
+    ${segment_SRC} customized_segmentor.cpp)
 
 target_link_libraries (otcws-customized boost_regex_static_lib)
 
@@ -56,7 +58,6 @@ set_target_properties (otcws-customized
     PROPERTIES
     OUTPUT_NAME otcws-customized
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
-
 
 configure_file (
     segment_dll.h

@@ -418,7 +418,7 @@ Segmentor::build_feature_space(void) {
   for (int i = 0; i < train_dat.size(); ++ i) {
     build_lexicon_match_state(train_dat[i]);
     extract_features(train_dat[i], true);
-    decode_context->clear();
+    cleanup_decode_context();
 
     if ((i + 1) % train_opt->display_interval == 0) {
       TRACE_LOG("[%d] instances is extracted.", (i+1));
@@ -642,6 +642,11 @@ Segmentor::set_timestamp(int ts) {
 }
 
 void
+Segmentor::cleanup_decode_context() {
+  decode_context->clear();
+}
+
+void
 Segmentor::train(void) {
   if (!train_setup()) {
     return;
@@ -716,7 +721,7 @@ Segmentor::train(void) {
         calculate_scores(inst, false);
         decoder->decode(inst, score_matrix);
         collect_correct_and_predicted_features(inst);
-        decode_context->clear();
+        cleanup_decode_context();
 
         if (feature_group_updated_time) {
           increase_group_updated_time(decode_context->updated_features,
@@ -810,7 +815,7 @@ Segmentor::evaluate(double &p, double &r, double &f) {
     extract_features(inst);
     calculate_scores(inst, true);
     decoder->decode(inst, score_matrix);
-    decode_context->clear();
+    cleanup_decode_context();
 
     build_words(inst, inst->tagsidx, inst->words, beg_tag0, beg_tag1);
     build_words(inst, inst->predicted_tagsidx, inst->predicted_words, beg_tag0, beg_tag1);
@@ -909,7 +914,7 @@ Segmentor::test(void) {
     extract_features(inst);
     calculate_scores(inst, true);
     decoder->decode(inst, score_matrix);
-    decode_context->clear();
+    cleanup_decode_context();
 
     build_words(inst, inst->predicted_tagsidx, inst->predicted_words,
         beg_tag0, beg_tag1);

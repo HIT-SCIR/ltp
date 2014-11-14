@@ -73,6 +73,13 @@ protected:
    */
   virtual void train_passive_aggressive(int nr_errors);
 
+  /**
+   *
+   *
+   *
+   */
+  virtual void cleanup_decode_context();
+
 
   /**
    * Perform the averaged perceptron training.
@@ -133,6 +140,14 @@ protected:
    */
   void dump(void);
 
+  /**
+   *
+   *
+   *
+   *
+   */
+  virtual void build_lexicon_match_state(Instance* inst);
+
 
   /**
    * Extract features from one instance, store the extracted features in a
@@ -145,18 +160,9 @@ protected:
    *                      in the model otherwise not create.
    */
   void extract_features(const Instance * inst,
-      Model* model,
+      Model* mdl,
       DecodeContext* ctx,
       bool create = false);
-
-
-  /**
-   *
-   *
-   *
-   *
-   */
-  virtual void build_lexicon_match_state(Instance* inst);
 
 
   /**
@@ -205,7 +211,7 @@ protected:
    *  @param[out]   vec           The output sparse vector
    */
   void collect_features(const math::Mat< math::FeatureVector* >& uni_features,
-      const Model* model, const std::vector<int> & tagsidx,
+      const Model* mdl, const std::vector<int> & tagsidx,
       ltp::math::SparseVec & vec);
 
 
