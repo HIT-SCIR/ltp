@@ -1,8 +1,8 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <string>
-#include "boost/regex.hpp"
 #include "segmentor/rulebase.h"
+#include "boost/regex.hpp"
 
 TEST(engpattern_unittest, english_word) {
   std::string word = "78G"; 

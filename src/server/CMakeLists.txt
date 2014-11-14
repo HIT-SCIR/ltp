@@ -18,7 +18,7 @@ target_link_libraries (ltp_server
     maxent_static_lib
     util_static_lib
     ltp
-    splitsnt
+    splitsnt_static_lib
     segmentor_static_lib
     postagger_static_lib
     parser_static_lib
