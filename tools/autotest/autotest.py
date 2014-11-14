@@ -16,6 +16,7 @@ DUMMY = open(os.devnull, "w")
 TMPDIR= tempfile.gettempdir()
 SRC_EXTENSIONS = (".h", ".hpp", ".c", ".cpp")
 SRC_EXLUDES = ("mongoose.h", "mongoose.c")
+FINISHED_JOBS= set([])
 
 def which(program):
     # From http://stackoverflow.com/questions/377017
@@ -88,6 +89,8 @@ def static_code_check(rootdir, outputdir, verbose=False):
     logging.info("cppcheck: found %d performance comments." % nr_performance)
     logging.info("cppcheck: found %d warning comments." % nr_warning)
     ifs.close()
+    global FINISHED_JOBS
+    FINISHED_JOBS.add("cppcheck")
 
 
 def executable_check(rootdir, outputdir, input_path, verbose=False):
@@ -127,6 +130,8 @@ def executable_check(rootdir, outputdir, input_path, verbose=False):
     subprocess.call(command, stdout=ofs, stderr=DUMMY)
     ofs.close()
     logging.info("ltp_test: dynamically executable check is done.")
+    global FINISHED_JOBS
+    FINISHED_JOBS.add("ltp_test")
     return True
 
 
@@ -165,6 +170,8 @@ def memory_leak_check(rootdir, outputdir, input_path, verbose=False):
             line = line.split("==")[-1].strip()
             logging.info("memcheck: %s" % line)
     ifs.close()
+    global FINISHED_JOBS
+    FINISHED_JOBS.add("memcheck")
 
 
 def callgrind_check(rootdir, outputdir, input_path, verbose=False):
@@ -216,6 +223,9 @@ def callgrind_check(rootdir, outputdir, input_path, verbose=False):
     logging.info("callgrind: dot converting dot output to PNG.")
     subprocess.call(command, stdout=DUMMY, stderr=DUMMY)
     logging.info("callgrind: dot converting dot output to PNG is done.")
+
+    global FINISHED_JOBS
+    FINISHED_JOBS.add("callgrind")
 
 
 def speed_check(rootdir, outputdir, input_path, verbose=False):
@@ -288,6 +298,78 @@ def speed_check(rootdir, outputdir, input_path, verbose=False):
     logging.info("speed: postagger speed %f sent/s" % (float(nr_lines) / postag_tm))
     logging.info("speed: parser speed %f M/s" % (float(nr_sz) / 1024/ 1024/ parser_tm))
     logging.info("speed: parser speed %f sent/s" % (float(nr_lines) / parser_tm))
+    global FINISHED_JOBS
+    FINISHED_JOBS.add("speed")
+
+
+def multithread_check(rootdir, outputdir, input_path, verbose=False):
+    global FINISHED_JOBS
+    if "speed" not in FINISHED_JOBS:
+        speed_check(rootdir, outputdir, input_path, verbose)
+
+    if os.name == 'nt':
+        logging.info("multithread: windows speed check is not supported.")
+        return
+
+    def build(exe_prefix, model_prefix):
+        exe = os.path.join(rootdir, "bin", "examples", ("multi_%s_cmdline" % exe_prefix))
+        model = os.path.join(rootdir, "ltp_data", ("%s.model" % model_prefix))
+        out = os.path.join(TMPDIR, "ltp.autotest.multi.%s.out" % exe_prefix)
+        return (exe, model, out)
+    cws_cmdline, cws_model, cws_out = build("cws", "cws")
+    pos_cmdline, pos_model, pos_out = build("pos", "pos")
+
+    if not input_path:
+        logging.error("multithread: input not specified.")
+        logging.info("multithread: speed check is canceled.")
+        return
+
+    nr_sz = os.stat(input_path).st_size
+    dataset = open(input_path,"r").readlines()
+    nr_lines = len(dataset)
+    avg_sent_len = float(sum([len(data.decode("utf-8")) for data in dataset]))/nr_lines
+    logging.info("multithread: average sentence length %f" % avg_sent_len)
+
+    def check(exe):
+        if not which(exe):
+            logging.error("multithread: %s is not found." % exe)
+            logging.info("multithread: speed check is canceled.")
+            return False
+        return True
+
+    if not check(cws_cmdline):
+        return
+    if not check(pos_cmdline):
+        return
+
+    if not os.path.isfile(input_path):
+        logging.error("multithread: input is not specified.")
+        logging.info("multithread: speed check is canceled.")
+        return
+
+    speed_log = os.path.join(outputdir, "multi_speed.log")
+    lfs = open(speed_log, "w")
+    def run(exe, model, ifs, ofs):
+        subprocess.call([exe, model, "2"], stdin=ifs, stdout=ofs, stderr=lfs)
+        ifs.close()
+        ofs.close()
+
+    run(cws_cmdline, cws_model, open(input_path, "r"), open(cws_out, "w"))
+    run(pos_cmdline, pos_model, open(cws_out, "r"), open(pos_out, "w"))
+    lfs.close()
+    lfs = open(speed_log, "r")
+
+    for line in lfs:
+        if "multi-cws-tm-consume" in line:
+            multi_wordseg_tm = float(line.strip().split(":")[-1].strip().split()[1])
+        if "multi-pos-tm-consume" in line:
+            multi_postag_tm = float(line.strip().split(":")[-1].strip().split()[1])
+
+    logging.info("multithread: wordseg speed %f M/s" % (float(nr_sz) / 1024/ 1024/multi_wordseg_tm))
+    logging.info("multithread: wordseg speed %f sent/s" % (float(nr_lines) / multi_wordseg_tm))
+    logging.info("multithread: postagger speed %f M/s" % (float(nr_sz) / 1024/ 1024/multi_postag_tm))
+    logging.info("multithread: postagger speed %f sent/s" % (float(nr_lines) / multi_postag_tm))
+    FINISHED_JOBS.add("multithread")
 
 
 def server_check(rootdir, outputdir, input_path, verbose=False):
@@ -302,6 +384,7 @@ def server_check(rootdir, outputdir, input_path, verbose=False):
     ofs = open(os.path.join(outputdir, "server.return.txt"), "w")
     subprocess.call(command2, stdout=ofs, stderr=DUMMY)
     p.kill()
+
 
 if __name__=="__main__":
     usage = "automatically test script for LTP project.\n"
@@ -324,15 +407,25 @@ if __name__=="__main__":
             help="specify the details output dir [default=%s]" % default_outputdir)
     optparser.add_option("-i", "--input", dest="inputpath", default=default_inputpath,
             help="the input path [default=%s]" % default_inputpath)
+    optparser.add_option("-t", "--tasks", dest="tasks", default="all",
+            help="the test tasks, tasks are separated by |.")
     opts, args = optparser.parse_args()
 
     if not os.path.isdir(opts.outputdir):
         os.mkdir(opts.outputdir)
 
-    static_code_check(opts.rootdir, opts.outputdir)
+    tasks = opts.tasks.split("|")
+    if "all" in tasks or "cppcheck" in tasks:
+        static_code_check(opts.rootdir, opts.outputdir)
     if not executable_check(opts.rootdir, opts.outputdir, opts.inputpath):
         sys.exit(1)
-    memory_leak_check(opts.rootdir, opts.outputdir, opts.inputpath)
-    callgrind_check(opts.rootdir, opts.outputdir, opts.inputpath)
-    speed_check(opts.rootdir, opts.outputdir, opts.inputpath)
-    server_check(opts.rootdir, opts.outputdir, opts.inputpath)
+    if "all" in tasks or "memcheck" in tasks:
+        memory_leak_check(opts.rootdir, opts.outputdir, opts.inputpath)
+    if "all" in tasks or "callgrind" in tasks:
+        callgrind_check(opts.rootdir, opts.outputdir, opts.inputpath)
+    if "all" in tasks or "speed" in tasks:
+        speed_check(opts.rootdir, opts.outputdir, opts.inputpath)
+    if "all" in tasks or "server" in tasks:
+        server_check(opts.rootdir, opts.outputdir, opts.inputpath)
+    if "all" in tasks or "multithread" in tasks:
+        multithread_check(opts.rootdir, opts.outputdir, opts.inputpath)

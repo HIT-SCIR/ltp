@@ -28,110 +28,115 @@ const int MAX_LEN = 1024;
 
 class Dispatcher {
 public:
-    Dispatcher( void * model ) {
-        _model = model;
+  Dispatcher( void * model ) {
+    _model = model;
+  }
+
+  int next(std::vector<std::string> &words) {
+    std::string line;
+    std::string word;
+    lock_guard<mutex> guard(_mutex);
+    if (getline(std::cin, line, '\n')) {
+      std::stringstream S(line);
+      words.clear();
+      while (S >> word) { words.push_back(word); }
+    } else {
+      return -1;
+    }
+    return 0;
+  }
+
+  void output(const std::vector<std::string> & words,
+      const std::vector<std::string> &postags) {
+    lock_guard<mutex> guard(_mutex);
+    if (words.size() != postags.size()) {
+      return;
     }
 
-    int next(std::vector<std::string> &words) {
-        std::string line;
-        std::string word;
-        lock_guard<mutex> guard(_mutex);
-        if (getline(std::cin, line, '\n')) {
-            std::stringstream S(line);
-            words.clear();
-            while (S >> word) { words.push_back(word); }
-        } else {
-            return -1;
-        }
-        return 0;
+    for (int i = 0; i < words.size(); ++ i) {
+      std::cout << words[i] << "_" << postags[i];
+      std::cout << (i == words.size() - 1 ? '\n' : '|');
     }
+    return;
+  }
 
-    void output(const std::vector<std::string> & words,
-            const std::vector<std::string> &postags) {
-        lock_guard<mutex> guard(_mutex);
-        if (words.size() != postags.size()) {
-            return;
-        }
-
-        for (int i = 0; i < words.size(); ++ i) {
-            std::cout << words[i] << "_" << postags[i];
-            std::cout << (i == words.size() - 1 ? '\n' : '|');
-        }
-        return;
-    }
-
-    void * model() {
-        return _model;
-    }
+  void * model() {
+    return _model;
+  }
 
 private:
-    mutex  _mutex;
-    void * _model;
-    string _sentence;
+  mutex  _mutex;
+  void * _model;
+  string _sentence;
 };
 
 void multithreaded_postag( void * args) {
-    std::vector<std::string> words;
-    std::vector<std::string> postags;
+  std::vector<std::string> words;
+  std::vector<std::string> postags;
 
-    Dispatcher * dispatcher = (Dispatcher *)args;
-    void * model = dispatcher->model();
+  Dispatcher * dispatcher = (Dispatcher *)args;
+  void * model = dispatcher->model();
 
-    while (true) {
-        int ret = dispatcher->next(words);
+  while (true) {
+    int ret = dispatcher->next(words);
 
-        if (ret < 0)
-            break;
+    if (ret < 0)
+      break;
 
-        postags.clear();
-        postagger_postag(model, words, postags);
-        dispatcher->output(words, postags);
-    }
+    postags.clear();
+    postagger_postag(model, words, postags);
+    dispatcher->output(words, postags);
+  }
 
-    return;
+  return;
 }
 
 int main(int argc, char ** argv) {
-    if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
-        std::cerr << "Usage: ./multi_pos_cmdline [model path]" << std::endl;
-        std::cerr << std::endl;
-        std::cerr << "This program recieve input word sequence from stdin." << std::endl;
-        std::cerr << "One sentence per line. Words are separated by space." << std::endl;
-        return -1;
-    }
+  if (argc < 2 || (0 == strcmp(argv[1], "-h"))) {
+    std::cerr << "Usage: ./multi_pos_cmdline [model path] threadnum" << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "This program recieve input word sequence from stdin." << std::endl;
+    std::cerr << "One sentence per line. Words are separated by space." << std::endl;
+    return -1;
+  }
 
-    void * engine = postagger_create_postagger(argv[1]);
+  void * engine = postagger_create_postagger(argv[1]);
 
-    if (!engine) {
-        return -1;
-    }
+  if (!engine) {
+    return -1;
+  }
 
-    int num_threads = thread::hardware_concurrency();
-    std::cerr << "TRACE: Model is loaded" << std::endl;
-    std::cerr << "TRACE: Running " << num_threads << " thread(s)" << std::endl;
+  int num_threads = atoi(argv[2]);
 
-    Dispatcher * dispatcher = new Dispatcher( engine );
+  if(num_threads < 0 || num_threads > thread::hardware_concurrency()) {
+    num_threads = thread::hardware_concurrency();
+  }
 
-    double tm = ltp::utility::get_time();
-    list<thread *> thread_list;
-    for (int i = 0; i < num_threads; ++ i) {
-        thread * t = new thread( multithreaded_postag, (void *)dispatcher );
-        thread_list.push_back( t );
-    }
+  std::cerr << "TRACE: Model is loaded" << std::endl;
+  std::cerr << "TRACE: Running " << num_threads << " thread(s)" << std::endl;
 
-    for (list<thread *>::iterator i = thread_list.begin();
-            i != thread_list.end(); ++ i) {
-        thread * t = *i;
-        t->join();
-        delete t;
-    }
+  Dispatcher * dispatcher = new Dispatcher( engine );
 
-    tm = ltp::utility::get_time() - tm;
-    std::cerr << "TRACE: consume "
-        << tm 
-        << " seconds."
-        << std::endl;
+  double tm = ltp::utility::get_time();
+  list<thread *> thread_list;
+  for (int i = 0; i < num_threads; ++ i) {
+    thread * t = new thread( multithreaded_postag, (void *)dispatcher );
+    thread_list.push_back( t );
+  }
 
-    return 0;
+  for (list<thread *>::iterator i = thread_list.begin();
+      i != thread_list.end(); ++ i) {
+    thread * t = *i;
+    t->join();
+    delete t;
+  }
+
+  tm = ltp::utility::get_time() - tm;
+  std::cerr << "TRACE: multi-pos-tm-consume "
+    << tm
+    << " seconds."
+    << std::endl;
+
+  return 0;
 }
 

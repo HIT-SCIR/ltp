@@ -132,8 +132,8 @@ int main(int argc, char ** argv) {
   }
 
   tm = ltp::utility::get_time() - tm;
-  std::cerr << "TRACE: consume "
-            << tm 
+  std::cerr << "TRACE: multi-cws-tm-consume "
+            << tm
             << " seconds."
             << std::endl;
 
