@@ -12,14 +12,13 @@
 #ifndef _FEATURE_EXTRACTOR_H_
 #define _FEATURE_EXTRACTOR_H_
 
-#include <boost/function.hpp>
+#include "boost/function.hpp"
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <bitset>
 #include <tree.hh>
-#include <boost/foreach.hpp>
 #include <set>
 #include <map>
 #include "Sentence.h"
