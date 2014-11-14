@@ -209,8 +209,8 @@ void NER::extract_features(Instance * inst, bool create) {
   const int N = Extractor::num_templates();
   const int L = model->num_labels();
 
-  vector< StringVec > cache;
-  vector< int > cache_again;
+  std::vector< StringVec > cache;
+  std::vector< int > cache_again;
 
   cache.resize(N);
   int len = inst->size();
@@ -554,7 +554,7 @@ NER::train(void) {
       model->param.flush( train_dat.size() * (iter + 1) );
 
       Model * new_model = truncate();
-      swap(model, new_model);
+      std::swap(model, new_model);
       evaluate();
 
       std::string saved_model_file = (train_opt.model_name
@@ -563,7 +563,7 @@ NER::train(void) {
                                       + ".model");
       std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
 
-      swap(model, new_model);
+      std::swap(model, new_model);
       new_model->save(ofs);
       delete new_model;
 
@@ -577,7 +577,7 @@ NER::train(void) {
 void NER::evaluate(void) {
   const char * holdout_file = train_opt.holdout_file.c_str();
 
-  ifstream ifs(holdout_file);
+  std::ifstream ifs(holdout_file);
 
   if (!ifs) {
     ERROR_LOG("Failed to open holdout file.");
@@ -648,7 +648,7 @@ void NER::evaluate(void) {
 void NER::test(void) {
   // load model
   const char * model_file = test_opt.model_file.c_str();
-  ifstream mfs(model_file, std::ifstream::binary);
+  std::ifstream mfs(model_file, std::ifstream::binary);
 
   if (!mfs) {
     ERROR_LOG("Failed to load model");
@@ -667,7 +667,7 @@ void NER::test(void) {
 
   const char * test_file = test_opt.test_file.c_str();
 
-  ifstream ifs(test_file);
+  std::ifstream ifs(test_file);
 
   if (!ifs) {
     ERROR_LOG("Failed to open holdout file.");
@@ -677,7 +677,7 @@ void NER::test(void) {
   rulebase::RuleBase base(model->labels);
   decoder = new Decoder(model->num_labels(), base);
   NERReader reader(ifs);
-  NERWriter writer(cout);
+  NERWriter writer(std::cout);
   Instance * inst = NULL;
   int beg_tag0 = (model->labels.index( "B-Nh" ) / __num_ne_types__);
   int beg_tag1 = (model->labels.index( "S-Nh" ) / __num_ne_types__);
@@ -714,7 +714,7 @@ void NER::test(void) {
 void NER::dump() {
   // load model
   const char * model_file = dump_opt.model_file.c_str();
-  ifstream mfs(model_file, std::ifstream::binary);
+  std::ifstream mfs(model_file, std::ifstream::binary);
 
   if (!mfs) {
     ERROR_LOG("Failed to load model");

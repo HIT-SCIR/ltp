@@ -15,7 +15,7 @@ using namespace ltp::strutils;
 
 class NERReader {
 public:
-  NERReader(istream & _ifs, bool _train = false, int _style = 4)
+  NERReader(std::istream & _ifs, bool _train = false, int _style = 4)
     : ifs(_ifs),
       train(_train),
       style(_style) {}
@@ -82,9 +82,9 @@ public:
     return inst;
    }
 private:
-  istream &   ifs;
-  int         style;
-  bool        train;
+  std::istream&  ifs;
+  int style;
+  bool train;
 };
 
 class NERWriter {

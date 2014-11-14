@@ -87,7 +87,7 @@ int Extractor::extract1o(Instance * inst, int idx, std::vector< StringVec > & ca
 #undef TYPE
 #undef EQU
 
-  string feat;
+  std::string feat;
   feat.reserve(1024);
   for (int i = 0; i < templates.size(); ++ i) {
     templates[i]->render(data, feat);
