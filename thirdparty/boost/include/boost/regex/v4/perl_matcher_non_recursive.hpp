@@ -703,7 +703,13 @@ bool perl_matcher<BidiIterator, Allocator, traits>::match_char_repeat()
    if(::boost::is_random_access_iterator<BidiIterator>::value)
    {
       BidiIterator end = position;
-      std::advance(end, (std::min)((std::size_t)::boost::re_detail::distance(position, last), desired));
+      // Move end forward by "desired", preferably without using distance or advance if we can
+      // as these can be slow for some iterator types.
+      std::size_t len = (desired == (std::numeric_limits<std::size_t>::max)()) ? 0u : ::boost::re_detail::distance(position, last);
+      if(desired >= len)
+         end = last;
+      else
+         std::advance(end, desired);
       BidiIterator origin(position);
       while((position != end) && (traits_inst.translate(*position, icase) == what))
       {
@@ -771,7 +777,13 @@ bool perl_matcher<BidiIterator, Allocator, traits>::match_set_repeat()
    if(::boost::is_random_access_iterator<BidiIterator>::value)
    {
       BidiIterator end = position;
-      std::advance(end, (std::min)((std::size_t)::boost::re_detail::distance(position, last), desired));
+      // Move end forward by "desired", preferably without using distance or advance if we can
+      // as these can be slow for some iterator types.
+      std::size_t len = (desired == (std::numeric_limits<std::size_t>::max)()) ? 0u : ::boost::re_detail::distance(position, last);
+      if(desired >= len)
+         end = last;
+      else
+         std::advance(end, desired);
       BidiIterator origin(position);
       while((position != end) && map[static_cast<unsigned char>(traits_inst.translate(*position, icase))])
       {
@@ -828,9 +840,9 @@ bool perl_matcher<BidiIterator, Allocator, traits>::match_long_set_repeat()
 #ifdef __BORLANDC__
 #pragma option push -w-8008 -w-8066 -w-8004
 #endif
-   typedef typename traits::char_class_type mask_type;
+   typedef typename traits::char_class_type m_type;
    const re_repeat* rep = static_cast<const re_repeat*>(pstate);
-   const re_set_long<mask_type>* set = static_cast<const re_set_long<mask_type>*>(pstate->next.p);
+   const re_set_long<m_type>* set = static_cast<const re_set_long<m_type>*>(pstate->next.p);
    std::size_t count = 0;
    //
    // start by working out how much we can skip:
@@ -840,7 +852,13 @@ bool perl_matcher<BidiIterator, Allocator, traits>::match_long_set_repeat()
    if(::boost::is_random_access_iterator<BidiIterator>::value)
    {
       BidiIterator end = position;
-      std::advance(end, (std::min)((std::size_t)::boost::re_detail::distance(position, last), desired));
+      // Move end forward by "desired", preferably without using distance or advance if we can
+      // as these can be slow for some iterator types.
+      std::size_t len = (desired == (std::numeric_limits<std::size_t>::max)()) ? 0u : ::boost::re_detail::distance(position, last);
+      if(desired >= len)
+         end = last;
+      else
+         std::advance(end, desired);
       BidiIterator origin(position);
       while((position != end) && (position != re_is_set_member(position, last, set, re.get_data(), icase)))
       {
@@ -1268,6 +1286,9 @@ bool perl_matcher<BidiIterator, Allocator, traits>::unwind_fast_dot_repeat(bool 
       }while((count < rep->max) && (position != last) && !can_start(*position, rep->_map, mask_skip));
    }
 
+   // remember where we got to if this is a leading repeat:
+   if((rep->leading) && (count < rep->max))
+      restart = position;
    if(position == last)
    {
       // can't repeat any more, remove the pushed state: 
@@ -1434,7 +1455,7 @@ bool perl_matcher<BidiIterator, Allocator, traits>::unwind_short_set_repeat(bool
 template <class BidiIterator, class Allocator, class traits>
 bool perl_matcher<BidiIterator, Allocator, traits>::unwind_long_set_repeat(bool r)
 {
-   typedef typename traits::char_class_type mask_type;
+   typedef typename traits::char_class_type m_type;
    saved_single_repeat<BidiIterator>* pmp = static_cast<saved_single_repeat<BidiIterator>*>(m_backup_state);
 
    // if we have a match, just discard this state:
@@ -1447,7 +1468,7 @@ bool perl_matcher<BidiIterator, Allocator, traits>::unwind_long_set_repeat(bool 
    const re_repeat* rep = pmp->rep;
    std::size_t count = pmp->count;
    pstate = rep->next.p;
-   const re_set_long<mask_type>* set = static_cast<const re_set_long<mask_type>*>(pstate);
+   const re_set_long<m_type>* set = static_cast<const re_set_long<m_type>*>(pstate);
    position = pmp->last_position;
 
    BOOST_ASSERT(rep->type == syntax_element_long_set_rep);

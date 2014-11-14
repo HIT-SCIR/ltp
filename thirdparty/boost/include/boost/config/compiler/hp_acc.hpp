@@ -1,11 +1,11 @@
-//  (C) Copyright John Maddock 2001 - 2003. 
-//  (C) Copyright Jens Maurer 2001 - 2003. 
-//  (C) Copyright Aleksey Gurtovoy 2002. 
-//  (C) Copyright David Abrahams 2002 - 2003. 
-//  (C) Copyright Toon Knapen 2003. 
+//  (C) Copyright John Maddock 2001 - 2003.
+//  (C) Copyright Jens Maurer 2001 - 2003.
+//  (C) Copyright Aleksey Gurtovoy 2002.
+//  (C) Copyright David Abrahams 2002 - 2003.
+//  (C) Copyright Toon Knapen 2003.
 //  (C) Copyright Boris Gubenko 2006 - 2007.
-//  Use, modification and distribution are subject to the 
-//  Boost Software License, Version 1.0. (See accompanying file 
+//  Use, modification and distribution are subject to the
+//  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
@@ -43,7 +43,7 @@
 #    define BOOST_NO_DEPENDENT_TYPES_IN_TEMPLATE_VALUE_PARAMETERS
 #    define BOOST_NO_IS_ABSTRACT
 #    define BOOST_NO_MEMBER_TEMPLATE_FRIENDS
-#endif 
+#endif
 
 // optional features rather than defects:
 #if (__HP_aCC >= 33900)
@@ -92,38 +92,45 @@
 //
 #if !defined(__EDG__)
 
-#define BOOST_NO_AUTO_DECLARATIONS
-#define BOOST_NO_AUTO_MULTIDECLARATIONS
-#define BOOST_NO_CHAR16_T
-#define BOOST_NO_CHAR32_T
-#define BOOST_NO_CONSTEXPR
-#define BOOST_NO_DECLTYPE
-#define BOOST_NO_DECLTYPE_N3276
-#define BOOST_NO_DEFAULTED_FUNCTIONS
-#define BOOST_NO_DELETED_FUNCTIONS
-#define BOOST_NO_EXPLICIT_CONVERSION_OPERATORS
-#define BOOST_NO_EXTERN_TEMPLATE
-#define BOOST_NO_FUNCTION_TEMPLATE_DEFAULT_ARGS
-#define BOOST_NO_INITIALIZER_LISTS
-#define BOOST_NO_LAMBDAS
-#define BOOST_NO_NOEXCEPT
-#define BOOST_NO_NULLPTR
-#define BOOST_NO_RAW_LITERALS
-#define BOOST_NO_RVALUE_REFERENCES
-#define BOOST_NO_SCOPED_ENUMS
+#define BOOST_NO_CXX11_AUTO_DECLARATIONS
+#define BOOST_NO_CXX11_AUTO_MULTIDECLARATIONS
+#define BOOST_NO_CXX11_CHAR16_T
+#define BOOST_NO_CXX11_CHAR32_T
+#define BOOST_NO_CXX11_CONSTEXPR
+#define BOOST_NO_CXX11_DECLTYPE
+#define BOOST_NO_CXX11_DECLTYPE_N3276
+#define BOOST_NO_CXX11_DEFAULTED_FUNCTIONS
+#define BOOST_NO_CXX11_DELETED_FUNCTIONS
+#define BOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
+#define BOOST_NO_CXX11_EXTERN_TEMPLATE
+#define BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS
+#define BOOST_NO_CXX11_HDR_INITIALIZER_LIST
+#define BOOST_NO_CXX11_LAMBDAS
+#define BOOST_NO_CXX11_LOCAL_CLASS_TEMPLATE_PARAMETERS
+#define BOOST_NO_CXX11_NOEXCEPT
+#define BOOST_NO_CXX11_NULLPTR
+#define BOOST_NO_CXX11_RANGE_BASED_FOR
+#define BOOST_NO_CXX11_RAW_LITERALS
+#define BOOST_NO_CXX11_RVALUE_REFERENCES
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #define BOOST_NO_SFINAE_EXPR
-#define BOOST_NO_STATIC_ASSERT
-#define BOOST_NO_TEMPLATE_ALIASES
-#define BOOST_NO_UNICODE_LITERALS
-#define BOOST_NO_VARIADIC_TEMPLATES
+#define BOOST_NO_CXX11_STATIC_ASSERT
+#define BOOST_NO_CXX11_TEMPLATE_ALIASES
+#define BOOST_NO_CXX11_UNICODE_LITERALS
+#define BOOST_NO_CXX11_VARIADIC_TEMPLATES
+#define BOOST_NO_CXX11_USER_DEFINED_LITERALS
+#define BOOST_NO_CXX11_ALIGNAS
+#define BOOST_NO_CXX11_TRAILING_RESULT_TYPES
+#define BOOST_NO_CXX11_INLINE_NAMESPACES
+#define BOOST_NO_CXX11_REF_QUALIFIERS
 
-/* 
+/*
   See https://forums13.itrc.hp.com/service/forums/questionanswer.do?threadId=1443331 and
       https://forums13.itrc.hp.com/service/forums/questionanswer.do?threadId=1443436
 */
 
 #if (__HP_aCC < 62500) || !defined(HP_CXX0x_SOURCE)
-  #define BOOST_NO_VARIADIC_MACROS
+  #define BOOST_NO_CXX11_VARIADIC_MACROS
 #endif
 
 #endif

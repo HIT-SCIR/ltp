@@ -36,7 +36,10 @@
 namespace boost{
 #ifdef BOOST_MSVC
 #pragma warning(push)
-#pragma warning(disable : 4251 4231 4660 4800)
+#pragma warning(disable : 4251 4231 4800)
+#if BOOST_MSVC < 1600
+#pragma warning(disable : 4660)
+#endif
 #endif
 
 namespace re_detail{
@@ -233,9 +236,7 @@ public:
    }
    std::pair<const_iterator, const_iterator> BOOST_REGEX_CALL subexpression(std::size_t n)const
    {
-      if(n == 0)
-         boost::throw_exception(std::out_of_range("0 is not a valid subexpression index."));
-      const std::pair<std::size_t, std::size_t>& pi = this->m_subs.at(n - 1);
+      const std::pair<std::size_t, std::size_t>& pi = this->m_subs.at(n);
       std::pair<const_iterator, const_iterator> p(expression() + pi.first, expression() + pi.second);
       return p;
    }
@@ -243,11 +244,11 @@ public:
    // begin, end:
    const_iterator BOOST_REGEX_CALL begin()const
    { 
-      return (!this->m_status ? 0 : this->m_expression); 
+      return (this->m_status ? 0 : this->m_expression); 
    }
    const_iterator BOOST_REGEX_CALL end()const
    { 
-      return (!this->m_status ? 0 : this->m_expression + this->m_expression_len); 
+      return (this->m_status ? 0 : this->m_expression + this->m_expression_len); 
    }
    flag_type BOOST_REGEX_CALL flags()const
    {
@@ -263,7 +264,7 @@ public:
    }
    size_type BOOST_REGEX_CALL mark_count()const
    {
-      return this->m_mark_count;
+      return this->m_mark_count - 1;
    }
    const re_detail::re_syntax_base* get_first_state()const
    {

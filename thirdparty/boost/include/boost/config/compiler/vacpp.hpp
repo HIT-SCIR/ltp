@@ -1,10 +1,10 @@
-//  (C) Copyright John Maddock 2001 - 2003. 
-//  (C) Copyright Toon Knapen 2001 - 2003. 
-//  (C) Copyright Lie-Quan Lee 2001. 
-//  (C) Copyright Markus Schoepflin 2002 - 2003. 
-//  (C) Copyright Beman Dawes 2002 - 2003. 
-//  Use, modification and distribution are subject to the 
-//  Boost Software License, Version 1.0. (See accompanying file 
+//  (C) Copyright John Maddock 2001 - 2003.
+//  (C) Copyright Toon Knapen 2001 - 2003.
+//  (C) Copyright Lie-Quan Lee 2001.
+//  (C) Copyright Markus Schoepflin 2002 - 2003.
+//  (C) Copyright Beman Dawes 2002 - 2003.
+//  Use, modification and distribution are subject to the
+//  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
@@ -16,7 +16,7 @@
 #  define BOOST_NO_MEMBER_FUNCTION_SPECIALIZATIONS
 #endif
 
-#if (__IBMCPP__ <= 502) 
+#if (__IBMCPP__ <= 502)
 // Actually the compiler supports inclass member initialization but it
 // requires a definition for the class member and it doesn't recognize
 // it as an integral constant expression when used as a template argument.
@@ -30,9 +30,9 @@
 #endif
 
 #if (__IBMCPP__ <= 1110)
-// XL C++ V11.1 and earlier versions may not always value-initialize  
-// a temporary object T(), when T is a non-POD aggregate class type. 
-// Michael Wong (IBM Canada Ltd) has confirmed this issue and gave it 
+// XL C++ V11.1 and earlier versions may not always value-initialize
+// a temporary object T(), when T is a non-POD aggregate class type.
+// Michael Wong (IBM Canada Ltd) has confirmed this issue and gave it
 // high priority. -- Niels Dekker (LKEB), May 2010.
 #  define BOOST_NO_COMPLETE_VALUE_INITIALIZATION
 #endif
@@ -53,8 +53,8 @@
 #error "Compiler not supported or configured - please reconfigure"
 #endif
 //
-// last known and checked version is 1110:
-#if (__IBMCPP__ > 1110)
+// last known and checked version is 1210:
+#if (__IBMCPP__ > 1210)
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  endif
@@ -71,50 +71,62 @@
 //   See boost\config\suffix.hpp for BOOST_NO_LONG_LONG
 //
 #if ! __IBMCPP_AUTO_TYPEDEDUCTION
-#  define BOOST_NO_AUTO_DECLARATIONS
-#  define BOOST_NO_AUTO_MULTIDECLARATIONS
+#  define BOOST_NO_CXX11_AUTO_DECLARATIONS
+#  define BOOST_NO_CXX11_AUTO_MULTIDECLARATIONS
 #endif
 #if ! __IBMCPP_UTF_LITERAL__
-#  define BOOST_NO_CHAR16_T
-#  define BOOST_NO_CHAR32_T
+#  define BOOST_NO_CXX11_CHAR16_T
+#  define BOOST_NO_CXX11_CHAR32_T
 #endif
-#define BOOST_NO_CONSTEXPR
+#if ! __IBMCPP_CONSTEXPR
+#  define BOOST_NO_CXX11_CONSTEXPR
+#endif
 #if ! __IBMCPP_DECLTYPE
-#  define BOOST_NO_DECLTYPE
+#  define BOOST_NO_CXX11_DECLTYPE
 #else
 #  define BOOST_HAS_DECLTYPE
 #endif
-#define BOOST_NO_DECLTYPE_N3276
-#define BOOST_NO_DEFAULTED_FUNCTIONS
-#define BOOST_NO_DELETED_FUNCTIONS
-#define BOOST_NO_EXPLICIT_CONVERSION_OPERATORS
+#define BOOST_NO_CXX11_DECLTYPE_N3276
+#define BOOST_NO_CXX11_DEFAULTED_FUNCTIONS
+#define BOOST_NO_CXX11_DELETED_FUNCTIONS
+#if ! __IBMCPP_EXPLICIT_CONVERSION_OPERATORS
+#  define BOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
+#endif
 #if ! __IBMCPP_EXTERN_TEMPLATE
-#  define BOOST_NO_EXTERN_TEMPLATE
+#  define BOOST_NO_CXX11_EXTERN_TEMPLATE
 #endif
 #if ! __IBMCPP_VARIADIC_TEMPLATES
 // not enabled separately at this time
-#  define BOOST_NO_FUNCTION_TEMPLATE_DEFAULT_ARGS
+#  define BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS
 #endif
-#define BOOST_NO_INITIALIZER_LISTS
-#define BOOST_NO_LAMBDAS
-#define BOOST_NO_NOEXCEPT
-#define BOOST_NO_NULLPTR
-#define BOOST_NO_RAW_LITERALS
-#define BOOST_NO_RVALUE_REFERENCES
-#define BOOST_NO_SCOPED_ENUMS
+#define BOOST_NO_CXX11_HDR_INITIALIZER_LIST
+#define BOOST_NO_CXX11_LAMBDAS
+#define BOOST_NO_CXX11_LOCAL_CLASS_TEMPLATE_PARAMETERS
+#define BOOST_NO_CXX11_NOEXCEPT
+#define BOOST_NO_CXX11_NULLPTR
+#define BOOST_NO_CXX11_RANGE_BASED_FOR
+#define BOOST_NO_CXX11_RAW_LITERALS
+#define BOOST_NO_CXX11_USER_DEFINED_LITERALS
+#if ! __IBMCPP_RVALUE_REFERENCES
+#  define BOOST_NO_CXX11_RVALUE_REFERENCES
+#endif
+#if ! __IBMCPP_SCOPED_ENUM
+#  define BOOST_NO_CXX11_SCOPED_ENUMS
+#endif
 #define BOOST_NO_SFINAE_EXPR
-#define BOOST_NO_UNIFIED_INITIALIZATION_SYNTAX
+#define BOOST_NO_CXX11_UNIFIED_INITIALIZATION_SYNTAX
 #if ! __IBMCPP_STATIC_ASSERT
-#  define BOOST_NO_STATIC_ASSERT
+#  define BOOST_NO_CXX11_STATIC_ASSERT
 #endif
-#define BOOST_NO_TEMPLATE_ALIASES
-#define BOOST_NO_UNICODE_LITERALS
+#define BOOST_NO_CXX11_TEMPLATE_ALIASES
+#define BOOST_NO_CXX11_UNICODE_LITERALS
 #if ! __IBMCPP_VARIADIC_TEMPLATES
-#  define BOOST_NO_VARIADIC_TEMPLATES
+#  define BOOST_NO_CXX11_VARIADIC_TEMPLATES
 #endif
 #if ! __C99_MACRO_WITH_VA_ARGS
-#  define BOOST_NO_VARIADIC_MACROS
+#  define BOOST_NO_CXX11_VARIADIC_MACROS
 #endif
-
-
-
+#define BOOST_NO_CXX11_ALIGNAS
+#define BOOST_NO_CXX11_TRAILING_RESULT_TYPES
+#define BOOST_NO_CXX11_INLINE_NAMESPACES
+#define BOOST_NO_CXX11_REF_QUALIFIERS

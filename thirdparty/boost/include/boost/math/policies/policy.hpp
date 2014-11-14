@@ -94,8 +94,7 @@ namespace policies{
 #define BOOST_MATH_MAX_ROOT_ITERATION_POLICY 200
 #endif
 
-#if !defined(__BORLANDC__) \
-   && !(defined(__GNUC__) && (__GNUC__ == 3) && (__GNUC_MINOR__ <= 2))
+#if !defined(__BORLANDC__)
 #define BOOST_MATH_META_INT(type, name, Default)\
    template <type N = Default> struct name : public boost::mpl::int_<N>{};\
    namespace detail{\
@@ -431,7 +430,7 @@ public:
    //
    // Mathematically undefined properties:
    //
-   typedef typename detail::find_arg<arg_list, is_assert_undefined<mpl::_1>, discrete_quantile<> >::type assert_undefined_type;
+   typedef typename detail::find_arg<arg_list, is_assert_undefined<mpl::_1>, assert_undefined<> >::type assert_undefined_type;
    //
    // Max iterations:
    //
@@ -537,12 +536,12 @@ private:
    //
    // Mathematically undefined properties:
    //
-   typedef typename detail::find_arg<arg_list, is_assert_undefined<mpl::_1>, discrete_quantile<> >::type assert_undefined_type;
+   typedef typename detail::find_arg<arg_list, is_assert_undefined<mpl::_1>, typename Policy::assert_undefined_type >::type assert_undefined_type;
    //
    // Max iterations:
    //
-   typedef typename detail::find_arg<arg_list, is_max_series_iterations<mpl::_1>, max_series_iterations<> >::type max_series_iterations_type;
-   typedef typename detail::find_arg<arg_list, is_max_root_iterations<mpl::_1>, max_root_iterations<> >::type max_root_iterations_type;
+   typedef typename detail::find_arg<arg_list, is_max_series_iterations<mpl::_1>, typename Policy::max_series_iterations_type>::type max_series_iterations_type;
+   typedef typename detail::find_arg<arg_list, is_max_root_iterations<mpl::_1>, typename Policy::max_root_iterations_type>::type max_root_iterations_type;
    //
    // Define a typelist of the policies:
    //
@@ -813,6 +812,16 @@ struct precision
 
 #endif
 
+#ifdef BOOST_MATH_USE_FLOAT128
+
+template <class Policy>
+struct precision<BOOST_MATH_FLOAT128_TYPE, Policy>
+{
+   typedef mpl::int_<113> type;
+};
+
+#endif
+
 namespace detail{
 
 template <class T, class Policy>
@@ -950,6 +959,29 @@ struct is_policy_imp
 
 template <class P>
 struct is_policy : public mpl::bool_< ::boost::math::policies::detail::is_policy_imp<P>::value> {};
+
+//
+// Helper traits class for distribution error handling:
+//
+template <class Policy>
+struct constructor_error_check
+{
+   typedef typename Policy::domain_error_type domain_error_type;
+   typedef typename mpl::if_c<
+      (domain_error_type::value == throw_on_error) || (domain_error_type::value == user_error),
+      mpl::true_,
+      mpl::false_>::type type;
+};
+
+template <class Policy>
+struct method_error_check
+{
+   typedef typename Policy::domain_error_type domain_error_type;
+   typedef typename mpl::if_c<
+      (domain_error_type::value == throw_on_error) && (domain_error_type::value != user_error),
+      mpl::false_,
+      mpl::true_>::type type;
+};
 
 }}} // namespaces
 

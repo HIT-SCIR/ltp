@@ -37,11 +37,9 @@ struct make_signed_imp
 {
    BOOST_STATIC_ASSERT(
       (::boost::type_traits::ice_or< ::boost::is_integral<T>::value, ::boost::is_enum<T>::value>::value));
-#if !BOOST_WORKAROUND(BOOST_MSVC, <=1300)
    BOOST_STATIC_ASSERT(
       (::boost::type_traits::ice_not< ::boost::is_same<
          typename remove_cv<T>::type, bool>::value>::value));
-#endif
 
    typedef typename remove_cv<T>::type t_no_cv;
    typedef typename mpl::if_c<
@@ -72,7 +70,15 @@ struct make_signed_imp
                      is_same<t_no_cv, unsigned long>,
                      long,
 #if defined(BOOST_HAS_LONG_LONG)
+#ifdef BOOST_HAS_INT128
+                     typename mpl::if_c<
+                        sizeof(t_no_cv) == sizeof(boost::long_long_type), 
+                        boost::long_long_type, 
+                        boost::int128_type
+                     >::type
+#else
                      boost::long_long_type
+#endif
 #elif defined(BOOST_HAS_MS_INT64)
                      __int64
 #else
@@ -96,7 +102,15 @@ struct make_signed_imp
                      sizeof(t_no_cv) == sizeof(unsigned long),
                      long,
 #if defined(BOOST_HAS_LONG_LONG)
+#ifdef BOOST_HAS_INT128
+                     typename mpl::if_c<
+                        sizeof(t_no_cv) == sizeof(boost::long_long_type), 
+                        boost::long_long_type, 
+                        boost::int128_type
+                     >::type
+#else
                      boost::long_long_type
+#endif
 #elif defined(BOOST_HAS_MS_INT64)
                      __int64
 #else

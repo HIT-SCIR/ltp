@@ -8,7 +8,7 @@
 #if !defined(BOOST_DETAIL_CONTAINER_FWD_HPP)
 #define BOOST_DETAIL_CONTAINER_FWD_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020) && \
+#if defined(_MSC_VER) && \
     !defined(BOOST_DETAIL_TEST_CONFIG_ONLY)
 # pragma once
 #endif
@@ -21,10 +21,17 @@
 // Define BOOST_DETAIL_NO_CONTAINER_FWD if you don't want this header to      //
 // forward declare standard containers.                                       //
 //                                                                            //
+// BOOST_DETAIL_CONTAINER_FWD to make it foward declare containers even if it //
+// normally doesn't.                                                          //
+//                                                                            //
+// BOOST_DETAIL_NO_CONTAINER_FWD overrides BOOST_DETAIL_CONTAINER_FWD.        //
+//                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 #if !defined(BOOST_DETAIL_NO_CONTAINER_FWD)
-#  if defined(__SGI_STL_PORT) || defined(_STLPORT_VERSION)
+#  if defined(BOOST_DETAIL_CONTAINER_FWD)
+     // Force forward declarations.
+#  elif defined(__SGI_STL_PORT) || defined(_STLPORT_VERSION)
      // STLport
 #    define BOOST_DETAIL_NO_CONTAINER_FWD
 #  elif defined(__LIBCOMO__)
@@ -38,10 +45,18 @@
 #    define BOOST_DETAIL_NO_CONTAINER_FWD
 #  elif defined(__GLIBCPP__) || defined(__GLIBCXX__)
      // GNU libstdc++ 3
-#    if defined(_GLIBCXX_DEBUG) \
+     //
+     // Disable forwarding for all recent versions, as the library has a
+     // versioned namespace mode, and I don't know how to detect it.
+#    if __GLIBCXX__ >= 20070513 \
+        || defined(_GLIBCXX_DEBUG) \
         || defined(_GLIBCXX_PARALLEL) \
         || defined(_GLIBCXX_PROFILE)
 #      define BOOST_DETAIL_NO_CONTAINER_FWD
+#    else
+#      if defined(__GLIBCXX__) && __GLIBCXX__ >= 20040530
+#        define BOOST_CONTAINER_FWD_COMPLEX_STRUCT
+#      endif
 #    endif
 #  elif defined(__STL_CONFIG_H)
      // generic SGI STL
@@ -63,17 +78,10 @@
 #  elif (defined(_YVALS) && !defined(__IBMCPP__)) || defined(_CPPLIB_VER)
      // Dinkumware Library (this has to appear after any possible replacement
      // libraries)
-     //
-     // Works fine.
 #  else
 #    define BOOST_DETAIL_NO_CONTAINER_FWD
 #  endif
 #endif
-
-// BOOST_DETAIL_TEST_* macros are for testing only
-// and shouldn't be relied upon. But you can use
-// BOOST_DETAIL_NO_CONTAINER_FWD to prevent forward
-// declaration of containers.
 
 #if !defined(BOOST_DETAIL_TEST_CONFIG_ONLY)
 
@@ -111,17 +119,13 @@ namespace std
     template <class T> class allocator;
     template <class charT, class traits, class Allocator> class basic_string;
 
-#if BOOST_WORKAROUND(__GNUC__, < 3) && !defined(__SGI_STL_PORT) && !defined(_STLPORT_VERSION)
-    template <class charT> struct string_char_traits;
-#else
     template <class charT> struct char_traits;
-#endif
 
-    #if BOOST_CLANG
-        template <class T> struct complex;
-    #else
-        template <class T> class complex;
-    #endif
+#if defined(BOOST_CONTAINER_FWD_COMPLEX_STRUCT)
+    template <class T> struct complex;
+#else
+    template <class T> class complex;
+#endif
 
 #if !defined(BOOST_CONTAINER_FWD_BAD_DEQUE)
     template <class T, class Allocator> class deque;

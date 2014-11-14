@@ -141,7 +141,7 @@ class u32_to_u16_iterator
 {
    typedef boost::iterator_facade<u32_to_u16_iterator<BaseIterator, U16Type>, U16Type, std::bidirectional_iterator_tag, const U16Type> base_type;
 
-#if !defined(BOOST_NO_STD_ITERATOR_TRAITS) && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+#if !defined(BOOST_NO_STD_ITERATOR_TRAITS)
    typedef typename std::iterator_traits<BaseIterator>::value_type base_value_type;
 
    BOOST_STATIC_ASSERT(sizeof(base_value_type)*CHAR_BIT == 32);
@@ -256,7 +256,7 @@ class u16_to_u32_iterator
    // special values for pending iterator reads:
    BOOST_STATIC_CONSTANT(U32Type, pending_read = 0xffffffffu);
 
-#if !defined(BOOST_NO_STD_ITERATOR_TRAITS) && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+#if !defined(BOOST_NO_STD_ITERATOR_TRAITS)
    typedef typename std::iterator_traits<BaseIterator>::value_type base_value_type;
 
    BOOST_STATIC_ASSERT(sizeof(base_value_type)*CHAR_BIT == 16);
@@ -371,7 +371,7 @@ class u32_to_u8_iterator
 {
    typedef boost::iterator_facade<u32_to_u8_iterator<BaseIterator, U8Type>, U8Type, std::bidirectional_iterator_tag, const U8Type> base_type;
    
-#if !defined(BOOST_NO_STD_ITERATOR_TRAITS) && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+#if !defined(BOOST_NO_STD_ITERATOR_TRAITS)
    typedef typename std::iterator_traits<BaseIterator>::value_type base_value_type;
 
    BOOST_STATIC_ASSERT(sizeof(base_value_type)*CHAR_BIT == 32);
@@ -499,7 +499,7 @@ class u8_to_u32_iterator
    // special values for pending iterator reads:
    BOOST_STATIC_CONSTANT(U32Type, pending_read = 0xffffffffu);
 
-#if !defined(BOOST_NO_STD_ITERATOR_TRAITS) && !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+#if !defined(BOOST_NO_STD_ITERATOR_TRAITS)
    typedef typename std::iterator_traits<BaseIterator>::value_type base_value_type;
 
    BOOST_STATIC_ASSERT(sizeof(base_value_type)*CHAR_BIT == 8);
@@ -520,9 +520,26 @@ public:
    }
    void increment()
    {
+      // We must not start with a continuation character:
+      if((static_cast<boost::uint8_t>(*m_position) & 0xC0) == 0x80)
+         invalid_sequence();
       // skip high surrogate first if there is one:
       unsigned c = detail::utf8_byte_count(*m_position);
-      std::advance(m_position, c);
+      if(m_value == pending_read)
+      {
+         // Since we haven't read in a value, we need to validate the code points:
+         for(unsigned i = 0; i < c; ++i)
+         {
+            ++m_position;
+            // We must have a continuation byte:
+            if((i != c - 1) && ((static_cast<boost::uint8_t>(*m_position) & 0xC0) != 0x80))
+               invalid_sequence();
+         }
+      }
+      else
+      {
+         std::advance(m_position, c);
+      }
       m_value = pending_read;
    }
    void decrement()
@@ -589,7 +606,7 @@ private:
       // we must not have a continuation character:
       if((m_value & 0xC0u) == 0x80u)
          invalid_sequence();
-      // see how many extra byts we have:
+      // see how many extra bytes we have:
       unsigned extra = detail::utf8_trailing_byte_count(*m_position);
       // extract the extra bits, 6 from each extra byte:
       BaseIterator next(m_position);
@@ -597,6 +614,9 @@ private:
       {
          ++next;
          m_value <<= 6;
+         // We must have a continuation byte:
+         if((static_cast<boost::uint8_t>(*next) & 0xC0) != 0x80)
+            invalid_sequence();
          m_value += static_cast<boost::uint8_t>(*next) & 0x3Fu;
       }
       // we now need to remove a few of the leftmost bits, but how many depends
@@ -609,8 +629,14 @@ private:
          0x1FFFFFu,
       };
       m_value &= masks[extra];
-      // check the result:
+      // check the result is in range:
       if(m_value > static_cast<U32Type>(0x10FFFFu))
+         invalid_sequence();
+      // The result must not be a surrogate:
+      if((m_value >= static_cast<U32Type>(0xD800)) && (m_value <= static_cast<U32Type>(0xDFFF)))
+         invalid_sequence();
+      // We should not have had an invalidly encoded UTF8 sequence:
+      if((extra > 0) && (m_value <= static_cast<U32Type>(masks[extra - 1])))
          invalid_sequence();
    }
    BaseIterator m_position;

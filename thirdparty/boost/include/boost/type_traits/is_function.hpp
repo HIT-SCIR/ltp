@@ -15,7 +15,7 @@
 #include <boost/type_traits/detail/false_result.hpp>
 #include <boost/config.hpp>
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_TT_TEST_MS_FUNC_SIGS)
+#if !defined(BOOST_TT_TEST_MS_FUNC_SIGS)
 #   include <boost/type_traits/detail/is_function_ptr_helper.hpp>
 #else
 #   include <boost/type_traits/detail/is_function_ptr_tester.hpp>
@@ -37,7 +37,7 @@ namespace boost {
 
 namespace detail {
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_TT_TEST_MS_FUNC_SIGS)
+#if !defined(BOOST_TT_TEST_MS_FUNC_SIGS)
 template<bool is_ref = true>
 struct is_function_chooser
     : public ::boost::type_traits::false_result
@@ -79,9 +79,12 @@ struct is_function_impl
 #endif
 };
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 template <typename T>
 struct is_function_impl<T&> : public false_type
+{};
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
+template <typename T>
+struct is_function_impl<T&&> : public false_type
 {};
 #endif
 
@@ -95,7 +98,7 @@ struct is_function_impl<T&> : public false_type
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function,T,__is_function(T))
 #else
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_function,T,::boost::detail::is_function_impl<T>::value)
-#ifndef BOOST_NO_RVALUE_REFERENCES
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_1(typename T,is_function,T&&,false)
 #endif
 #endif

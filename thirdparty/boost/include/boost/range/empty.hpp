@@ -11,7 +11,7 @@
 #ifndef BOOST_RANGE_EMPTY_HPP
 #define BOOST_RANGE_EMPTY_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -28,7 +28,7 @@ namespace boost
         return boost::begin( r ) == boost::end( r );
     }
 
-} // namepace 'boost'
+} // namespace 'boost'
 
 
 #endif
