@@ -49,13 +49,13 @@ int main(int argc, char * argv[]) {
     std::cout << std::endl;
   }
 
-  parser_release_parser(engine);
-
   tm = ltp::utility::get_time() - tm;
   std::cerr << "TRACE: par-tm-consume "
             << tm
             << " seconds."
             << std::endl;
+
+  parser_release_parser(engine);
   return 0;
 }
 

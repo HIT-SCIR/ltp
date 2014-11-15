@@ -49,15 +49,13 @@ int main(int argc, char * argv[]) {
       else std::cout<< "\t";
     }
   }
-
-  segmentor_release_segmentor(engine);
-
   tm = ltp::utility::get_time() - tm;
   std::cerr << "TRACE: cws-tm-consume "
             << tm
             << " seconds."
             << std::endl;
 
+  segmentor_release_segmentor(engine);
   return 0;
 }
 

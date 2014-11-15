@@ -62,13 +62,13 @@ int main(int argc, char * argv[]) {
     }
   }
 
-  postagger_release_postagger(engine);
-
   tm = ltp::utility::get_time() - tm;
   std::cerr << "TRACE: pos-tm-consume "
-    << tm 
+    << tm
     << " seconds."
     << std::endl;
+
+  postagger_release_postagger(engine);
 
   return 0;
 }
