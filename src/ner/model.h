@@ -1,6 +1,7 @@
 #ifndef __LTP_NER_MODEL_H__
 #define __LTP_NER_MODEL_H__
 
+#include "framework/serializable.h"
 #include "ner/featurespace.h"
 #include "ner/parameter.h"
 #include "utils/smartmap.hpp"
@@ -8,9 +9,10 @@
 namespace ltp {
 namespace ner {
 
-using namespace ltp::utility;
+namespace utils = ltp::utility;
+namespace frame = ltp::framework;
 
-class Model {
+class Model : public frame::Serializable {
 public:
   Model();
   ~Model();
@@ -38,21 +40,17 @@ public:
    */
   bool load(std::istream & ifs);
 public:
-  IndexableSmartMap   labels;
-  FeatureSpace        space;
-  Parameters          param;
+  //!
+  utils::IndexableSmartMap labels;
 
-  SmartMap<int>       cluster_lexicon;
-private:
-  void write_uint(std::ostream & out, unsigned int val) {
-    out.write(reinterpret_cast<const char *>(&val), sizeof(unsigned int));
-  }
+  //!
+  FeatureSpace space;
 
-  unsigned int read_uint(std::istream & in) {
-    char p[4];
-    in.read(reinterpret_cast<char*>(p), sizeof(unsigned int));
-    return *reinterpret_cast<const unsigned int*>(p);
-  }
+  //!
+  Parameters param;
+
+  //!
+  utils::SmartMap<int> cluster_lexicon;
 };
 
 }     //  end for namespace ner

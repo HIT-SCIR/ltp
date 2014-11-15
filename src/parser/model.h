@@ -1,6 +1,7 @@
 #ifndef __LTP_PARSER_MODEL_H__
 #define __LTP_PARSER_MODEL_H__
 
+#include "framework/serializable.h"
 #include "parser/featurespace.h"
 #include "parser/parameters.h"
 #include "parser/options.h"
@@ -8,7 +9,9 @@
 namespace ltp {
 namespace parser {
 
-class Model {
+namespace frame = ltp::framework;
+
+class Model: public frame::Serializable {
 public:
   Model() :
     _dim(-1),
@@ -74,17 +77,6 @@ public:
    *  @return bool  true on success, otherwise false
    */
   bool load(istream & in);
-
-private:
-  void write_uint(ostream & out, unsigned int val) {
-    out.write(reinterpret_cast<const char *>(&val), sizeof(unsigned int));
-  }
-
-  unsigned int read_uint(istream & in) {
-    char p[4];
-    in.read(reinterpret_cast<char*>(p), sizeof(unsigned int));
-    return *reinterpret_cast<const unsigned int*>(p);
-  }
 };    //  end for class model
 
 }     //  end for namespace parser
