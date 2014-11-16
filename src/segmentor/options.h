@@ -13,7 +13,7 @@ struct ModelOptions {
 struct TrainOptions {
   std::string       train_file;
   std::string       holdout_file;
-  std::string       model_name;
+  std::string       model_file;
   std::string       algorithm;
   int               max_iter;
   int               display_interval;

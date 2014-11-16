@@ -2,6 +2,6 @@
 train-file = sample/seg/example-train.seg
 holdout-file = sample/seg/example-holdout.seg
 algorithm = pa
-model-name = build/cws/example-seg
+model-file = build/cws/example-seg
 max-iter = 1
 rare-feature-threshold = 0
