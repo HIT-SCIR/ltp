@@ -7,11 +7,11 @@ using namespace ltp::utility;
 using namespace ltp::segmentor;
 
 void usage(void) {
-  std::cerr << "otcws-inc - Incremental training and testing suite for"
+  std::cerr << "otcws-customized- Customized training and testing suite for"
             << " Chinese Word segmentation" << std::endl;
   std::cerr << "Copyright (C) 2012-2014 HIT-SCIR" << std::endl;
   std::cerr << std::endl;
-  std::cerr << "usage: ./otcws-inc <config_file>" << std::endl;
+  std::cerr << "usage: ./otcws-customized <config_file>" << std::endl;
   std::cerr << std::endl;
 }
 
