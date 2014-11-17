@@ -1,0 +1,9 @@
+[train]
+train-file = sample/seg/example-train-2.seg
+holdout-file = sample/seg/example-holdout.seg
+algorithm = pa
+model-name = build/cws/example-seg-customized
+baseline-model-file = build/cws/example-seg.0.model
+max-iter = 5
+rare-feature-threshold = 0
+enable-incremental-training = 1

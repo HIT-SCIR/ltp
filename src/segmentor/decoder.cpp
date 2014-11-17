@@ -3,10 +3,9 @@
 namespace ltp {
 namespace segmentor {
 
-
-void Decoder::decode(Instance * inst) {
+void Decoder::decode(Instance * inst, const ScoreMatrix* scm) {
   init_lattice(inst);
-  viterbi_decode(inst);
+  viterbi_decode(inst, scm);
   get_result(inst);
   free_lattice();
 }
@@ -17,7 +16,7 @@ void Decoder::init_lattice(const Instance * inst) {
   lattice = NULL;
 }
 
-void Decoder::viterbi_decode(const Instance * inst) {
+void Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
   int len = inst->size();
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
@@ -26,7 +25,7 @@ void Decoder::viterbi_decode(const Instance * inst) {
       }
 
       if (i == 0) {
-        LatticeItem * item = new LatticeItem(i, l, inst->uni_scores[i][l], NULL);
+        LatticeItem * item = new LatticeItem(i, l, scm->uni_scores[i][l], NULL);
         lattice_insert(lattice[i][l], item);
       } else {
         for (int pl = 0; pl < L; ++ pl) {
@@ -42,7 +41,7 @@ void Decoder::viterbi_decode(const Instance * inst) {
           }
 
           // std::cout << i << " " << pl << " " << l << std::endl;
-          score = inst->uni_scores[i][l] + inst->bi_scores[pl][l] + prev->score;
+          score = scm->uni_scores[i][l] + scm->bi_scores[pl][l] + prev->score;
           const LatticeItem * item = new LatticeItem(i, l, score, prev);
           lattice_insert(lattice[i][l], item);
         }
@@ -80,28 +79,6 @@ void Decoder::free_lattice() {
     }
   }
 }
-
-/*void KBestDecoder::decode(Instance * inst, KBestDecodeResult & result) {
-  init_lattice(inst);
-  kbest_viterbi_decode(inst);
-  get_result(result);
-  free_lattice();
-}
-
-void KBestDecoder::init_lattice(const Instance * inst) {
-  int len = inst->len();
-  lattice.resize(len, L);
-
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      lattice[i][l] = new KHeap<LatticeItem>(k);
-    }
-  }
-}
-
-void KBestDecoder::kbest_viterbi_decode(const Instance * inst) {
-}*/
-
 
 }     //  end for namespace segmentor
 }     //  end for namespace ltp

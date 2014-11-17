@@ -5,7 +5,13 @@
 新闻
 ----
 
-第一届语言技术平台（LTP）用户大会将于2014年10月31日上午在北京召开，欢迎大家参加！会议详细信息见[http://ir.hit.edu.cn/ltp-2014/](http://ir.hit.edu.cn/ltp-2014/)，有意者请于10月20日之前填写[在线会议注册表](http://www.mikecrm.com/f.php?t=emJ0fp)。
+语言技术平台3.2.0版 发布
+* [增加] 分词模块增量模型训练工具。使用户可以在语言技术平台基线模型的基础之上增加训练数据，从而获得特定领域性能更好的模型。
+* [修改] Boost.Regex到1.56.0，由于旧版本Boost.Regex的`match_results`类存在竞争问题，这一修改修复了`multi_cws_cmdline`随机出错的问题。
+* [修改] 使自动化测试脚本支持Windows运行以及多线程测试
+* [修改] 将原`examples`文件夹下的示例文件转移到`test`文件夹下并纳入语言技术平台的编译链
+* [测试] 新版语言技术平台通过`cygwin`编译测试
+* [测试] 多线程程序`multi_ltp_test`，`multi_cws_cmdline`以及`multi_pos_cmdline`在Windows通过测试
 
 
 简介
@@ -30,7 +36,7 @@
 ---
 
 * [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
-* 当前模型版本3.1.2
+* 当前模型版本3.2.0
 
 开源协议
 -------

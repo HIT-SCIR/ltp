@@ -20,7 +20,7 @@ public:
     }
   }
 
-  void debug(const Instance * inst, bool show_feat = false) {
+  void debug(const Instance * inst) {
     int len = inst->size();
     ofs << "_instance_debug_" << std::endl;
     ofs << "FORMS: ";
@@ -64,16 +64,6 @@ public:
       ofs << inst->predicted_words[i] << "|";
     }
     ofs << std::endl;
-
-    if (show_feat) {
-      ofs << "GOLD FEATURES: ";
-      inst->features.str(ofs);
-      ofs << std::endl;
-
-      ofs << "PREDICTED FEATURES: ";
-      inst->predicted_features.str(ofs);
-      ofs << std::endl;
-    }
   }
 private:
   std::ostream & ofs;

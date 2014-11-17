@@ -18,6 +18,7 @@ struct TrainOptions {
   int               max_iter;
   int               display_interval;
   int               rare_feature_threshold;
+  bool              enable_incremental_training;
 };
 
 struct TestOptions {
@@ -29,11 +30,6 @@ struct TestOptions {
 struct DumpOptions {
   std::string       model_file;
 };
-
-extern ModelOptions model_opt;
-extern TrainOptions train_opt;
-extern TestOptions  test_opt;
-extern DumpOptions  dump_opt;
 
 }       //  end for namespace segmentor
 }       //  end for namespace ltp

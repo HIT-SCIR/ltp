@@ -27,17 +27,10 @@ bin/
 tools/train/lgdpj
 tools/train/lgsrl
 tools/train/otcws
+tools/train/otcws-customized
 tools/train/otpos
 tools/train/otner
 tools/train/maxent
-examples/cws
-examples/cws_cmdline
-examples/multi_cws_cmdline
-examples/pos
-examples/pos_cmdline
-examples/multi_pos_cmdline
-examples/par
-examples/ner
 
 ###############
 # data file   #

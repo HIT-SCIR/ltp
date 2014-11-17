@@ -416,8 +416,8 @@ void FeatureExtractor::calc_predicate_features_(const vector<int>& predicate_fea
 {
     clear_predicate_features_();
 
-    BOOST_FOREACH(int feature_number, predicate_features)
-    {
+    for (size_t i = 0; i < predicate_features.size(); ++ i) {
+      int feature_number = predicate_features[i];
         get_feature_value_(feature_number, m_predicate_row);
     }
 }
@@ -455,8 +455,8 @@ void FeatureExtractor::calc_node_vs_predicate_features_(const vector<int>& node_
         node_iter = nodes_queue.front();
         nodes_queue.pop();
 
-        BOOST_FOREACH(int feature_number, node_vs_predicate_features)
-        {
+        for (size_t i = 0; i < node_vs_predicate_features.size(); ++ i) {
+          int feature_number = node_vs_predicate_features[i];
             get_feature_value_(feature_number, *node_iter);
         }
 
@@ -485,12 +485,12 @@ void FeatureExtractor::calc_node_vs_predicate_features_(const vector<int>& node_
 
 void FeatureExtractor::clear_predicate_features_()
 {
-    BOOST_FOREACH(int feature_number,
-       get_predicate_features_for_extractor())
-    {
-        m_feature_extracted_flags[m_predicate_row][feature_number] = false;
-        m_feature_values[feature_number].clear();
-    }
+  const std::vector<FEAT_NUM>& payload = get_predicate_features_for_extractor();
+  for (size_t i = 0; i < payload.size(); ++ i) {
+    int feature_number = payload[i];
+    m_feature_extracted_flags[m_predicate_row][feature_number] = false;
+    m_feature_values[feature_number].clear();
+  }
 }
 
 void FeatureExtractor::clear_node_vs_predicate_features_()
@@ -498,17 +498,17 @@ void FeatureExtractor::clear_node_vs_predicate_features_()
     // clear empty flags
     for (size_t row=1; row<=mp_sentence->get_row_count(); ++row)
     {
-        BOOST_FOREACH(int feature_number,
-           get_node_vs_predicate_features_for_extractor())
-        {
-            m_feature_extracted_flags[row][feature_number] = false;
-        }
+      const std::vector<FEAT_NUM>& payload = get_node_vs_predicate_features_for_extractor();
+      for (size_t i = 0; i < payload.size(); ++ i) {
+        int feature_number = payload[i];
+        m_feature_extracted_flags[row][feature_number] = false;
+      }
     }
 
     // clear feature values
-    BOOST_FOREACH(int feature_number,
-        get_node_vs_predicate_features_for_extractor())
-    {
+    const std::vector<FEAT_NUM>& payload = get_node_vs_predicate_features_for_extractor();
+    for (size_t i = 0; i < payload.size(); ++ i) {
+      int feature_number = payload[i];
         m_feature_values[feature_number].clear();
     }
 }

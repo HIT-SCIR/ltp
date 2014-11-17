@@ -1,5 +1,5 @@
-#ifndef __STRLIB_X_H__
-#define __STRLIB_X_H__
+#ifndef __LTP_UTILS_STRUTILS_HPP__
+#define __LTP_UTILS_STRUTILS_HPP__
 
 #include <iostream>
 #include <cstdio>
@@ -9,8 +9,8 @@
 #include <string>
 #include <algorithm>
 
-namespace ltp { //LTP_NAMESPACE_BEGIN
-namespace strutils { //LTP_STRING_NAMESPACE_BEGIN
+namespace ltp {
+namespace strutils {
 
 /**
  * chomp a string
@@ -64,7 +64,6 @@ inline std::string cutoff(std::string str, std::string mark) {
  * separator.
  *
  *  @param  str         std::string     the string
- *  @param  sep         std::string     the separator
  *  @param  maxsplit    std::string     the sep upperbound
  *  @return             std::vector<std::string> the words
  */
@@ -164,7 +163,6 @@ inline std::vector<std::string> split_by_sep(std::string str,
  * separator.
  *
  *  @param  str         std::string     the string
- *  @param  sep         std::string     the separator
  *  @param  maxsplit    std::string     the sep upperbound
  *  @return             std::vector<std::string> the words
  */
@@ -279,8 +277,8 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
 /**
  * Concatenate a list of words
  *
- *  @param  words   std::vector<std::string>    the words
- *  @return         std::string     the concatenated string
+ *  @param  sep std::vector<std::string>  the words
+ *  @return     std::string               the concatenated string
  */
 inline std::string join(std::vector<std::string> sep) {
   std::string ret = "";
@@ -295,17 +293,17 @@ inline std::string join(std::vector<std::string> sep) {
 /**
  * Concatenate a list of words invertening the sep
  *
- *  @param  words   std::vector<std::string>    the words
- *  @param  sep     std::string                 the sep
- *  @return         std::string     the concatenated string
+ *  @param  sep       std::vector<std::string>    the words
+ *  @param  delimiter std::string                 the delimiter
+ *  @return           std::string                 the concatenated string
  */
-inline std::string join(std::vector<std::string> sep, std::string separator) {
+inline std::string join(std::vector<std::string> sep, std::string delimiter) {
   if (sep.size() == 0) {
     return "";
   }
   std::string ret = sep[0];
   for (unsigned int i = 1; i < sep.size(); ++ i) {
-    ret.append(separator);
+    ret.append(delimiter);
     ret.append(sep[i]);
   }
   return ret;
@@ -314,25 +312,30 @@ inline std::string join(std::vector<std::string> sep, std::string separator) {
 /**
  * Return True if string starts with the prefix, otherwise return False
  *
- *  @param  str     const std::string&      the string
- *  @param  perfix  const std::string&      the prefix
- *  @return         bool                    true if startswith prefix,
- *                                          otherwise false
+ *  @param  str   const std::string&  the string
+ *  @param  head  const std::string&  the prefix
+ *  @return       bool                true if startswith prefix, otherwise false
  */
 inline bool startswith(const std::string &str, const std::string &head) {
-    int len = head.size();
-
-    return (str.substr(0, len) == head);
+  int len = head.size();
+  return (str.substr(0, len) == head);
 }
 
+/**
+ * Return True if string ends with the suffix, otherwise return False
+ *
+ *  @param  str     const std::string&  the string
+ *  @param  suffix  const std::string&  the suffix
+ *  @return         bool                true if endswith suffix, otherwise false
+ */
 inline bool endswith(const std::string &str, const std::string &suffix) {
-    int len = suffix.length();
-    int len2 = str.length();
-    if (len2 < len) {
-        return false;
-    }
+  int len = suffix.length();
+  int len2 = str.length();
+  if (len2 < len) {
+    return false;
+  }
 
-    return (str.substr(len2 - len, len) == suffix);
+  return (str.substr(len2 - len, len) == suffix);
 }
 
 
@@ -344,16 +347,16 @@ inline bool endswith(const std::string &str, const std::string &suffix) {
  *                                          otherwise false
  */
 inline bool is_int(const std::string &str) {
-    unsigned int i = 0;
-    if (str[0] == '-')
-        i = 1;
+  unsigned int i = 0;
+  if (str[0] == '-')
+    i = 1;
 
-    for (; i < str.size(); ++ i) {
-        if (false == (str[i] >= '0' && str[i] <= '9')) {
-            return false;
-        }
+  for (; i < str.size(); ++ i) {
+    if (false == (str[i] >= '0' && str[i] <= '9')) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 /**
@@ -364,21 +367,20 @@ inline bool is_int(const std::string &str) {
  *                                          otherwise false
  */
 inline bool is_double(const std::string &str) {
-    unsigned int i = 0;
-    int state = 0;
-    if (str[0] == '-')
-        i = 1;
+  unsigned int i = 0;
+  int state = 0;
+  if (str[0] == '-')
+    i = 1;
 
-    for (; i < str.size(); ++ i) {
-        if (str[i] == '.') {
-            ++ state;
-            if (state > 1) return false;
-        } else if (false == (str[i] >= '0' && str[i] <= '9')) {
-            return false;
-        }
-
+  for (; i < str.size(); ++ i) {
+    if (str[i] == '.') {
+      ++ state;
+      if (state > 1) return false;
+    } else if (false == (str[i] >= '0' && str[i] <= '9')) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 /**
@@ -388,18 +390,19 @@ inline bool is_double(const std::string &str) {
  *  @return         int                     the integer.
  */
 inline int to_int(const std::string &str) {
-    int ret = 0;
-    int sign = 1;
-    unsigned int i = 0;
-    if ('-' == str[0]) {
-        sign = -1;
-        i = 1;
-    }
-    for (; i < str.size(); ++ i) {
-        ret *= 10;
-        ret += str[i] - '0';
-    }
-    return sign * ret;
+  int ret = 0;
+  int sign = 1;
+  unsigned int i = 0;
+  if ('-' == str[0]) {
+    sign = -1;
+    i = 1;
+  }
+
+  for (; i < str.size(); ++ i) {
+    ret *= 10;
+    ret += str[i] - '0';
+  }
+  return sign * ret;
 }
 
 /**
@@ -409,29 +412,31 @@ inline int to_int(const std::string &str) {
  *  @return         double                  the double float.
  */
 inline double to_double(const std::string &str) {
-    double x = 0.0, y = 1.0;
-    double sign = 1.0;
-    unsigned int i = 0;
-    if ('-' == str[0]) {
-        sign = -1.0;
-        i = 1;
-    }
-    for (; i < str.size() && str[i] != '.'; ++ i) {
-        x *= 10.0;
-        x += (str[i] - '0');
-    }
+  double x = 0.0, y = 1.0;
+  double sign = 1.0;
+  unsigned int i = 0;
 
-    for (++ i; i < str.size(); ++ i) {
-        y /= 10.0;
-        x += (str[i] - '0') * y;
-    }
+  if ('-' == str[0]) {
+    sign = -1.0;
+    i = 1;
+  }
 
-    return x * sign;
+  for (; i < str.size() && str[i] != '.'; ++ i) {
+    x *= 10.0;
+    x += (str[i] - '0');
+  }
+
+  for (++ i; i < str.size(); ++ i) {
+    y /= 10.0;
+    x += (str[i] - '0') * y;
+  }
+
+  return x * sign;
 }
 
 inline std::string to_str(int x) {
-    char buff[14];
-    return std::string(buff, sprintf(buff, "%d", x));
+  char buff[14];
+  return std::string(buff, sprintf(buff, "%d", x));
 }
 
 // remove the leading space and ending \r\n\t
@@ -460,4 +465,4 @@ inline void clean(std::string &str) {
 } //LTP_STRING_NAMESPACE_END
 } //LTP_NAMESPACE_END
 
-#endif  // end for __STRLIB_X_H__
+#endif  // end for __LTP_UTILS_STRUTILS_HPP__

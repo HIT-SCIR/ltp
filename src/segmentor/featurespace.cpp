@@ -38,17 +38,16 @@ FeatureSpace::retrieve(int tid, const char * key, bool create) {
 }
 
 int
-FeatureSpace::index(int tid, const char * key, int lid) {
-  int idx = retrieve(tid, key, false);
-  if (idx < 0) {
+FeatureSpace::index(int tid, const char * key, int lid) const {
+  int idx = -1;
+  if (!dicts[tid].get(key, idx)) {
     return -1;
   }
-
   return idx * _num_labels + lid;
 }
 
 int
-FeatureSpace::index(int prev_lid, int lid) {
+FeatureSpace::index(int prev_lid, int lid) const {
   return _offset * _num_labels + prev_lid * _num_labels + lid;
 }
 

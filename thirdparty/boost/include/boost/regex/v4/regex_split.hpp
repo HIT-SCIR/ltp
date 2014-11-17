@@ -107,7 +107,7 @@ std::size_t regex_split(OutputIterator out,
                    std::size_t max_split)
 {
    typedef typename std::basic_string<charT, Traits1, Alloc1>::const_iterator  ci_t;
-   typedef typename match_results<ci_t>::allocator_type                        match_allocator;
+   //typedef typename match_results<ci_t>::allocator_type                        match_allocator;
    ci_t last = s.begin();
    std::size_t init_size = max_split;
    re_detail::split_pred<OutputIterator, charT, Traits1, Alloc1> pred(&last, &out, &max_split);
@@ -119,7 +119,7 @@ std::size_t regex_split(OutputIterator out,
    // if there is still input left, do a final push as long as max_split
    // is not exhausted, and we're not splitting sub-expressions rather 
    // than whitespace:
-   if(max_split && (last != s.end()) && (e.mark_count() == 1))
+   if(max_split && (last != s.end()) && (e.mark_count() == 0))
    {
       *out = std::basic_string<charT, Traits1, Alloc1>((ci_t)last, (ci_t)s.end());
       ++out;

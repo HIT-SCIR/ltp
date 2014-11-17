@@ -174,6 +174,65 @@ ltp_test的使用方法如下：
 
 (注：2.30以后，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式)
 
+##使用动态库
+
+如果您之前对C++使用动态库并不熟悉，可以[参考这里](http://msdn.microsoft.com/zh-cn/library/ms235636.aspx)。
+
+下面以一个分词程序cws.cpp来说明调用动态库的具体过程。
+
+首先，编写调用动态库的程序，注意需要包含相应的头文件，代码如下：
+
+	#include <iostream>
+	#include <string>
+	#include "segment_dll.h"
+	
+	int main(int argc, char * argv[]) {
+	    if (argc < 2) {
+	        std::cerr << "cws [model path]" << std::endl;
+	        return 1;
+	    }
+	
+	    void * engine = segmentor_create_segmentor(argv[1]);//分词接口，初始化分词器
+	    if (!engine) {
+	        return -1;
+	    }
+	    std::vector<std::string> words;
+	    int len = segmentor_segment(engine, 
+	            "爱上一匹野马，可我的家里没有草原。", words);//分词接口，对句子分词。
+	    for (int i = 0; i < len; ++ i) {
+	        std::cout << words[i] << "|";
+	    }
+	    std::cout << std::endl;
+	    segmentor_release_segmentor(engine);//分词接口，释放分词器
+	    return 0;
+	}
+
+接下来，编译程序，需要加入头文件和动态库的路径。
+
+下面给出Linux、Windows两个平台下的编译示例。
+
+###Windows(MSVC)编译
+1）添加头文件路径
+
+右键工程->Configuration properties->c/c++->general->additional include directories
+![include.png](http://ir.hit.edu.cn/ltp-2014/images/include.png)
+2）添加动态库路径
+
+右键工程->Configuration properties->linker->general->additional library directories
+![lib.png](http://ir.hit.edu.cn/ltp-2014/images/lib.png)
+3）导入所需的动态库
+
+右键工程->properties->linker->input->additional additional dependencies
+![import.png](http://ir.hit.edu.cn/ltp-2014/images/import.png)
+
+4）最后，Build工程即可。
+
+###Linux
+
+假定您下载并将LTP放置于/path/to/your/ltp-project路径下,那么编译命令例如下：
+
+    g++ -o cws cws.cpp -I /path/to/your/ltp-project/include/ -I /path/to/your/ltp-project/thirdparty/boost/include -WL,-dn -L /path/to/your/ltp-project/lib/ -lsegmentor -lboost_regex -WL,-dy
+
 ## 分词接口
 
 分词主要提供三个接口：
@@ -926,7 +985,7 @@ otpos主要通过配置文件指定执行的工作，其中主要有两类配置
 * [train] 配置组指定执行训练
 	* train-file 配置项指定训练集文件
 	* holdout-file 配置项指定开发集文件
-	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* algorithm 指定参数学习方法，现在otpos支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 	* model-name 指定输出模型文件名
 	* max-iter 指定最大迭代次数
 	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
@@ -1058,7 +1117,7 @@ lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置
 * [train] 配置组指定执行训练
 	* train-file 配置项指定训练集文件
 	* holdout-file 配置项指定开发集文件
-	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+	* algorithm 指定参数学习方法，现在lgdpj支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 	* model-name 指定输出模型文件名
 	* max-iter 指定最大迭代次数
 	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征

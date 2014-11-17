@@ -59,14 +59,14 @@ set_target_properties(engpattern_unittest PROPERTIES
 
 set (segmentor_unittest_SRC ./segmentor_unittest.cpp)
 add_executable (segmentor_unittest ${segmentor_unittest_SRC})
-target_link_libraries (segmentor_unittest segmentor gtest pthread)
+target_link_libraries (segmentor_unittest segmentor_static_lib gtest pthread)
 set_target_properties(segmentor_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
 set (postagger_internal_unittest_SRC ./postagger_internal_unittest.cpp)
 add_executable (postagger_internal_unittest
 ${postagger_internal_unittest_SRC})
-target_link_libraries (postagger_internal_unittest postagger gtest pthread)
+target_link_libraries (postagger_internal_unittest postagger_static_lib gtest pthread)
 set_target_properties(postagger_internal_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
@@ -79,21 +79,21 @@ set_target_properties(postagger_interface_unittest PROPERTIES
 
 set (parser_unittest_SRC ./parser_unittest.cpp)
 add_executable (parser_unittest ${parser_unittest_SRC})
-target_link_libraries (parser_unittest parser gtest pthread)
+target_link_libraries (parser_unittest parser_static_lib gtest pthread)
 set_target_properties(parser_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
 set (parser_interface_unittest_SRC ./parser_interface_unittest.cpp)
 add_executable (parser_interface_unittest
 ${parser_interface_unittest_SRC})
-target_link_libraries (parser_interface_unittest parser gtest pthread)
+target_link_libraries (parser_interface_unittest parser_static_lib gtest pthread)
 set_target_properties(parser_interface_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
 set (srl_interface_unittest_SRC ./srl_interface_unittest.cpp)
 add_executable (srl_interface_unittest
 ${srl_interface_unittest_SRC})
-target_link_libraries (srl_interface_unittest srl gtest pthread)
+target_link_libraries (srl_interface_unittest srl_static_lib gtest pthread)
 set_target_properties(srl_interface_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 

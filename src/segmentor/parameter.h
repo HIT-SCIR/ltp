@@ -2,13 +2,16 @@
 #define __LTP_SEGMENTOR_PARAMETER_H__
 
 #include <iostream>
+#include <cstring>
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
 
+#define SEGMENTOR_PARAM         "param"         // for model version lower than 3.2.0
+#define SEGMENTOR_PARAM_FULL    "param-full"
+#define SEGMENTOR_PARAM_MINIMAL "param-minimal"
+
 namespace ltp {
 namespace segmentor {
-
-using namespace ltp::math;
 
 class Parameters {
 public:
@@ -76,8 +79,8 @@ public:
     _W_time[idx]  = now;
   }
 
-  void add(const SparseVec & vec, int now, double scale = 1.) {
-    for (SparseVec::const_iterator itx = vec.begin();
+  void add(const math::SparseVec & vec, int now, double scale = 1.) {
+    for (math::SparseVec::const_iterator itx = vec.begin();
         itx != vec.end();
         ++ itx) {
       int idx = itx->first;
@@ -91,10 +94,10 @@ public:
     }
   }
 
-  double dot(const SparseVec & vec, bool use_avg = false) const {
+  double dot(const math::SparseVec & vec, bool use_avg = false) const {
     const double * const p = (use_avg ? _W_sum : _W);
     double ret = 0.;
-    for (SparseVec::const_iterator itx = vec.begin();
+    for (math::SparseVec::const_iterator itx = vec.begin();
         itx != vec.end();
         ++ itx) {
       ret += p[itx->first] * itx->second;
@@ -102,7 +105,7 @@ public:
     return ret;
   }
 
-  double dot(const FeatureVector * vec, bool use_avg = false) const {
+  double dot(const math::FeatureVector * vec, bool use_avg = false) const {
     const double * const p = (use_avg ? _W_sum : _W);
     double ret = 0.;
     for (int i = 0; i < vec->n; ++ i) {
@@ -115,9 +118,26 @@ public:
     return ret;
   }
 
+  double dot_flush_time(const math::FeatureVector * vec, int beg_time, int end_time) const {
+    double ret = 0;
+    for (int i = 0; i < vec->n; ++ i) {
+      int idx = vec->idx[i] + vec->loff;
+      if (vec->val) {
+        ret += (_W_sum[idx] + _W[idx] * (end_time - beg_time) * vec->val[i]);
+      } else {
+        ret += (_W_sum[idx] + _W[idx] * (end_time - beg_time));
+      }
+    }
+    return ret;
+  }
+
   double dot(const int idx, bool use_avg = false) const {
     const double * const p = (use_avg ? _W_sum : _W);
     return p[idx];
+  }
+
+  double dot_flush_time(const int idx, int beg_time, int end_time) const {
+    return _W_sum[idx] + _W[idx] * (end_time - beg_time);
   }
 
   void flush(int now) {
@@ -127,28 +147,52 @@ public:
     }
   }
 
-  void dump(std::ostream & out, bool use_avg = true) {
-    const double * p = (use_avg ? _W_sum : _W);
-    char chunk[16] = {'p', 'a', 'r', 'a', 'm', 0};
+  //! Dump the model. since version 3.2.0, fully dumped model is supported.
+  //! using a tag full to distinguish between old and new model.
+  void dump(std::ostream & out, bool full) {
+    char chunk[16];
+
+    if (full) {
+      strncpy(chunk, SEGMENTOR_PARAM_FULL,16);
+    } else {
+      strncpy(chunk, SEGMENTOR_PARAM_MINIMAL, 16);
+    }
+
     out.write(chunk, 16);
     out.write(reinterpret_cast<const char *>(&_dim), sizeof(int));
     if (_dim > 0) {
-      out.write(reinterpret_cast<const char *>(p), sizeof(double) * _dim);
+      if (full) {
+        out.write(reinterpret_cast<const char *>(_W), sizeof(double) * _dim);
+      }
+      out.write(reinterpret_cast<const char *>(_W_sum), sizeof(double) * _dim);
     }
   }
 
-  bool load(std::istream & in) {
+  bool load(std::istream & in, bool full) {
     char chunk[16];
+
     in.read(chunk, 16);
-    if (strcmp(chunk, "param")) {
+    if (!(
+          (!strcmp(chunk, SEGMENTOR_PARAM_FULL) && full) ||
+          (!strcmp(chunk, SEGMENTOR_PARAM_MINIMAL) && !full) ||
+          (!strcmp(chunk, SEGMENTOR_PARAM) && !full)
+          )) {
       return false;
     }
 
     in.read(reinterpret_cast<char *>(&_dim), sizeof(int));
+
     if (_dim > 0) {
-      _W = new double[_dim];
-      in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
-      _W_sum = _W;
+      if (full) {
+        _W = new double[_dim];
+        _W_sum = new double[_dim];
+        in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
+        in.read(reinterpret_cast<char *>(_W_sum), sizeof(double) * _dim);
+      } else {
+        _W = new double[_dim];
+        in.read(reinterpret_cast<char *>(_W), sizeof(double) * _dim);
+        _W_sum = _W;
+      }
     }
 
     return true;

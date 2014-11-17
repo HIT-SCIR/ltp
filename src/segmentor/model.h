@@ -1,6 +1,7 @@
 #ifndef __LTP_SEGMENTOR_MODEL_H__
 #define __LTP_SEGMENTOR_MODEL_H__
 
+#include "framework/serializable.h"
 #include "segmentor/featurespace.h"
 #include "segmentor/parameter.h"
 #include "utils/smartmap.hpp"
@@ -8,14 +9,15 @@
 namespace ltp {
 namespace segmentor {
 
-using namespace ltp::utility;
+namespace utils = ltp::utility;
+namespace frame = ltp::framework;
 
-class Model {
+class Model: public frame::Serializable {
 public:
   Model();
   ~Model();
 
-  /*
+  /**
    * get number of labels;
    *
    *  @return   int   the number of labels
@@ -24,14 +26,14 @@ public:
     return labels.size();
   }
 
-  /*
+  /**
    * save the model to a output stream
    *
    *  @param[out] ofs   the output stream
    */
   void save(std::ostream & ofs);
 
-  /*
+  /**
    * load the model from an input stream
    *
    *  @param[in]  ifs   the input stream
@@ -39,23 +41,26 @@ public:
   bool load(std::istream & ifs);
 
 public:
-  IndexableSmartMap labels;
-  FeatureSpace      space;
-  Parameters        param;
+  //! The timestamp for the last training instance.
+  int end_time;
 
-  SmartMap<bool>    internal_lexicon;
-  SmartMap<bool>    external_lexicon;
+  //! Use to specified if dump the full model.
+  bool full;
 
-private:
-  void write_uint(std::ostream & out, unsigned int val) {
-    out.write(reinterpret_cast<const char *>(&val), sizeof(unsigned int));
-  }
+  //! The feature space.
+  FeatureSpace space;
 
-  unsigned int read_uint(std::istream & in) {
-    char p[4];
-    in.read(reinterpret_cast<char*>(p), sizeof(unsigned int));
-    return *reinterpret_cast<const unsigned int*>(p);
-  }
+  //! The parameter array.
+  Parameters param;
+
+  //! The labels.
+  utils::IndexableSmartMap  labels;
+
+  //! The internal lexicon use to extract lexicon features.
+  utils::SmartMap<bool> internal_lexicon;
+
+  //! The external lexicon use to extract lexicon features.
+  utils::SmartMap<bool> external_lexicon;
 };
 
 }     //  end for namespace segmentor

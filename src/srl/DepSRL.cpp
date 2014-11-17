@@ -12,7 +12,7 @@
 #include "DepSRL.h"
 #include "FeatureExtractor.h"
 #include "Configuration.h"
-#include <boost/bind.hpp>
+#include "boost/bind.hpp"
 
 // Load necessary resources into memory
 int DepSRL::LoadResource(const string &ConfigDir)

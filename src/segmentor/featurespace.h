@@ -77,8 +77,8 @@ public:
   ~FeatureSpace();
 
   int retrieve(int tid, const char * key, bool create);
-  int index(int tid, const char * key, int lid = 0);
-  int index(int prev_lid, int lid);
+  int index(int tid, const char * key, int lid = 0) const;
+  int index(int prev_lid, int lid) const;
   int num_features();
   int dim();
   int num_feature_groups();

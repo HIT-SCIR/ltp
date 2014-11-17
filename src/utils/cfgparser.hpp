@@ -137,6 +137,15 @@ public:
     return ret;
   }
 
+  bool set(const std::string& section, const std::string &name, const std::string& val) {
+    bool ret = false;
+    if (sec.find(section) != sec.end()) {
+      sec[section][name] = val;
+      ret = true;
+    }
+    return ret;
+  }
+
   bool get_integer(const std::string& name, int& intval) {
     std::string strval;
     int ret = get(name, strval);

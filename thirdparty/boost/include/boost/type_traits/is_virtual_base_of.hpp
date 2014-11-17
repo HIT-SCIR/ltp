@@ -23,7 +23,7 @@ namespace detail {
 #ifdef BOOST_MSVC
 #pragma warning( push )
 #pragma warning( disable : 4584 4250)
-#elif defined __GNUC__
+#elif defined(__GNUC__) && (__GNUC__ >= 4)
 #pragma GCC system_header
 #endif
 
@@ -91,11 +91,9 @@ BOOST_TT_AUX_BOOL_TRAIT_DEF2(
        , (::boost::detail::is_virtual_base_of_impl2<Base,Derived>::value) 
 )
 
-#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC2_2(typename Base,typename Derived,is_virtual_base_of,Base&,Derived,false)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC2_2(typename Base,typename Derived,is_virtual_base_of,Base,Derived&,false)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC2_2(typename Base,typename Derived,is_virtual_base_of,Base&,Derived&,false)
-#endif
 
 } // namespace boost
 

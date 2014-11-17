@@ -13,25 +13,16 @@
 #include <vector>
 #include <list>
 #include <map>
-#include <sys/time.h>
-#include <sys/types.h>
 
 #include "tinythread.h"
-#include "fast_mutex.h"
-
 #include "Xml4nlp.h"
+#include "time.hpp"
 #include "Ltp.h"
 
 using namespace std;
 using namespace tthread;
 
 string type;
-
-double get_time(void) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec + (tv.tv_usec / 1000000.0);
-}
 
 class Dispatcher {
 public:
@@ -43,7 +34,7 @@ public:
 
     int next(string &sentence) {
         sentence = "";
-        lock_guard<fast_mutex> guard(_mutex);
+        lock_guard<mutex> guard(_mutex);
         if (!getline(_ifs, sentence, '\n')) {
             return -1;
         } 
@@ -51,7 +42,7 @@ public:
     }
 
     void output(int idx, const string &result) {
-        lock_guard<fast_mutex> guard(_mutex);
+        lock_guard<mutex> guard(_mutex);
 
         if (idx > _idx) {
             _back[idx] = result;
@@ -78,10 +69,10 @@ public:
     }
 
 private:
-    fast_mutex  _mutex;
-    LTP *       _engine;
-    int         _max_idx;
-    int         _idx;
+    mutex  _mutex;
+    LTP *  _engine;
+    int    _max_idx;
+    int    _idx;
 
     std::istream & _ifs;
     std::map<int, std::string> _back;
@@ -176,7 +167,7 @@ int main(int argc, char ** argv) {
     std::cerr << "TRACE: LTP is built" << std::endl;
     std::cerr << "TRACE: Running " << num_threads << " thread(s)" << std::endl;
 
-    double tm = get_time();
+    double tm = ltp::utility::get_time();
     list<thread *> thread_list;
     for (int i = 0; i < num_threads; ++ i) {
         thread * t = new thread(multithreaded_ltp, (void *)dispatcher );
@@ -191,7 +182,7 @@ int main(int argc, char ** argv) {
     }
 
     delete dispatcher;
-    tm = get_time() - tm;
+    tm = ltp::utility::get_time() - tm;
     std::cerr << "TRACE: consume "
         << tm 
         << " seconds."
