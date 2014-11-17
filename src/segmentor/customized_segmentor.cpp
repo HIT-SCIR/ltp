@@ -62,8 +62,8 @@ CustomizedSegmentor::parse_cfg(ltp::utility::ConfigParser & cfg) {
       return false;
     }
 
-    if(cfg.get("train", "customized-model-name",strbuf)) {
-      cfg.set("train", "model-name",strbuf);
+    if(cfg.get("train", "customized-model-file",strbuf)) {
+      cfg.set("train", "model-file",strbuf);
     }
   }
 

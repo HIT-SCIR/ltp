@@ -89,7 +89,7 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
   train_opt->train_file = "";
   train_opt->holdout_file = "";
   train_opt->algorithm = "pa";
-  train_opt->model_name = "";
+  train_opt->model_file = "";
   train_opt->max_iter = 10;
   train_opt->display_interval = 5000;
   train_opt->rare_feature_threshold = 0;
@@ -127,12 +127,12 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
       WARNING_LOG("rare feature threshold is not configed, 10 is set as default");
     }
 
-    train_opt->model_name = train_opt->train_file + "." + train_opt->algorithm;
-    if (cfg.get("train", "model-name", strbuf)) {
-      train_opt->model_name = strbuf;
+    train_opt->model_file = train_opt->train_file + "." + train_opt->algorithm;
+    if (cfg.get("train", "model-file", strbuf)) {
+      train_opt->model_file = strbuf;
     } else {
-      WARNING_LOG("model name is not configed, [%s] is set as default",
-                  train_opt->model_name.c_str());
+      WARNING_LOG("model file is not configed, [%s] is set as default",
+                  train_opt->model_file.c_str());
     }
 
     if (cfg.get_integer("train", "max-iter", intbuf)) {
@@ -757,7 +757,7 @@ Segmentor::train(void) {
         best_iteration = iter;
       }
 
-      std::string saved_model_file = (train_opt->model_name
+      std::string saved_model_file = (train_opt->model_file
                                       + "."
                                       + strutils::to_str(iter)
                                       + ".model");
