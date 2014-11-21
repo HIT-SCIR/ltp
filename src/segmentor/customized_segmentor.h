@@ -34,6 +34,9 @@ protected:
   void calculate_scores(const Instance * inst, bool use_avg);
 
   //!
+  void calculate_scores(const Instance* inst, const DecodeContext* ctx, const DecodeContext* base_ctx, bool use_avg, ScoreMatrix* scm);
+
+  //!
   void collect_correct_and_predicted_features(Instance * inst);
 
   //!

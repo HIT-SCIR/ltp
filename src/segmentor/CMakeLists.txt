@@ -21,6 +21,13 @@ set_target_properties (segmentor_static_lib
     PROPERTIES
     OUTPUT_NAME segmentor)
 
+add_library (customized_segmentor_static_lib customized_segment_dll.cpp ${segment_SRC} customized_segmentor.cpp)
+
+target_link_libraries (customized_segmentor_static_lib boost_regex_static_lib)
+
+set_target_properties (customized_segmentor_static_lib
+    PROPERTIES
+    OUTPUT_NAME customized_segmentor)
 # -----------------------------------------------
 # SHARED LIBRARY
 # -----------------------------------------------
@@ -32,6 +39,13 @@ set_target_properties (segmentor_shared_lib PROPERTIES
     VERSION     ${segment_VERSION}
     OUTPUT_NAME segmentor)
 
+add_library (customized_segmentor_shared_lib SHARED customized_segment_dll.cpp ${segment_SRC} customized_segmentor.cpp)
+
+target_link_libraries (customized_segmentor_shared_lib boost_regex_shared_lib)
+
+set_target_properties (customized_segmentor_shared_lib PROPERTIES
+    VERSION     ${segment_VERSION}
+    OUTPUT_NAME customized_segmentor)
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 # -----------------------------------------------
@@ -62,3 +76,6 @@ set_target_properties (otcws-customized
 configure_file (
     segment_dll.h
     ${INCLUDE_OUTPUT_PATH}/ltp/segment_dll.h)
+configure_file (
+    customized_segment_dll.h
+    ${INCLUDE_OUTPUT_PATH}/ltp/customized_segment_dll.h)

@@ -157,36 +157,40 @@ CustomizedSegmentor::extract_features(const Instance* inst, bool create) {
 }
 
 void
-CustomizedSegmentor::calculate_scores(const Instance * inst, bool use_avg) {
+CustomizedSegmentor::calculate_scores(const Instance* inst, bool use_avg) {
+  calculate_scores(inst, decode_context, baseline_decode_context, use_avg, score_matrix);
+}
+void
+CustomizedSegmentor::calculate_scores(const Instance * inst, const DecodeContext* ctx, const DecodeContext * base_ctx, bool use_avg, ScoreMatrix* scm) {
   //bool use_avg = 0;
   int len = inst->size();
   int L = model->num_labels();
 
-  score_matrix->uni_scores.resize(len, L);
-  score_matrix->uni_scores = NEG_INF;
-  score_matrix->bi_scores.resize(L, L);
-  score_matrix->bi_scores = NEG_INF;
+  scm->uni_scores.resize(len, L);
+  scm->uni_scores = NEG_INF;
+  scm->bi_scores.resize(L, L);
+  scm->bi_scores = NEG_INF;
 
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
-      math::FeatureVector * fv = baseline_decode_context->uni_features[i][l];
+      math::FeatureVector * fv = base_ctx->uni_features[i][l];
       if (!fv) {
         continue;
       }
 
       if(!use_avg) {
-        score_matrix->uni_scores[i][l] = baseline_model->param.dot(fv, false);
+        scm->uni_scores[i][l] = baseline_model->param.dot(fv, false);
       } else {
-        score_matrix->uni_scores[i][l] = baseline_model->param.dot_flush_time(fv,
+        scm->uni_scores[i][l] = baseline_model->param.dot_flush_time(fv,
             baseline_model->end_time,
             model->end_time);
       }
 
-      fv = decode_context->uni_features[i][l];
+      fv = ctx->uni_features[i][l];
       if (!fv) {
         continue;
       }
-      score_matrix->uni_scores[i][l] += model->param.dot(decode_context->uni_features[i][l],
+      scm->uni_scores[i][l] += model->param.dot(fv,
           use_avg);
       //std::cout<<"uni_scores["<<i<<"]["<<l<<"]="<<inst->uni_scores[i][l]<<std::endl;
     }
@@ -197,15 +201,15 @@ CustomizedSegmentor::calculate_scores(const Instance * inst, bool use_avg) {
       int idx = baseline_model->space.index(pl, l);
 
       if(!use_avg) {
-        score_matrix->bi_scores[pl][l] = baseline_model->param.dot(idx, false);
+        scm->bi_scores[pl][l] = baseline_model->param.dot(idx, false);
       } else {
-        score_matrix->bi_scores[pl][l] = baseline_model->param.dot_flush_time(idx, 
+        scm->bi_scores[pl][l] = baseline_model->param.dot_flush_time(idx, 
             baseline_model->end_time,
             model->end_time);
       }
 
       idx = model->space.index(pl, l);
-      score_matrix->bi_scores[pl][l] += model->param.dot(idx, use_avg);
+      scm->bi_scores[pl][l] += model->param.dot(idx, use_avg);
       //std::cout<<"bi_scores["<<pl<<"]["<<l<<"]="<<inst->bi_scores[pl][l]<<std::endl;
     }
   }

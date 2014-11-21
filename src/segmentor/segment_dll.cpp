@@ -49,8 +49,8 @@ public:
       }
     }
 
-    beg_tag0 = model->labels.index( ltp::segmentor::__b__ );
-    beg_tag1 = model->labels.index( ltp::segmentor::__s__ );
+    beg_tag0 = model->labels.index( seg::__b__ );
+    beg_tag1 = model->labels.index( seg::__s__ );
 
     rule = new seg::rulebase::RuleBase(model->labels);
 
