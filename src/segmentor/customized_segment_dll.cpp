@@ -9,7 +9,7 @@
 
 namespace seg = ltp::segmentor;
 
-class SingletonModel {
+/*class SingletonModel {
 public:
   static seg::Model * get_model(const char * model_file) {
     if (!model) {
@@ -35,47 +35,52 @@ private:
 };
 
 seg::Model* SingletonModel::model = NULL;
-
+*/
 class CustomizedSegmentorWrapper : public seg::CustomizedSegmentor{
 public:
+  CustomizedSegmentorWrapper()
+    : beg_tag0(-1),
+    beg_tag1(-1),
+    rule(0) {}
 
-  bool load(const char * baseline_model_file, const char * customized_model_file, const char * lexicon_file) {
-    seg::Model * temp = NULL;
-    if ((temp=SingletonModel::get_model(baseline_model_file))) {
-      baseline_model = temp;
-    } else {
-      return false;
-    }
-    std::ifstream mfs(customized_model_file, std::ifstream::binary);
-
-    if (!mfs) {
-      return false;
-    }
-
-    model = new seg::Model;
-    if (!model->load(mfs)) {
-      delete model;
-      model = 0;
-      return false;
-    }
-
-    if (NULL != lexicon_file) {
-      std::ifstream lfs(lexicon_file);
-
-      if(lfs) {
-        std::string buffer;
-        while(std::getline(lfs, buffer)) {
-          buffer = ltp::strutils::chomp(buffer);
-          if (buffer.size() == 0) {
-            continue;
-          }
-          model->external_lexicon.set(buffer.c_str(), true);
-        }
-      }
-    }
+  ~CustomizedSegmentorWrapper() {
+    if (rule) { delete rule; }
   }
 
-  int segment(const char * str,
+  bool load_customized_segmentor(const char * baseline_model_file, const char * customized_model_file, const char * lexicon_file) {
+    std::ifstream bmfs(baseline_model_file, std::ifstream::binary);
+
+    if (!bmfs) {
+      return false;
+    }
+
+    baseline_model = new seg::Model;
+    if (!baseline_model->load(bmfs)) {
+      delete baseline_model;
+      baseline_model = 0;
+      return false;
+    }
+
+    if (NULL != customized_model_file) {
+       if (!( model = load_model(customized_model_file, lexicon_file))) {
+        if (baseline_model) {
+          delete baseline_model;
+          baseline_model = 0;
+        }
+        return false;
+      }
+    }
+
+    beg_tag0 = baseline_model->labels.index(seg::__b__);
+    beg_tag1 = baseline_model->labels.index(seg::__s__);
+    rule = new seg::rulebase::RuleBase(baseline_model->labels);
+    return true;
+  }
+
+
+  int segment(seg::Model * mdl,
+      seg::Model* base_mdl,
+      const char * str,
       std::vector<std::string> & words) {
     seg::Instance * inst = new seg::Instance;
     int ret = seg::rulebase::preprocess(str,
@@ -89,18 +94,21 @@ public:
       return 0;
     }
 
-    seg::rulebase::RuleBase* rule = new seg::rulebase::RuleBase(model->labels);
-
-    int beg_tag0 = model->labels.index( seg::__b__);
-    int beg_tag1 = model->labels.index( seg::__s__);
     seg::DecodeContext* ctx = new seg::DecodeContext;
     seg::DecodeContext* base_ctx = new seg::DecodeContext;
     seg::ScoreMatrix* scm = new seg::ScoreMatrix;
-    seg::CustomizedSegmentor::build_lexicon_match_state(inst);
-    seg::Segmentor::extract_features(inst, seg::Segmentor::model, ctx);
-    seg::Segmentor::extract_features(inst, seg::CustomizedSegmentor::baseline_model, base_ctx);
-    seg::CustomizedSegmentor::calculate_scores(inst, ctx, base_ctx, true, scm);
-    seg::Decoder decoder(model->num_labels(), *rule);
+    seg::CustomizedSegmentor::build_lexicon_match_state(mdl, base_mdl,inst);
+    seg::Segmentor::extract_features(inst, mdl, ctx);
+    seg::Segmentor::extract_features(inst, base_mdl, base_ctx);
+    seg::CustomizedSegmentor::calculate_scores(mdl,
+        base_mdl,
+        inst,
+        ctx,
+        base_ctx,
+        true,
+        scm);
+
+    seg::Decoder decoder(mdl->num_labels(), *rule);
     decoder.decode(inst, scm);
     seg::Segmentor::build_words(inst, inst->predicted_tagsidx,
         words, beg_tag0, beg_tag1);
@@ -109,13 +117,54 @@ public:
     delete base_ctx;
     delete scm;
     delete inst;
-    delete rule;
     return words.size();
   }
 
   int segment(const std::string & str,
       std::vector<std::string> & words) {
-    return segment(str.c_str(), words);
+    return segment(model, baseline_model, str.c_str(), words);
+  }
+
+  int segment(const char * model_path,
+      const char * lexicon_path,
+      const std::string & str,
+      std::vector<std::string> & words) {
+    seg::Model * mdl = load_model(model_path, lexicon_path);
+    if (!mdl) {
+      return 0;
+    }
+    int len = segment(mdl, baseline_model, str.c_str(), words);
+    delete mdl;
+
+    return len;
+  }
+
+private:
+  seg::Model * load_model(const char * model_file,
+      const char * lexicon_file = NULL) {
+
+    std::ifstream mfs(model_file, std::ifstream::binary);
+    seg::Model * mdl = new seg::Model;
+    if (!mdl->load(mfs)) {
+      delete mdl;
+      return NULL;
+    }
+    if (NULL != lexicon_file) {
+      std::ifstream lfs(lexicon_file);
+
+      if(lfs) {
+        std::string buffer;
+        while(std::getline(lfs, buffer)) {
+          buffer = ltp::strutils::chomp(buffer);
+          if (buffer.size() == 0) {
+            continue;
+          }
+          mdl->external_lexicon.set(buffer.c_str(), true);
+        }
+      }
+    }
+
+    return mdl;
   }
 
   void release() {
@@ -124,25 +173,53 @@ public:
     }
   }
 
+private:
+  int beg_tag0;
+  int beg_tag1;
+  seg::rulebase::RuleBase * rule;
 };
 
-int customized_segmentor_segment(const std::string & baseline_model_path,
-    const std::string & model_path,
-    const std::string & lexicon_file,
+void * customized_segmentor_create_segmentor(const char * baseline_model_path, const char * model_path, const char * lexicon_path) {
+  CustomizedSegmentorWrapper * wrapper = new CustomizedSegmentorWrapper;
+
+  if (!wrapper->load_customized_segmentor(baseline_model_path, model_path, lexicon_path)) {
+    delete wrapper;
+    return 0;
+  }
+
+  return reinterpret_cast<void *>(wrapper);
+}
+
+int customized_segmentor_release_segmentor(void * segmentor) {
+  if (!segmentor) {
+    return -1;
+  }
+
+  delete reinterpret_cast<CustomizedSegmentorWrapper*>(segmentor);
+  return 0;
+}
+
+int customized_segmentor_segment(void * segmentor,
+    const std::string & str, 
+    std::vector<std::string> & words) {
+  if (str.empty()) {
+    return 0;
+  }
+  CustomizedSegmentorWrapper * wrapper = reinterpret_cast<CustomizedSegmentorWrapper *>(segmentor);
+  return wrapper->segment(str, words);
+}
+
+int customized_segmentor_segment(void * segmentor,
+    const char * model_path,
+    const char * lexicon_path,
     const std::string & str,
     std::vector<std::string> & words) {
   if (str.empty()) {
     return 0;
   }
 
-  CustomizedSegmentorWrapper * wrapper = new CustomizedSegmentorWrapper;
-  if (!wrapper->load(baseline_model_path.c_str(), model_path.c_str(), lexicon_file.c_str())) {
-    wrapper->release();
-  }
-  int len = wrapper->segment(str, words);
-  wrapper->release();
-
-  return len;
+  CustomizedSegmentorWrapper * wrapper = reinterpret_cast<CustomizedSegmentorWrapper *>(segmentor);
+  return wrapper->segment(model_path, lexicon_path, str, words);
 }
 
 

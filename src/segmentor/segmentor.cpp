@@ -274,6 +274,10 @@ Segmentor::build_configuration(void) {
 
 void
 Segmentor::build_lexicon_match_state(Instance* inst) {
+  build_lexicon_match_state(model, inst);
+}
+void
+Segmentor::build_lexicon_match_state(Model * mdl, Instance* inst) {
   // cache lexicon features.
   int len = inst->size();
 
@@ -289,8 +293,8 @@ Segmentor::build_lexicon_match_state(Instance* inst) {
       word = word + inst->forms[j];
 
       // it's not a lexicon word
-      if (!model->internal_lexicon.get(word.c_str())
-          && !model->external_lexicon.get(word.c_str())) {
+      if (!mdl->internal_lexicon.get(word.c_str())
+          && !mdl->external_lexicon.get(word.c_str())) {
         continue;
       }
 

@@ -26,8 +26,8 @@ add_library (customized_segmentor_static_lib customized_segment_dll.cpp ${segmen
 target_link_libraries (customized_segmentor_static_lib boost_regex_static_lib)
 
 set_target_properties (customized_segmentor_static_lib
-    PROPERTIES
-    OUTPUT_NAME customized_segmentor)
+PROPERTIES
+OUTPUT_NAME customized_segmentor)
 # -----------------------------------------------
 # SHARED LIBRARY
 # -----------------------------------------------
@@ -44,8 +44,8 @@ add_library (customized_segmentor_shared_lib SHARED customized_segment_dll.cpp $
 target_link_libraries (customized_segmentor_shared_lib boost_regex_shared_lib)
 
 set_target_properties (customized_segmentor_shared_lib PROPERTIES
-    VERSION     ${segment_VERSION}
-    OUTPUT_NAME customized_segmentor)
+VERSION     ${segment_VERSION}
+OUTPUT_NAME customized_segmentor)
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 # -----------------------------------------------

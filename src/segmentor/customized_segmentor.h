@@ -34,13 +34,14 @@ protected:
   void calculate_scores(const Instance * inst, bool use_avg);
 
   //!
-  void calculate_scores(const Instance* inst, const DecodeContext* ctx, const DecodeContext* base_ctx, bool use_avg, ScoreMatrix* scm);
+  void calculate_scores(Model * mdl, Model * base_mdl, const Instance* inst, const DecodeContext* ctx, const DecodeContext* base_ctx, bool use_avg, ScoreMatrix* scm);
 
   //!
   void collect_correct_and_predicted_features(Instance * inst);
 
   //!
   void build_lexicon_match_state(Instance* inst);
+  void build_lexicon_match_state(Model * mdl, Model * base_mdl, Instance* inst);
 
   //!
   void cleanup_decode_context();

@@ -22,10 +22,20 @@
 #endif    //  end for CUSTOMIZED_SEGMENTOR_DLL_API_EXPORT
 #endif    //  end for _WIN32
 
-CUSTOMIZED_SEGMENTOR_DLL_API int customized_segmentor_segment(const std::string & baseline_model_path,
-                                                                 const std::string & model_path,
-                                                                 const std::string & lexicon_path,
-                                                                 const std::string & line,
-                                                                 std::vector<std::string> & words);
+
+CUSTOMIZED_SEGMENTOR_DLL_API void * customized_segmentor_create_segmentor(const char * baseline_model_path, const char * model_path = NULL, const char * lexicon_path = NULL);
+
+
+CUSTOMIZED_SEGMENTOR_DLL_API int customized_segmentor_release_segmentor(void * segmentor);
+
+CUSTOMIZED_SEGMENTOR_DLL_API int customized_segmentor_segment(void * segmentor,
+    const std::string & str,
+    std::vector<std::string> & words);
+
+CUSTOMIZED_SEGMENTOR_DLL_API int customized_segmentor_segment(void * Segmentor,
+    const char * model_path,
+    const char * lexicon_path,
+    const std::string & str,
+    std::vector<std::string> & words);
 
 #endif //  end for __LTP_CUSTOMIZED_SEGMENT_DLL_H__

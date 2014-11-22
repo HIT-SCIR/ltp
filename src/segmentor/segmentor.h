@@ -147,6 +147,7 @@ protected:
    *
    */
   virtual void build_lexicon_match_state(Instance* inst);
+  virtual void build_lexicon_match_state(Model * mdl, Instance* inst);
 
 
   /**
