@@ -3,7 +3,9 @@
 #include "MyLib.h"
 #include "Xml4nlp.h"
 #include "SplitSentence.h"
-#include "segment_dll.h"
+#include "segmentor/segment_dll.h"
+#include "segmentor/singleton_model.h"
+#include "segmentor/customized_segment_dll.h"
 #include "postag_dll.h"
 #include "parser_dll.h"
 #include "ner_dll.h"
@@ -19,6 +21,8 @@
 #endif
 
 #include "logging.hpp"
+
+namespace seg = ltp::segmentor;
 
 LTPResource::LTPResource() :
   m_segmentor(NULL),
@@ -53,11 +57,13 @@ int LTPResource::LoadSegmentorResource(const char * model_file) {
 
   TRACE_LOG("Loading segmentor model from \"%s\" ...", model_file);
 
-  m_segmentor = segmentor_create_segmentor(model_file);
-  if (0 == m_segmentor) {
+  if (!seg::SingletonModel::create_model(model_file)) {
     ERROR_LOG("Failed to load segmentor model");
-    return -1;
   }
+
+  m_segmentor = segmentor_create_segmentor();
+
+  m_customized_segmentor = customized_segmentor_create_segmentor();
 
   m_isSegmentorResourceLoaded = true;
   TRACE_LOG("segmentor model is loaded.");
@@ -85,6 +91,9 @@ void * LTPResource::GetSegmentor() {
   return m_segmentor;
 }
 
+void * LTPResource::GetCustomizedSegmentor() {
+  return m_customized_segmentor;
+}
 /* ======================================================== *
  * Postagger related resource management                    *
  * ======================================================== */

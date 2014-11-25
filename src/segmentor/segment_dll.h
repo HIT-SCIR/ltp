@@ -32,6 +32,7 @@
 SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path,
                                                     const char * lexicon_file = NULL);
 
+SEGMENTOR_DLL_API void * segmentor_create_segmentor();
 /*
  * release the segmentor resources
  *

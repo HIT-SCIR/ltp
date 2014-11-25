@@ -111,6 +111,7 @@ public:
      *  @return void *  pointer to the segmentor
      */
     void * GetSegmentor();
+    void * GetCustomizedSegmentor();
 
     /*
      * Get the postagger
@@ -134,6 +135,7 @@ public:
     void * GetNER();
 private:
     void * m_segmentor;
+    void * m_customized_segmentor;
     void * m_postagger;
     void * m_parser;
     void * m_ner;

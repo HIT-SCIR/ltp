@@ -1,6 +1,7 @@
 #include "segmentor/customized_segment_dll.h"
 #include "segmentor/customized_segmentor.h"
 #include "segmentor/segment_dll.cpp"
+#include "segmentor/singleton_model.h"
 #include "segmentor/settings.h"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
@@ -43,6 +44,12 @@ public:
     beg_tag1(-1),
     rule(0) {}
 
+  CustomizedSegmentorWrapper(seg::Model * model)
+    : beg_tag0(-1),
+    beg_tag1(-1),
+    rule(0) {
+      baseline_model = model;
+    }
   ~CustomizedSegmentorWrapper() {
     if (rule) { delete rule; }
   }
@@ -178,6 +185,11 @@ private:
   int beg_tag1;
   seg::rulebase::RuleBase * rule;
 };
+
+void * customized_segmentor_create_segmentor() {
+  CustomizedSegmentorWrapper * wrapper = new CustomizedSegmentorWrapper(seg::SingletonModel::get_model());
+  return reinterpret_cast<void *>(wrapper);
+}
 
 void * customized_segmentor_create_segmentor(const char * baseline_model_path, const char * model_path, const char * lexicon_path) {
   CustomizedSegmentorWrapper * wrapper = new CustomizedSegmentorWrapper;

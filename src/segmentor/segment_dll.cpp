@@ -1,5 +1,6 @@
 #include "segmentor/segment_dll.h"
 #include "segmentor/segmentor.h"
+#include "segmentor/singleton_model.h"
 #include "segmentor/settings.h"
 //#include "instance.h"
 #include "utils/logging.hpp"
@@ -15,6 +16,13 @@ public:
     : beg_tag0(-1),
     beg_tag1(-1),
     rule(0) {}
+
+  SegmentorWrapper(seg::Model * mdl)
+    : beg_tag0(-1),
+    beg_tag1(-1),
+    rule(0) {
+      model = mdl;
+    }
 
   ~SegmentorWrapper() {
     if (rule) { delete rule; }
@@ -104,6 +112,12 @@ private:
   seg::rulebase::RuleBase* rule;
 
 };
+
+void * segmentor_create_segmentor() {
+  SegmentorWrapper * wrapper = new SegmentorWrapper(seg::SingletonModel::get_model());
+;
+  return reinterpret_cast<void *> (wrapper);
+}
 
 void * segmentor_create_segmentor(const char * path, const char * lexicon_file) {
   SegmentorWrapper * wrapper = new SegmentorWrapper();

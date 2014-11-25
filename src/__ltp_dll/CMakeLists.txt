@@ -1,9 +1,10 @@
 include_directories (./
+    ${SOURCE_DIR}
+    ${segmentor_DIR}
     ${xml4nlp_DIR}
     ${util_DIR}
     ${utils_DIR}
     ${splitsnt_DIR}
-    ${segmentor_DIR}
     ${postagger_DIR}
     ${parser_DIR}
     ${ner_DIR}

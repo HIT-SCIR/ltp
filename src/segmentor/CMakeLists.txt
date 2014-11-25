@@ -13,7 +13,7 @@ set (segment_SRC
 # -----------------------------------------------
 # STATIC LIBRARY
 # -----------------------------------------------
-add_library (segmentor_static_lib segment_dll.cpp ${segment_SRC})
+add_library (segmentor_static_lib segment_dll.cpp ${segment_SRC} singleton_model.cpp)
 
 target_link_libraries (segmentor_static_lib boost_regex_static_lib)
 
@@ -21,7 +21,7 @@ set_target_properties (segmentor_static_lib
     PROPERTIES
     OUTPUT_NAME segmentor)
 
-add_library (customized_segmentor_static_lib customized_segment_dll.cpp ${segment_SRC} customized_segmentor.cpp)
+add_library (customized_segmentor_static_lib customized_segment_dll.cpp ${segment_SRC} customized_segmentor.cpp singleton_model.cpp)
 
 target_link_libraries (customized_segmentor_static_lib boost_regex_static_lib)
 
@@ -31,7 +31,7 @@ OUTPUT_NAME customized_segmentor)
 # -----------------------------------------------
 # SHARED LIBRARY
 # -----------------------------------------------
-add_library (segmentor_shared_lib SHARED segment_dll.cpp ${segment_SRC})
+add_library (segmentor_shared_lib SHARED segment_dll.cpp ${segment_SRC} singleton_model.cpp)
 
 target_link_libraries (segmentor_shared_lib boost_regex_shared_lib)
 
@@ -39,7 +39,7 @@ set_target_properties (segmentor_shared_lib PROPERTIES
     VERSION     ${segment_VERSION}
     OUTPUT_NAME segmentor)
 
-add_library (customized_segmentor_shared_lib SHARED customized_segment_dll.cpp ${segment_SRC} customized_segmentor.cpp)
+add_library (customized_segmentor_shared_lib SHARED customized_segment_dll.cpp ${segment_SRC} customized_segmentor.cpp singleton_model.cpp)
 
 target_link_libraries (customized_segmentor_shared_lib boost_regex_shared_lib)
 

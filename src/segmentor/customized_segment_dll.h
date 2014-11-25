@@ -23,6 +23,8 @@
 #endif    //  end for _WIN32
 
 
+CUSTOMIZED_SEGMENTOR_DLL_API void * customized_segmentor_create_segmentor();
+
 CUSTOMIZED_SEGMENTOR_DLL_API void * customized_segmentor_create_segmentor(const char * baseline_model_path, const char * model_path = NULL, const char * lexicon_path = NULL);
 
 

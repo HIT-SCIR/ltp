@@ -74,6 +74,7 @@ public:
    *  @return         int   0 on success, otherwise -1
    */
   int wordseg(XML4NLP & xml);
+  int customized_wordseg(XML4NLP & xml, const char * model_path, const char * lexicon_path);
 
   /*
    * do postagging
