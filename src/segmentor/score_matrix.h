@@ -10,6 +10,9 @@ struct ScoreMatrix {
   math::Mat< double > uni_scores;
   math::Mat< double > bi_scores;
 
+  /**
+   * Clear the ScoreMatrix.
+   */
   void clear() {
     uni_scores.dealloc();
     bi_scores.dealloc();
