@@ -27,8 +27,7 @@ maxent_static_lib
 util_static_lib
 ltp
 splitsnt_static_lib
-#segmentor_static_lib
-customized_segmentor_static_lib
+segmentor_static_lib
 postagger_static_lib
 parser_static_lib
 ner_static_lib

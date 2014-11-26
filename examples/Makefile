@@ -18,12 +18,12 @@ cws_cmdline: cws_cmdline.cpp
 	${cc} ${ccflags} -g -o cws_cmdline cws_cmdline.cpp -I./ \
 		-I ../include \
 		-I ../thirdparty/boost/include \
-		-Wl,-dn -L../lib/ -lcustomized_segmentor -lboost_regex -Wl,-dy
+		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
 cws_cmdline_server: cws_cmdline_server.cpp
 	${cc} ${ccflags} -g -o cws_cmdline_server cws_cmdline_server.cpp -I./ \
 		-I ../include \
 		-I ../thirdparty/boost/include \
-		-Wl,-dn -L../lib/ -lcustomized_segmentor -lboost_regex -Wl,-dy
+		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
 pos: pos.cpp
 	${cc} ${ccflags} -o pos pos.cpp -I./ \
 		-I../include/ \

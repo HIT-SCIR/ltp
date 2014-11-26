@@ -19,8 +19,7 @@ target_link_libraries (ltp_server
     util_static_lib
     ltp
     splitsnt_static_lib
-    #segmentor_static_lib
-    customized_segmentor_static_lib
+    segmentor_static_lib
     postagger_static_lib
     parser_static_lib
     ner_static_lib

@@ -14,7 +14,7 @@
 #include <iostream>
 #include <ctime>
 #include <string>
-#include "ltp/customized_segment_dll.h"
+#include "ltp/segment_dll.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {
@@ -26,18 +26,18 @@ int main(int argc, char * argv[]) {
   std::string sentence;
 
 
-  void * segmentor = customized_segmentor_create_segmentor(argv[1]);
+  void * segmentor = segmentor_create_segmentor(argv[1]);
 
   while(std::getline(std::cin, sentence, '\n')){
     words.clear();
-    int len = customized_segmentor_segment(segmentor, argv[2],NULL,sentence, words);
+    int len = segmentor_customized_segment(segmentor, argv[2],NULL,sentence, words);
     for (int j = 0; j < len; ++ j) {
       std::cout << words[j];
       if (j+1 == len) std::cout <<std::endl;
       else std::cout<< "\t";
     }
   }
-  customized_segmentor_release_segmentor(segmentor);
+  segmentor_release_segmentor(segmentor);
   return 0;
 }
 

@@ -6,8 +6,7 @@
 #include "MyLib.h"
 #include "Xml4nlp.h"
 #include "SplitSentence.h"
-#include "segmentor/segment_dll.h"
-#include "segmentor/customized_segment_dll.h"
+#include "segment_dll.h"
 #include "postag_dll.h"
 #include "parser_dll.h"
 #include "ner_dll.h"
@@ -16,7 +15,6 @@
 #if _WIN32
 #pragma warning(disable: 4786 4284)
 #pragma comment(lib, "segmentor.lib")
-#pragma comment(lib, "customized_segmentor.lib")
 #pragma comment(lib, "postagger.lib")
 #pragma comment(lib, "parser.lib")
 #pragma comment(lib, "ner.lib")
@@ -247,56 +245,6 @@ int LTP::wordseg(XML4NLP & xml) {
   return 0;
 }
 
-int LTP::customized_wordseg(XML4NLP & xml, const char * model_path, const char * lexicon_path) {
-  if (xml.QueryNote(NOTE_WORD)) {
-    return 0;
-  }
-
-  //
-  int ret = splitSentence_dummy(xml);
-  if (0 != ret) {
-    ERROR_LOG("in LTP::wordseg, failed to perform split sentence preprocess.");
-    return ret;
-  }
-
-  // get the segmentor pointer
-  void * segmentor = m_ltpResource.GetCustomizedSegmentor();
-  if (0 == segmentor) {
-    ERROR_LOG("in LTP::customized_wordseg, failed to init a segmentor");
-    return kWordsegError;
-  }
-
-  int stnsNum = xml.CountSentenceInDocument();
-
-  if (0 == stnsNum) {
-    ERROR_LOG("in LTP::customized_wordseg, number of sentence equals 0");
-    return kEmptyStringError;
-  }
-
-  for (int i = 0; i < stnsNum; ++ i) {
-    std::string strStn = xml.GetSentence(i);
-    std::vector<std::string> vctWords;
-
-    if (ltp::strutils::codecs::length(strStn) > MAX_SENTENCE_LEN) {
-      ERROR_LOG("in LTP::customized_wordseg, input sentence is too long");
-      return kSentenceTooLongError;
-    }
-
-    if (0 == customized_segmentor_segment(segmentor, model_path, lexicon_path, strStn, vctWords)) {
-      ERROR_LOG("in LTP::customized_wordseg, failed to perform word segment on \"%s\"",
-          strStn.c_str());
-      return kWordsegError;
-    }
-
-    if (0 != xml.SetWordsToSentence(vctWords, i)) {
-      ERROR_LOG("in LTP::customized_wordseg, failed to write segment result to xml");
-      return kWriteXmlError;
-    }
-  }
-
-  xml.SetNote(NOTE_WORD);
-  return 0;
-}
 // integrate postagger into LTP
 int LTP::postag(XML4NLP & xml) {
   if ( xml.QueryNote(NOTE_POS) ) {
