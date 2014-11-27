@@ -43,6 +43,12 @@ target_link_libraries (cws_cmdline segmentor_static_lib
 set_target_properties(cws_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
+add_executable (customized_cws_cmdline customized_cws_cmdline.cpp)
+target_link_libraries (customized_cws_cmdline segmentor_static_lib
+    boost_regex_static_lib)
+set_target_properties(customized_cws_cmdline PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+
 add_executable (pos_cmdline pos_cmdline.cpp)
 target_link_libraries (pos_cmdline postagger_static_lib)
 set_target_properties(pos_cmdline PROPERTIES
@@ -61,6 +67,10 @@ add_executable (multi_cws_cmdline multi_cws_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 set_target_properties(multi_cws_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+add_executable (multi_customized_cws_cmdline multi_customized_cws_cmdline.cpp
+    ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
+set_target_properties(multi_customized_cws_cmdline PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 add_executable (multi_pos_cmdline multi_pos_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 set_target_properties(multi_pos_cmdline PROPERTIES
@@ -73,11 +83,18 @@ target_link_libraries (multi_cws_cmdline segmentor_static_lib
     boost_regex_static_lib
     pthread)
 
+target_link_libraries (multi_customized_cws_cmdline segmentor_static_lib
+    boost_regex_static_lib
+    pthread)
+
 target_link_libraries (multi_pos_cmdline postagger_static_lib pthread)
 else ()
 target_link_libraries (multi_ltp_test ${ltp_test_LIBS})
 
 target_link_libraries (multi_cws_cmdline segmentor_static_lib
+    boost_regex_static_lib)
+
+target_link_libraries (multi_customized_cws_cmdline segmentor_static_lib
     boost_regex_static_lib)
 
 target_link_libraries (multi_pos_cmdline postagger_static_lib)

@@ -22,7 +22,7 @@ public:
    *
    *  @return   int   the number of labels
    */
-  inline int num_labels(void) {
+  inline int num_labels(void)const {
     return labels.size();
   }
 

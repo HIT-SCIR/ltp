@@ -187,7 +187,7 @@ protected:
    *  @param[out] scm       the score matrix.
    */
   void calculate_scores(const Instance* inst,
-      Model* mdl,
+      const Model* mdl,
       const DecodeContext* ctx,
       bool use_avg,
       ScoreMatrix* scm);

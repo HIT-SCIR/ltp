@@ -431,7 +431,7 @@ Segmentor::build_feature_space(void) {
 }
 
 void
-Segmentor::calculate_scores(const Instance * inst, Model* mdl,
+Segmentor::calculate_scores(const Instance * inst, const Model* mdl,
     const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm) {
   int len = inst->size();
   int L = mdl->num_labels();
