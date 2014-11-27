@@ -1,6 +1,5 @@
 #include "segmentor/segment_dll.h"
 #include "segmentor/customized_segmentor.h"
-#include "segmentor/singleton_model.h"
 #include "segmentor/settings.h"
 //#include "instance.h"
 #include "utils/logging.hpp"
@@ -54,7 +53,7 @@ public:
 
     seg::DecodeContext* ctx = new seg::DecodeContext;
     seg::ScoreMatrix* scm = new seg::ScoreMatrix;
-    seg::Segmentor::build_lexicon_match_state(inst);
+    seg::Segmentor::build_lexicon_match_state(seg::CustomizedSegmentor::baseline_model, inst);
     seg::Segmentor::extract_features(inst, seg::CustomizedSegmentor::baseline_model, ctx);
     seg::Segmentor::calculate_scores(inst, seg::CustomizedSegmentor::baseline_model, ctx, true, scm);
 

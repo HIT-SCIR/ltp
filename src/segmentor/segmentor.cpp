@@ -431,10 +431,10 @@ Segmentor::build_feature_space(void) {
 }
 
 void
-Segmentor::calculate_scores(const Instance * inst, const Model* mdl,
+Segmentor::calculate_scores(const Instance * inst, Model* mdl,
     const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm) {
   int len = inst->size();
-  int L = model->num_labels();
+  int L = mdl->num_labels();
 
   scm->uni_scores.resize(len, L); scm->uni_scores = NEG_INF;
   scm->bi_scores.resize(L, L);    scm->bi_scores = NEG_INF;
