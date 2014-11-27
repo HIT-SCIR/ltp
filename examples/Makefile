@@ -3,7 +3,7 @@
 #################################################
 cc=g++
 ccflags=-O2
-all: cws cws_cmdline cws_cmdline_server\
+all: cws\
 	pos \
 	par \
 	ner \
@@ -14,16 +14,7 @@ cws: cws.cpp
 		-I../include/ \
 		-I../thirdparty/boost/include \
 		-L../lib/ -lsegmentor -lboost_regex
-cws_cmdline: cws_cmdline.cpp
-	${cc} ${ccflags} -g -o cws_cmdline cws_cmdline.cpp -I./ \
-		-I ../include \
-		-I ../thirdparty/boost/include \
-		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
-cws_cmdline_server: cws_cmdline_server.cpp
-	${cc} ${ccflags} -g -o cws_cmdline_server cws_cmdline_server.cpp -I./ \
-		-I ../include \
-		-I ../thirdparty/boost/include \
-		-Wl,-dn -L../lib/ -lsegmentor -lboost_regex -Wl,-dy
+
 pos: pos.cpp
 	${cc} ${ccflags} -o pos pos.cpp -I./ \
 		-I../include/ \
@@ -52,5 +43,3 @@ clean:
 	rm ner
 	rm par
 	rm srl
-	rm cws_cmdline
-	rm cws_cmdline_server
