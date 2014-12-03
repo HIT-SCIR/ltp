@@ -141,10 +141,16 @@ private:
 
     seg::Model *mdl = new seg::Model;
 
-    std::ifstream mfs(model_path, std::ifstream::binary);
+    if (NULL != model_path) {
+      std::ifstream mfs(model_path, std::ifstream::binary);
 
-    if (mfs) {
-      if (!mdl->load(mfs)) {
+      if (mfs) {
+        if (!mdl->load(mfs)) {
+          delete mdl;
+          mdl = 0;
+          return NULL;
+        }
+      } else {
         delete mdl;
         mdl = 0;
         return NULL;
