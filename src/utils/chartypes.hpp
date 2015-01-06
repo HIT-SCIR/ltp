@@ -84,10 +84,10 @@ protected:
 
 private:
 #if defined(_MSC_VER)
-  typedef stdext::hash_map<const char *, int,
+  typedef std::unordered_map<const char *, int,
         utility::__Default_CharArray_HashFunction> internal_collection_t;
 #else
-  typedef std::tr1::unordered_map<const char *, int,
+  typedef std::unordered_map<const char *, int,
         utility::__Default_CharArray_HashFunction,
         utility::__Default_CharArray_EqualFunction> internal_collection_t;
 #endif // end for _WIN32

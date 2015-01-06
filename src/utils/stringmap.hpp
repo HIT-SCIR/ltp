@@ -21,6 +21,7 @@ namespace utility {
 template <class T>
 class StringMap {
 public:
+/*
 #if defined(_MSC_VER)
   typedef stdext::hash_map<const char *, T,
           __Default_CharArray_HashFunction> internal_map_t;
@@ -29,7 +30,8 @@ public:
           __Default_CharArray_HashFunction,
           __Default_CharArray_EqualFunction> internal_map_t;
 #endif  // end for _WIN32
-
+*/
+  typedef std::unordered_map<const char *, T> internal_map_t;
   typedef typename internal_map_t::iterator       iterator;
   typedef typename internal_map_t::const_iterator const_iterator;
 
