@@ -18,6 +18,7 @@ public:
     segmented(_segmented),
     style(_style) {}
 
+  // read instance from input file line by line
   Instance * next() {
     if (ifs.eof()) {
       return 0;

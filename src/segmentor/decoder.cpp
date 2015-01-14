@@ -64,7 +64,7 @@ void Decoder::get_result(Instance * inst) {
 
   const LatticeItem * item = best_item;
   inst->predicted_tagsidx.resize(len);
-
+  // backtracking
   while (item) {
     inst->predicted_tagsidx[item->i] = item->l;
     // std::cout << item->i << " " << item->l << std::endl;

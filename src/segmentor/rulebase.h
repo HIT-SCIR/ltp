@@ -52,6 +52,13 @@ static void flags_color(int * flags, int left, int right, int color) {
   }
 }
 
+/**
+ * preprocess the sentence
+ *  @param[in]  sentence  the input sentence
+ *  @param[out]  raw_forms raw characters of the input sentence
+ *  @param[out]  forms  characters after preprocessing
+ *  @param[out]  chartypes  character types
+ */
 int preprocess(const std::string & sentence,
     std::vector<std::string> & raw_forms,
     std::vector<std::string> & forms,
@@ -68,6 +75,7 @@ public:
       __i_idx__ = labels.index( __i__ );
       __e_idx__ = labels.index( __e__ );
 
+      // store the legal transform
       if (__s_idx__>=0 && __b_idx__>=0 && __i_idx__>=0 && __e_idx__>=0) {
         __trans__ |= (1<<((__s_idx__<<2) + __s_idx__));
         __trans__ |= (1<<((__s_idx__<<2) + __b_idx__));
@@ -90,6 +98,7 @@ public:
     return (__trans__ & (1<<((prev<<2) + curr))) > 0;
   }
 
+  // legal y->x
   inline bool legal_emit(int type, int curr) {
     if (((type & 0x07) == CHAR_ENG) || ((type & 0x07) == CHAR_URI)) {
       return (curr == __s_idx__);

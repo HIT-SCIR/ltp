@@ -118,7 +118,7 @@ CustomizedSegmentor::build_lexicon_match_state(Instance* inst) {
     for (int j = i; j<i+5 && j < len; ++ j) {
       word = word + inst->forms[j];
 
-      // it's not a lexicon word
+      // it's not a lexicon word in baseline_model nor model
       if (!model->internal_lexicon.get(word.c_str())
           && !model->external_lexicon.get(word.c_str())
           && !baseline_model->external_lexicon.get(word.c_str())
@@ -152,7 +152,9 @@ CustomizedSegmentor::build_lexicon_match_state(Instance* inst) {
 
 void
 CustomizedSegmentor::extract_features(const Instance* inst, bool create) {
+  //extract features from model
   Segmentor::extract_features(inst, model, decode_context, create);
+  //extract features from baseline model
   Segmentor::extract_features(inst, baseline_model, baseline_decode_context, false);
 }
 
@@ -177,6 +179,7 @@ CustomizedSegmentor::calculate_scores(const Instance * inst, bool use_avg) {
       if(!use_avg) {
         score_matrix->uni_scores[i][l] = baseline_model->param.dot(fv, false);
       } else {
+        //flush baseline_model and model time to the same level
         score_matrix->uni_scores[i][l] = baseline_model->param.dot_flush_time(fv,
             baseline_model->end_time,
             model->end_time);
