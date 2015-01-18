@@ -1,5 +1,5 @@
 #include "segmentor/rulebase.h"
-#include "segmentor/special_lexicon.h"
+#include "segmentor/special_tokens.h"
 
 namespace ltp {
 namespace segmentor {
@@ -29,11 +29,11 @@ int preprocess(const std::string & sentence,
   }
 
   int pos = 0;
-  for (int i = 0; i < ltp::segmentor::special_lexicon_size; ++i){
+  for (int i = 0; i < ltp::segmentor::special_tokens_size; ++i){
       pos = 0;
-      const std::string& special_word = ltp::segmentor::special_lexicon[i];
-      while((pos = sent.find(special_word, pos)) != std::string::npos){
-          int pos_end = pos + special_word.length();
+      const std::string& special_token = ltp::segmentor::special_tokens[i];
+      while((pos = sent.find(special_token, pos)) != std::string::npos){
+          int pos_end = pos + special_token.length();
               if (flags_clear_check(flags, pos, pos_end)){
                   flags[pos] = SPECIAL_TOKEN_BEG;
                   if(pos_end -1 > pos){
