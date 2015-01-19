@@ -1,6 +1,8 @@
-# Ltp: Language Technology Platform
+# LTP: Language Technology Platform
 
 [![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
+
+[![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
 
 新闻
 ----
@@ -31,6 +33,8 @@
 ---
 
 关于LTP的使用，请参考[LTP使用文档v3.0](https://github.com/HIT-SCIR/ltp/blob/master/doc/ltp-document-3.0.md)
+
+或参考[ReadtheDocs在线文档](http://ltp.readthedocs.org/zh_CN/latest/)
 
 模型
 ---
