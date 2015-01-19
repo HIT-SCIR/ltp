@@ -29,7 +29,8 @@ int preprocess(const std::string & sentence,
 
   start = sent.begin();
   end = sent.end();
-
+  
+  // match url in the sentence
   while (boost::regex_search(start, end, what, uripattern, boost::match_default)) {
     int left = what[0].first - sent.begin();
     int right = what[0].second - sent.begin();
@@ -45,6 +46,7 @@ int preprocess(const std::string & sentence,
   start = sent.begin();
   end   = sent.end();
 
+  // match english in the sentence
   while (boost::regex_search(start, end, what, engpattern, boost::match_default)) {
     int left = what[0].first - sent.begin();
     int right = what[0].second - sent.begin();

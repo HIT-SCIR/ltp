@@ -12,6 +12,10 @@ namespace segmentor {
 
 namespace utils = ltp::utility;
 
+/**
+ * A singleton for extracting features
+ *
+ */
 class Extractor {
 public:
   static Extractor& extractor();

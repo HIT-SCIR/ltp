@@ -24,6 +24,8 @@ using namespace ltp::utility;
 Postagger::Postagger()
   : model(0),
     decoder(0),
+    decode_context(0),
+    score_matrix(0),
     __TRAIN__(false),
     __TEST__(false),
     __DUMP__(false) {
@@ -32,6 +34,8 @@ Postagger::Postagger()
 Postagger::Postagger(ltp::utility::ConfigParser & cfg)
   : model(0),
     decoder(0),
+    decode_context(0),
+    score_matrix(0),
     __TRAIN__(false),
     __TEST__(false),
     __DUMP__(false) {
@@ -45,6 +49,14 @@ Postagger::~Postagger() {
 
   if (decoder) {
     delete decoder;
+  }
+
+  if (decode_context) {
+    delete decode_context;
+  }
+
+  if (score_matrix) {
+    delete score_matrix;
   }
 
 }
@@ -226,7 +238,10 @@ Postagger::build_labels(Instance * inst, std::vector<std::string> & tags) {
 }
 
 void
-Postagger::extract_features(Instance * inst, bool create) {
+Postagger::extract_features(Instance * inst,
+    DecodeContext* ctx,
+    bool create) {
+
   const int N = Extractor::num_templates();
   const int L = model->num_labels();
 
@@ -237,9 +252,8 @@ Postagger::extract_features(Instance * inst, bool create) {
   int len = inst->size();
 
   // allocate the uni_features
-  inst->uni_features.resize(len, L);  inst->uni_features = 0;
-  inst->uni_scores.resize(len, L);    inst->uni_scores = NEG_INF;
-  inst->bi_scores.resize(L, L);       inst->bi_scores = NEG_INF;
+  ctx->uni_features.resize(len, L);
+  ctx->uni_features = 0;
 
   for (int pos = 0; pos < len; ++ pos) {
     for (int n = 0; n < N; ++ n) {
@@ -272,22 +286,27 @@ Postagger::extract_features(Instance * inst, bool create) {
         idx[j] = cache_again[j];
       }
 
-      inst->uni_features[pos][l] = new FeatureVector;
-      inst->uni_features[pos][l]->n = num_feat;
-      inst->uni_features[pos][l]->val = 0;
-      inst->uni_features[pos][l]->loff = 0;
-      inst->uni_features[pos][l]->idx = idx;
+      ctx->uni_features[pos][l] = new FeatureVector;
+      ctx->uni_features[pos][l]->n = num_feat;
+      ctx->uni_features[pos][l]->val = 0;
+      ctx->uni_features[pos][l]->loff = 0;
+      ctx->uni_features[pos][l]->idx = idx;
 
       for (l = 1; l < L; ++ l) {
-        inst->uni_features[pos][l] = new FeatureVector;
-        inst->uni_features[pos][l]->n = num_feat;
-        inst->uni_features[pos][l]->idx = idx;
-        inst->uni_features[pos][l]->val = 0;
-        inst->uni_features[pos][l]->loff = l;
+        ctx->uni_features[pos][l] = new FeatureVector;
+        ctx->uni_features[pos][l]->n = num_feat;
+        ctx->uni_features[pos][l]->idx = idx;
+        ctx->uni_features[pos][l]->val = 0;
+        ctx->uni_features[pos][l]->loff = l;
       }
     }
   }
 
+}
+
+void
+Postagger::extract_features(Instance * inst, bool create) {
+  extract_features(inst, decode_context, create);
 }
 
 void
@@ -299,6 +318,8 @@ Postagger::build_feature_space(void) {
 
   for (int i = 0; i < train_dat.size(); ++ i) {
     extract_features(train_dat[i], true);
+    cleanup_decode_context();
+
     if ((i + 1) % train_opt.display_interval == 0) {
       TRACE_LOG("[%d] instances is extracted.", (i+1));
     }
@@ -308,38 +329,45 @@ Postagger::build_feature_space(void) {
 }
 
 void
-Postagger::calculate_scores(Instance * inst, bool use_avg) {
+Postagger::calculate_scores(const Instance * inst,
+    const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm) {
   int len = inst->size();
   int L = model->num_labels();
+
+  scm->uni_scores.resize(len, L); scm->uni_scores = NEG_INF;
+  scm->bi_scores.resize(L, L);    scm->bi_scores = NEG_INF;
+
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
-      FeatureVector * fv = inst->uni_features[i][l];
+      FeatureVector * fv = ctx->uni_features[i][l];
       if (!fv) {
         continue;
       }
 
-      inst->uni_scores[i][l] = model->param.dot(inst->uni_features[i][l], use_avg);
+      scm->uni_scores[i][l] = model->param.dot(ctx->uni_features[i][l], use_avg);
     }
   }
 
   for (int pl = 0; pl < L; ++ pl) {
     for (int l = 0; l < L; ++ l) {
       int idx = model->space.index(pl, l);
-      inst->bi_scores[pl][l] = model->param.dot(idx, use_avg);
+      scm->bi_scores[pl][l] = model->param.dot(idx, use_avg);
     }
   }
 }
+void
+Postagger::calculate_scores(Instance * inst, bool use_avg) {
+  calculate_scores(inst, decode_context, use_avg, score_matrix);
+}
 
 void
-Postagger::collect_features(Instance * inst,
-                            const std::vector<int> & tagsidx,
-                            math::SparseVec & vec) {
-  int len = inst->size();
-
+Postagger::collect_features(const math::Mat< math::FeatureVector* >& features,
+    const std::vector<int> & tagsidx, math::SparseVec & vec) {
+  int len = tagsidx.size();
   vec.zero();
   for (int i = 0; i < len; ++ i) {
     int l = tagsidx[i];
-    const FeatureVector * fv = inst->uni_features[i][l];
+    const FeatureVector * fv = features[i][l];
 
     if (!fv) {
       continue;
@@ -450,6 +478,11 @@ Postagger::erase_rare_features(int * feature_group_updated_time) {
 }
 
 void
+Postagger::cleanup_decode_context() {
+  decode_context->clear();
+}
+
+void
 Postagger::train(void) {
   const char * train_file = train_opt.train_file.c_str();
 
@@ -461,6 +494,8 @@ Postagger::train(void) {
   TRACE_LOG("Read in [%d] instances.", train_dat.size());
 
   model = new Model;
+  decode_context = new DecodeContext;
+  score_matrix = new ScoreMatrix;
   // build tag dictionary, map string tag to index
   TRACE_LOG("Start build configuration");
   build_configuration();
@@ -507,28 +542,26 @@ Postagger::train(void) {
         // extract_features(train_dat[i]);
 
         Instance * inst = train_dat[i];
+        extract_features(inst);
         calculate_scores(inst, false);
-        decoder->decode(inst);
+        decoder->decode(inst, score_matrix);
 
-        if (inst->features.dim() == 0) {
-          collect_features(inst, inst->tagsidx, inst->features);
-        }
-        collect_features(inst, inst->predicted_tagsidx, inst->predicted_features);
+        collect_features(decode_context->uni_features, inst->tagsidx, decode_context->correct_features);
+        collect_features(decode_context->uni_features, inst->predicted_tagsidx, decode_context->predicted_features);
 
         if (train_opt.algorithm == "pa") {
-          SparseVec update_features;
-          update_features.zero();
-          update_features.add(train_dat[i]->features, 1.);
-          update_features.add(train_dat[i]->predicted_features, -1.);
+          decode_context->updated_features.zero();
+          decode_context->updated_features.add(decode_context->correct_features, 1.);
+          decode_context->updated_features.add(decode_context->predicted_features, -1.);
 
           if (feature_group_updated_time) {
-            increase_group_updated_time(update_features,
+            increase_group_updated_time(decode_context->updated_features,
                                         feature_group_updated_time);
           }
 
           double error = train_dat[i]->num_errors();
-          double score = model->param.dot(update_features, false);
-          double norm = update_features.L2();
+          double score = model->param.dot(decode_context->updated_features, false);
+          double norm = decode_context->updated_features.L2();
 
           double step = 0.;
           if (norm < EPS) {
@@ -537,25 +570,25 @@ Postagger::train(void) {
             step = (error - score) / norm;
           }
 
-          model->param.add(update_features,
+          model->param.add(decode_context->updated_features,
                            iter * train_dat.size() + i + 1,
                            step);
 
         } else if (train_opt.algorithm == "ap") {
-          SparseVec update_features;
-          update_features.zero();
-          update_features.add(train_dat[i]->features, 1.);
-          update_features.add(train_dat[i]->predicted_features, -1.);
+          decode_context->updated_features.zero();
+          decode_context->updated_features.add(decode_context->correct_features, 1.);
+          decode_context->updated_features.add(decode_context->predicted_features, -1.);
 
           if (feature_group_updated_time) {
-            increase_group_updated_time(update_features,
+            increase_group_updated_time(decode_context->updated_features,
                                         feature_group_updated_time);
           }
-          model->param.add(update_features,
+          model->param.add(decode_context->updated_features,
                            iter * train_dat.size() + i + 1,
                            1.);
         }
 
+        cleanup_decode_context();
         if ((i+1) % train_opt.display_interval == 0) {
           TRACE_LOG("[%d] instances is trained.", i+1);
         }
@@ -631,7 +664,8 @@ Postagger::evaluate(double &p) {
     extract_features(inst, false);
     calculate_scores(inst, true);
 
-    decoder->decode(inst);
+    decoder->decode(inst, score_matrix);
+    cleanup_decode_context();
 
     num_recalled_tags += inst->num_corrected_predicted_tags();
     num_tags += inst->size();
@@ -678,6 +712,8 @@ Postagger::test(void) {
   }
 
   decoder = new Decoder(model->num_labels());
+  score_matrix = new ScoreMatrix;
+  decode_context = new DecodeContext;
   PostaggerReader reader(ifs, true);
   PostaggerWriter writer(cout);
   Instance * inst = NULL;
@@ -711,7 +747,8 @@ Postagger::test(void) {
     extract_features(inst);
     calculate_scores(inst, true);
 
-    decoder->decode(inst);
+    decoder->decode(inst, score_matrix);
+    cleanup_decode_context();
     build_labels(inst, inst->predicted_tags);
     writer.write(inst);
     num_recalled_tags += inst->num_corrected_predicted_tags();

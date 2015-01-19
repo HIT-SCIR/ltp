@@ -238,6 +238,7 @@ Segmentor::build_configuration(void) {
     total_freq += inst->words.size();
   }
 
+  // count words frequency
   std::vector<int> freqs;
   for (utils::SmartMap<bool>::const_iterator itx = wordfreq.begin();
       itx != wordfreq.end();
@@ -245,6 +246,7 @@ Segmentor::build_configuration(void) {
     freqs.push_back(itx.frequency());
   }
 
+  // filter words based on frequency
   long long accumulate_freq = 0;
   std::sort(freqs.begin(), freqs.end(), std::greater<int>());
   int target = freqs[int(freqs.size() * 0.2)];
@@ -256,6 +258,7 @@ Segmentor::build_configuration(void) {
     }
   }
 
+  // build words dictionary
   for (utils::SmartMap<bool>::const_iterator itx = wordfreq.begin();
       itx != wordfreq.end();
       ++ itx) {
@@ -283,6 +286,7 @@ Segmentor::build_lexicon_match_state(Instance* inst) {
 
   inst->lexicon_match_state.resize(len, 0);
 
+  // perform the maximum forward match algorithm
   for (int i = 0; i < len; ++ i) {
     std::string word; word.reserve(32);
     for (int j = i; j<i+5 && j < len; ++ j) {
@@ -334,6 +338,7 @@ Segmentor::extract_features(const Instance * inst,
   ctx->uni_features.resize(len, L);
   ctx->uni_features = 0;
 
+  // extract features for each character
   for (int pos = 0; pos < len; ++ pos) {
     for (int n = 0; n < N; ++ n) {
       cache[n].clear();
@@ -410,7 +415,7 @@ Segmentor::build_words(Instance * inst, const std::vector<int> & tagsidx,
 
 void
 Segmentor::build_feature_space(void) {
-  // build feature space, it a wrapper for
+  // build feature space, it is a wrapper for
   // featurespace.build_feature_space
   int L = model->num_labels();
   model->space.set_num_labels(L);
@@ -569,6 +574,7 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
     }
   }
 
+  // copy parameters from the old model to the new model
   for (int pl = 0; pl < L; ++ pl) {
     for (int l = 0; l < L; ++ l) {
       int old_id = model->space.index(pl, l);
@@ -581,6 +587,7 @@ Segmentor::erase_rare_features(const int * feature_updated_times) {
   }
   TRACE_LOG("Building new model is done");
 
+  // copy lexicon from the old model to the new model
   for (utils::SmartMap<bool>::const_iterator itx = model->internal_lexicon.begin();
       itx != model->internal_lexicon.end();
       ++ itx) {

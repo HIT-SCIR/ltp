@@ -33,16 +33,26 @@ public:
   const LatticeItem * prev;
 };
 
+// class to perform the decode algorithm
 class Decoder {
 public:
   Decoder (int _l, rulebase::RuleBase & _base) : L(_l), base(_base) {}
 
-  //!
+  /**
+   * The main decoding process
+   *  @param[in/out]  the instance
+   *  @param[in]  the score matrix
+   */
   void decode(Instance * inst, const ScoreMatrix* scm);
 
 private:
   void init_lattice(const Instance * inst);
   void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
+
+  /**
+   * Backtracking to get the best result from the lattice matrix
+   *  @param[in/out]  the instance
+   */
   void get_result(Instance * inst);
   void free_lattice();
 

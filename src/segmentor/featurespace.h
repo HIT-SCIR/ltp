@@ -76,8 +76,33 @@ public:
   FeatureSpace(int num_labels = 1);
   ~FeatureSpace();
 
+  /*
+   * retrieve dimension of the feature
+   *
+   *  @param[in]  tid   the template index of the key
+   *  @param[in]  key   the key value of the feature
+   *  @param[in]  create   if create is ture, insert the key into the dict
+   *  @return     int   the dimension index
+   */
   int retrieve(int tid, const char * key, bool create);
+
+  /*
+   * return dimension of the key with certain label ( φ(x,y) )
+   *
+   *  @param[in]  tid   the template index of the key
+   *  @param[in]  key   the key value
+   *  @param[in]  lid   the label
+   *  @return     int   the dimension index
+   */
   int index(int tid, const char * key, int lid = 0) const;
+
+  /*
+   * return dimension of  the transform feature( φ(y1,y2) )
+   *
+   *  @param[in]  prev_lid   the previous label
+   *  @param[in]  lid   the label
+   *  @return     int   the dimension index
+   */
   int index(int prev_lid, int lid) const;
   int num_features();
   int dim();
@@ -96,6 +121,7 @@ public:
    *
    *  @param[in]  num_labels  the number of labels
    *  @param[in]  ifs     the input stream
+   *  @return     bool    true on success, otherwise false
    */
   bool load(int num_labeles, std::istream & ifs);
 

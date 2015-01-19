@@ -9,6 +9,15 @@ namespace segmentor {
 
 namespace utils = ltp::utility;
 
+/**
+ * The class CustomizedSegmentor inherit from the class Segmentor.
+ * It is designed for customized segment, which means users can 
+ * use two models, baseline model and customized model to segment
+ * words. Most of the function responsibility between Segmentor and
+ * Customzied is the same, except for that CustomziedSegmentor takes
+ * two parts, the baseline and the customzied, as input.
+ *
+ */
 class CustomizedSegmentor : public Segmentor{
 public:
   //!

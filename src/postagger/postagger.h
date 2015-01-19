@@ -7,6 +7,8 @@
 #include "postagger/constrainutil.hpp"
 #include "utils/smartmap.hpp"
 #include "utils/tinybitset.hpp"
+#include "postagger/decode_context.h"
+#include "postagger/score_matrix.h"
 
 
 namespace ltp {
@@ -64,6 +66,10 @@ private:
    */
   void dump(void);
 
+  /**
+   *
+   */
+  void cleanup_decode_context();
   /*
    * do feature trauncation on the model. create a model duplation
    * on the model and return their
@@ -82,6 +88,18 @@ protected:
    */
   void build_labels(Instance * inst, std::vector<std::string> & tags);
 
+  /**
+   * extract feature from the instance, store the extracted features in a 
+   * Decodecontext class.
+   *
+   * @param[in] inst   The instance.
+   * @param[out] ctx   The decode context result.
+   * @param[in] create If create is true, create feature for new feature
+   *             in the model otherwise not create.
+   */
+  void extract_features(Instance * inst,
+      DecodeContext * ctx,
+      bool create = false);
   /*
    * extract feature from the instance. If create handler is configured,
    *
@@ -89,6 +107,20 @@ protected:
    *  @param[in]  create    use to specify create process
    */
   void extract_features(Instance * inst, bool create = false);
+
+  /**
+   * Cache all the score for the certain instance. The cached results are
+   * stored in a Scorematrix.
+   *
+   * @param[in] inst    the instance
+   * @param[in] ctx    the decode context
+   * @param[in] use_avg use to specify use average parameter
+   * @param[out] scm    the score matrix
+   */
+  void calculate_scores(const Instance* inst,
+      const DecodeContext* ctx,
+      bool use_avg,
+      ScoreMatrix* scm);
 
   /*
    * cache all the score for the certain instance.
@@ -101,13 +133,13 @@ protected:
   /*
    * collect feature when given the tags index
    *
-   *  @param[in]    inst  the instance
+   *  @param[in]    uni_features  the unigram features
    *  @param[in]    tagsidx the tags index
    *  @param[out]   vec   the output sparse vector
    */
-  void collect_features(Instance * inst,
-                        const std::vector<int> & tagsidx,
-                        ltp::math::SparseVec & vec);
+  void collect_features(const math::Mat< math::FeatureVector* > & uni_features,
+      const std::vector<int> & tagsidx,
+      ltp::math::SparseVec & vec);
 
   /*
    * decode the group information for feature represented in sparse vector,
@@ -129,6 +161,11 @@ private:
 protected:
   Model * model;
   Decoder * decoder;
+
+  //! The decode context
+  DecodeContext* decode_context;
+  //! The score matrix
+  ScoreMatrix* score_matrix;
 };
 
 }     //  end for namespace postagger

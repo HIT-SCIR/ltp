@@ -19,7 +19,7 @@ public:
   ~Segmentor();
 
   /**
-   * The only publich method in the Segmentor class. Parameters are passed to
+   * The only public method in the Segmentor class. Parameters are passed to
    * the segmentor by a ::utility::ConfigParser class.
    */
   void run();
@@ -73,11 +73,6 @@ protected:
    */
   virtual void train_passive_aggressive(int nr_errors);
 
-  /**
-   *
-   *
-   *
-   */
   virtual void cleanup_decode_context();
 
 
@@ -113,12 +108,12 @@ protected:
   virtual void train(void);
 
 
-  /*
+  /**
    * The main evaluating process.
    *
-   *  @param[out]   p   The precise
-   *  @param[out]   r   The recall
-   *  @param[out]   f   The F-score
+   *  @param[out]  p   The precise
+   *  @param[out]  r   The recall
+   *  @param[out]  f   The F-score
    */
   virtual void evaluate(double &p, double &r, double &f);
 
@@ -141,9 +136,9 @@ protected:
   void dump(void);
 
   /**
+   * Build lexicon match state of the instance
    *
-   *
-   *
+   *  @param[in/out]  inst    The instance.
    *
    */
   virtual void build_lexicon_match_state(Instance* inst);
@@ -169,8 +164,8 @@ protected:
    * Extract features from one instance, store the extracted features in the
    * nested DecodeContext.
    *
-   *  @param[in]      inst    The instance
-   *  @param[in]      create  If create is true, create feature for new
+   *  @param[in]  inst    The instance
+   *  @param[in]  create  If create is true, create feature for new
    *                          feature, otherwise not create.
    */
   virtual void extract_features(const Instance* inst, bool create = false);
@@ -203,12 +198,12 @@ protected:
 
 
   /**
-   * collect feature when given the tags index
+   * Collect feature when given the tags index
    *
-   *  @param[in]    uni_features  The unigram features.
-   *  @param[in]    model         The model.
-   *  @param[in]    tagsidx       The tags index
-   *  @param[out]   vec           The output sparse vector
+   * 
+   *  @param[in]  model         The model.
+   *  @param[in]  tagsidx       The tags index
+   *  @param[out] vec           The output sparse vector
    */
   void collect_features(const math::Mat< math::FeatureVector* >& uni_features,
       const Model* mdl, const std::vector<int> & tagsidx,
@@ -216,10 +211,10 @@ protected:
 
 
   /**
+   * Collect correct and predicted features, mainly for the error-driven 
+   * updating algorithm
    *
-   *
-   *
-   *
+   *  @param[in/out]  inst      the instance
    */
   virtual void collect_correct_and_predicted_features(Instance * inst);
 

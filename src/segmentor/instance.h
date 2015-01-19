@@ -9,6 +9,7 @@
 namespace ltp {
 namespace segmentor {
 
+// input data (x,y) = instance
 class Instance {
 public:
   Instance() {}
@@ -20,6 +21,10 @@ public:
     return forms.size();
   }
 
+  /**
+   * return the number of tags that predicted wrong
+   *  @return int  the number
+   */
   int num_errors() {
     int len = size();
     if ((len != tagsidx.size()) || (len != predicted_tagsidx.size())) {
@@ -44,6 +49,11 @@ public:
     return words.size();
   }
 
+
+  /**
+   * calculate the number of words that predicted right
+   *  @return int  the number
+   */
   int num_recalled_words() {
     int len = 0;
     int ret = 0;
@@ -86,14 +96,14 @@ public:
   }
 
 public:
-  std::vector< std::string >  raw_forms;
-  std::vector< std::string >  forms;
-  std::vector< int >          chartypes;
-  std::vector< std::string >  tags;
-  std::vector< int >          tagsidx;
-  std::vector< std::string >  predicted_tags;
+  std::vector< std::string >  raw_forms; // raw characters of the input
+  std::vector< std::string >  forms; // characters after preprocessing
+  std::vector< int >          chartypes; // types of characters, digit, text, punct etc.
+  std::vector< std::string >  tags; // tags of characters, {B I E S}
+  std::vector< int >          tagsidx; // int tags
+  std::vector< std::string >  predicted_tags; 
   std::vector< int >          predicted_tagsidx;
-  std::vector< std::string >  words;
+  std::vector< std::string >  words; // words of the input
   std::vector< std::string >  predicted_words;
   std::vector< int >          lexicon_match_state;
 };

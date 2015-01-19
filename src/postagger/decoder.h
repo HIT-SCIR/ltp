@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "postagger/instance.h"
+#include "postagger/score_matrix.h"
 #include "utils/math/mat.h"
 
 namespace ltp {
@@ -35,11 +36,11 @@ public:
 class Decoder {
 public:
   Decoder (int _l) : L(_l) {}
-  void decode(Instance * inst);
+  void decode(Instance * inst, const ScoreMatrix* scm);
 private:
   void init_lattice(const Instance * inst);
-  void viterbi_decode_inner(const Instance * inst,int i,int l);
-  void viterbi_decode(const Instance * inst);
+  void viterbi_decode_inner(const Instance * inst,const ScoreMatrix* scm, int i,int l);
+  void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
   void get_result(Instance * inst);
   void free_lattice();
 
