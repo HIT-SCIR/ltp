@@ -14,7 +14,7 @@
     :maxdepth: 2
 
     begin
-    setup
+    install
     api
     ltptest
     ltpserver
