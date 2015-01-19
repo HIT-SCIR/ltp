@@ -61,12 +61,16 @@ public:
       }
     }
 
-    ltp::postagger::Postagger::extract_features(inst);
-    ltp::postagger::Postagger::calculate_scores(inst, true);
-    deco.decode(inst);
+    ltp::postagger::DecodeContext * ctx = new ltp::postagger::DecodeContext;
+    ltp::postagger::ScoreMatrix* scm = new ltp::postagger::ScoreMatrix;
+    ltp::postagger::Postagger::extract_features(inst, ctx);
+    ltp::postagger::Postagger::calculate_scores(inst, ctx, true, scm);
+    deco.decode(inst, scm);
 
     ltp::postagger::Postagger::build_labels(inst, tags);
 
+    delete ctx;
+    delete scm;
     delete inst;
     return tags.size();
   }

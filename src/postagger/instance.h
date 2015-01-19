@@ -17,21 +17,6 @@ public:
   Instance() {}
 
   ~Instance() {
-    if (uni_features.total_size() > 0) {
-      int d1 = uni_features.nrows();
-      int d2 = uni_features.ncols();
-
-      for (int i = 0; i < d1; ++ i) {
-        if (uni_features[i][0]) {
-          uni_features[i][0]->clear();
-        }
-        for (int j = 0; j < d2; ++ j) {
-          if (uni_features[i][j]) {
-            delete uni_features[i][j];
-          }
-        }
-      }
-    }
   }
 
   inline size_t size() const {
@@ -68,13 +53,6 @@ public:
   std::vector< int >          predicted_tagsidx;
 
   std::vector< Bitset >       postag_constrain;   /*< the postag constrain for decode */
-
-  math::SparseVec             features;           /*< the gold features */
-  math::SparseVec             predicted_features; /*< the predicted features */
-
-  math::Mat< math::FeatureVector *> uni_features;
-  math::Mat< double > uni_scores;
-  math::Mat< double > bi_scores;
 
   std::vector< std::vector< std::string> > chars;
 };
