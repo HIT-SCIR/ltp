@@ -21,15 +21,9 @@ namespace utility {
 template <typename T>
 class __Template_Token_Cache {
 private:
-#if defined(_MSC_VER)
-  typedef stdext::hash_map<const char *, int,
-          __Default_CharArray_HashFunction> indexing_t;
-#else
-  typedef std::tr1::unordered_map<const char *, int,
+  typedef std::unordered_map<const char *, int,
           __Default_CharArray_HashFunction,
           __Default_CharArray_EqualFunction> indexing_t;
-#endif  // end for _WIN32
-
 public:
   /**
    * The entry function for the singleton. It's a typical get_instance

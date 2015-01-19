@@ -24,8 +24,8 @@
 #include "tinythread.h"
 #include "segment_dll.h"
 
-using namespace std;
-using namespace tthread;
+//using namespace std;
+//using namespace tthread;
 
 const int MAX_LEN = 1024;
 
@@ -35,20 +35,20 @@ public:
     _model = model;
   }
 
-  int next(string &sentence) {
+  int next(std::string &sentence) {
     sentence = "";
-    lock_guard<mutex> guard(_mutex);
-    if (!getline(cin, sentence, '\n')) {
+    tthread::lock_guard<tthread::mutex> guard(_mutex);
+    if (!getline(std::cin, sentence, '\n')) {
       return -1;
     }
     return 0;
   }
 
-  void output(const vector<string> &result) {
-    lock_guard<mutex> guard(_mutex);
+  void output(const std::vector<std::string> &result) {
+      tthread::lock_guard<tthread::mutex> guard(_mutex);
     for (int i = 0; i < result.size(); ++ i) {
-      cout << result[i];
-      cout << (i == result.size() - 1 ? '\n' : '\t');
+      std::cout << result[i];
+      std::cout << (i == result.size() - 1 ? '\n' : '\t');
     }
     return;
   }
@@ -58,14 +58,14 @@ public:
   }
 
 private:
-  mutex  _mutex;
+  tthread::mutex  _mutex;
   void * _model;
-  string _sentence;
+  std::string _sentence;
 };
 
 void multithreaded_segment( void * args) {
-  string sentence;
-  vector<string> result;
+  std::string sentence;
+  std::vector<std::string> result;
 
   Dispatcher * dispatcher = (Dispatcher *)args;
   void * model = dispatcher->model();
@@ -108,8 +108,8 @@ int main(int argc, char ** argv) {
     return -1;
   }
 
-  if(num_threads < 0 || num_threads > thread::hardware_concurrency()) {
-    num_threads = thread::hardware_concurrency();
+  if(num_threads < 0 || num_threads > tthread::thread::hardware_concurrency()) {
+    num_threads = tthread::thread::hardware_concurrency();
   }
 
   std::cerr << "TRACE: Model is loaded" << std::endl;
@@ -118,15 +118,15 @@ int main(int argc, char ** argv) {
   Dispatcher* dispatcher = new Dispatcher( engine );
 
   double tm = ltp::utility::get_time();
-  list<thread *> thread_list;
+  std::list<tthread::thread *> thread_list;
   for (int i = 0; i < num_threads; ++ i) {
-    thread* t = new thread( multithreaded_segment, (void *)dispatcher );
+    tthread::thread* t = new tthread::thread( multithreaded_segment, (void *)dispatcher );
     thread_list.push_back( t );
   }
 
-  for (list<thread *>::iterator i = thread_list.begin();
+  for (std::list<tthread::thread *>::iterator i = thread_list.begin();
       i != thread_list.end(); ++ i) {
-    thread * t = *i;
+    tthread::thread * t = *i;
     t->join();
     delete t;
   }
