@@ -12,12 +12,8 @@ namespace math {
 class SparseVec {
 public:
 
-#if defined(_MSC_VER)
   typedef std::unordered_map<int,double> internal_sparsevec_t;
-#else
-  typedef std::unordered_map<int, double> internal_sparsevec_t;
-  // typedef __gnu_cxx::hash_map<int, double> internal_sparsevec_t;
-#endif  //  end for _WIN32
+
   typedef internal_sparsevec_t::iterator     iterator;
   typedef internal_sparsevec_t::const_iterator const_iterator;
 

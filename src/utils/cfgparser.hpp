@@ -19,15 +19,11 @@ private:
   int _num_entries;
   bool _valid;
 
-#if defined(_MSC_VER)
-  typedef std::unordered_map<std::string, std::string>        internal_entries_t;
-  typedef std::unordered_map<std::string, internal_entries_t> internal_sections_t;
-#else
   typedef std::unordered_map<std::string, std::string,
           __Default_String_HashFunction> internal_entries_t;
   typedef std::unordered_map<std::string, internal_entries_t,
           __Default_String_HashFunction> internal_sections_t;
-#endif  //  end for _WIN32
+
   internal_sections_t sec;
 
 public:
