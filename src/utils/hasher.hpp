@@ -1,9 +1,6 @@
 #ifndef __HASHER_HPP__
 #define __HASHER_HPP__
 
-#if defined(_MSC_VER)
-  #include <hash_map>
-#endif
 
 #include <cstring>
 
@@ -11,9 +8,6 @@ namespace ltp {
 namespace utility {
 
 struct __Default_CharArray_HashFunction
-#if defined(_MSC_VER)
-  : public stdext::hash_compare<const char *>
-#endif
 {
   size_t operator () (const char* s) const {
     unsigned int hash = 0;
