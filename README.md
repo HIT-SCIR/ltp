@@ -1,8 +1,6 @@
 # LTP: Language Technology Platform
 
-[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
-
-[![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
+[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp) | [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
 
 新闻
 ----
