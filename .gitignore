@@ -78,3 +78,6 @@ Temporary Items
 .apdisk
 
 *.swp
+
+doc/_build
+!doc/Makefile
