@@ -1,4 +1,5 @@
 #include "segmentor/rulebase.h"
+#include "segmentor/special_tokens.h"
 
 namespace ltp {
 namespace segmentor {
@@ -27,6 +28,23 @@ int preprocess(const std::string & sentence,
     flags[i] = 0;
   }
 
+  int pos = 0;
+  for (int i = 0; i < ltp::segmentor::special_tokens_size; ++i){
+      pos = 0;
+      const std::string& special_token = ltp::segmentor::special_tokens[i];
+      while((pos = sent.find(special_token, pos)) != std::string::npos){
+          int pos_end = pos + special_token.length();
+              if (flags_clear_check(flags, pos, pos_end)){
+                  flags[pos] = SPECIAL_TOKEN_BEG;
+                  if(pos_end -1 > pos){
+                    flags_color(flags, pos+1, pos_end-1, SPECIAL_TOKEN_MID);
+                    flags[pos_end-1] = SPECIAL_TOKEN_END;
+                  }
+              }
+          pos = pos_end;
+      }
+  }
+
   start = sent.begin();
   end = sent.end();
   
@@ -37,7 +55,10 @@ int preprocess(const std::string & sentence,
 
     if (flags_clear_check(flags, left, right)) {
       flags[left] = URI_BEG;
-      flags_color(flags, left+1, right, URI_MID);
+      if(right-1 > left){
+        flags_color(flags, left+1, right-1, URI_MID);
+        flags[right-1] = URI_END;
+      }
     }
 
     start = what[0].second;
@@ -50,10 +71,12 @@ int preprocess(const std::string & sentence,
   while (boost::regex_search(start, end, what, engpattern, boost::match_default)) {
     int left = what[0].first - sent.begin();
     int right = what[0].second - sent.begin();
-
     if (flags_clear_check(flags, left, right)) {
       flags[left] = ENG_BEG;
-      flags_color(flags, left+1, right, ENG_MID);
+      if(right-1 > left){
+        flags_color(flags, left+1, right-1, ENG_MID);
+        flags[right-1]=ENG_END;
+      }
     }
 
     start = what[0].second;
@@ -64,15 +87,36 @@ int preprocess(const std::string & sentence,
 
   for (int i = 0; i < len; ) {
     int flag = 0;
-    if ((flag = flags[i])) {
-      form = "";
 
-      for (; i<len && flags[i]; ++ i) {
+    if((flag = flags[i]) == SPECIAL_TOKEN_BEG){
+      form = "";
+      form += sent[i++];
+      for (; i<len && flags[i]==SPECIAL_TOKEN_MID; ++ i) {
         form += sent[i];
       }
+      if(i < len && flags[i]==SPECIAL_TOKEN_END){
+        form += sent[i++];
+      }
       raw_forms.push_back(form);
+      forms.push_back( __eng__ );
+        if (chartypes.size() > 0) {
+          chartypes.back() |= HAVE_ENG_ON_RIGHT;
+        }
 
-      if (flag == ENG_BEG) {
+        chartypes.push_back(CHAR_ENG);
+        chartypes.back() |= left;
+        left = HAVE_ENG_ON_LEFT;
+      ++ret;
+    } else if((flag = flags[i]) == ENG_BEG){
+      form = "";
+      form += sent[i++];
+      for (; i<len && flags[i]==ENG_MID; ++ i) {
+        form += sent[i];
+      }
+      if(i < len && flags[i]==ENG_END){
+        form += sent[i++];
+      }
+      raw_forms.push_back(form);
         forms.push_back( __eng__ );
         if (chartypes.size() > 0) {
           chartypes.back() |= HAVE_ENG_ON_RIGHT;
@@ -81,7 +125,17 @@ int preprocess(const std::string & sentence,
         chartypes.push_back(CHAR_ENG);
         chartypes.back() |= left;
         left = HAVE_ENG_ON_LEFT;
-      } else if (flag == URI_BEG) {
+        ++ret;
+    } else if ((flag = flags[i]) == URI_BEG){
+      form = "";
+      form += sent[i++];
+      for (; i<len && flags[i]==URI_MID; ++ i) {
+        form += sent[i];
+      }
+      if(i < len && flags[i]==URI_END){
+        form += sent[i++];
+      }
+      raw_forms.push_back(form);
         forms.push_back( __uri__ );
         if (chartypes.size() > 0) {
           chartypes.back() |= HAVE_URI_ON_RIGHT;
@@ -90,8 +144,7 @@ int preprocess(const std::string & sentence,
         chartypes.push_back(CHAR_URI);
         chartypes.back() |= left;
         left = HAVE_URI_ON_LEFT;
-      }
-      ++ ret;
+        ++ret;
     } else {
       if ((sent[i]&0x80)==0) {
         if ((sent[i] != ' ') && (sent[i] != '\t')) {

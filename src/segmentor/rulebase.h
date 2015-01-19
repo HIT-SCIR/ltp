@@ -22,9 +22,10 @@ namespace ltp {
 namespace segmentor {
 namespace rulebase {
 
-enum { URI_BEG=1, URI_MID, URI_END, ENG_BEG, ENG_MID, ENG_END };
+enum { URI_BEG=1, URI_MID, URI_END, ENG_BEG, ENG_MID, ENG_END, SPECIAL_TOKEN_BEG, SPECIAL_TOKEN_MID, SPECIAL_TOKEN_END };
 const int CHAR_ENG = strutils::chartypes::CHAR_PUNC+1;
 const int CHAR_URI = strutils::chartypes::CHAR_PUNC+2;
+
 
 const unsigned HAVE_SPACE_ON_LEFT  = (1<<3);
 const unsigned HAVE_SPACE_ON_RIGHT = (1<<4);
