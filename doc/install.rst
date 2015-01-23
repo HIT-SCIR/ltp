@@ -12,7 +12,7 @@ LTP包括两部分，分别是
 
 同时，你可以从以下一些地方获得LTP的模型。
 
-* `百度云 <http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569>`_ 当前模型版本3.1.2
+* `百度云 <http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569>`_ 当前模型版本3.2.0
 
 安装CMake
 ---------

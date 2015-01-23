@@ -32,6 +32,7 @@ ltp_test主程序
 
 :file:`ltp_test` 是一个整合LTP中各模块的命令行工具。它完成加载模型，依照指定方法执行分析的功能。:file:`ltp_test` 加载的模型通过配置文件指定。配置文件的格式如下::
 
+    target = all
     segmentor-model = ltp_data/cws.model
     postagger-model = ltp_data/pos.model
     parser-model = ltp_data/parser.model
@@ -40,6 +41,13 @@ ltp_test主程序
 
 其中
 
+* `target` 项指定要加载的模型，合法的选项包括
+    - `ws` 加载分词模型
+    - `pos` 加载分词、词性标注模型
+    - `ner` 加载分词、词性标注、命名实体识别模型
+    - `dp` 加载分词、词性标注、依存句法分析模型
+    - `srl` 加载分词、词性标注、命名实体识别、依存句法分析、语义角色标注模型
+    - `all` 加载分词、词性标注、命名实体识别、依存句法分析、语义角色标注模型
 * `segmentor-model` 项指定分词模型文件路径
 * `postagger-model` 项指定词性标注模型文件路径
 * `parser-model` 项指定依存句法分析模型文件路径
@@ -53,14 +61,14 @@ ltp_test主程序
 
     ./ltp_test [配置文件路径] [分析任务] [待分析文件]
 
-分析任务：
+分析任务（与上文关于 `target` 配置项的定义类似）：
 
-    ws - 分词
-    pos - 词性标注
-    ner - 命名实体识别
-    dp - 依存句法分析
-    srl - 语义角色标注
-    all - 全部任务
+* `ws` - 分词
+* `pos` - 词性标注
+* `ner` - 命名实体识别
+* `dp` - 依存句法分析
+* `srl` - 语义角色标注
+* `all` - 全部任务
 
 分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考理解 :ref:`ltml-reference-label` 一节。
 
@@ -72,6 +80,8 @@ Window动态链接库
 编码以及显示
 -------------
 
-自3.0.0及以后的版本，LTP的所有模型文件均使用UTF8编码训练，故请确保待分析文本的编码为UTF8格式。
+LTP的所有模型文件均使用UTF8 [#f1]_ 编码训练，故请确保待分析文本的编码为UTF8格式。
 
-由于Windows终端采用gbk编码显示，运行 :file:`ltp_test` 后会在终端输出乱码。您可以将标准输出重定向到文件，以UTF8方式查看文件，就可以解决乱码的问题。
+.. rubric:: 注
+
+.. [#f1] 由于Windows终端采用gbk编码显示，运行 :file:`ltp_test` 后会在终端输出乱码。您可以将标准输出重定向到文件，以UTF8方式查看文件，就可以解决乱码的问题。

@@ -1,17 +1,15 @@
 使用ltp_server
 ==============
 
-重要注意
----------
+注意
+----
 
 本文档中提到的LTP Server与语言云服务不同。语言云建立在LTP Server之上，并封装了一层REST API接口。语言云API(ltp-cloud-api)的请求方式与LTP Server不同。
 
 搭建LTP Server
 ---------------
 
-LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行ltp_server就可以启动LTP Server。LTP Server启动后，将会监听12345（*）端口的HTTP请求。
-
-（\*注：如需指定监听其他端口，请在 :file:`src/server/ltp_server.cpp` 中将宏 `LISTENING_PORT "12345"` 设置为其他整数即可。）
+LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行ltp_server就可以启动LTP Server。LTP Server启动后，将会监听12345 [#f1]_ 端口的HTTP请求。
 
 请求LTP Server
 ---------------
@@ -122,3 +120,8 @@ LTML 标准要求如下：
 +-------+----------------------+------------------------+
 | 400   | BAD XML FORMAT       | 输入句子不符合LTML格式 |
 +-------+----------------------+------------------------+
+
+.. rubric:: 注
+
+.. [#f1] 如需指定监听其他端口，请在 :file:`src/server/ltp_server.cpp` 中将宏 `LISTENING_PORT "12345"` 设置为其他整数即可。
+

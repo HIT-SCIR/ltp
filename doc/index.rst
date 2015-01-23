@@ -15,8 +15,8 @@
 
     begin
     install
-    api
     ltptest
+    api
     ltpserver
     otherlanguage
     train
