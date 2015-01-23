@@ -21,6 +21,7 @@ int Extractor::num_templates() {
 }
 
 Extractor::Extractor() {
+  // delimit feature templates
   templates.push_back(new utils::Template("1={c-2}"));
   templates.push_back(new utils::Template("2={c-1}"));
   templates.push_back(new utils::Template("3={c-0}"));
@@ -83,6 +84,7 @@ int Extractor::extract1o(const Instance * inst, int idx,
 
   std::string feat;
   feat.reserve(1024);
+  // render features
   for (int i = 0; i < templates.size(); ++ i) {
     templates[i]->render(data, feat);
     cache[i].push_back(feat);

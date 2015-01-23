@@ -19,10 +19,10 @@
 #include "time.hpp"
 #include "Ltp.h"
 
-using namespace std;
-using namespace tthread;
+//using namespace std;
+//using namespace tthread;
 
-string type;
+std::string type;
 
 class Dispatcher {
 public:
@@ -32,17 +32,17 @@ public:
         _idx(0),
         _ifs(ifs) {}
 
-    int next(string &sentence) {
+    int next(std::string &sentence) {
         sentence = "";
-        lock_guard<mutex> guard(_mutex);
+        tthread::lock_guard<tthread::mutex> guard(_mutex);
         if (!getline(_ifs, sentence, '\n')) {
             return -1;
         } 
         return _max_idx ++;
     }
 
-    void output(int idx, const string &result) {
-        lock_guard<mutex> guard(_mutex);
+    void output(int idx, const std::string &result) {
+        tthread::lock_guard<tthread::mutex> guard(_mutex);
 
         if (idx > _idx) {
             _back[idx] = result;
@@ -69,7 +69,7 @@ public:
     }
 
 private:
-    mutex  _mutex;
+    tthread::mutex  _mutex;
     LTP *  _engine;
     int    _max_idx;
     int    _idx;
@@ -79,7 +79,7 @@ private:
 };
 
 void multithreaded_ltp( void * args) {
-    string sentence;
+    std::string sentence;
 
     Dispatcher * dispatcher = (Dispatcher *)args;
     LTP *  engine = dispatcher->get_engine();
@@ -109,7 +109,7 @@ void multithreaded_ltp( void * args) {
             engine->srl(xml4nlp);
         }
 
-        string result;
+        std::string result;
         // for segmentation only
 
         if (type == "sp")
@@ -148,7 +148,7 @@ void multithreaded_ltp( void * args) {
 
 int main(int argc, char ** argv) {
     if (argc != 4) {
-        cerr << "Usage: ./ltp_test <config_file> <type> <test_file>" << endl;
+        std::cerr << "Usage: ./ltp_test <config_file> <type> <test_file>" << endl;
         exit(1);
     }
 
@@ -163,20 +163,20 @@ int main(int argc, char ** argv) {
     type = _type;
     Dispatcher * dispatcher = new Dispatcher( &engine, ifs);
 
-    int num_threads = thread::hardware_concurrency();
+    int num_threads = tthread::thread::hardware_concurrency();
     std::cerr << "TRACE: LTP is built" << std::endl;
     std::cerr << "TRACE: Running " << num_threads << " thread(s)" << std::endl;
 
     double tm = ltp::utility::get_time();
-    list<thread *> thread_list;
+    std::list<tthread::thread *> thread_list;
     for (int i = 0; i < num_threads; ++ i) {
-        thread * t = new thread(multithreaded_ltp, (void *)dispatcher );
+        tthread::thread * t = new tthread::thread(multithreaded_ltp, (void *)dispatcher );
         thread_list.push_back( t );
     }
 
-    for (list<thread *>::iterator i = thread_list.begin();
+    for (std::list<tthread::thread *>::iterator i = thread_list.begin();
         i != thread_list.end(); ++ i) {
-        thread * t = *i;
+        tthread::thread * t = *i;
         t->join();
         delete t;
     }

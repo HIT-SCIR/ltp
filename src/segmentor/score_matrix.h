@@ -6,6 +6,7 @@
 namespace ltp {
 namespace segmentor {
 
+// data structure for score matrix
 struct ScoreMatrix {
   math::Mat< double > uni_scores;
   math::Mat< double > bi_scores;

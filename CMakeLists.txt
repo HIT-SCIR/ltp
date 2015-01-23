@@ -6,7 +6,8 @@ project ("LTP - Language Technology Platform")
 set (CMAKE_MODULE_PATH      ${PROJECT_SOURCE_DIR}/cmake)
 
 if (APPLE)
-  set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libstdc++ -Wno-error=c++11-narrowing")
+  add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
+  set(CMAKE_CXX_FLAGS "-std=c++11 -Wno-c++11-narrowing")
 endif(APPLE)
 
 if (MINGW)

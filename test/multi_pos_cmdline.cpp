@@ -21,8 +21,8 @@
 #include "tinythread.h"
 #include "postag_dll.h"
 
-using namespace std;
-using namespace tthread;
+//using namespace std;
+//using namespace tthread;
 
 const int MAX_LEN = 1024;
 
@@ -35,7 +35,7 @@ public:
   int next(std::vector<std::string> &words) {
     std::string line;
     std::string word;
-    lock_guard<mutex> guard(_mutex);
+    tthread::lock_guard<tthread::mutex> guard(_mutex);
     if (getline(std::cin, line, '\n')) {
       std::stringstream S(line);
       words.clear();
@@ -48,7 +48,7 @@ public:
 
   void output(const std::vector<std::string> & words,
       const std::vector<std::string> &postags) {
-    lock_guard<mutex> guard(_mutex);
+      tthread::lock_guard<tthread::mutex> guard(_mutex);
     if (words.size() != postags.size()) {
       return;
     }
@@ -65,9 +65,9 @@ public:
   }
 
 private:
-  mutex  _mutex;
+  tthread::mutex  _mutex;
   void * _model;
-  string _sentence;
+  std::string _sentence;
 };
 
 void multithreaded_postag( void * args) {
@@ -108,8 +108,8 @@ int main(int argc, char ** argv) {
 
   int num_threads = atoi(argv[2]);
 
-  if(num_threads < 0 || num_threads > thread::hardware_concurrency()) {
-    num_threads = thread::hardware_concurrency();
+  if(num_threads < 0 || num_threads > tthread::thread::hardware_concurrency()) {
+    num_threads = tthread::thread::hardware_concurrency();
   }
 
   std::cerr << "TRACE: Model is loaded" << std::endl;
@@ -118,15 +118,15 @@ int main(int argc, char ** argv) {
   Dispatcher * dispatcher = new Dispatcher( engine );
 
   double tm = ltp::utility::get_time();
-  list<thread *> thread_list;
+  std::list<tthread::thread *> thread_list;
   for (int i = 0; i < num_threads; ++ i) {
-    thread * t = new thread( multithreaded_postag, (void *)dispatcher );
+      tthread::thread * t = new tthread::thread( multithreaded_postag, (void *)dispatcher );
     thread_list.push_back( t );
   }
 
-  for (list<thread *>::iterator i = thread_list.begin();
+  for (std::list<tthread::thread *>::iterator i = thread_list.begin();
       i != thread_list.end(); ++ i) {
-    thread * t = *i;
+      tthread::thread * t = *i;
     t->join();
     delete t;
   }
