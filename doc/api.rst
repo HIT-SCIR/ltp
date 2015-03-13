@@ -218,7 +218,7 @@ Linux
 
     销毁成功时返回0，否则返回-1
 
-.. cpp:function:: int postagger_postag(void * postagger, const std::vector<std::string> & words, std::vector<std::string> tags)
+.. cpp:function:: int postagger_postag(void * postagger, const std::vector<std::string> & words, std::vector<std::string> & tags)
 
     功能：
 
@@ -460,7 +460,7 @@ Linux
     +------------------------------------------+--------------------------------------------------------------------+
     | const std::vector<std::string> & words   | 待分析的词序列                                                     |
     +------------------------------------------+--------------------------------------------------------------------+
-    | const std::vector<std::string> & postags | 待分析的词序列                                                     |
+    | const std::vector<std::string> & postags | 待分析的词的词性序列                                                     |
     +------------------------------------------+--------------------------------------------------------------------+
     | std::vector<int> & heads                 | 结果依存弧，heads[i]代表第i个词的父亲节点的编号                    |
     +------------------------------------------+--------------------------------------------------------------------+
