@@ -16,7 +16,6 @@ add_executable (ltp_server     ${ltp_server_SRC})
 
 target_link_libraries (ltp_server
     maxent_static_lib
-    util_static_lib
     ltp
     splitsnt_static_lib
     segmentor_static_lib

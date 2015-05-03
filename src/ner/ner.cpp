@@ -251,14 +251,14 @@ void NER::extract_features(Instance * inst, bool create) {
         idx[j] = cache_again[j];
       }
 
-      inst->uni_features[pos][l] = new FeatureVector;
+      inst->uni_features[pos][l] = new math::FeatureVector;
       inst->uni_features[pos][l]->n = num_feat;
       inst->uni_features[pos][l]->val = 0;
       inst->uni_features[pos][l]->loff = 0;
       inst->uni_features[pos][l]->idx = idx;
 
       for (l = 1; l < L; ++ l) {
-        inst->uni_features[pos][l] = new FeatureVector;
+        inst->uni_features[pos][l] = new math::FeatureVector;
         inst->uni_features[pos][l]->n = num_feat;
         inst->uni_features[pos][l]->idx = idx;
         inst->uni_features[pos][l]->val = 0;
@@ -331,7 +331,7 @@ NER::calculate_scores(Instance * inst, bool use_avg) {
   int L = model->num_labels();
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
-      FeatureVector * fv = inst->uni_features[i][l];
+      math::FeatureVector * fv = inst->uni_features[i][l];
       if (!fv) {
         continue;
       }
@@ -357,7 +357,7 @@ NER::collect_features(Instance * inst,
   vec.zero();
   for (int i = 0; i < len; ++ i) {
     int l = tagsidx[i];
-    const FeatureVector * fv = inst->uni_features[i][l];
+    const math::FeatureVector * fv = inst->uni_features[i][l];
 
     if (!fv) {
       continue;
@@ -517,7 +517,7 @@ NER::train(void) {
 
 
         if (train_opt.algorithm == "pa") {
-          SparseVec update_features;
+          math::SparseVec update_features;
           update_features.zero();
           update_features.add(train_dat[i]->features, 1.);
           update_features.add(train_dat[i]->predicted_features, -1.);
@@ -537,7 +537,7 @@ NER::train(void) {
                            iter * train_dat.size() + i + 1,
                            step);
         } else if (train_opt.algorithm == "ap") {
-          SparseVec update_features;
+          math::SparseVec update_features;
           update_features.zero();
           update_features.add(train_dat[i]->features, 1.);
           update_features.add(train_dat[i]->predicted_features, -1.);
@@ -755,5 +755,5 @@ void NER::dump() {
   }
 }
 
-}     //  end for namespace segmentor
+}     //  end for namespace ner
 }     //  end for namespace ltp

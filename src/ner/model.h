@@ -10,9 +10,8 @@ namespace ltp {
 namespace ner {
 
 namespace utils = ltp::utility;
-namespace frame = ltp::framework;
 
-class Model : public frame::Serializable {
+class Model : public framework::Serializable {
 public:
   Model();
   ~Model();

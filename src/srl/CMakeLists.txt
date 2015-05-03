@@ -44,8 +44,8 @@ set_target_properties (srl_shared_lib   PROPERTIES
     VERSION         ${srl_VERSION}
     OUTPUT_NAME     srl)
 
-target_link_libraries (srl_static_lib util_static_lib maxent_static_lib)
-target_link_libraries (srl_shared_lib util_shared_lib maxent_shared_lib)
+target_link_libraries (srl_static_lib maxent_static_lib)
+target_link_libraries (srl_shared_lib maxent_shared_lib)
 
 configure_file (
     SRL_DLL.h

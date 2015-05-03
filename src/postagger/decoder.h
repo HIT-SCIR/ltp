@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "framework/decoder.h"
 #include "postagger/instance.h"
 #include "postagger/score_matrix.h"
 #include "utils/math/mat.h"
@@ -11,54 +12,17 @@
 namespace ltp {
 namespace postagger {
 
-// data structure for lattice item
-class LatticeItem {
-public:
-  LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev)
-    : i(_i),
-      l(_l),
-      score(_score),
-      prev(_prev) {}
-
-  LatticeItem (int _l, double _score)
-    : i(0),
-      l(_l),
-      score(_score),
-      prev(0) {}
-
-public:
-  int         i;
-  int         l;
-  double      score;
-  const LatticeItem * prev;
-};
-
-class Decoder {
+class Decoder: public framework::ViterbiDecoder {
+private:
+  typedef framework::ViterbiLatticeItem LatticeItem;
+  int L;
 public:
   Decoder (int _l) : L(_l) {}
   void decode(Instance * inst, const ScoreMatrix* scm);
 private:
-  void init_lattice(const Instance * inst);
   void viterbi_decode_inner(const Instance * inst,const ScoreMatrix* scm, int i,int l);
   void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
   void get_result(Instance * inst);
-  void free_lattice();
-
-private:
-  int L;
-
-  math::Mat< const LatticeItem * > lattice;
-
-  void lattice_insert(const LatticeItem * &position, const LatticeItem * const item) {
-    if (position == NULL) {
-      position = item;
-    } else if (position->score < item->score) {
-      delete position;
-      position = item;
-    } else {
-      delete item;
-    }
-  }
 };
 
 }       //  end for namespace postagger

@@ -6,9 +6,8 @@
  * Project Name  £ºNewSRLBaseLine
  *
  */
-
-
 #include <iostream>
+#include <algorithm>
 #include "MyTree.h"
 
 using namespace std;
@@ -183,7 +182,7 @@ void MyTree::GetAllSibs(
 
     //delete the current node
     deque<int>::iterator itDequeSibs;
-    itDequeSibs = find(dequeSibs.begin(), dequeSibs.end(), nodeID);
+    itDequeSibs = std::find(dequeSibs.begin(), dequeSibs.end(), nodeID);
     if (itDequeSibs != dequeSibs.end())
     {
         dequeSibs.erase(itDequeSibs);
@@ -604,7 +603,7 @@ bool MyTree::IsSibling(const int nodeID1,
 
     GetAllSibs(nodeID2, dequeSibs);
 
-    itDequeSibs = find(dequeSibs.begin(), dequeSibs.end(), nodeID1);
+    itDequeSibs = std::find(dequeSibs.begin(), dequeSibs.end(), nodeID1);
     if(itDequeSibs != dequeSibs.end())
     {
         return 1;

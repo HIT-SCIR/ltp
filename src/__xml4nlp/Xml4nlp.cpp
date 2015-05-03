@@ -9,8 +9,8 @@
  */
 
 #include "Xml4nlp.h"
-#include "__util/MyLib.h"
 #include <cstring>
+#include "boost/algorithm/string.hpp"
 
 const char * const NOTE_SENT    = "sent";
 const char * const NOTE_WORD    = "word";
@@ -77,8 +77,8 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
   string line;
   int i = 0;
   while (getline(in, line)) {
-    clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
-    // remove_space_gbk(line);
+    // clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
+    boost::algorithm::trim(line);
     if (line.empty()) {
       continue;
     }
@@ -94,17 +94,18 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
 /////////////////////////////////////////////////////////////////////////////////////
 int XML4NLP::CreateDOMFromString(const string & str) {
   ClearDOM();
-
   if (0 != BuildDOMFrame()) return -1;
 
   string strTmp = str;
-  replace_char_by_char(strTmp, '\r', '\n');
+
+  boost::algorithm::replace_all(strTmp, "\r", "\n");
 
   // std::cout << strTmp << std::endl;
   istringstream in(strTmp);  // How to use istringstream?
   int i = 0;
   while (getline(in, strTmp)) {
-    clean_str(strTmp);
+    // clean_str(strTmp);
+    boost::algorithm::trim(strTmp);
 
     if (strTmp.empty()) {
       continue;

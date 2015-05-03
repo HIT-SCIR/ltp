@@ -286,14 +286,14 @@ Postagger::extract_features(Instance * inst,
         idx[j] = cache_again[j];
       }
 
-      ctx->uni_features[pos][l] = new FeatureVector;
+      ctx->uni_features[pos][l] = new math::FeatureVector;
       ctx->uni_features[pos][l]->n = num_feat;
       ctx->uni_features[pos][l]->val = 0;
       ctx->uni_features[pos][l]->loff = 0;
       ctx->uni_features[pos][l]->idx = idx;
 
       for (l = 1; l < L; ++ l) {
-        ctx->uni_features[pos][l] = new FeatureVector;
+        ctx->uni_features[pos][l] = new math::FeatureVector;
         ctx->uni_features[pos][l]->n = num_feat;
         ctx->uni_features[pos][l]->idx = idx;
         ctx->uni_features[pos][l]->val = 0;
@@ -339,7 +339,7 @@ Postagger::calculate_scores(const Instance * inst,
 
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
-      FeatureVector * fv = ctx->uni_features[i][l];
+      math::FeatureVector * fv = ctx->uni_features[i][l];
       if (!fv) {
         continue;
       }
@@ -367,7 +367,7 @@ Postagger::collect_features(const math::Mat< math::FeatureVector* >& features,
   vec.zero();
   for (int i = 0; i < len; ++ i) {
     int l = tagsidx[i];
-    const FeatureVector * fv = features[i][l];
+    const math::FeatureVector * fv = features[i][l];
 
     if (!fv) {
       continue;

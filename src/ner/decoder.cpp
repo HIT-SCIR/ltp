@@ -4,16 +4,10 @@ namespace ltp {
 namespace ner {
 
 void Decoder::decode(Instance * inst) {
-  init_lattice(inst);
+  init_lattice(inst->size(), L);
   viterbi_decode(inst);
   get_result(inst);
   free_lattice();
-}
-
-void Decoder::init_lattice(const Instance * inst) {
-  int len = inst->size();
-  lattice.resize(len, L);
-  lattice = NULL;
 }
 
 void Decoder::viterbi_decode(const Instance * inst) {
@@ -67,36 +61,6 @@ void Decoder::get_result(Instance * inst) {
     item = item->prev;
   }
 }
-
-void Decoder::free_lattice() {
-  for (int i = 0; i < lattice.nrows(); ++ i) {
-    for (int j = 0; j < lattice.ncols(); ++ j) {
-      if (lattice[i][j]) delete lattice[i][j];
-    }
-  }
-}
-
-/*void KBestDecoder::decode(Instance * inst, KBestDecodeResult & result) {
-  init_lattice(inst);
-  kbest_viterbi_decode(inst);
-  get_result(result);
-  free_lattice();
-}
-
-void KBestDecoder::init_lattice(const Instance * inst) {
-  int len = inst->len();
-  lattice.resize(len, L);
-
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      lattice[i][l] = new KHeap<LatticeItem>(k);
-    }
-  }
-}
-
-void KBestDecoder::kbest_viterbi_decode(const Instance * inst) {
-}*/
-
 
 }     //  end for namespace ner
 }     //  end for namespace ltp

@@ -4,16 +4,10 @@ namespace ltp {
 namespace segmentor {
 
 void Decoder::decode(Instance * inst, const ScoreMatrix* scm) {
-  init_lattice(inst);
+  init_lattice(inst->size(), L);
   viterbi_decode(inst, scm);
   get_result(inst);
   free_lattice();
-}
-
-void Decoder::init_lattice(const Instance * inst) {
-  int len = inst->size();
-  lattice.resize(len, L);
-  lattice = NULL;
 }
 
 void Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
@@ -69,14 +63,6 @@ void Decoder::get_result(Instance * inst) {
     inst->predicted_tagsidx[item->i] = item->l;
     // std::cout << item->i << " " << item->l << std::endl;
     item = item->prev;
-  }
-}
-
-void Decoder::free_lattice() {
-  for (int i = 0; i < lattice.nrows(); ++ i) {
-    for (int j = 0; j < lattice.ncols(); ++ j) {
-      if (lattice[i][j]) delete lattice[i][j];
-    }
   }
 }
 

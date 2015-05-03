@@ -1,6 +1,6 @@
 #include "LTPResource.h"
 
-#include "MyLib.h"
+// #include "MyLib.h"
 #include "Xml4nlp.h"
 #include "SplitSentence.h"
 #include "segment_dll.h"

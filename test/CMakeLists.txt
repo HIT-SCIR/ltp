@@ -1,5 +1,4 @@
 include_directories (./
-    ${SOURCE_DIR}/__util
     ${SOURCE_DIR}/utils
     ${SOURCE_DIR}/__xml4nlp
     ${SOURCE_DIR}/_split_sentence
@@ -10,7 +9,6 @@ include_directories (./
     ${SOURCE_DIR}/srl
     ${SOURCE_DIR}/__ltp_dll
     ${THIRDPARTY_DIR}/tinythreadpp
-    ${THIRDPARTY_DIR}/crfpp
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)
 
@@ -22,18 +20,18 @@ set (multi_ltp_test_SRC     multi_ltp_test.cpp
 
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
-set (ltp_test_LIBS
-maxent_static_lib
-util_static_lib
-ltp
-splitsnt_static_lib
-segmentor_static_lib
-postagger_static_lib
-parser_static_lib
-ner_static_lib
-srl_static_lib
-xml4nlp
-boost_regex_static_lib)
+set (ltp_test_LIBS 
+    maxent_static_lib
+    ltp
+    splitsnt_static_lib
+    segmentor_static_lib
+    postagger_static_lib
+    parser_static_lib
+    ner_static_lib
+    srl_static_lib
+    xml4nlp
+    boost_regex_static_lib)
+
 add_executable (ltp_test ${ltp_test_SRC})
 target_link_libraries (ltp_test ${ltp_test_LIBS})
 

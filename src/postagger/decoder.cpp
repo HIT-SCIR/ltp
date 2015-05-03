@@ -3,23 +3,15 @@
 namespace ltp {
 namespace postagger {
 
-
-void
-Decoder::decode(Instance * inst, const ScoreMatrix* scm) {
-  init_lattice(inst);
+void Decoder::decode(Instance * inst, const ScoreMatrix* scm) {
+  init_lattice(inst->size(), L);
   viterbi_decode(inst, scm);
   get_result(inst);
   free_lattice();
 }
 
-void
-Decoder::init_lattice(const Instance * inst) {
-  int len = inst->size();
-  lattice.resize(len, L);
-  lattice = NULL;
-}
-
-void Decoder::viterbi_decode_inner(const Instance * inst,const ScoreMatrix* scm, int i,int l){
+void Decoder::viterbi_decode_inner(const Instance* inst, const ScoreMatrix* scm,
+    int i, int l) {
   if (i == 0) {
     LatticeItem * item = new LatticeItem(i, l, scm->uni_scores[i][l], NULL);
     lattice_insert(lattice[i][l], item);
@@ -39,8 +31,7 @@ void Decoder::viterbi_decode_inner(const Instance * inst,const ScoreMatrix* scm,
   }   //  end for if i != 0
 }
 
-void
-Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
+void Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
   int len = inst->size();
   for (int i = 0; i < len; ++ i) {
     for (int l = 0; l < L; ++ l) {
@@ -51,8 +42,7 @@ Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
   }//end for i
 }
 
-void
-Decoder::get_result(Instance * inst) {
+void Decoder::get_result(Instance * inst) {
   int len = inst->size();
   const LatticeItem * best_item = NULL;
   for (int l = 0; l < L; ++ l) {
@@ -71,17 +61,6 @@ Decoder::get_result(Instance * inst) {
     inst->predicted_tagsidx[item->i] = item->l;
     // std::cout << item->i << " " << item->l << std::endl;
     item = item->prev;
-  }
-}
-
-void
-Decoder::free_lattice() {
-  int len = lattice.total_size();
-  const LatticeItem ** p = lattice.c_buf();
-  for (int i = 0; i < len; ++ i) {
-    if (p[i]) {
-      delete p[i];
-    }
   }
 }
 
