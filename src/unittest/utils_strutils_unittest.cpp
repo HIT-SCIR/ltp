@@ -96,7 +96,3 @@ TEST(strutils_unittest, test_rsplit_limit_num) {
   EXPECT_STREQ("c", tokens[1].c_str());
 }
 
-int main(int argc, char ** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

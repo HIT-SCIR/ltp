@@ -11,19 +11,20 @@ struct ModelOptions {
 };
 
 struct TrainOptions {
-  std::string   train_file;
-  std::string   holdout_file;
-  std::string   model_name;
-  std::string   algorithm;
-  int           max_iter;
-  int           display_interval;
-  int           rare_feature_threshold;
+  std::string train_file;
+  std::string holdout_file;
+  std::string model_name;
+  std::string algorithm;
+  int max_iter;
+  int display_interval;
+  int rare_feature_threshold;
 };
 
 struct TestOptions {
-  std::string   test_file;
-  std::string   model_file;
-  std::string   lexicon_file;
+  std::string test_file;
+  std::string model_file;
+  std::string lexicon_file;
+  bool evaluate;
 };
 
 struct DumpOptions {

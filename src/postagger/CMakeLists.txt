@@ -3,7 +3,6 @@ include_directories (  ${SOURCE_DIR}/ )
 set (postagger_VERSION "0.0.2")
 
 set (postagger_SRC
-    options.cpp
     decoder.cpp
     featurespace.cpp
     model.cpp
@@ -30,10 +29,10 @@ set_target_properties (postagger_shared_lib PROPERTIES
 
 add_library (postagger postag_dll.cpp ${postagger_SRC})
 
-add_executable (otpos otpos.cpp ${postagger_SRC})
+add_executable (otpos otpos.cpp postagger_frontend.cpp io.cpp ${postagger_SRC})
 # redirect the output binary to tools/train
-set_target_properties (otpos
-    PROPERTIES
+target_link_libraries (otpos boost_program_options_static_lib)
+set_target_properties (otpos PROPERTIES 
     OUTPUT_NAME otpos
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 

@@ -46,15 +46,12 @@ public:
 public:
   std::vector< std::string >  raw_forms;
   std::vector< std::string >  forms;
-  //std::vector< int >          wordtypes;
   std::vector< std::string >  tags;
   std::vector< int >          tagsidx;
   std::vector< std::string >  predicted_tags;
   std::vector< int >          predicted_tagsidx;
 
   std::vector< Bitset >       postag_constrain;   /*< the postag constrain for decode */
-
-  std::vector< std::vector< std::string> > chars;
 };
 
 }     //  end for namespace postagger

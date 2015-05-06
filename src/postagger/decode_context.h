@@ -1,6 +1,9 @@
 #ifndef __LTP_POSTAGGER_DECODE_CONTEXT_H__
 #define __LTP_POSTAGGER_DECODE_CONTEXT_H__
 
+#include "utils/math/mat.h"
+#include "utils/math/sparsevec.h"
+#include "utils/math/featurevec.h"
 namespace ltp {
 namespace postagger {
 

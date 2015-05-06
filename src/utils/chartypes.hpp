@@ -51,9 +51,9 @@ public:
     return instance_;
   }
 
-  int chartype(const char * key) {
-    internal_collection_t::const_iterator itx = collections.find(key);
-    if (itx != collections.end()) {
+  int chartype(const char* key) const {
+    map_t::const_iterator itx = rep.find(key);
+    if (itx != rep.end()) {
       return itx->second;
     }
     return CHAR_OTHER;
@@ -61,15 +61,14 @@ public:
 
 protected:
 #define SETUP_TABLE(name, flag) do { \
-  buff = (__chartype_##name##_buff__); \
   for (int i = 0; i < (__chartype_##name##_size__); ++ i) { \
-    collections[buff] = (CHAR_##flag); \
-    do {++ buff; } while (*(buff- 1)); \
+    if (__chartype_##name##_buff__[i]) { \
+      rep[__chartype_##name##_buff__[i]] = (CHAR_##flag); \
+    } \
   } \
 } while (0);
 
   __chartype_collections() {
-    const char * buff = 0;
     SETUP_TABLE(dbc_punc_ext_utf8,      PUNC);
     SETUP_TABLE(dbc_chinese_punc_utf8,  PUNC);
     SETUP_TABLE(dbc_digit_utf8,         DIGIT);
@@ -83,12 +82,12 @@ protected:
   }
 
 private:
-  typedef std::unordered_map<const char *, int,
+  typedef std::unordered_map<const char*, int,
         utility::__Default_CharArray_HashFunction,
-        utility::__Default_CharArray_EqualFunction> internal_collection_t;
+        utility::__Default_CharArray_EqualFunction> map_t;
 
-  static __chartype_collections * instance_;
-  internal_collection_t  collections;
+  static __chartype_collections* instance_;
+  map_t  rep;
 };
 
 template<typename T> __chartype_collections<T>* __chartype_collections<T>::instance_ = 0;

@@ -77,21 +77,21 @@ public:
   ~FeatureSpace();
 
   int retrieve(int tid, const char * key, bool create);
-  int index(int tid, const char * key, int lid = 0);
-  int index(int prev_lid, int lid);
-  int num_features();
-  int dim();
+  int index(int tid, const char * key, int lid = 0) const;
+  int index(int prev_lid, int lid) const;
+  int num_features() const;
+  int dim() const;
+  int num_feature_groups() const;
   void set_num_labels(int num_labeles);
-  int num_feature_groups();
 
-  /*
+  /**
    * dump the feature space to a output stream
    *
    *  @param[in]  ofs   the output stream
    */
   void dump(std::ostream & ofs);
 
-  /*
+  /**
    * load the feature space from a input stream
    *
    *  @param[in]  num_labels  the number of labels

@@ -1,6 +1,8 @@
 #include "postagger/postag_dll.h"
 #include "postagger/postagger.h"
 #include "postagger/settings.h"
+#include "postagger/decoder.h"
+#include "postagger/constrainutil.hpp"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
 #include "utils/sbcdbc.hpp"

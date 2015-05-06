@@ -11,19 +11,17 @@
 namespace ltp {
 namespace postagger {
 
-using namespace std;
-using namespace ltp::utility;
-
 class Extractor {
 public:
   static Extractor& extractor();
   static int num_templates();
-  static int extract1o(Instance * inst, int idx, vector< StringVec > & cache);
+  static int extract1o(const Instance* inst, int idx,
+      std::vector<utility::StringVec>& cache);
 protected:
   Extractor();
   ~Extractor();
 private:
-  static vector< Template * > templates;
+  static std::vector< utility::Template * > templates;
 };
 
 }     //  end for namespace postagger

@@ -15,7 +15,7 @@ FeatureSpace::~FeatureSpace(void) {
   delete [](dicts);
 }
 
-int FeatureSpace::retrieve(int tid, const char * key, bool create) {
+int FeatureSpace::retrieve(int tid, const char* key, bool create) {
   int val;
 
   if (dicts[tid].get(key, val)) {
@@ -25,7 +25,6 @@ int FeatureSpace::retrieve(int tid, const char * key, bool create) {
       val = _offset;
       dicts[tid].set(key, val);
       ++ _offset;
-
       return val;
     }
   }
@@ -33,34 +32,34 @@ int FeatureSpace::retrieve(int tid, const char * key, bool create) {
   return -1;
 }
 
-int FeatureSpace::index(int tid, const char * key, int lid) {
-  int idx = retrieve(tid, key, false);
-  if (idx < 0) {
-    return -1;
+int FeatureSpace::index(int tid, const char* key, int lid) const {
+  int val;
+  if (dicts[tid].get(key, val)) {
+    return val* _num_labels+ lid;
   }
-
-  return idx * _num_labels + lid;
+  return -1;
 }
 
-int FeatureSpace::index(int prev_lid, int lid) {
+int FeatureSpace::index(int prev_lid, int lid) const {
   return _offset * _num_labels + prev_lid * _num_labels + lid;
 }
 
-int FeatureSpace::num_feature_groups() {
+int FeatureSpace::num_feature_groups() const {
   return _offset + _num_labels;
 }
 
-int FeatureSpace::num_features() {
+int FeatureSpace::num_features() const {
   return _offset;
 }
 
-int FeatureSpace::dim() {
+int FeatureSpace::dim() const {
   return _offset * _num_labels + _num_labels * _num_labels;
 }
 
 void FeatureSpace::set_num_labels(int num_labels) {
   _num_labels = num_labels;
 }
+
 void FeatureSpace::dump(std::ostream & ofs) {
   char chunk[16];
   unsigned sz = _num_dicts;

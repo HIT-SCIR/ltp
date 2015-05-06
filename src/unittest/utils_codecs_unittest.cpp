@@ -40,7 +40,3 @@ TEST(codecs_unittest, length_test) {
   EXPECT_EQ(13, length);
 }
 
-int main(int argc, char ** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

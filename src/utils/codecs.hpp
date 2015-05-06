@@ -16,46 +16,56 @@ enum { UTF8, GBK };
 class iterator {
 public:
   iterator(const iterator & other)
-    : str(other.str), payload(other.payload),
+    : str(other.str), rep(other.rep),
     encoding(other.encoding), healthy(other.healthy) {
   }
 
-  iterator(const char * _str, int _encoding=UTF8) 
-    : str(_str), payload(0, 0), encoding(_encoding), healthy(true) {
-    find_second_by_first();
+  iterator(const char * _str, int _encoding=UTF8)
+    : str(_str), rep(0, 0), encoding(_encoding), healthy(true) {
+    find_second_by_first(rep);
   }
 
   iterator(const std::string & _str, int _encoding=UTF8)
-    : str(_str.c_str()), payload(0, 0), encoding(_encoding), healthy(true) {
-    find_second_by_first();
+    : str(_str.c_str()), rep(0, 0), encoding(_encoding), healthy(true) {
+    find_second_by_first(rep);
   }
 
   iterator& operator ++ () {
-    payload.first = payload.second;
-    if (str[payload.first]) {
-      find_second_by_first();
+    rep.first = rep.second;
+    if (str[rep.first]) {
+      find_second_by_first(rep);
     }
     return (*this);
   }
 
   iterator& operator ++ (int dummy) {
-    payload.first = payload.second;
-    if (str[payload.first]) {
-      find_second_by_first();
+    rep.first = rep.second;
+    if (str[rep.first]) {
+      find_second_by_first(rep);
     }
     return (*this);
   }
 
   std::pair<int, int> operator * () const {
-    return payload;
+    return rep;
   }
 
   const std::pair<int, int> * operator->() const {
-    return (&payload);
+    return (&rep);
+  }
+
+  bool has_next() {
+    return (str[rep.second] != 0);
+  }
+
+  std::pair<int, int> next() {
+    std::pair<int, int> retval(rep.second, 0);
+    find_second_by_first(retval);
+    return retval;
   }
 
   bool is_end() {
-    return (str[payload.first] == 0);
+    return (str[rep.first] == 0);
   }
 
   bool is_good() {
@@ -65,10 +75,10 @@ public:
   int encoding;
   bool healthy;
   const char * str;
-  std::pair<int, int> payload;
+  std::pair<int, int> rep;
 
 private:
-  void find_second_by_first() {
+  void find_second_by_first(std::pair<int, int>& payload) {
     if (str[payload.first] == 0) {
       return;
     }
@@ -96,60 +106,28 @@ private:
 
 
 inline
-int decode(const std::string & s, 
+int decode(const std::string & s,
     std::vector<std::string>& chars, int encoding=UTF8) {
-  unsigned long int idx=0;
-  unsigned long int len=0;
+  int len=0;
   chars.clear();
 
-  if (encoding == UTF8) {
-    while (idx<s.length()) {
-      if ((s[idx]&0x80)==0) {
-        chars.push_back(s.substr(idx, 1));
-        ++len;
-        ++idx;
-      } else if ((s[idx]&0xE0)==0xC0) {
-        chars.push_back(s.substr(idx, 2));
-        ++len;
-        idx+=2;
-      } else if ((s[idx]&0xF0)==0xE0) {
-        chars.push_back(s.substr(idx, 3));
-        ++len;
-        idx+=3;
-      } else if ((s[idx]&0xF8)==0xF0) {
-        chars.push_back(s.substr(idx, 4));
-        ++len;
-        idx+=4;
-      } else {
-        std::cerr << "Warning: in codecs.hpp decode: string '" << s 
-          << "' is not encoded in unicode utf-8" << std::endl;
-        ++len;
-        ++idx;
-      }
-    }
-  } else if (encoding == GBK) {
-    while (idx<s.length()) {
-      if ((s[idx]&0x80)==0) {
-        chars.push_back(s.substr(idx, 1));
-        ++ len;
-        ++ idx;
-      } else {
-        chars.push_back(s.substr(idx, 2));
-        ++ len;
-        idx += 2;
-      }
-    }
-  } else {
-    return 0;
+  iterator itx = iterator(s, encoding);
+  for (; itx.is_good() && !itx.is_end();++ itx, ++ len) {
+    chars.push_back(s.substr(itx->first, itx->second- itx->first));
   }
-
+  if (false == itx.is_good()) {
+    std::cerr << "Warning: in codecs.hpp decode: string '" << s 
+      << "' is not encoded in unicode utf-8" << std::endl;
+    chars.clear();
+    return -1;
+  }
   return len;
 }
 
 
 inline
-int length(const std::string & s, int encoding=UTF8) {
-  unsigned int len = 0;
+size_t length(const std::string & s, int encoding=UTF8) {
+  size_t len = 0;
   for (iterator itx = iterator(s, encoding); itx.is_good() && !itx.is_end();++ itx, ++ len);
   return len;
 }
@@ -199,24 +177,12 @@ bool tail(const std::string & s,
 inline
 bool isclear(const std::string & s, int encoding=UTF8) {
   unsigned idx = 0;
-  if (encoding == UTF8) {
-    while (idx<s.length()) {
-      if ((s[idx]&0x80)==0) {
-        ++idx;
-      } else if ((s[idx]&0xE0)==0xC0) {
-        idx+=2;
-      } else if ((s[idx]&0xF0)==0xE0) {
-        idx+=3;
-      } else {
-        return false;
-      }
-    }
-
-    return true;
-  } else if (encoding == GBK) {
-    return true;
-  } else {
+  if (encoding != UTF8 && encoding != GBK) {
     return false;
+  } else {
+    iterator itx(s, encoding);
+    for (; itx.is_good() && !itx.is_end(); ++ itx);
+    if (!itx.is_good()) { return false; }
   }
   return true;
 }

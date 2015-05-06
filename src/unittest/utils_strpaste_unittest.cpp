@@ -32,7 +32,3 @@ TEST(strpaste_unittest, test_paste_5) {
   EXPECT_STREQ("12345", out.c_str());
 }
 
-int main(int argc, char ** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
