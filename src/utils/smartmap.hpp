@@ -46,9 +46,9 @@ struct __SmartMap_Const_Iterator {
     key_buffer(0),
     val_buffer(0) {}
 
-  const char * key() { return key_buffer + ptr->__key_off; }
-  const T * value() { return val_buffer + ptr->__val_off; }
-  int frequency() { return ptr->__freq; }
+  const char * key() const { return key_buffer + ptr->__key_off; }
+  const T * value() const { return val_buffer + ptr->__val_off; }
+  int frequency() const { return ptr->__freq; }
   bool operator ==(const __SmartMap_Const_Iterator & other) const { return ptr == other.ptr; }
   bool operator !=(const __SmartMap_Const_Iterator & other) const { return ptr != other.ptr; }
   void operator ++() { ++ ptr; }
@@ -223,7 +223,7 @@ public:
    *  @param[out] val   the value
    *  @return   bool  true on key exist, otherwise false
    */
-  bool get(const char * key, T & val) {
+  bool get(const char * key, T & val) const {
     unsigned hv = HashFunction()(key);
     unsigned idx = (hv % _cap_buckets);
     int p = _find(key, hv, idx, false);
@@ -244,7 +244,7 @@ public:
    *  @return   T *   pointer to the value when key exist,
    *            otherwise NULL
    */
-  T * get(const char * key) {
+  T * get(const char * key) const {
     unsigned hv = HashFunction()(key);
     unsigned idx = (hv % _cap_buckets);
     int p = _find(key, hv, idx, false);
@@ -264,7 +264,7 @@ public:
    *  @param[in]  key   the key
    *  @return   int   the frequency
    */
-  int frequency(const char * key) {
+  int frequency(const char * key) const {
     unsigned hv = HashFunction()(key);
     unsigned idx = (hv % _cap_buckets);
     int p = _find(key, hv, idx, false);
@@ -285,7 +285,7 @@ public:
    *  @return   bool    true on this key exist, otherwise
    *              false.
    */
-  bool contains(const char * key, bool add_freq = false) {
+  bool contains(const char * key, bool add_freq = false) const {
     unsigned int hv = HashFunction()(key);
     unsigned int idx = (hv % _cap_buckets);
 
@@ -331,11 +331,11 @@ public:
     return _num_entries;
   }
 
-  const_iterator begin() {
+  const_iterator begin() const {
     return const_iterator(_hash_buffer, _key_buffer, _val_buffer);
   }
 
-  const_iterator end() {
+  const_iterator end() const {
     return const_iterator(_hash_buffer + _num_entries, _key_buffer, _val_buffer);
   }
 
@@ -345,7 +345,7 @@ public:
    *
    *  @param[in/out]  out   the output file stream
    */
-  void dump(std::ostream & out) {
+  void dump(std::ostream & out) const {
     // write header information
     int header_size = 0;
     char header[4] = {'S', 'M', 'A', 'P'};
@@ -460,10 +460,10 @@ protected:
   unsigned int  _len_key_buffer;
   unsigned int  _cap_key_buffer;
 
-  unsigned int  _father;
+  // unsigned int  _father;
 
   char *      _latest_key;
-  T *       _latest_val;
+  T *         _latest_val;
   hash_node_t *   _latest_hash_node;
 
 protected:
@@ -550,7 +550,7 @@ protected:
    *              is added when the hash entry is found
    *  @return   int     the position of the hash node in hsh buffer
    */
-  int _find(const char * key, unsigned hv, unsigned idx, bool add_freq) {
+  int _find(const char * key, unsigned hv, unsigned idx, bool add_freq) const {
     int p = _hash_buckets[idx];
 
     while (p >= 0) {
@@ -564,7 +564,7 @@ protected:
           }
           return p;
         } else {
-          _father = p;
+          // _father = p;
           p = _hash_buffer[p].__next_off;
         }
       }
@@ -643,7 +643,7 @@ public:
    *  @param[in]  i         the index
    *  @return   const char *  pointer to the key
    */
-  const char * at(int i) {
+  const char* at(int i) const {
     if (i >= 0 && i < _num_entries) {
       return SmartMap<int>::_key_buffer + entries[i];
     } else {
@@ -657,7 +657,7 @@ public:
    *  @param[in]  key       the key
    *  @return   int       index of the key if exist, otherwise -1
    */
-  int index( const char * key ) {
+  int index(const char * key) const {
     int val = -1;
     if (SmartMap<int>::get(key, val)) {
       return val;
@@ -666,7 +666,7 @@ public:
     return -1;
   }
 
-  int index( const std::string & key) {
+  int index(const std::string & key) const {
     return index(key.c_str());
   }
 

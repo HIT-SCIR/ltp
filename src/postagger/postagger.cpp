@@ -7,118 +7,106 @@
 #include <fstream>
 #include <iomanip>
 
-#if _WIN32
-#include <Windows.h>
-#define sleep Sleep
-#endif  //  end for _WIN32
-
 namespace ltp {
 namespace postagger {
 
+using framework::ViterbiFeatureContext;
+using framework::ViterbiScoreMatrix;
 using utility::StringVec;
 using math::FeatureVector;
 
 Postagger::Postagger(): model(0) {}
-Postagger::~Postagger() {
-  if (model) { delete model; model = 0; }
-}
+Postagger::~Postagger() { if (model) { delete model; model = 0; } }
 
-void Postagger::extract_features(const Instance* inst,
-    DecodeContext* ctx,
+void Postagger::extract_features(const Instance& inst,
+    ViterbiFeatureContext* ctx,
     bool create) const {
-  const int N = Extractor::num_templates();
-  const int L = model->num_labels();
+  size_t N = Extractor::num_templates();
+  size_t T = model->num_labels();
+  size_t L = inst.size();
 
-  std::vector< StringVec > cache;
+  std::vector< StringVec > cache(N);
   std::vector< int > cache_again;
-
-  cache.resize(N);
-  int len = inst->size();
 
   if (ctx) {
     // allocate the uni_features
-    ctx->uni_features.resize(len, L);
+    ctx->uni_features.resize(L, T);
     ctx->uni_features = 0;
   }
 
-  for (int pos = 0; pos < len; ++ pos) {
-    for (int n = 0; n < N; ++ n) { cache[n].clear(); }
+  for (size_t pos = 0; pos < L; ++ pos) {
+    for (size_t n = 0; n < N; ++ n) { cache[n].clear(); }
     cache_again.clear();
 
     Extractor::extract1o(inst, pos, cache);
-    for (int tid = 0; tid < cache.size(); ++ tid) {
-      for (int itx = 0; itx < cache[tid].size(); ++ itx) {
-        if (create) {
-          // std::cerr << "extract feature: create " << cache[tid][itx] << std::endl;
-          model->space.retrieve(tid, cache[tid][itx], true);
-        }
+    for (size_t tid = 0; tid < cache.size(); ++ tid) {
+      for (size_t itx = 0; itx < cache[tid].size(); ++ itx) {
+        if (create) { model->space.retrieve(tid, cache[tid][itx], true); }
 
         int idx = model->space.index(tid, cache[tid][itx]);
-        // std::cout << "key: " << cache[tid][itx] << " " << idx << std::endl;
         if (idx >= 0) { cache_again.push_back(idx); }
       }
     }
 
-    int num_feat = cache_again.size();
-
+    size_t num_feat = cache_again.size();
     if (num_feat > 0 && ctx) {
-      int l = 0;
-      int * idx = new int[num_feat];
-      for (int j = 0; j < num_feat; ++ j) {
+      size_t t = 0;
+      int* idx = new int[num_feat];
+      for (size_t j = 0; j < num_feat; ++ j) {
         idx[j] = cache_again[j];
       }
 
-      ctx->uni_features[pos][l] = new FeatureVector;
-      ctx->uni_features[pos][l]->n = num_feat;
-      ctx->uni_features[pos][l]->val = 0;
-      ctx->uni_features[pos][l]->loff = 0;
-      ctx->uni_features[pos][l]->idx = idx;
+      ctx->uni_features[pos][t] = new FeatureVector;
+      ctx->uni_features[pos][t]->n = num_feat;
+      ctx->uni_features[pos][t]->val = 0;
+      ctx->uni_features[pos][t]->loff = 0;
+      ctx->uni_features[pos][t]->idx = idx;
 
-      for (l = 1; l < L; ++ l) {
-        ctx->uni_features[pos][l] = new FeatureVector;
-        ctx->uni_features[pos][l]->n = num_feat;
-        ctx->uni_features[pos][l]->idx = idx;
-        ctx->uni_features[pos][l]->val = 0;
-        ctx->uni_features[pos][l]->loff = l;
+      for (t = 1; t < T; ++ t) {
+        ctx->uni_features[pos][t] = new FeatureVector;
+        ctx->uni_features[pos][t]->n = num_feat;
+        ctx->uni_features[pos][t]->idx = idx;
+        ctx->uni_features[pos][t]->val = 0;
+        ctx->uni_features[pos][t]->loff = t;
       }
     }
   }
 }
 
-void Postagger::calculate_scores(const Instance* inst,  const DecodeContext* ctx,
-    bool use_avg, ScoreMatrix* scm) const {
-  int len = inst->size();
-  int L = model->num_labels();
+void Postagger::calculate_scores(const Instance& inst,
+    const ViterbiFeatureContext& ctx, bool avg,
+    ViterbiScoreMatrix* scm) const {
+  size_t L = inst.size();
+  size_t T = model->num_labels();
 
-  scm->uni_scores.resize(len, L); scm->uni_scores = NEG_INF;
-  scm->bi_scores.resize(L, L);    scm->bi_scores = NEG_INF;
+  scm->resize(L, T);
 
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      FeatureVector * fv = ctx->uni_features[i][l];
+  for (size_t i = 0; i < L; ++ i) {
+    for (size_t t = 0; t < T; ++ t) {
+      FeatureVector * fv = ctx.uni_features[i][t];
       if (!fv) { continue; }
-      scm->uni_scores[i][l] = model->param.dot(ctx->uni_features[i][l], use_avg);
+      scm->set_emit(i, t, model->param.dot(ctx.uni_features[i][t], avg));
     }
   }
 
-  for (int pl = 0; pl < L; ++ pl) {
-    for (int l = 0; l < L; ++ l) {
-      int idx = model->space.index(pl, l);
-      scm->bi_scores[pl][l] = model->param.dot(idx, use_avg);
+  for (size_t pt = 0; pt < T; ++ pt) {
+    for (size_t t = 0; t < T; ++ t) {
+      int idx = model->space.index(pt, t);
+      scm->set_tran(pt, t, model->param.dot(idx, avg));
     }
   }
 }
 
-void Postagger::build_labels(const Instance * inst,
+void Postagger::build_labels(const Instance& inst,
     std::vector<std::string>& tags) const {
-  int len = inst->size();
-  if (inst->predicted_tagsidx.size() != len) {
+  size_t len = inst.size();
+  if (inst.predict_tagsidx.size() != len) {
     return;
   }
 
   tags.resize(len);
-  for (int i = 0; i < len; ++ i) {
-    tags[i] = model->labels.at(inst->predicted_tagsidx[i]);
+  for (size_t i = 0; i < len; ++ i) {
+    tags[i] = model->labels.at(inst.predict_tagsidx[i]);
   }
 }
 

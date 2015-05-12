@@ -15,9 +15,8 @@ struct TrainOptions {
   std::string holdout_file;
   std::string model_name;
   std::string algorithm;
-  int max_iter;
-  int display_interval;
-  int rare_feature_threshold;
+  size_t max_iter;
+  size_t rare_feature_threshold;
 };
 
 struct TestOptions {

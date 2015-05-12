@@ -11,6 +11,18 @@ protected:
   std::istream& is;
 public:
   Reader(std::istream& _is): is(_is) {}
+};
+
+class LineCountsReader: public Reader {
+protected:
+  size_t nr_lines;
+  size_t cursor;
+  size_t interval;
+public:
+  LineCountsReader(std::istream& _is): cursor(0), Reader(_is) {
+    nr_lines = number_of_lines();
+    interval = nr_lines / 10;
+  }
 
   size_t number_of_lines() {
     const int size = 1024*1024;

@@ -9,14 +9,11 @@
 namespace ltp {
 namespace postagger {
 
-class PostaggerReader: public framework::Reader {
+class PostaggerReader: public framework::LineCountsReader {
 private:
   std::string delimiter;
   bool with_tag;
   bool trace;
-  size_t nr_lines;
-  size_t cursor;
-  size_t interval;
 public:
   PostaggerReader(std::istream& _ifs, const std::string& delimiter = "_",
       bool with_tag = false, bool trace = false);

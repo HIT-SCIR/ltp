@@ -17,9 +17,7 @@ PostaggerReader::PostaggerReader(std::istream& _is,
     bool _with_tag,
     bool _trace)
   : delimiter(_delimiter),
-  with_tag(_with_tag), trace(_trace), cursor(0), interval(-1), Reader(_is) {
-  nr_lines = Reader::number_of_lines();
-  interval = nr_lines / 10;
+  with_tag(_with_tag), trace(_trace), LineCountsReader(_is) {
 }
 
 Instance* PostaggerReader::next() {
@@ -43,7 +41,7 @@ Instance* PostaggerReader::next() {
   }
 
   std::vector<std::string> words = split(line);
-  for (int i = 0; i < words.size(); ++ i) {
+  for (size_t i = 0; i < words.size(); ++ i) {
     if (with_tag) {
       std::vector<std::string> sep = rsplit_by_sep(words[i], delimiter, 1);
       if (sep.size() == 2) {
@@ -67,12 +65,12 @@ PostaggerWriter::PostaggerWriter(std::ostream& _ofs): ofs(_ofs) {}
 
 void PostaggerWriter::write(const Instance* inst) {
   int len = inst->size();
-  if (inst->predicted_tags.size() != len) {
+  if (inst->predict_tags.size() != len) {
     return;
   }
 
   for (int i = 0; i < len; ++ i) {
-    ofs << inst->raw_forms[i] << "/" << inst->predicted_tags[i];
+    ofs << inst->raw_forms[i] << "/" << inst->predict_tags[i];
     if (i + 1 < len) {
       ofs << "\t";
     } else {
