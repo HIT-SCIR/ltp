@@ -5,8 +5,6 @@
 #include "segmentor/instance.h"
 #include "segmentor/extractor.h"
 #include "segmentor/options.h"
-#include "segmentor/segmentreader.h"
-#include "segmentor/segmentwriter.h"
 
 #include <iostream>
 #include <fstream>
@@ -14,53 +12,172 @@
 #include <algorithm>    //  std::sort
 #include <functional>   //  std::greater
 
-#if _WIN32
-#include <Windows.h>
-#define sleep Sleep
-#endif  //  end for _WIN32
-
 namespace ltp {
 namespace segmentor {
 
-namespace utils = ltp::utility;
+using framework::ViterbiFeatureContext;
+using framework::ViterbiScoreMatrix;
+using utility::StringVec;
+using utility::SmartMap;
+using math::FeatureVector;
+using math::SparseVec;
 
-Segmentor::Segmentor()
-  : model(0),
-  train_opt(0),  //! bend the train options on API interface.
-  test_opt(0),
-  dump_opt(0),
-  decoder(0),
-  decode_context(0),
-  score_matrix(0),
-  __TRAIN__(false),
-  __TEST__(false),
-  __DUMP__(false) {
+Segmentor::Segmentor(): model(0) {}
+Segmentor::~Segmentor() { if (model) { delete model; model = 0; } }
+
+void Segmentor::extract_features(const Instance& inst,
+    Model* mdl,
+    ViterbiFeatureContext* ctx,
+    bool create) const {
+  size_t N = Extractor::num_templates();
+  size_t T = mdl->num_labels();
+
+  std::vector< StringVec > cache;
+  std::vector< int > cache_again;
+
+  cache.resize(N);
+  size_t L = inst.size();
+
+  if (ctx) {
+    // allocate the uni_features
+    ctx->uni_features.resize(L, T);
+    ctx->uni_features = 0;
+  }
+
+  for (size_t pos = 0; pos < L; ++ pos) {
+    for (size_t n = 0; n < N; ++ n) { cache[n].clear(); }
+    cache_again.clear();
+
+    Extractor::extract1o(inst, pos, cache);
+    for (size_t tid = 0; tid < cache.size(); ++ tid) {
+      for (size_t itx = 0; itx < cache[tid].size(); ++ itx) {
+        if (create) { mdl->space.retrieve(tid, cache[tid][itx], true); }
+
+        int idx = mdl->space.index(tid, cache[tid][itx]);
+        if (idx >= 0) { cache_again.push_back(idx); }
+      }
+    }
+
+    size_t num_feat = cache_again.size();
+    if (num_feat > 0 && ctx) {
+      size_t t = 0;
+      int * idx = new int[num_feat];
+      for (size_t j = 0; j < num_feat; ++ j) {
+        idx[j] = cache_again[j];
+      }
+
+      ctx->uni_features[pos][t] = new FeatureVector;
+      ctx->uni_features[pos][t]->n = num_feat;
+      ctx->uni_features[pos][t]->val = 0;
+      ctx->uni_features[pos][t]->loff = 0;
+      ctx->uni_features[pos][t]->idx = idx;
+
+      for (t = 1; t < T; ++ t) {
+        ctx->uni_features[pos][t] = new FeatureVector;
+        ctx->uni_features[pos][t]->n = num_feat;
+        ctx->uni_features[pos][t]->idx = idx;
+        ctx->uni_features[pos][t]->val = 0;
+        ctx->uni_features[pos][t]->loff = t;
+      }
+    }
+  }
 }
 
-Segmentor::Segmentor(utils::ConfigParser & cfg) :
-  model(0),
-  decoder(0),
-  decode_context(0),
-  score_matrix(0),
-  __TRAIN__(false),
-  __TEST__(false),
-  __DUMP__(false) {
-  train_opt = new TrainOptions;
-  test_opt = new TestOptions;
-  dump_opt = new DumpOptions;
-  parse_cfg(cfg);
+void Segmentor::build_lexicon_match_state(
+    const std::vector<const Model::lexicon_t*>& lexicons,
+    Instance* inst) const {
+  // cache lexicon features.
+  size_t len = inst->size();
+  if (inst->lexicon_match_state.size()) { return; }
+  inst->lexicon_match_state.resize(len, 0);
+
+  // perform the maximum forward match algorithm
+  for (size_t i = 0; i < len; ++ i) {
+    std::string word; word.reserve(32);
+    for (size_t j = i; j<i+5 && j < len; ++ j) {
+      word = word + inst->forms[j];
+
+      bool found = false;
+      for (size_t k = 0; k < lexicons.size(); ++ k) {
+        if (lexicons[k]->get(word.c_str())) {
+          found = true; break;
+        }
+      }
+
+      if (!found) { continue; }
+      int l = j+1-i;
+
+      if (l > (inst->lexicon_match_state[i] & 0x0F)) {
+        inst->lexicon_match_state[i] &= 0xfff0;
+        inst->lexicon_match_state[i] |= l;
+      }
+
+      if (l > ((inst->lexicon_match_state[j]>>4) & 0x0F)) {
+        inst->lexicon_match_state[j] &= 0xff0f;
+        inst->lexicon_match_state[j] |= (l<<4);
+      }
+
+      for (size_t k = i+1; k < j; ++k) {
+        if (l>((inst->lexicon_match_state[k]>>8) & 0x0F)) {
+          inst->lexicon_match_state[k] &= 0xf0ff;
+          inst->lexicon_match_state[k] |= (l<<8);
+        }
+      }
+    }
+  }
 }
 
-Segmentor::~Segmentor() {
-  if (train_opt)      { delete train_opt;       }
-  if (test_opt)       { delete test_opt;        }
-  if (dump_opt)       { delete dump_opt;        }
-  if (model)          { delete model;           }
-  if (decoder)        { delete decoder;         }
-  if (decode_context) { delete decode_context;  }
-  if (score_matrix)   { delete score_matrix;    }
+void Segmentor::calculate_scores(const Instance& inst,
+    const Model& mdl,
+    const ViterbiFeatureContext& ctx,
+    bool avg,
+    ViterbiScoreMatrix* scm) {
+  size_t L = inst.size();
+  size_t T = mdl.num_labels();
+
+  scm->resize(L, T, -1e20);
+
+  for (size_t i = 0; i < L; ++ i) {
+    for (size_t t = 0; t < T; ++ t) {
+      FeatureVector * fv = ctx.uni_features[i][t];
+      if (!fv) {
+        continue;
+      }
+      scm->set_emit(i, t, mdl.param.dot(ctx.uni_features[i][t], avg));
+    }
+  }
+
+  for (size_t pt = 0; pt < T; ++ pt) {
+    for (size_t t = 0; t < T; ++ t) {
+      int idx = mdl.space.index(pt, t);
+      scm->set_tran(pt, t, mdl.param.dot(idx, avg));
+    }
+  }
 }
 
+void Segmentor::build_words(const Instance& inst,
+    const std::vector<int>& tagsidx,
+    std::vector<std::string>& words) {
+  words.clear();
+  int len = inst.size();
+
+  // should check the tagsidx size
+  std::string word = inst.raw_forms[0];
+  for (int i = 1; i < len; ++ i) {
+    int tag = tagsidx[i];
+    if (tag == 0 || tag == 3) { // b, s
+      words.push_back(word);
+      word = inst.raw_forms[i];
+    } else {
+      word += inst.raw_forms[i];
+    }
+  }
+
+  words.push_back(word);
+}
+
+
+#if 0
 void
 Segmentor::run(void) {
   if (__TRAIN__) {
@@ -187,275 +304,9 @@ Segmentor::parse_cfg(utils::ConfigParser & cfg) {
   return true;
 }
 
-bool
-Segmentor::read_instance(const char * train_file) {
-  std::ifstream ifs(train_file);
-
-  if (!ifs) {
-    return false;
-  }
-
-  SegmentReader reader(ifs, true);
-  train_dat.clear();
-
-  Instance * inst = NULL;
-
-  while ((inst = reader.next())) {
-    train_dat.push_back(inst);
-  }
-
-  return true;
-}
-
-void
-Segmentor::build_configuration(void) {
-  // model->labels.push( __dummy__ );
-  model->full = train_opt->enable_incremental_training;
-
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    Instance * inst = train_dat[i];
-    int len = inst->size();
-
-    inst->tagsidx.resize(len);
-    for (int j = 0; j < len; ++ j) {
-      // build labels dictionary
-      inst->tagsidx[j] = model->labels.push( inst->tags[j] );
-    }
-
-  }
-  TRACE_LOG("Label sets is built");
-
-  utils::SmartMap<bool> wordfreq;
-  long long total_freq = 0;
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    //
-    Instance * inst = train_dat[i];
-    int len = inst->words.size();
-
-    for (int j = 0; j < len; ++ j) {
-      wordfreq.set(inst->words[j].c_str(), true);
-    }
-    total_freq += inst->words.size();
-  }
-
-  // count words frequency
-  std::vector<int> freqs;
-  for (utils::SmartMap<bool>::const_iterator itx = wordfreq.begin();
-      itx != wordfreq.end();
-      ++ itx) {
-    freqs.push_back(itx.frequency());
-  }
-
-  // filter words based on frequency
-  long long accumulate_freq = 0;
-  std::sort(freqs.begin(), freqs.end(), std::greater<int>());
-  int target = freqs[int(freqs.size() * 0.2)];
-  for (int i = 0; i < freqs.size(); ++ i) {
-    accumulate_freq += freqs[i];
-    if (accumulate_freq > total_freq * 0.9) {
-      target = freqs[i];
-      break;
-    }
-  }
-
-  // build words dictionary
-  for (utils::SmartMap<bool>::const_iterator itx = wordfreq.begin();
-      itx != wordfreq.end();
-      ++ itx) {
-    if (itx.frequency() >= target && strutils::codecs::length(itx.key()) > 1) {
-    // if (itx.frequency() >= target) {
-      model->internal_lexicon.set(itx.key(), true);
-    }
-  }
-
-  TRACE_LOG("Collecting interanl lexicon is done.");
-  TRACE_LOG("Total word frequency : %ld", total_freq);
-  TRACE_LOG("Vocabulary size: %d", wordfreq.size());
-  TRACE_LOG("Trancation word frequency : %d", target);
-  TRACE_LOG("Internal lexicon size : %d", model->internal_lexicon.size());
-}
-
-void
-Segmentor::build_lexicon_match_state(Instance* inst) {
-  // cache lexicon features.
-  int len = inst->size();
-
-  if (inst->lexicon_match_state.size()) {
-    return;
-  }
-
-  inst->lexicon_match_state.resize(len, 0);
-
-  // perform the maximum forward match algorithm
-  for (int i = 0; i < len; ++ i) {
-    std::string word; word.reserve(32);
-    for (int j = i; j<i+5 && j < len; ++ j) {
-      word = word + inst->forms[j];
-
-      // it's not a lexicon word
-      if (!model->internal_lexicon.get(word.c_str())
-          && !model->external_lexicon.get(word.c_str())) {
-        continue;
-      }
-
-      int l = j+1-i;
-
-      if (l > (inst->lexicon_match_state[i] & 0x0F)) {
-        inst->lexicon_match_state[i] &= 0xfff0;
-        inst->lexicon_match_state[i] |= l;
-      }
-
-      if (l > ((inst->lexicon_match_state[j]>>4) & 0x0F)) {
-        inst->lexicon_match_state[j] &= 0xff0f;
-        inst->lexicon_match_state[j] |= (l<<4);
-      }
-
-      for (int k = i+1; k < j; ++k) {
-        if (l>((inst->lexicon_match_state[k]>>8) & 0x0F)) {
-          inst->lexicon_match_state[k] &= 0xf0ff;
-          inst->lexicon_match_state[k] |= (l<<8);
-        }
-      }
-    }
-  }
-}
-
-void
-Segmentor::extract_features(const Instance * inst,
-    Model* mdl,
-    DecodeContext* ctx,
-    bool create) {
-  const int N = Extractor::num_templates();
-  const int L = mdl->num_labels();
-
-  std::vector< utils::StringVec > cache;
-  std::vector< int > cache_again;
-
-  cache.resize(N);
-  int len = inst->size();
-
-  // allocate the uni_features
-  ctx->uni_features.resize(len, L);
-  ctx->uni_features = 0;
-
-  // extract features for each character
-  for (int pos = 0; pos < len; ++ pos) {
-    for (int n = 0; n < N; ++ n) {
-      cache[n].clear();
-    }
-    cache_again.clear();
-
-    Extractor::extract1o(inst, pos, cache);
-
-    for (int tid = 0; tid < cache.size(); ++ tid) {
-      for (int itx = 0; itx < cache[tid].size(); ++ itx) {
-        if (create) {
-          mdl->space.retrieve(tid, cache[tid][itx], true);
-        }
-
-        int idx = mdl->space.index(tid, cache[tid][itx]);
-
-        if (idx >= 0) {
-          cache_again.push_back(idx);
-        }
-      }
-    }
-
-    int num_feat = cache_again.size();
-
-    if (num_feat > 0) {
-      int l = 0;
-      int * idx = new int[num_feat];
-      for (int j = 0; j < num_feat; ++ j) {
-        idx[j] = cache_again[j];
-      }
-
-      ctx->uni_features[pos][l] = new math::FeatureVector;
-      ctx->uni_features[pos][l]->n = num_feat;
-      ctx->uni_features[pos][l]->val = 0;
-      ctx->uni_features[pos][l]->loff = 0;
-      ctx->uni_features[pos][l]->idx = idx;
-
-      for (l = 1; l < L; ++ l) {
-        ctx->uni_features[pos][l] = new math::FeatureVector;
-        ctx->uni_features[pos][l]->n = num_feat;
-        ctx->uni_features[pos][l]->idx = idx;
-        ctx->uni_features[pos][l]->val = 0;
-        ctx->uni_features[pos][l]->loff = l;
-      }
-    }
-  }
-}
-
 void
 Segmentor::extract_features(const Instance* inst, bool create) {
   extract_features(inst, model, decode_context, create);
-}
-
-void
-Segmentor::build_words(Instance * inst, const std::vector<int> & tagsidx,
-    std::vector<std::string> & words, int beg_tag0,  int beg_tag1) {
-  words.clear();
-  int len = inst->size();
-
-  // should check the tagsidx size
-  std::string word = inst->raw_forms[0];
-  for (int i = 1; i < len; ++ i) {
-    int tag = tagsidx[i];
-    if (tag == beg_tag0 || tag == beg_tag1) {
-      words.push_back(word);
-      word = inst->raw_forms[i];
-    } else {
-      word += inst->raw_forms[i];
-    }
-  }
-
-  words.push_back(word);
-}
-
-void
-Segmentor::build_feature_space(void) {
-  // build feature space, it is a wrapper for
-  // featurespace.build_feature_space
-  int L = model->num_labels();
-  model->space.set_num_labels(L);
-
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    build_lexicon_match_state(train_dat[i]);
-    extract_features(train_dat[i], true);
-    cleanup_decode_context();
-
-    if ((i + 1) % train_opt->display_interval == 0) {
-      TRACE_LOG("[%d] instances is extracted.", (i+1));
-    }
-  }
-}
-
-void
-Segmentor::calculate_scores(const Instance * inst, const Model* mdl,
-    const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm) {
-  int len = inst->size();
-  int L = model->num_labels();
-
-  scm->uni_scores.resize(len, L); scm->uni_scores = NEG_INF;
-  scm->bi_scores.resize(L, L);    scm->bi_scores = NEG_INF;
-
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      math::FeatureVector * fv = ctx->uni_features[i][l];
-      if (!fv) {
-        continue;
-      }
-      scm->uni_scores[i][l] = mdl->param.dot(ctx->uni_features[i][l], use_avg);
-    }
-  }
-
-  for (int pl = 0; pl < L; ++ pl) {
-    for (int l = 0; l < L; ++ l) {
-      int idx = mdl->space.index(pl, l);
-      scm->bi_scores[pl][l] = mdl->param.dot(idx, use_avg);
-    }
-  }
 }
 
 void
@@ -483,21 +334,6 @@ Segmentor::collect_features(const math::Mat< math::FeatureVector* >& features,
       int prev_lid = tagsidx[i-1];
       int idx = mdl->space.index(prev_lid, l);
       vec.add(idx, 1.);
-    }
-  }
-}
-
-void
-Segmentor::increase_group_updated_time(const math::SparseVec & vec,
-                                       int * feature_group_updated_time) {
-  int L = model->num_labels();
-  for (math::SparseVec::const_iterator itx = vec.begin();
-      itx != vec.end();
-      ++ itx) {
-
-    int idx = itx->first;
-    if (itx->second != 0.0) {
-      ++ feature_group_updated_time[idx / L];
     }
   }
 }
@@ -651,143 +487,6 @@ Segmentor::set_timestamp(int ts) {
 void
 Segmentor::cleanup_decode_context() {
   decode_context->clear();
-}
-
-void
-Segmentor::train(void) {
-  if (!train_setup()) {
-    return;
-  }
-
-  const char * train_file = train_opt->train_file.c_str();
-
-  // read in training instance
-  if (!read_instance(train_file)) {
-    ERROR_LOG("Training file not exist.");
-    return;
-  }
-  TRACE_LOG("Read in [%d] instances.", train_dat.size());
-
-  model = new Model;
-  decode_context = new DecodeContext;
-  score_matrix = new ScoreMatrix;
-
-  // build tag dictionary, map string tag to index
-  TRACE_LOG("Start build configuration");
-  build_configuration();
-  TRACE_LOG("Build configuration is done.");
-  TRACE_LOG("Number of labels: [%d]", model->labels.size());
-
-  // build feature space from the training instance
-  TRACE_LOG("Start building feature space.");
-  build_feature_space();
-  TRACE_LOG("Building feature space is done.");
-  TRACE_LOG("Number of features: [%d]", model->space.num_features());
-
-  model->param.realloc(model->space.dim());
-  TRACE_LOG("Allocate [%d] dimensition parameter.", model->space.dim());
-
-  int nr_feature_groups = model->space.num_feature_groups();
-  int * feature_group_updated_time = NULL;
-
-  // If the rare feature threshold is used, allocate memory for the
-  // feature group updated time.
-  if (train_opt->rare_feature_threshold > 0) {
-    feature_group_updated_time = new int[nr_feature_groups];
-    for (int i = 0; i < nr_feature_groups; ++ i) {
-      feature_group_updated_time[i] = 0;
-    }
-  }
-
-  TRACE_LOG("Allocate [%d] update counters.", nr_feature_groups);
-
-  SegmentWriter writer(std::cout);
-
-  if (train_opt->algorithm == "mira") {
-    // use mira to train model
-    // it's still not implemented.
-  } else {
-    // use pa or average perceptron algorithm
-    rulebase::RuleBase base(model->labels);
-    decoder = new Decoder(model->num_labels(), base);
-    TRACE_LOG("Allocated plain decoder");
-
-    int best_iteration = -1;
-    double best_p = -1.;
-    double best_r = -1.;
-    double best_f = -1.;
-
-    for (int iter = 0; iter < train_opt->max_iter; ++ iter) {
-      TRACE_LOG("Training iteraition [%d]", (iter + 1));
-
-      for (int i = 0; i < train_dat.size(); ++ i) {
-        set_timestamp(iter * train_dat.size() + i + 1);
-
-        Instance * inst = train_dat[i];
-        extract_features(inst);
-        calculate_scores(inst, false);
-        decoder->decode(inst, score_matrix);
-        collect_correct_and_predicted_features(inst);
-        cleanup_decode_context();
-
-        if (feature_group_updated_time) {
-          increase_group_updated_time(decode_context->updated_features,
-              feature_group_updated_time);
-        }
-
-        if (train_opt->algorithm == "pa") {
-          train_passive_aggressive(train_dat[i]->num_errors());
-        } else if (train_opt->algorithm == "ap") {
-          train_averaged_perceptron();
-        }
-
-        if ((i+1) % train_opt->display_interval == 0) {
-          TRACE_LOG("[%d] instances is trained.", i+1);
-        }
-      }
-
-      model->param.flush(get_timestamp());
-      model->end_time = get_timestamp();
-
-      Model * new_model = NULL;
-      new_model = erase_rare_features(feature_group_updated_time);
-
-      std::swap(model, new_model);
-
-      double p, r, f;
-      evaluate(p,r,f);
-
-      if (f > best_f) {
-        best_p = p;
-        best_r = r;
-        best_f = f;
-        best_iteration = iter;
-      }
-
-      std::string saved_model_file = (train_opt->model_name
-                                      + "."
-                                      + strutils::to_str(iter)
-                                      + ".model");
-      std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
-
-      std::swap(model, new_model);
-      new_model->save(ofs);
-      delete new_model;
-      TRACE_LOG("Model for iteration [%d] is saved to [%s]",
-                iter + 1,
-                saved_model_file.c_str());
-    }
-
-    if (feature_group_updated_time) {
-      delete [] feature_group_updated_time;
-    }
-
-    TRACE_LOG("Best result (iteratin = %d) P = %lf | R = %lf | F = %lf",
-              best_iteration,
-              best_p,
-              best_r,
-              best_f);
-  }
 }
 
 void
@@ -982,6 +681,7 @@ void Segmentor::dump() {
     }
   }
 }
+#endif
 
 }     //  end for namespace segmentor
 }     //  end for namespace ltp

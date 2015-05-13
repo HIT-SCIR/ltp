@@ -12,6 +12,7 @@ using framework::TestOptions;
 using framework::DumpOptions;
 
 struct TrainOptions: public framework::TrainOptions {
+  bool dump_model_details;
   bool enable_incremental_training;
 };
 

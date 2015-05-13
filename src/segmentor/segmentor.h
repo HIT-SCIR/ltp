@@ -1,30 +1,81 @@
 #ifndef __LTP_SEGMENTOR_SEGMENTOR_H__
 #define __LTP_SEGMENTOR_SEGMENTOR_H__
 
-#include "utils/cfgparser.hpp"
+#include "framework/decoder.h"
 #include "segmentor/model.h"
-#include "segmentor/options.h"
 #include "segmentor/decoder.h"
-#include "segmentor/decode_context.h"
-#include "segmentor/score_matrix.h"
-#include "segmentor/rulebase.h"
+#include "segmentor/preprocessor.h"
+#include "segmentor/options.h"
+#include "segmentor/instance.h"
 
 namespace ltp {
 namespace segmentor {
 
 class Segmentor {
+protected:
+  Model* model;
+  Preprocessor preprocessor;
+  SegmentorConstrain con;
+
 public:
   Segmentor();
-  Segmentor(ltp::utility::ConfigParser & cfg);
   ~Segmentor();
 
-  /**
-   * The only public method in the Segmentor class. Parameters are passed to
-   * the segmentor by a ::utility::ConfigParser class.
-   */
-  void run();
-
 protected:
+  /**
+   * Extract features from one instance, store the extracted features in a
+   * DecodeContext class.
+   *
+   *  @param[in]  inst    The instance.
+   *  @param[out] model   The model.
+   *  @param[out] ctx     The decode context result.
+   *  @param[in]  create  If create is true, create feature for new feature
+   *                      in the model otherwise not create.
+   */
+  void extract_features(const Instance& inst, Model* mdl,
+      framework::ViterbiFeatureContext* ctx,
+      bool create = false) const;
+
+  /**
+   * Build lexicon match state of the instance
+   *
+   *  @param[in/out]  inst    The instance.
+   */
+  virtual void build_lexicon_match_state(
+      const std::vector<const Model::lexicon_t*>& lexicons,
+      Instance* inst) const;
+
+  /**
+   * Cache all the score for the certain instance. The cached results are
+   * stored in a ScoreMatrix.
+   *
+   *  @param[in]  inst      The instance
+   *  @param[in]  mdl       The model.
+   *  @param[in]  ctx       The decode context.
+   *  @param[in]  avg       use to specify use average parameter
+   *  @param[out] scm       The score matrix.
+   */
+  void calculate_scores(const Instance& inst,
+      const Model& mdl,
+      const framework::ViterbiFeatureContext& ctx,
+      bool avg,
+      framework::ViterbiScoreMatrix* scm);
+
+  /**
+   * build words from tags for certain instance
+   *
+   *  @param[in/out]  inst      the instance
+   *  @param[in]      tagsidx   the index of tags
+   *  @param[out]     words     the output words
+   *  @param[in]      begtag0   first of the word begin tag
+   *  @param[in]      begtag1   second of the word begin tag
+   */
+  void build_words(const Instance& inst,
+      const std::vector<int>& tagsidx,
+      std::vector<std::string>& words);
+
+ 
+#if 0
   /**
    * Parse the configuration
    *
@@ -32,33 +83,6 @@ protected:
    *  @return     bool        return true on success, otherwise false
    */
   virtual bool parse_cfg(ltp::utility::ConfigParser & cfg);
-
-
-  /**
-   * Read instances from file and store them in train_dat
-   *
-   *  @param[in]  file_name   the filename
-   *  @return     bool        true on success, otherwise false
-   */
-  bool read_instance( const char * file_name );
-
-
-  /**
-   * Build configuration before model training. Three things are done
-   * during the building configuration pharse:
-   *
-   *  1. Build tag sets;
-   *  2. Collect internal word map;
-   *  3. Record word frequency.
-   */
-  virtual void build_configuration(void);
-
-
-  /**
-   * Build feature space.
-   */
-  virtual void build_feature_space(void);
-
 
   /**
    * Perform setup preparation for the training phase.
@@ -72,8 +96,6 @@ protected:
    *  @param[in]  nr_errors The number of errors.
    */
   virtual void train_passive_aggressive(int nr_errors);
-
-  virtual void cleanup_decode_context();
 
 
   /**
@@ -108,15 +130,6 @@ protected:
   virtual void train(void);
 
 
-  /**
-   * The main evaluating process.
-   *
-   *  @param[out]  p   The precise
-   *  @param[out]  r   The recall
-   *  @param[out]  f   The F-score
-   */
-  virtual void evaluate(double &p, double &r, double &f);
-
 
   /**
    * Perform setup preparation for the training phase.
@@ -135,30 +148,6 @@ protected:
    */
   void dump(void);
 
-  /**
-   * Build lexicon match state of the instance
-   *
-   *  @param[in/out]  inst    The instance.
-   *
-   */
-  virtual void build_lexicon_match_state(Instance* inst);
-
-
-  /**
-   * Extract features from one instance, store the extracted features in a
-   * DecodeContext class.
-   *
-   *  @param[in]  inst    The instance.
-   *  @param[io]  model   The model.
-   *  @param[out] ctx     The decode context result.
-   *  @param[in]  create  If create is true, create feature for new feature
-   *                      in the model otherwise not create.
-   */
-  void extract_features(const Instance * inst,
-      Model* mdl,
-      DecodeContext* ctx,
-      bool create = false);
-
 
   /**
    * Extract features from one instance, store the extracted features in the
@@ -170,21 +159,6 @@ protected:
    */
   virtual void extract_features(const Instance* inst, bool create = false);
 
-
-  /**
-   * Cache all the score for the certain instance. The cached results are
-   * stored in a ScoreMatrix.
-   *
-   *  @param[in]  inst      the instance
-   *  @param[in]  ctx       the decode context.
-   *  @param[in]  use_avg   use to specify use average parameter
-   *  @param[out] scm       the score matrix.
-   */
-  void calculate_scores(const Instance* inst,
-      const Model* mdl,
-      const DecodeContext* ctx,
-      bool use_avg,
-      ScoreMatrix* scm);
 
 
   /**
@@ -218,21 +192,6 @@ protected:
    */
   virtual void collect_correct_and_predicted_features(Instance * inst);
 
-
-  /**
-   * build words from tags for certain instance
-   *
-   *  @param[in/out]  inst      the instance
-   *  @param[in]      tagsidx   the index of tags
-   *  @param[out]     words     the output words
-   *  @param[in]      begtag0   first of the word begin tag
-   *  @param[in]      begtag1   second of the word begin tag
-   */
-  void build_words(Instance * inst,
-                   const std::vector<int> & tagsidx,
-                   std::vector<std::string> & words,
-                   int beg_tag0,
-                   int beg_tag1 = -1);
 
 
   /**
@@ -291,6 +250,7 @@ protected:
 
   //!
   ScoreMatrix* score_matrix;
+#endif
 };
 
 }     //  end for namespace segmentor

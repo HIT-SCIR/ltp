@@ -4,32 +4,22 @@
 #include <iostream>
 #include <vector>
 #include "framework/decoder.h"
-#include "segmentor/instance.h"
-#include "segmentor/rulebase.h"
-#include "segmentor/score_matrix.h"
 #include "utils/math/mat.h"
 
 namespace ltp {
 namespace segmentor {
 
-class Decoder: public framework::ViterbiDecoder {
+class SegmentorConstrain: public framework::ViterbiDecodeConstrain {
 private:
-  typedef framework::ViterbiLatticeItem LatticeItem;
-  int L;
-  rulebase::RuleBase base;
+  const std::vector<int>* chartypes;
 public:
-  Decoder (int _l, rulebase::RuleBase & _base) : L(_l), base(_base) {}
+  SegmentorConstrain();
 
-  /**
-   * The main decoding process
-   *  @param[in/out]  the instance
-   *  @param[in]  the score matrix
-   */
-  void decode(Instance * inst, const ScoreMatrix* scm);
+  void regist(const std::vector<int>* chartypes);
 
-private:
-  void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
-  void get_result(Instance * inst);
+  bool can_tran(const size_t& i, const size_t& j) const;
+
+  bool can_emit(const size_t& i, const size_t& j) const;
 };
 
 }       //  end for namespace segmentor

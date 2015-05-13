@@ -1,69 +1,32 @@
 #include "segmentor/decoder.h"
+#include "segmentor/preprocessor.h"
 
 namespace ltp {
 namespace segmentor {
 
-void Decoder::decode(Instance * inst, const ScoreMatrix* scm) {
-  init_lattice(inst->size(), L);
-  viterbi_decode(inst, scm);
-  get_result(inst);
-  free_lattice();
+SegmentorConstrain::SegmentorConstrain(): chartypes(0) {
 }
 
-void Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
-  int len = inst->size();
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      if (false == base.legal_emit(inst->chartypes[i], l)) {
-        continue;
-      }
-
-      if (i == 0) {
-        LatticeItem * item = new LatticeItem(i, l, scm->uni_scores[i][l], NULL);
-        lattice_insert(lattice[i][l], item);
-      } else {
-        for (int pl = 0; pl < L; ++ pl) {
-          if (false == base.legal_trans(pl, l)) {
-            continue;
-          }
-
-          double score = 0.;
-          const LatticeItem * prev = lattice[i-1][pl];
-
-          if (!prev) {
-            continue;
-          }
-
-          // std::cout << i << " " << pl << " " << l << std::endl;
-          score = scm->uni_scores[i][l] + scm->bi_scores[pl][l] + prev->score;
-          const LatticeItem * item = new LatticeItem(i, l, score, prev);
-          lattice_insert(lattice[i][l], item);
-        }
-      }   //  end for if i == 0
-    }
-  }
+void SegmentorConstrain::regist(const std::vector<int>* _chartypes) {
+  chartypes = _chartypes;
 }
 
-void Decoder::get_result(Instance * inst) {
-  int len = inst->size();
-  const LatticeItem * best_item = NULL;
-  for (int l = 0; l < L; ++ l) {
-    if (!lattice[len-1][l]) {
-      continue;
-    }
-    if (best_item == NULL || (lattice[len-1][l]->score > best_item->score)) {
-      best_item = lattice[len - 1][l];
+bool SegmentorConstrain::can_tran(const size_t& i, const size_t& j) const {
+  return ((i == 0 || i == 1) && (j == 1 || j == 2)
+        || ((i == 2 || i == 3) && (i == 3 || j == 3)));
+}
+
+bool SegmentorConstrain::can_emit(const size_t& i, const size_t& j) const {
+  if (i == 0 && !(j == 0 || j == 3)) { return false; }
+
+  if (chartypes) {
+    int flag = chartypes->at(i);
+    if (((flag&0x07)== Preprocessor::CHAR_ENG) || ((flag&0x07) == Preprocessor::CHAR_URI)) {
+      return (j == 3);
     }
   }
 
-  const LatticeItem * item = best_item;
-  inst->predicted_tagsidx.resize(len);
-  // backtracking
-  while (item) {
-    inst->predicted_tagsidx[item->i] = item->l;
-    // std::cout << item->i << " " << item->l << std::endl;
-    item = item->prev;
-  }
+  return true;
 }
 
 }     //  end for namespace segmentor

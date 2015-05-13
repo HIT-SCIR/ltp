@@ -13,8 +13,6 @@ const std::string EOT = "_eot_";
 
 const std::string __dummy__     = "dummy";
 const std::string __b__         = "b";
-const std::string __b2__        = "b2";
-const std::string __b3__        = "b3";
 const std::string __i__         = "i";
 const std::string __e__         = "e";
 const std::string __s__         = "s";
@@ -24,6 +22,9 @@ const std::string __uri__       = "_uri_";
 
 const double EPS        = 1e-8;
 const double NEG_INF    = -1e20;
+
+const int __num_pos_types__ = 4;
+static const char* __pos_types__[] = { "b", "i", "e", "s", };
 
 }   //  end for namespace segmentor
 }   //  end for namespace ltp

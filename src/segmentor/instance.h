@@ -22,18 +22,18 @@ public:
   }
 
   /**
-   * return the number of tags that predicted wrong
+   * return the number of tags that predict wrong
    *  @return int  the number
    */
   int num_errors() {
     int len = size();
-    if ((len != tagsidx.size()) || (len != predicted_tagsidx.size())) {
+    if ((len != tagsidx.size()) || (len != predict_tagsidx.size())) {
       return -1;
     }
 
     int ret = 0;
     for (int i = 0; i < len; ++ i) {
-      if (tagsidx[i] != predicted_tagsidx[i]) {
+      if (tagsidx[i] != predict_tagsidx[i]) {
         ++ ret;
       }
     }
@@ -42,7 +42,7 @@ public:
   }
 
   int num_predicted_words() {
-    return predicted_words.size();
+    return predict_words.size();
   }
 
   int num_gold_words() {
@@ -51,39 +51,39 @@ public:
 
 
   /**
-   * calculate the number of words that predicted right
+   * calculate the number of words that predict right
    *  @return int  the number
    */
   int num_recalled_words() {
     int len = 0;
     int ret = 0;
-    int gold_len = 0, predicted_len = 0;
+    int gold_len = 0, predict_len = 0;
 
     for (int i = 0; i < words.size(); ++ i) {
       len += words[i].size();
     }
 
-    for (int i = 0, j = 0; i < words.size() && j < predicted_words.size(); ) {
-      if (words[i] == predicted_words[j]) {
+    for (int i = 0, j = 0; i < words.size() && j < predict_words.size(); ) {
+      if (words[i] == predict_words[j]) {
         ++ ret;
         gold_len += words[i].size();
-        predicted_len += predicted_words[j].size();
+        predict_len += predict_words[j].size();
 
         ++ i;
         ++ j;
       } else {
         gold_len += words[i].size();
-        predicted_len += predicted_words[j].size();
+        predict_len += predict_words[j].size();
 
         ++ i;
         ++ j;
 
-        while (gold_len < len && predicted_len < len) {
-          if (gold_len < predicted_len) {
+        while (gold_len < len && predict_len < len) {
+          if (gold_len < predict_len) {
             gold_len += words[i].size();
             ++ i;
-          } else if (gold_len > predicted_len) {
-            predicted_len += predicted_words[j].size();
+          } else if (gold_len > predict_len) {
+            predict_len += predict_words[j].size();
             ++ j;
           } else {
             break;
@@ -101,10 +101,10 @@ public:
   std::vector< int >          chartypes; // types of characters, digit, text, punct etc.
   std::vector< std::string >  tags; // tags of characters, {B I E S}
   std::vector< int >          tagsidx; // int tags
-  std::vector< std::string >  predicted_tags; 
-  std::vector< int >          predicted_tagsidx;
+  std::vector< std::string >  predict_tags; 
+  std::vector< int >          predict_tagsidx;
   std::vector< std::string >  words; // words of the input
-  std::vector< std::string >  predicted_words;
+  std::vector< std::string >  predict_words;
   std::vector< int >          lexicon_match_state;
 };
 

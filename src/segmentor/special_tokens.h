@@ -1,6 +1,8 @@
 #ifndef __LTP_SPECIAL_TOKENS_H__
 #define __LTP_SPECIAL_TOKENS_H__
 
+#include <iostream>
+
 namespace ltp{
 namespace segmentor{
 const static std::string special_tokens[] = {
