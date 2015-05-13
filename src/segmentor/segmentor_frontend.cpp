@@ -44,7 +44,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
   train_opt.rare_feature_threshold = rare_feature_threshold;
   train_opt.dump_model_details = dump_model_details;
 
-  TRACE_LOG("||| ltp postagger, training ...");
+  TRACE_LOG("||| ltp segmentor, training ...");
   TRACE_LOG("report: reference file = %s", train_opt.train_file.c_str());
   TRACE_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
   TRACE_LOG("report: algorith = %s", train_opt.algorithm.c_str());
@@ -63,7 +63,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& input_file,
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
 
-  TRACE_LOG("||| ltp postagger, testing ...");
+  TRACE_LOG("||| ltp segmentor, testing ...");
   TRACE_LOG("report: input file = %s", test_opt.test_file.c_str());
   TRACE_LOG("report: model file = %s", test_opt.model_file.c_str());
   TRACE_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
@@ -73,7 +73,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
   : decoder(0), ctx(0), scm(0), timestamp(0), Frontend(kDump) {
   dump_opt.model_file = model_file;
 
-  TRACE_LOG("||| ltp postagger, dumpping ...");
+  TRACE_LOG("||| ltp segmentor, dumpping ...");
   TRACE_LOG("report: model file = %s", model_file.c_str());
 }
 
@@ -101,7 +101,7 @@ void SegmentorFrontend::increase_timestamp() {
 
 void SegmentorFrontend::build_configuration(void) {
   // model->full = train_opt->enable_incremental_training
-  for (size_t i = 0; i < __num_pos_types__; ++ i) { model->labels.push(__pos_types__[i]);}
+  for (size_t i = 0; i < __num_pos_types__; ++ i) { model->labels.push(__pos_types__[i]); }
 
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     const std::vector<std::string>& tags = train_dat[i]->tags;
@@ -254,6 +254,7 @@ void SegmentorFrontend::train(void) {
 
       con.regist(&(inst->chartypes));
       decoder->decode((*scm), con, inst->predict_tagsidx);
+      //decoder->decode((*scm), inst->predict_tagsidx);
 
       collect_features(model, ctx->uni_features, inst->tagsidx, ctx->correct_features);
       collect_features(model, ctx->uni_features, inst->predict_tagsidx, ctx->predict_features);
@@ -262,8 +263,8 @@ void SegmentorFrontend::train(void) {
       learn(train_opt.algorithm,
           ctx->correct_features,
           ctx->predict_features,
-          iter* train_dat.size()+ i+ 1,
           get_timestamp(),
+          inst->num_errors(),
           model,
           updated_features);
 
@@ -277,7 +278,6 @@ void SegmentorFrontend::train(void) {
     TRACE_LOG("trace: %d instances is trained.", train_dat.size());
 
     model->param.flush(get_timestamp());
-    // model->end_time = get_timestamp();
 
     Model* new_model = new Model;
     erase_rare_features(model, new_model,
@@ -347,7 +347,7 @@ void SegmentorFrontend::evaluate(double &p, double &r, double &f) {
     calculate_scores((*inst), (*model), (*ctx), true, scm);
  
     con.regist(&(inst->chartypes));
-    decoder->decode((*scm), inst->predict_tagsidx);
+    decoder->decode((*scm), con, inst->predict_tagsidx);
     ctx->clear();
 
     build_words((*inst), inst->tagsidx, inst->words);
@@ -380,10 +380,10 @@ void SegmentorFrontend::test(void) {
   }
 
   model = new Model;
-  /*if (!model->load(model_header.c_str(), mfs)) {
+  if (!model->load(model_header.c_str(), mfs)) {
     ERROR_LOG("Failed to load model");
     return;
-  }*/
+  }
 
   TRACE_LOG("report: number of labels = %d", model->num_labels());
   TRACE_LOG("report: number of features = %d", model->space.num_features());
@@ -394,9 +394,10 @@ void SegmentorFrontend::test(void) {
   size_t num_gold_words = 0;
 
   // load exteranl lexicon
-  // const char * lexicon_file = test_opt.lexicon_file.c_str();
-  // load_constrain(model, lexicon_file);
-  const char * test_file = test_opt.test_file.c_str();
+  const char* lexicon_file = test_opt.lexicon_file.c_str();
+  load_lexicon(lexicon_file, &(model->external_lexicon));
+
+  const char* test_file = test_opt.test_file.c_str();
   std::ifstream ifs(test_file);
 
   if (!ifs) {
@@ -430,7 +431,7 @@ void SegmentorFrontend::test(void) {
     calculate_scores((*inst), (*model), (*ctx), true, scm);
 
     con.regist(&(inst->chartypes));
-    decoder->decode((*scm), inst->predict_tagsidx);
+    decoder->decode((*scm), con, inst->predict_tagsidx);
     ctx->clear();
 
     build_words((*inst), inst->predict_tagsidx, inst->predict_words);

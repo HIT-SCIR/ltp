@@ -11,12 +11,12 @@ using strutils::chomp;
 //int Preprocessor::CHAR_ENG = strutils::chartypes::CHAR_PUNC+1;
 //int Preprocessor::CHAR_URI = strutils::chartypes::CHAR_PUNC+2;
 
-int Preprocessor::HAVE_SPACE_ON_LEFT  = (1<<3);
-int Preprocessor::HAVE_SPACE_ON_RIGHT = (1<<4);
-int Preprocessor::HAVE_ENG_ON_LEFT    = (1<<5);
-int Preprocessor::HAVE_ENG_ON_RIGHT   = (1<<6);
-int Preprocessor::HAVE_URI_ON_LEFT    = (1<<7);
-int Preprocessor::HAVE_URI_ON_RIGHT   = (1<<8);
+int Preprocessor::HAS_SPACE_ON_LEFT  = (1<<3);
+int Preprocessor::HAS_SPACE_ON_RIGHT = (1<<4);
+int Preprocessor::HAS_ENG_ON_LEFT    = (1<<5);
+int Preprocessor::HAS_ENG_ON_RIGHT   = (1<<6);
+int Preprocessor::HAS_URI_ON_LEFT    = (1<<7);
+int Preprocessor::HAS_URI_ON_RIGHT   = (1<<8);
 
 Preprocessor::Preprocessor():
   eng_regex("([A-Za-z0-9\\.]*[A-Za-z\\-]((—||[\\-'\\.])[A-Za-z0-9]+)*)"),
@@ -106,6 +106,7 @@ void Preprocessor::English(const std::string& sentence,
 void Preprocessor::merge(const std::string& sentence,
     const size_t& len,
     const std::vector<int>& flags,
+    const PreprocessFlag& MID,
     const PreprocessFlag& END,
     const int& RIGHT_STATUS,
     const int& LEFT_STATUS,
@@ -117,7 +118,7 @@ void Preprocessor::merge(const std::string& sentence,
     std::vector<std::string>& forms,
     std::vector<int>& chartypes) const {
   std::string form(1, sentence[i++]);
-  for (; i < len && flags[i] != END; ++ i) {
+  for (; i < len && flags[i] == MID; ++ i) {
     form += sentence[i];
   }
 
@@ -128,10 +129,12 @@ void Preprocessor::merge(const std::string& sentence,
   raw_forms.push_back(form);
   forms.push_back( ch );
 
-  if (chartypes.size() > 0) { chartypes.back() |= RIGHT_STATUS; }
-  chartypes.push_back( chartype );
+  if (chartypes.size() > 0 && (chartypes.back()>>3)==0) {
+    chartypes.back() |= RIGHT_STATUS;
+  }
 
-  chartypes.back() |= LEFT_STATUS;
+  chartypes.push_back( chartype );
+  chartypes.back() |= left_status;
   left_status = LEFT_STATUS;
 }
 
@@ -161,16 +164,17 @@ int Preprocessor::preprocess(const std::string& sentence,
     int flag = 0;
 
     if((flag = flags[i]) == SPECIAL_TOKEN_BEG) {
-      merge(sent, len, flags, SPECIAL_TOKEN_END, HAVE_ENG_ON_RIGHT, HAVE_ENG_ON_LEFT,
+      merge(sent, len, flags, SPECIAL_TOKEN_MID, SPECIAL_TOKEN_END,
+          HAS_ENG_ON_RIGHT, HAS_ENG_ON_LEFT,
           __eng__, CHAR_ENG, i, left_status, raw_forms, forms, chartypes);
       ++ ret;
     } else if((flag = flags[i]) == ENG_BEG) {
-      merge(sent, len, flags, ENG_END, HAVE_ENG_ON_RIGHT, HAVE_ENG_ON_LEFT,
+      merge(sent, len, flags, ENG_MID, ENG_END, HAS_ENG_ON_RIGHT, HAS_ENG_ON_LEFT,
           __eng__, CHAR_ENG, i, left_status, raw_forms, forms, chartypes);
       ++ ret;
     } else if ((flag = flags[i]) == URI_BEG) {
-      merge(sent, len, flags, URI_END, HAVE_URI_ON_RIGHT, HAVE_URI_ON_LEFT,
-          __eng__, CHAR_URI, i, left_status, raw_forms, forms, chartypes);
+      merge(sent, len, flags, URI_MID, URI_END, HAS_URI_ON_RIGHT, HAS_URI_ON_LEFT,
+          __uri__, CHAR_URI, i, left_status, raw_forms, forms, chartypes);
       ++ ret;
     } else {
       bool is_space = false;
@@ -185,8 +189,8 @@ int Preprocessor::preprocess(const std::string& sentence,
       else { return -1; }
 
       if (is_space) {
-        left_status = HAVE_SPACE_ON_LEFT;
-        if (chartypes.size() > 0) { chartypes.back() |= HAVE_SPACE_ON_RIGHT; }
+        left_status = HAS_SPACE_ON_LEFT;
+        if (chartypes.size() > 0) { chartypes.back() |= HAS_SPACE_ON_RIGHT; }
       } else {
         raw_forms.push_back(sent.substr(i, width));
         chartypes.push_back(strutils::chartypes::chartype(raw_forms.back()));
@@ -194,9 +198,9 @@ int Preprocessor::preprocess(const std::string& sentence,
         strutils::chartypes::sbc2dbc(raw_forms.back(), forms.back());
         chartypes.back() |= left_status;
         left_status = 0;
+        ++ ret;
       }
       i += width;
-      ++ ret;
     }
   }
 

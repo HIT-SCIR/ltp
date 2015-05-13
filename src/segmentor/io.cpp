@@ -55,7 +55,7 @@ Instance* SegmentReader::next() {
         return 0;
       }
 
-      for(int j = 0; j < num_chars; ++ j) {
+      for (size_t j = 0; j < num_chars; ++ j) {
         // inst->forms.push_back(chars[j]);
         if (1 == num_chars) {
           inst->tags.push_back( __s__ );

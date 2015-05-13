@@ -74,7 +74,22 @@ protected:
       const std::vector<int>& tagsidx,
       std::vector<std::string>& words);
 
- 
+  /**
+   * Load lexicon from file.
+   *
+   *  @param[in]  filename    The filename
+   *  @param[out] lexicon     The pointer to the lexicon.
+   */
+  void load_lexicon(const char* filename, Model::lexicon_t* lexicon) const;
+
+  /**
+   * Load lexicon from string vector.
+   *
+   *  @param[in]  filename    The filename
+   *  @param[out] lexicon     The pointer to the lexicon.
+   */
+  void load_lexicon(const std::vector<std::string>& texts,
+      Model::lexicon_t* lexicon) const;
 #if 0
   /**
    * Parse the configuration

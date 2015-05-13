@@ -1,6 +1,7 @@
 #include "utils/time.hpp"
 #include "utils/logging.hpp"
 #include "utils/strvec.hpp"
+#include "utils/strutils.hpp"
 #include "segmentor/segmentor.h"
 #include "segmentor/instance.h"
 #include "segmentor/extractor.h"
@@ -21,6 +22,7 @@ using utility::StringVec;
 using utility::SmartMap;
 using math::FeatureVector;
 using math::SparseVec;
+using strutils::chomp;
 
 Segmentor::Segmentor(): model(0) {}
 Segmentor::~Segmentor() { if (model) { delete model; model = 0; } }
@@ -99,9 +101,7 @@ void Segmentor::build_lexicon_match_state(
 
       bool found = false;
       for (size_t k = 0; k < lexicons.size(); ++ k) {
-        if (lexicons[k]->get(word.c_str())) {
-          found = true; break;
-        }
+        if (lexicons[k]->get(word.c_str())) { found = true; break; }
       }
 
       if (!found) { continue; }
@@ -176,144 +176,19 @@ void Segmentor::build_words(const Instance& inst,
   words.push_back(word);
 }
 
+void Segmentor::load_lexicon(const char* filename, Model::lexicon_t* lexicon) const {
+  std::ifstream ifs(filename);
+  if (!ifs.good()) { return; }
+  std::string line;
+  while (std::getline(ifs, line)) {
+    line= chomp(line);
+    std::string form = line.substr(0, line.find_first_of(" \t"));
+    lexicon->set(form.c_str(), true);
+  }
+  TRACE_LOG("loaded %d lexicon entries", lexicon->size());
+}
 
 #if 0
-void
-Segmentor::run(void) {
-  if (__TRAIN__) {
-    train();
-  }
-
-  if (__TEST__) {
-    test();
-  }
-
-  if (__DUMP__) {
-    dump();
-  }
-
-  for (int i = 0; i < train_dat.size(); ++ i) {
-    if (train_dat[i]) {
-      delete train_dat[i];
-    }
-  }
-}
-
-bool
-Segmentor::parse_cfg(utils::ConfigParser & cfg) {
-  std::string strbuf;
-
-  train_opt->train_file = "";
-  train_opt->holdout_file = "";
-  train_opt->algorithm = "pa";
-  train_opt->model_name = "";
-  train_opt->max_iter = 10;
-  train_opt->display_interval = 5000;
-  train_opt->rare_feature_threshold = 0;
-  train_opt->enable_incremental_training = 0;
-
-  if (cfg.has_section("train")) {
-    int intbuf;
-
-    TRACE_LOG("Training mode specified.");
-    __TRAIN__ = true;
-
-    if (cfg.get("train", "train-file", strbuf)) {
-      train_opt->train_file = strbuf;
-    } else {
-      ERROR_LOG("train-file config item is not found.");
-      return false;
-    }
-
-    if (cfg.get("train", "holdout-file", strbuf)) {
-      train_opt->holdout_file = strbuf;
-    } else {
-      ERROR_LOG("holdout-file config item is not found.");
-      return false;
-    }
-
-    if (cfg.get("train", "algorithm", strbuf)) {
-      train_opt->algorithm = strbuf;
-    } else {
-      WARNING_LOG("algorithm is not configed, [PA] is set as default");
-    }
-
-    if (cfg.get("train", "rare-feature-threshold", strbuf)) {
-      train_opt->rare_feature_threshold = atoi(strbuf.c_str());
-    } else {
-      WARNING_LOG("rare feature threshold is not configed, 10 is set as default");
-    }
-
-    train_opt->model_name = train_opt->train_file + "." + train_opt->algorithm;
-    if (cfg.get("train", "model-name", strbuf)) {
-      train_opt->model_name = strbuf;
-    } else {
-      WARNING_LOG("model name is not configed, [%s] is set as default",
-                  train_opt->model_name.c_str());
-    }
-
-    if (cfg.get_integer("train", "max-iter", intbuf)) {
-      train_opt->max_iter = intbuf;
-    } else {
-      WARNING_LOG("max-iter is not configed, [10] is set as default.");
-    }
-
-    if (cfg.get_integer("train", "enable-incremental-training", intbuf)) {
-      train_opt->enable_incremental_training = (intbuf == 1);
-    }
-  }
-
-  test_opt->test_file    = "";
-  test_opt->model_file   = "";
-  test_opt->lexicon_file = "";
-
-  if (cfg.has_section("test")) {
-    __TEST__ = true;
-
-    if (cfg.get("test", "test-file", strbuf)) {
-      test_opt->test_file = strbuf;
-    } else {
-      ERROR_LOG("test-file config item is not set.");
-      return false;
-    }
-
-    if (cfg.get("test", "model-file", strbuf)) {
-      test_opt->model_file = strbuf;
-    } else {
-      ERROR_LOG("model-file is not configed.");
-      return false;
-    }
-
-    if (cfg.get("test", "lexicon-file", strbuf)) {
-      test_opt->lexicon_file = strbuf;
-    }
-  }
-
-  dump_opt->model_file = "";
-  if (cfg.has_section("dump")) {
-    __DUMP__ = true;
-
-    if (cfg.get("dump", "model-file", strbuf)) {
-      dump_opt->model_file = strbuf;
-    } else {
-      ERROR_LOG("model-file is not configed.");
-      return false;
-    }
-  }
-
-  return true;
-}
-
-void
-Segmentor::extract_features(const Instance* inst, bool create) {
-  extract_features(inst, model, decode_context, create);
-}
-
-void
-Segmentor::calculate_scores(const Instance* inst, bool use_avg) {
-  calculate_scores(inst, model, decode_context, use_avg, score_matrix);
-}
-
 void
 Segmentor::collect_features(const math::Mat< math::FeatureVector* >& features,
     const Model* mdl, const std::vector<int> & tagsidx, math::SparseVec & vec) {
@@ -447,47 +322,11 @@ Segmentor::collect_correct_and_predicted_features(Instance* inst) {
   decode_context->updated_features.add(decode_context->predicted_features, -1.);
 }
 
-void
-Segmentor::train_passive_aggressive(int nr_errors) {
-  //double error = train_dat[i]->num_errors();
-  double error = nr_errors;
-  double score = model->param.dot(decode_context->updated_features, false);
-  double norm  = decode_context->updated_features.L2();
-
-  double step = 0.;
-  if (norm < EPS) {
-    step = 0;
-  } else {
-    step = (error - score) / norm;
-  }
-
-  model->param.add(decode_context->updated_features, timestamp, step);
-}
-
-void
-Segmentor::train_averaged_perceptron() {
-  model->param.add(decode_context->updated_features, timestamp, 1.);
-}
 
 bool
 Segmentor::train_setup() {
   return true;
 };
-
-int
-Segmentor::get_timestamp(void) {
-  return timestamp;
-}
-
-void
-Segmentor::set_timestamp(int ts) {
-  timestamp = ts;
-}
-
-void
-Segmentor::cleanup_decode_context() {
-  decode_context->clear();
-}
 
 void
 Segmentor::evaluate(double &p, double &r, double &f) {
@@ -582,7 +421,7 @@ Segmentor::test(void) {
     if (lfs) {
       std::string buffer;
       while (std::getline(lfs, buffer)) {
-        buffer = strutils::chomp(buffer);
+        buffer = chomp(buffer);
         if (buffer.size() == 0) {
           continue;
         }

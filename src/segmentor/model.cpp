@@ -14,6 +14,7 @@ void Model::save(const char* model_name, const Parameters::DumpOption& opt,
     std::ostream& ofs) {
   // write a signature into the file
   char chunk[128];
+  strncpy(chunk, model_name, 128);
   ofs.write(chunk, 128);
 
   int off = ofs.tellp();

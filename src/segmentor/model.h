@@ -28,7 +28,7 @@ public:
    */
   void save(const char* model_name, const framework::Parameters::DumpOption& opt,
       std::ostream & ofs);
-  
+
   /**
    * load the model from an input stream
    *

@@ -80,7 +80,7 @@ private:
    *  @param[out]  r   The recall
    *  @param[out]  f   The F-score
    */
-  virtual void evaluate(double &p, double &r, double &f);
+  void evaluate(double &p, double &r, double &f);
 
   void set_timestamp(const size_t& ts);
 

@@ -36,13 +36,12 @@ private:
     SPECIAL_TOKEN_END
   };
 
-         
-  static int HAVE_SPACE_ON_LEFT;
-  static int HAVE_SPACE_ON_RIGHT;
-  static int HAVE_ENG_ON_LEFT;
-  static int HAVE_ENG_ON_RIGHT;
-  static int HAVE_URI_ON_LEFT;
-  static int HAVE_URI_ON_RIGHT;
+  static int HAS_SPACE_ON_LEFT;
+  static int HAS_SPACE_ON_RIGHT;
+  static int HAS_ENG_ON_LEFT;
+  static int HAS_ENG_ON_RIGHT;
+  static int HAS_URI_ON_LEFT;
+  static int HAS_URI_ON_RIGHT;
 
   boost::regex eng_regex;
   boost::regex uri_regex;
@@ -90,6 +89,7 @@ private:
   void merge(const std::string& sentence,
       const size_t& len,
       const std::vector<int>& flags,
+      const PreprocessFlag& MID,
       const PreprocessFlag& END,
       const int& RIGHT_STATUS,
       const int& LEFT_STATUS,
