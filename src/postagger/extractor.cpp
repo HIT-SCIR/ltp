@@ -43,20 +43,20 @@ Extractor::~Extractor() {
   }
 }
 
-int Extractor::extract1o(const Instance* inst, int idx,
+int Extractor::extract1o(const Instance& inst, int idx,
     std::vector<StringVec>& cache) {
-  int len = inst->size();
+  int len = inst.size();
   std::vector<std::string> chars;
-  decode(inst->forms[idx], chars);
+  decode(inst.forms[idx], chars);
 
   Template::Data data;
 
-  data.set( "c-2",  (idx-2 < 0 ? BOS : inst->forms[idx-2]) ); 
-  data.set( "c-1",  (idx-1 < 0 ? BOS : inst->forms[idx-1]) );
-  data.set( "c-0",  inst->forms[idx] );
-  data.set( "c+1",  (idx+1 >= len ? EOS : inst->forms[idx+1]) );
-  data.set( "c+2",  (idx+2 >= len ? EOS : inst->forms[idx+2]) );
-  int length = inst->forms[idx].size(); length = (length < 5 ? length : 5);
+  data.set( "c-2",  (idx-2 < 0 ? BOS : inst.forms[idx-2]) ); 
+  data.set( "c-1",  (idx-1 < 0 ? BOS : inst.forms[idx-1]) );
+  data.set( "c-0",  inst.forms[idx] );
+  data.set( "c+1",  (idx+1 >= len ? EOS : inst.forms[idx+1]) );
+  data.set( "c+2",  (idx+2 >= len ? EOS : inst.forms[idx+2]) );
+  int length = inst.forms[idx].size(); length = (length < 5 ? length : 5);
   data.set( "len",  to_str(length));
 
   std::string feat;

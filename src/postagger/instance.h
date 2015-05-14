@@ -25,13 +25,13 @@ public:
 
   int num_errors() {
     int len = size();
-    if ((len != tagsidx.size()) || (len != predicted_tagsidx.size())) {
+    if ((len != tagsidx.size()) || (len != predict_tagsidx.size())) {
       return -1;
     }
 
     int ret = 0;
     for (int i = 0; i < len; ++ i) {
-      if (tagsidx[i] != predicted_tagsidx[i]) {
+      if (tagsidx[i] != predict_tagsidx[i]) {
         ++ ret;
       }
     }
@@ -39,7 +39,7 @@ public:
     return ret;
   }
 
-  int num_corrected_predicted_tags() {
+  int num_corrected_predict_tags() {
     return size() - num_errors();
   }
 
@@ -48,8 +48,8 @@ public:
   std::vector< std::string >  forms;
   std::vector< std::string >  tags;
   std::vector< int >          tagsidx;
-  std::vector< std::string >  predicted_tags;
-  std::vector< int >          predicted_tagsidx;
+  std::vector< std::string >  predict_tags;
+  std::vector< int >          predict_tagsidx;
 
   std::vector< Bitset >       postag_constrain;   /*< the postag constrain for decode */
 };

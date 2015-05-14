@@ -17,8 +17,47 @@ using framework::ViterbiScoreMatrix;
 using utility::StringVec;
 using math::FeatureVector;
 
-NamedEntityRecognizer::NamedEntityRecognizer(): model(0) {}
+const std::string NamedEntityRecognizer::model_header = "otner";
+const std::string NamedEntityRecognizer::delimiter = "-";
+
+NamedEntityRecognizer::NamedEntityRecognizer(): model(0), glob_con(0) {}
 NamedEntityRecognizer::~NamedEntityRecognizer() { if (model) { delete model; model = 0; } }
+
+void NamedEntityRecognizer::build_glob_tran_cons(
+    const std::unordered_set<std::string>& ne_types) {
+  if (glob_con != NULL) {
+    WARNING_LOG("Transition constrain should not be double allocated.");
+  }
+
+  const std::string& _ = delimiter;
+  std::vector<std::string> includes;
+  includes.push_back("O -> O");
+
+  std::stringstream S;
+  for (std::unordered_set<std::string>::const_iterator i = ne_types.begin();
+      i != ne_types.end(); ++ i) {
+    S.str(""); S << "O -> S" << _ << (*i); includes.push_back(S.str());
+    S.str(""); S << "O -> B" << _ << (*i); includes.push_back(S.str());
+    S.str(""); S << "S" << _ << (*i) << " -> O"; includes.push_back(S.str());
+    S.str(""); S << "E" << _ << (*i) << " -> O"; includes.push_back(S.str());
+    S.str(""); S << "B" << _ << (*i) << " -> I" << _ << (*i); includes.push_back(S.str());
+    S.str(""); S << "B" << _ << (*i) << " -> E" << _ << (*i); includes.push_back(S.str());
+    S.str(""); S << "I" << _ << (*i) << " -> I" << _ << (*i); includes.push_back(S.str());
+    S.str(""); S << "I" << _ << (*i) << " -> E" << _ << (*i); includes.push_back(S.str());
+
+    for (std::unordered_set<std::string>::const_iterator j = ne_types.begin();
+        j != ne_types.end(); ++ j) {
+      S.str(""); S << "S" << _ << (*i) << " -> S" << _ << (*j); includes.push_back(S.str());
+      S.str(""); S << "S" << _ << (*i) << " -> B" << _ << (*j); includes.push_back(S.str());
+      S.str(""); S << "E" << _ << (*i) << " -> S" << _ << (*j); includes.push_back(S.str());
+      S.str(""); S << "E" << _ << (*i) << " -> B" << _ << (*j); includes.push_back(S.str());
+    }
+  }
+
+  TRACE_LOG("build-config: add %d constrains.", includes.size());
+  glob_con = new NERTransitionConstrain(model->labels, includes);
+}
+
 
 void NamedEntityRecognizer::extract_features(const Instance& inst,
     ViterbiFeatureContext* ctx,
@@ -81,7 +120,7 @@ void NamedEntityRecognizer::calculate_scores(const Instance& inst,
   size_t L = inst.size();
   size_t T = model->num_labels();
 
-  scm->resize(L, T);
+  scm->resize(L, T, -1e20);
 
   for (size_t i = 0; i < L; ++ i) {
     for (size_t t = 0; t < T; ++ t) {

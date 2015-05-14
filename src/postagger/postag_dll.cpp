@@ -2,36 +2,38 @@
 #include "postagger/postagger.h"
 #include "postagger/settings.h"
 #include "postagger/decoder.h"
-#include "postagger/constrainutil.hpp"
+#include "postagger/extractor.h"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
 #include "utils/sbcdbc.hpp"
 #include "utils/tinybitset.hpp"
-
 #include <iostream>
+#include <fstream>
 
-using namespace ltp::utility;
+class __ltp_dll_postagger_wrapper : public ltp::postagger::Postagger {
+private:
+  ltp::postagger::PostaggerLexiconConstrain con;
 
-class PostaggerWrapper : public ltp::postagger::Postagger {
 public:
-  PostaggerWrapper() {}
-  ~PostaggerWrapper() {}
+  __ltp_dll_postagger_wrapper() {}
+  ~__ltp_dll_postagger_wrapper() {}
 
-  bool load(const char * model_file, const char * lexicon_file = NULL) {
+  bool load(const char* model_file, const char* lexicon_file = NULL) {
     std::ifstream mfs(model_file, std::ifstream::binary);
 
     if (!mfs) {
       return false;
     }
 
-    model = new ltp::postagger::Model;
-    if (!model->load(mfs)) {
+    model = new ltp::framework::Model(ltp::postagger::Extractor::num_templates());
+    if (!model->load(ltp::postagger::Postagger::model_header, mfs)) {
       delete model;
       return false;
     }
 
-    if (ltp::postagger::load_constrain(model,lexicon_file) < 0) {
-      WARNING_LOG("No constraints is loaded.");
+    std::ifstream lfs(lexicon_file);
+    if (lfs.good()) {
+      con.load(lfs, model->labels);
     }
 
     return true;
@@ -39,47 +41,27 @@ public:
 
   int postag(const std::vector<std::string> & words,
       std::vector<std::string> & tags) {
-    ltp::postagger::Instance * inst = new ltp::postagger::Instance;
-    ltp::postagger::Decoder deco(model->num_labels());
+    ltp::framework::ViterbiFeatureContext ctx;
+    ltp::framework::ViterbiScoreMatrix scm;
+    ltp::framework::ViterbiDecoder decoder;
+    ltp::postagger::Instance inst;
 
-    for (int i = 0; i < words.size(); ++ i) {
-      inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
+    for (size_t i = 0; i < words.size(); ++ i) {
+      inst.forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
     }
 
-    int len = inst->forms.size();
-    inst->postag_constrain.resize(len);
-    if (model->external_lexicon.size() != 0) {
-      for (int i = 0; i < len; ++ i) {
-        Bitset * mask = model->external_lexicon.get((inst->forms[i]).c_str());
-        if (NULL != mask) {
-          inst->postag_constrain[i].merge((*mask));
-        } else {
-          inst->postag_constrain[i].allsetones();
-        }
-      }
-    } else {
-      for (int i = 0; i < len; ++ i) {
-        inst->postag_constrain[i].allsetones();
-      }
-    }
-
-    ltp::postagger::DecodeContext * ctx = new ltp::postagger::DecodeContext;
-    ltp::postagger::ScoreMatrix* scm = new ltp::postagger::ScoreMatrix;
-    ltp::postagger::Postagger::extract_features(inst, ctx);
-    ltp::postagger::Postagger::calculate_scores(inst, ctx, true, scm);
-    deco.decode(inst, scm);
+    extract_features(inst, &ctx, false);
+    calculate_scores(inst, ctx, true, &scm);
+    decoder.decode(scm, con, inst.predict_tagsidx);
 
     ltp::postagger::Postagger::build_labels(inst, tags);
 
-    delete ctx;
-    delete scm;
-    delete inst;
     return tags.size();
   }
 };
 
-void * postagger_create_postagger(const char * path, const char * lexicon_file) {
-  PostaggerWrapper * wrapper = new PostaggerWrapper();
+void * postagger_create_postagger(const char* path, const char* lexicon_file) {
+  __ltp_dll_postagger_wrapper* wrapper = new __ltp_dll_postagger_wrapper();
 
   if (!wrapper->load(path, lexicon_file)) {
     delete wrapper;
@@ -93,7 +75,7 @@ int postagger_release_postagger(void * postagger) {
     return -1;
   }
 
-  delete reinterpret_cast<PostaggerWrapper *>(postagger);
+  delete reinterpret_cast<__ltp_dll_postagger_wrapper*>(postagger);
   return 0;
 }
 
@@ -110,7 +92,7 @@ int postagger_postag(void * postagger,
     }
   }
 
-  PostaggerWrapper * wrapper = 0;
-  wrapper = reinterpret_cast<PostaggerWrapper *>(postagger);
+  __ltp_dll_postagger_wrapper* wrapper = 0;
+  wrapper = reinterpret_cast<__ltp_dll_postagger_wrapper*>(postagger);
   return wrapper->postag(words, tags);
 }

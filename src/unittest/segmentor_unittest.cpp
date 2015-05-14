@@ -3,10 +3,12 @@
 #include <vector>
 #include <gtest/gtest.h>
 #include "segmentor/preprocessor.h"
+#include "segmentor/decoder.h"
 #include "utils/chartypes.hpp"
 #include "boost/regex.hpp"
 
 using ltp::segmentor::Preprocessor;
+using ltp::segmentor::SegmentorConstrain;
 using ltp::strutils::chartypes::CHAR_OTHER;
 
 TEST(engpattern_unittest, english_word) {
@@ -172,5 +174,10 @@ TEST(segmentor_unittest, preprocess5) {
   EXPECT_EQ(chartypes[3],
       Preprocessor::CHAR_ENG|preprocessor.HAS_SPACE_ON_LEFT|preprocessor.HAS_SPACE_ON_RIGHT);
   EXPECT_EQ(chartypes[4], Preprocessor::CHAR_URI|preprocessor.HAS_SPACE_ON_LEFT);
+}
+
+TEST(segmentor_unittest, constrain1) {
+  SegmentorConstrain con;
+  EXPECT_TRUE(con.can_tran(0, 2));
 }
 

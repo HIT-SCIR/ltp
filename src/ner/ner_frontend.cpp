@@ -20,10 +20,8 @@ using framework::kDump;
 using math::Mat;
 using math::FeatureVector;
 using math::SparseVec;
-using utility::get_time;
+using utility::timer;
 using strutils::to_str;
-
-const std::string NamedEntityRecognizerFrontend::model_header = "otner";
 
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& reference_file,
@@ -31,9 +29,8 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& model_name,
     const std::string& algorithm,
     const int max_iter,
-    const int rare_feature_threshold,
-    const std::string& delim)
-  : decoder(0), glob_con(0), ctx(0), scm(0), delimiter(delim), Frontend(kLearn) {
+    const int rare_feature_threshold)
+  : decoder(0), ctx(0), scm(0), Frontend(kLearn) {
   train_opt.train_file = reference_file;
   train_opt.holdout_file = holdout_file;
   train_opt.algorithm = algorithm;
@@ -53,9 +50,8 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& input_file,
     const std::string& model_file,
-    bool evaluate,
-    const std::string& delim)
-  : decoder(0), glob_con(0), ctx(0), scm(0), delimiter(delim), Frontend(kTest) {
+    bool evaluate)
+  : decoder(0), ctx(0), scm(0), Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
@@ -68,7 +64,7 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& model_file)
-  : decoder(0), glob_con(0), ctx(0), scm(0), Frontend(kDump) {
+  : decoder(0), ctx(0), scm(0), Frontend(kDump) {
   dump_opt.model_file = model_file;
 
   TRACE_LOG("||| ltp ner, dumpping ...");
@@ -155,38 +151,6 @@ void NamedEntityRecognizerFrontend::build_configuration(void) {
   }
 
   build_glob_tran_cons(ne_types);
-}
-
-void NamedEntityRecognizerFrontend::build_glob_tran_cons(const set_t& ne_types) {
-  if (glob_con != NULL) {
-    WARNING_LOG("Transition constrain should not be double allocated.");
-  }
-
-  const std::string& _ = delimiter;
-  std::vector<std::string> includes;
-  includes.push_back("O -> O");
-
-  std::stringstream S;
-  for (set_t::const_iterator i = ne_types.begin(); i != ne_types.end(); ++ i) {
-    S.str(""); S << "O -> S" << _ << (*i); includes.push_back(S.str());
-    S.str(""); S << "O -> B" << _ << (*i); includes.push_back(S.str());
-    S.str(""); S << "S" << _ << (*i) << " -> O"; includes.push_back(S.str());
-    S.str(""); S << "E" << _ << (*i) << " -> O"; includes.push_back(S.str());
-    S.str(""); S << "B" << _ << (*i) << " -> I" << _ << (*i); includes.push_back(S.str());
-    S.str(""); S << "B" << _ << (*i) << " -> E" << _ << (*i); includes.push_back(S.str());
-    S.str(""); S << "I" << _ << (*i) << " -> I" << _ << (*i); includes.push_back(S.str());
-    S.str(""); S << "I" << _ << (*i) << " -> E" << _ << (*i); includes.push_back(S.str());
-
-    for (set_t::const_iterator j = ne_types.begin(); j != ne_types.end(); ++ j) {
-      S.str(""); S << "S" << _ << (*i) << " -> S" << _ << (*j); includes.push_back(S.str());
-      S.str(""); S << "S" << _ << (*i) << " -> B" << _ << (*j); includes.push_back(S.str());
-      S.str(""); S << "E" << _ << (*i) << " -> S" << _ << (*j); includes.push_back(S.str());
-      S.str(""); S << "E" << _ << (*i) << " -> B" << _ << (*j); includes.push_back(S.str());
-    }
-  }
-
-  TRACE_LOG("build-config: add %d constrains.", includes.size());
-  glob_con = new NERTransitionConstrain(model->labels, includes);
 }
 
 void NamedEntityRecognizerFrontend::build_feature_space(void) {
@@ -291,7 +255,8 @@ void NamedEntityRecognizerFrontend::train(void) {
     TRACE_LOG("trace: %d instances is trained.", train_dat.size());
     model->param.flush( train_dat.size()*(iter+1) );
 
-    Model* new_model = Frontend::erase_rare_features(model,
+    Model* new_model = new Model(Extractor::num_templates());
+    erase_rare_features(model, new_model,
         train_opt.rare_feature_threshold, update_counts);
 
     std::swap(model, new_model);
@@ -306,7 +271,7 @@ void NamedEntityRecognizerFrontend::train(void) {
     std::string saved_model_file = (train_opt.model_name+ "."+ to_str(iter));
     std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
     std::swap(model, new_model);
-    new_model->save(model_header.c_str(), Parameters::kDumpAveraged, ofs);
+    new_model->save(model_header, Parameters::kDumpAveraged, ofs);
     delete new_model;
 
     TRACE_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
@@ -377,7 +342,7 @@ void NamedEntityRecognizerFrontend::test(void) {
   }
 
   model = new framework::Model(Extractor::num_templates());
-  if (!model->load(model_header.c_str(), mfs)) {
+  if (!model->load(model_header, mfs)) {
     ERROR_LOG("Failed to load model");
     return;
   }
@@ -410,7 +375,7 @@ void NamedEntityRecognizerFrontend::test(void) {
   NERReader reader(ifs, test_opt.evaluate);
   Instance* inst = NULL;
 
-  double before = get_time();
+  timer t;
   TRACE_LOG("report: start testing ...");
   while ((inst = reader.next())) {
     size_t len = inst->size();
@@ -421,8 +386,8 @@ void NamedEntityRecognizerFrontend::test(void) {
       }
     }
 
-    NamedEntityRecognizer::extract_features((*inst), ctx, false);
-    NamedEntityRecognizer::calculate_scores((*inst), (*ctx), true, scm);
+    extract_features((*inst), ctx, false);
+    calculate_scores((*inst), (*ctx), true, scm);
     decoder->decode((*scm), (*glob_con), inst->predict_tagsidx);
     ctx->clear();
 
@@ -434,8 +399,7 @@ void NamedEntityRecognizerFrontend::test(void) {
     delete inst;
   }
 
-  double after = get_time();
-  TRACE_LOG("Elapsed time %lf", after - before);
+  TRACE_LOG("Elapsed time %lf", t.elapsed());
   return;
 }
 
@@ -450,7 +414,7 @@ void NamedEntityRecognizerFrontend::dump() {
   }
 
   model = new Model(Extractor::num_templates());
-  if (!model->load(model_header.c_str(), mfs)) {
+  if (!model->load(model_header, mfs)) {
     ERROR_LOG("Failed to load model");
     return;
   }

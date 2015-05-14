@@ -139,7 +139,7 @@ int test(int argc, const char* argv[]) {
 }
 
 int dump(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE " -  Training and testing suite for " DESCRIPTION "\n";
+  std::string usage = EXECUTABLE "(dump) - Model visualization suite for " DESCRIPTION "\n";
   usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
   usage += "usage: ./" EXECUTABLE " dump <options>\n\n";
   usage += "options";

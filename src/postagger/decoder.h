@@ -2,28 +2,30 @@
 #define __LTP_POSTAGGER_DECODER_H__
 
 #include <iostream>
-#include <map>
 #include <vector>
 #include "framework/decoder.h"
 #include "postagger/instance.h"
-#include "postagger/score_matrix.h"
-#include "utils/math/mat.h"
+#include "utils/tinybitset.hpp"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace postagger {
 
-class Decoder: public framework::ViterbiDecoder {
+class PostaggerLexiconConstrain: public framework::ViterbiDecodeConstrain {
 private:
-  typedef framework::ViterbiLatticeItem LatticeItem;
-  int L;
+  utility::SmartMap<utility::Bitset> rep;
+  const std::vector<std::string>* words;
+  bool successful;
 public:
-  Decoder (int _l) : L(_l) {}
-  void decode(Instance * inst, const ScoreMatrix* scm);
-private:
-  void viterbi_decode_inner(const Instance * inst,const ScoreMatrix* scm, int i,int l);
-  void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
-  void get_result(Instance * inst);
+  PostaggerLexiconConstrain();
+
+  void regist(const std::vector<std::string>* words);
+
+  bool can_emit(const size_t& i, const size_t& j) const;
+
+  bool load(std::istream& is, const utility::IndexableSmartMap& labels_alphabet);
 };
+
 
 }       //  end for namespace postagger
 }       //  end for namespace ltp

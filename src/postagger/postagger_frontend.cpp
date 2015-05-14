@@ -2,6 +2,7 @@
 #include "postagger/postagger_frontend.h"
 #include "postagger/io.h"
 #include "postagger/extractor.h"
+#include "postagger/decoder.h"
 #include "utils/time.hpp"
 #include "utils/logging.hpp"
 #include "utils/strutils.hpp"
@@ -20,14 +21,12 @@ using math::SparseVec;
 using math::FeatureVector;
 using strutils::to_str;
 
-const std::string PostaggerFrontend::model_header = "otpos";
-
 PostaggerFrontend::PostaggerFrontend(const std::string& reference_file,
     const std::string& holdout_file,
     const std::string& model_name,
     const std::string& algorithm,
-    const int max_iter,
-    const int rare_feature_threshold)
+    const size_t& max_iter,
+    const size_t& rare_feature_threshold)
   : decoder(0), ctx(0), scm(0), Frontend(kLearn) {
   train_opt.train_file = reference_file;
   train_opt.holdout_file = holdout_file;
@@ -45,8 +44,8 @@ PostaggerFrontend::PostaggerFrontend(const std::string& reference_file,
   TRACE_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
 }
 
-PostaggerFrontend::PostaggerFrontend(const std::string& model_file,
-    const std::string& input_file,
+PostaggerFrontend::PostaggerFrontend(const std::string& input_file,
+    const std::string& model_file,
     const std::string& lexicon_file,
     bool evaluate)
   : decoder(0), ctx(0), scm(0), Frontend(kTest) {
@@ -164,7 +163,7 @@ void PostaggerFrontend::train(void) {
   // use pa or average perceptron algorithm
   ctx = new ViterbiFeatureContext;
   scm = new ViterbiScoreMatrix;
-  decoder = new Decoder(model->num_labels());
+  decoder = new ViterbiDecoder;
   TRACE_LOG("trace: allocated plain decoder");
 
   int best_iteration = -1;
@@ -182,22 +181,16 @@ void PostaggerFrontend::train(void) {
       calculate_scores((*inst), (*ctx), false, scm);
       decoder->decode((*scm), inst->predict_tagsidx);
 
-      Frontend::collect_features(model, ctx->uni_features,
-          inst->tagsidx, ctx->correct_features);
-      Frontend::collect_features(model, ctx->uni_features,
-          inst->predict_tagsidx, ctx->predict_features);
+      collect_features(model, ctx->uni_features, inst->tagsidx, ctx->correct_features);
+      collect_features(model, ctx->uni_features, inst->predict_tagsidx, ctx->predict_features);
 
       SparseVec updated_features;
-      Frontend::learn(train_opt.algorithm,
-          ctx->correct_features,
-          ctx->predict_features,
-          iter* train_dat.size()+ i+ 1,
-          inst->num_errors(),
-          model,
+      learn(train_opt.algorithm, ctx->correct_features, ctx->predict_features,
+          iter* train_dat.size()+ i+ 1, inst->num_errors(), model,
           updated_features);
 
       if (train_opt.rare_feature_threshold > 0) {
-        Frontend::increase_groupwise_update_counts(model, updated_features, update_counts);
+        increase_groupwise_update_counts(model, updated_features, update_counts);
       }
 
       ctx->clear();
@@ -208,8 +201,9 @@ void PostaggerFrontend::train(void) {
     TRACE_LOG("trace: %d instances is trained.", train_dat.size());
     model->param.flush( train_dat.size() * (iter + 1) );
 
-    Model* new_model = Frontend::erase_rare_features(model,
-        train_opt.rare_feature_threshold, update_counts);
+    Model* new_model = new Model(Extractor::num_templates());
+    erase_rare_features(model, new_model, train_opt.rare_feature_threshold,
+        update_counts);
 
     std::swap(model, new_model);
     double p;
@@ -223,7 +217,7 @@ void PostaggerFrontend::train(void) {
     std::string saved_model_file = (train_opt.model_name+ "."+ to_str(iter));
     std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
     std::swap(model, new_model);
-    new_model->save(model_header.c_str(), Parameters::kDumpAveraged, ofs);
+    new_model->save(model_header, Parameters::kDumpAveraged, ofs);
     delete new_model;
 
     TRACE_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
@@ -286,7 +280,7 @@ void PostaggerFrontend::test(void) {
   }
 
   model = new Model(Extractor::num_templates());
-  if (!model->load(model_header.c_str(), mfs)) {
+  if (!model->load(model_header, mfs)) {
     ERROR_LOG("Failed to load model");
     return;
   }
@@ -308,10 +302,14 @@ void PostaggerFrontend::test(void) {
 
   scm = new ViterbiScoreMatrix;
   ctx = new ViterbiFeatureContext;
-  decoder = new framework::ViterbiDecoder;
+  decoder = new ViterbiDecoder;
 
   PostaggerWriter writer(std::cout);
   PostaggerReader reader(ifs, "_", test_opt.evaluate, false);
+
+  PostaggerLexiconConstrain con;
+  std::ifstream lfs(test_opt.lexicon_file.c_str());
+  if (lfs.good()) { con.load(lfs, model->labels); }
 
   Instance* inst = NULL;
   size_t num_recalled_tags = 0;
@@ -325,24 +323,9 @@ void PostaggerFrontend::test(void) {
         inst->tagsidx[i] = model->labels.index(inst->tags[i]);
       }
     }
-    /*inst->postag_constrain.resize(len);
-    if (model->external_lexicon.size() != 0) {
-      for (int i = 0; i < len; ++ i) {
-        Bitset * mask = model->external_lexicon.get((inst->forms[i]).c_str());
-        if (NULL != mask) {
-          inst->postag_constrain[i].merge((*mask));
-        } else {
-          inst->postag_constrain[i].allsetones();
-        }
-      }
-    } else {
-      for (int i = 0; i < len; ++ i) {
-        inst->postag_constrain[i].allsetones();
-      }
-    }*/
     Postagger::extract_features((*inst), ctx, false);
     Postagger::calculate_scores((*inst), (*ctx), true, scm);
-    decoder->decode((*scm), inst->predict_tagsidx);
+    decoder->decode((*scm), con, inst->predict_tagsidx);
     ctx->clear();
 
     build_labels((*inst), inst->predict_tags);
@@ -367,7 +350,7 @@ void PostaggerFrontend::test(void) {
 
 void PostaggerFrontend::dump() {
   // load model
-  const char * model_file = dump_opt.model_file.c_str();
+  const char* model_file = dump_opt.model_file.c_str();
   std::ifstream mfs(model_file, std::ifstream::binary);
 
   if (!mfs) {
@@ -376,7 +359,7 @@ void PostaggerFrontend::dump() {
   }
 
   model = new Model(Extractor::num_templates());
-  if (!model->load(model_header.c_str(), mfs)) {
+  if (!model->load(model_header, mfs)) {
     ERROR_LOG("Failed to load model");
     return;
   }

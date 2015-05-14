@@ -12,11 +12,6 @@ using framework::TrainOptions;
 using framework::TestOptions;
 using framework::DumpOptions;
 
-extern ModelOptions model_opt;
-extern TrainOptions train_opt;
-extern TestOptions  test_opt;
-extern DumpOptions  dump_opt;
-
 }       //  end for namespace ner
 }       //  end for namespace ltp
 

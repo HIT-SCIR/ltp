@@ -3,7 +3,6 @@
 
 #include "framework/model.h"
 #include "framework/decoder.h"
-#include "postagger/score_matrix.h"
 #include "postagger/instance.h"
 
 namespace ltp {
@@ -12,7 +11,7 @@ namespace postagger {
 class Postagger {
 protected:
   framework::Model* model;
-
+  static const std::string model_header;
 public:
   Postagger();
   ~Postagger();

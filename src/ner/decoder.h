@@ -4,27 +4,21 @@
 #include <iostream>
 #include <vector>
 #include "framework/decoder.h"
-#include "ner/instance.h"
-#include "ner/rulebase.h"
-#include "utils/math/mat.h"
+#include "utils/smartmap.hpp"
+#include "utils/unordered_set.hpp"
 
 namespace ltp {
 namespace ner {
 
-// data structure for lattice item
-class Decoder: public framework::ViterbiDecoder {
+class NERTransitionConstrain: public framework::ViterbiDecodeConstrain {
 private:
-  typedef framework::ViterbiLatticeItem LatticeItem;
-  int L;
-  rulebase::RuleBase base;
-
+  std::unordered_set<size_t> rep;
+  size_t T;
 public:
-  Decoder (int _l, rulebase::RuleBase& _base) : L(_l), base(_base) {}
-  void decode(Instance * inst);
+  NERTransitionConstrain(const utility::IndexableSmartMap& labels,
+      const std::vector<std::string>& includes);
 
-private:
-  void viterbi_decode(const Instance * inst);
-  void get_result(Instance * inst);
+  bool can_tran(const size_t& i, const size_t& j) const;
 };
 
 }           //  end for namespace ner

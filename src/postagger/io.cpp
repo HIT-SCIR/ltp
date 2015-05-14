@@ -10,7 +10,7 @@ using strutils::chartypes::sbc2dbc_x;
 using strutils::rsplit_by_sep;
 using strutils::split;
 using strutils::chomp;
-using framework::Reader;
+using framework::LineCountsReader;
 
 PostaggerReader::PostaggerReader(std::istream& _is,
     const std::string& _delimiter,
@@ -33,7 +33,7 @@ Instance* PostaggerReader::next() {
   std::string line;
 
   std::getline(is, line);
-  chomp(line);
+  line = chomp(line);
 
   if (line.size() == 0) {
     delete inst;

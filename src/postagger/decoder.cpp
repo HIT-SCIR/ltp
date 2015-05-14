@@ -1,67 +1,92 @@
 #include "postagger/decoder.h"
+#include "utils/strutils.hpp"
+#include "utils/logging.hpp"
+#include "utils/sbcdbc.hpp"
 
 namespace ltp {
 namespace postagger {
 
-void Decoder::decode(Instance * inst, const ScoreMatrix* scm) {
-  init_lattice(inst->size(), L);
-  viterbi_decode(inst, scm);
-  get_result(inst);
-  free_lattice();
+using utility::Bitset;
+using utility::IndexableSmartMap;
+using strutils::split;
+using strutils::chomp;
+using strutils::chartypes::sbc2dbc_x;
+
+PostaggerLexiconConstrain::PostaggerLexiconConstrain()
+  : words(0), successful(false) {
 }
 
-void Decoder::viterbi_decode_inner(const Instance* inst, const ScoreMatrix* scm,
-    int i, int l) {
-  if (i == 0) {
-    LatticeItem * item = new LatticeItem(i, l, scm->uni_scores[i][l], NULL);
-    lattice_insert(lattice[i][l], item);
-  } else {
-    for (int pl = 0; pl < L; ++ pl) {
-      double score = 0.;
-      const LatticeItem * prev = lattice[i-1][pl];
+bool PostaggerLexiconConstrain::load(std::istream& is,
+    const IndexableSmartMap& labels_alphabet) {
 
-      if (!prev) {
-        continue;
-      }
+  std::string buffer;
+  int num_lines = 1;
+  int num_entries = 0;
 
-      score = scm->uni_scores[i][l] + scm->bi_scores[pl][l] + prev->score;
-      const LatticeItem * item = new LatticeItem(i, l, score, prev);
-      lattice_insert(lattice[i][l], item);
-    }
-  }   //  end for if i != 0
-}
-
-void Decoder::viterbi_decode(const Instance * inst, const ScoreMatrix* scm) {
-  int len = inst->size();
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      if(inst->postag_constrain[i].get(l)) {
-        viterbi_decode_inner(inst,scm,i,l);
-      }
-    }//end for l
-  }//end for i
-}
-
-void Decoder::get_result(Instance * inst) {
-  int len = inst->size();
-  const LatticeItem * best_item = NULL;
-  for (int l = 0; l < L; ++ l) {
-    if (!lattice[len-1][l]) {
+  while (std::getline(is, buffer)) {
+    buffer = chomp(buffer);
+    if (buffer.size() == 0) {
+      WARNING_LOG("line %4d: empty, can not load constrain",
+          num_lines);
       continue;
     }
-    if (best_item == NULL || lattice[len - 1][l]->score > best_item->score) {
-      best_item = lattice[len - 1][l];
+
+    Bitset mask;
+    std::vector<std::string> tokens = split(buffer);
+
+    int num_tokens = tokens.size();
+    if (num_tokens <= 1) {
+      WARNING_LOG("line %4d: constrain in illegal format, no postag provided",
+          num_lines);
+      continue;
+    }
+
+    std::string key = strutils::chartypes::sbc2dbc_x(tokens[0]);
+    for (int i = 1; i < num_tokens; ++ i) {
+      int val = labels_alphabet.index(tokens[i]);
+
+      if (val != -1) {
+        bool success = mask.set(val);
+        if (false == success) {
+          WARNING_LOG("line %4d: failed to compile constrain (%s,%s)",
+              num_lines, tokens[i].c_str(), tokens[0].c_str());
+        }
+      } else {
+        WARNING_LOG("line %4d: postag \"%s\" not exist.",
+            num_lines, tokens[i].c_str());
+      }
+    }
+
+    if (!mask.empty()) {
+      utility::Bitset* entry = rep.get(key.c_str());
+
+      if (entry) {
+        entry->merge(mask);
+      } else{
+        rep.set(key.c_str(), mask);
+      }
+      ++ num_entries;
+    }
+
+    ++ num_lines;
+  }
+  return (successful = true);
+}
+
+void PostaggerLexiconConstrain::regist(const std::vector<std::string>* _words) {
+  words = _words;
+}
+
+bool PostaggerLexiconConstrain::can_emit(const size_t& i, const size_t& j) const {
+  if (successful && words) {
+    Bitset* entry= rep.get(words->at(i).c_str());
+    if (NULL == entry) {
+      return true;
+    } else {
+      return entry->get(j);
     }
   }
-
-  const LatticeItem * item = best_item;
-  inst->predicted_tagsidx.resize(len);
-
-  while (item) {
-    inst->predicted_tagsidx[item->i] = item->l;
-    // std::cout << item->i << " " << item->l << std::endl;
-    item = item->prev;
-  }
+  return true;
 }
 
 }     //  end for namespace postagger

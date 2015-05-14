@@ -5,7 +5,6 @@
 #include "framework/decoder.h"
 #include "ner/options.h"
 #include "ner/ner.h"
-#include "ner/decoder.h"
 #include "utils/unordered_set.hpp"
 
 namespace ltp {
@@ -18,7 +17,6 @@ using framework::ViterbiScoreMatrix;
 
 class NamedEntityRecognizerFrontend: public NamedEntityRecognizer, Frontend {
 private:
-  NERTransitionConstrain* glob_con;
   ViterbiDecoder* decoder;
   ViterbiFeatureContext* ctx;
   ViterbiScoreMatrix* scm;
@@ -28,9 +26,6 @@ private:
   TestOptions test_opt;
   DumpOptions dump_opt;
 
-  static const std::string model_header;
-
-  std::string delimiter;  //! The delimiter between position tag and ne type
 public:
   //! The learning model constructor.
   NamedEntityRecognizerFrontend(const std::string& reference_file,
@@ -38,14 +33,12 @@ public:
       const std::string& model_file,
       const std::string& algorithm,
       const int max_iter,
-      const int rare_feature_threshold,
-      const std::string& delimiter = "-");
+      const int rare_feature_threshold);
 
   //! The testing model constructor.
   NamedEntityRecognizerFrontend(const std::string& model_file,
       const std::string& input_file,
-      bool evaluate,
-      const std::string& delimiter = "-");
+      bool evaluate);
 
   //! The dumping model constructor.
   NamedEntityRecognizerFrontend(const std::string& model_file);
@@ -67,7 +60,6 @@ private:
   bool read_instance(const std::string& file_name);
   void build_configuration(void);
   void build_feature_space(void);
-  void build_glob_tran_cons(const set_t& ne_types);
   /**
    * collect feature when given the tags index
    *

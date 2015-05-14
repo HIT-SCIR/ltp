@@ -1,65 +1,40 @@
 #include "ner/decoder.h"
+#include "utils/strutils.hpp"
+#include "utils/logging.hpp"
 
 namespace ltp {
 namespace ner {
 
-void Decoder::decode(Instance * inst) {
-  init_lattice(inst->size(), L);
-  viterbi_decode(inst);
-  get_result(inst);
-  free_lattice();
-}
+using strutils::split_by_sep;
+using strutils::chomp;
 
-void Decoder::viterbi_decode(const Instance * inst) {
-  int len = inst->size();
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      if (i == 0) {
-        LatticeItem * item = new LatticeItem(i, l, inst->uni_scores[i][l], NULL);
-        lattice_insert(lattice[i][l], item);
-      } else {
-        for (int pl = 0; pl < L; ++ pl) {
-          if (false == base.legal_trans(pl, l)) {
-            continue;
-          }
-
-          double score = 0.;
-          const LatticeItem * prev = lattice[i-1][pl];
-
-          if (!prev) {
-            continue;
-          }
-
-          // std::cout << i << " " << pl << " " << l << std::endl;
-          score = inst->uni_scores[i][l] + inst->bi_scores[pl][l] + prev->score;
-          const LatticeItem * item = new LatticeItem(i, l, score, prev);
-          lattice_insert(lattice[i][l], item);
-        }
-      }   //  end for if i == 0
-    }
-  }
-}
-
-void Decoder::get_result(Instance * inst) {
-  int len = inst->size();
-  const LatticeItem * best_item = NULL;
-  for (int l = 0; l < L; ++ l) {
-    if (!lattice[len-1][l]) {
+NERTransitionConstrain::NERTransitionConstrain(const utility::IndexableSmartMap& alphabet,
+    const std::vector<std::string>& includes): T(alphabet.size()) {
+  for (size_t i = 0; i < includes.size(); ++ i) {
+    const std::string& include = includes[i];
+    std::vector<std::string> tokens = split_by_sep(include, "->", 1);
+    if (tokens.size() != 2) {
+      WARNING_LOG("constrain text \"%s\" is in illegal format.", include.c_str());
       continue;
     }
-    if (best_item == NULL || (lattice[len-1][l]->score > best_item->score)) {
-      best_item = lattice[len - 1][l];
+
+    int from = alphabet.index(chomp(tokens[0]));
+    int to = alphabet.index(chomp(tokens[1]));
+    if (-1 == from || -1 == to) {
+      WARNING_LOG("label in constrain text \"%s\" is not in alphabet.", include.c_str());
     }
+
+    rep.insert(from * T + to);
+  }
+}
+
+bool NERTransitionConstrain::can_tran(const size_t& i, const size_t& j) const {
+  if (i >= T || j >= T) {
+    return false;
   }
 
-  const LatticeItem * item = best_item;
-  inst->predicted_tagsidx.resize(len);
-
-  while (item) {
-    inst->predicted_tagsidx[item->i] = item->l;
-    // std::cout << item->i << " " << item->l << std::endl;
-    item = item->prev;
-  }
+  size_t code = i* T+ j;
+  return rep.find(code) != rep.end();
 }
 
 }     //  end for namespace ner

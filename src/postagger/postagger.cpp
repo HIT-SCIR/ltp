@@ -15,6 +15,8 @@ using framework::ViterbiScoreMatrix;
 using utility::StringVec;
 using math::FeatureVector;
 
+const std::string Postagger::model_header = "otpos";
+
 Postagger::Postagger(): model(0) {}
 Postagger::~Postagger() { if (model) { delete model; model = 0; } }
 
@@ -79,7 +81,7 @@ void Postagger::calculate_scores(const Instance& inst,
   size_t L = inst.size();
   size_t T = model->num_labels();
 
-  scm->resize(L, T);
+  scm->resize(L, T, -1e20);
 
   for (size_t i = 0; i < L; ++ i) {
     for (size_t t = 0; t < T; ++ t) {

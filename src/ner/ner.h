@@ -4,6 +4,8 @@
 #include "framework/decoder.h"
 #include "framework/model.h"
 #include "ner/instance.h"
+#include "ner/decoder.h"
+#include "utils/unordered_set.hpp"
 
 namespace ltp {
 namespace ner {
@@ -11,7 +13,9 @@ namespace ner {
 class NamedEntityRecognizer {
 protected:
   framework::Model* model;  //! The pointer to the model.
-
+  NERTransitionConstrain* glob_con;
+  static const std::string model_header;
+  static const std::string delimiter;  //! The delimiter between position tag and ne type
 public:
   NamedEntityRecognizer();
   ~NamedEntityRecognizer();
@@ -58,6 +62,8 @@ protected:
       std::vector<std::string>& entities,
       std::vector<std::string> & entities_tags,
       const size_t& delimiter_length = 1) const;
+
+  void build_glob_tran_cons(const std::unordered_set<std::string>& ne_types);
 };
 
 }     //  end for namespace segmentor

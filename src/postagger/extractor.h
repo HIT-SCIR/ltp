@@ -15,7 +15,7 @@ class Extractor {
 public:
   static Extractor& extractor();
   static int num_templates();
-  static int extract1o(const Instance* inst, int idx,
+  static int extract1o(const Instance& inst, int idx,
       std::vector<utility::StringVec>& cache);
 protected:
   Extractor();
@@ -25,6 +25,6 @@ private:
 };
 
 }     //  end for namespace postagger
-}     //  end for namespace ltp 
+}     //  end for namespace ltp
 
 #endif  //  end for __LTP_POSTAGGER_EXTRACTOR_H__
