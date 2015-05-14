@@ -5,6 +5,7 @@
 #include <cstring>
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
+#include "utils/logging.hpp"
 
 namespace ltp {
 namespace framework {
@@ -258,23 +259,25 @@ public:
 
     in.read(reinterpret_cast<char *>(&_dim), sizeof(size_t));
     if (_dim > 0) {
-      if (!strcmp(body, "details")) {
+      if (!strncmp(body, "details", 11)) {
         _W = new double[_dim];
         _W_sum = new double[_dim];
         in.read(reinterpret_cast<char *>(_W), sizeof(double)* _dim);
         in.read(reinterpret_cast<char *>(_W_sum), sizeof(double)* _dim);
         in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(size_t));
         _enable_wrapper = false;
-      } else if (!strcmp(body, "avg")) {
+      } else if (!strncmp(body, "avg", 11)) {
         _W_sum = new double[_dim];
         in.read(reinterpret_cast<char *>(_W_sum), sizeof(double)* _dim);
         _W = _W_sum;
         _enable_wrapper = true;
-      } else if (!strcmp(body, "nonavg")) {
+      } else if (!strncmp(body, "nonavg", 11)) {
         _W = new double[_dim];
         in.read(reinterpret_cast<char *>(_W), sizeof(double)* _dim);
         _W_sum = _W;
         _enable_wrapper = true;
+      } else {
+        WARNING_LOG("model dump method is not specified!");
       }
     }
     return true;

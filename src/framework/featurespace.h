@@ -220,11 +220,11 @@ public:
     return true;
   }
 
-  FeatureSpaceIterator begin() {
+  FeatureSpaceIterator begin() const {
     return FeatureSpaceIterator(dicts, _num_dicts);
   }
 
-  FeatureSpaceIterator end() {
+  FeatureSpaceIterator end() const {
     return FeatureSpaceIterator(dicts + _num_dicts, _num_dicts);
   }
 private:

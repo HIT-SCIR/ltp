@@ -10,7 +10,7 @@
 #endif	//	end for _WIN32
 
 #include <sys/types.h>
-#include <time.h>
+#include <ctime>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,7 +43,24 @@ inline double get_time(void) {
 #endif
 }
 
-}
-}
+class timer {
+private:
+  std::clock_t _start_time;
+public:
+  timer() {
+    _start_time = std::clock();
+  }
+
+  void restart() {
+    _start_time = std::clock();
+  }
+
+  double elapsed() const {
+    return double(std::clock() - _start_time) / CLOCKS_PER_SEC;
+  }
+};
+
+} //  namespace utility
+} //  namespace ltp
 
 #endif  //  end for __TIME_HPP__

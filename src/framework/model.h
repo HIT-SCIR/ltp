@@ -19,8 +19,13 @@ public:
    *
    *  @return   int   the number of labels
    */
-  inline int num_labels(void) const {
+  int num_labels(void) const {
     return labels.size();
+  }
+
+  void save(const std::string& model_name, const Parameters::DumpOption& opt,
+      std::ostream & ofs) {
+    save(model_name.c_str(), opt, ofs);
   }
 
   /**
@@ -61,12 +66,16 @@ public:
     write_uint(ofs, parameter_offset);
   }
 
+  bool load(const std::string& model_name, std::istream& ifs) {
+    return load(model_name.c_str(), ifs);
+  }
+
   /**
    * load the model from an input stream
    *
    *  @param[in]  ifs   the input stream
    */
-  bool load(const char* model_name, std::istream & ifs) {
+  bool load(const char* model_name, std::istream& ifs) {
     char chunk[128];
     ifs.read(chunk, 128);
 

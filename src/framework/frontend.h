@@ -97,79 +97,82 @@ public:
   /**
    * Erase the rarely updated features.
    *
-   *  @param[in]  model           The pointer to the model.
+   *  @param[in]  source          The pointer to the source model.
+   *  @param[out] target          The pointer to the target model.
    *  @param[in]  threshold       The threshold for rare feature.
    *  @param[out] update_counts   The update time counts.
    */
-  Model* erase_rare_features(Model* model, const size_t& threshold,
+  void erase_rare_features(const Model* source, Model* target, const size_t& threshold,
       const std::vector<size_t>& update_counts) {
-    size_t nr_dicts = model->space.num_dicts();
-    size_t T = model->labels.size();
+    if (target && source->space.num_dicts() != target->space.num_dicts()) {
+      ERROR_LOG("trunc-model: source and target should be initialized with same #dicts.");
+      return;
+    }
+    size_t T = source->labels.size();
 
-    TRACE_LOG("trunc-model: number of feature group is %d", nr_dicts);
-    Model* new_model = new Model(nr_dicts);
     // copy the label indexable map to the new model
     for (size_t t = 0; t < T; ++ t) {
-      const char* key = model->labels.at(t);
-      new_model->labels.push(key);
+      const char* key = source->labels.at(t);
+      target->labels.push(key);
     }
     TRACE_LOG("trunc-model: building labels map for truncated model is done.");
 
-    T = new_model->num_labels();
-    new_model->space.set_num_labels(T);
+    T = target->num_labels();
+    target->space.set_num_labels(T);
 
-    for (FeatureSpaceIterator itx = model->space.begin(); itx != model->space.end();
+    // Maintain the feature space.
+    for (FeatureSpaceIterator itx = source->space.begin(); itx != source->space.end();
         ++ itx) {
       const char* key = itx.key();
       size_t tid = itx.tid();
-      int id = model->space.index(tid, key);
+      int id = source->space.index(tid, key);
       bool all_zero = true;
       for (size_t t = 0; t < T; ++ t) {
-        double p = model->param.dot(id + t);
+        double p = source->param.dot(id + t);
         if (p != 0.) { all_zero = false; break; }
       }
 
       if (all_zero) { continue; }
-
-      size_t idx = model->space.retrieve(tid, key, false);
+      int idx = source->space.retrieve(tid, key);
       if (idx < update_counts.size() && update_counts[idx] < threshold) { continue; }
-      new_model->space.retrieve(tid, key, true);
+      target->space.retrieve(tid, key, true);
     }
 
     TRACE_LOG("trunc-model: building new feature space for truncated model is done.");
-    new_model->param.realloc(new_model->space.dim());
+    target->param.realloc(target->space.dim());
     TRACE_LOG("trunc-model: parameter dimension of new model is %d.",
-        new_model->space.dim());
+        target->space.dim());
 
-    for (FeatureSpaceIterator itx = new_model->space.begin();
-        itx != new_model->space.end(); ++ itx) {
+    // Maintain the parameters
+    for (FeatureSpaceIterator itx = target->space.begin();
+        itx != target->space.end(); ++ itx) {
       const char* key = itx.key();
       size_t tid = itx.tid();
-      int old_id = model->space.index(tid, key);
-      int new_id = new_model->space.index(tid, key);
+      int old_id = source->space.index(tid, key);
+      int new_id = target->space.index(tid, key);
 
       for (size_t t = 0; t < T; ++ t) {
-        // pay attention to this place, use average should be set true
-        // some dirty code
-        new_model->param._W[new_id+ t]      = model->param._W[old_id+ t];
-        new_model->param._W_sum[new_id+ t]  = model->param._W_sum[old_id+ t];
-        new_model->param._W_time[new_id+ t] = model->param._W_time[old_id+ t];
+        target->param._W[new_id+ t]      = source->param._W[old_id+ t];
+        target->param._W_sum[new_id+ t]  = source->param._W_sum[old_id+ t];
+        target->param._W_time[new_id+ t] = source->param._W_time[old_id+ t];
       }
     }
 
     for (int pt = 0; pt < T; ++ pt) {
       for (int t = 0; t < T; ++ t) {
-        int old_id = model->space.index(pt, t);
-        int new_id = new_model->space.index(pt, t);
+        int old_id = source->space.index(pt, t);
+        int new_id = target->space.index(pt, t);
 
-        new_model->param._W[new_id]      = model->param._W[old_id];
-        new_model->param._W_sum[new_id]  = model->param._W_sum[old_id];
-        new_model->param._W_time[new_id] = model->param._W_time[old_id];
+        target->param._W[new_id]      = source->param._W[old_id];
+        target->param._W_sum[new_id]  = source->param._W_sum[old_id];
+        target->param._W_time[new_id] = source->param._W_time[old_id];
       }
     }
+
+    // last, we need to care about the timestamp.
+    target->param._last_timestamp = source->param._last_timestamp;
     TRACE_LOG("trunc-model: building parameter for new model is done.");
     TRACE_LOG("trunc-model: building new model is done.");
-    return new_model;
   }
 
   // Utility

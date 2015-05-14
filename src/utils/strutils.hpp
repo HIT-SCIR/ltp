@@ -59,16 +59,9 @@ inline std::string cutoff(std::string str, std::string mark) {
   }
 }
 
-/**
- * Return a list of words of string str, the word are separated by
- * separator.
- *
- *  @param  str         std::string     the string
- *  @param  maxsplit    std::string     the sep upperbound
- *  @return             std::vector<std::string> the words
- */
-inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
-  std::vector<std::string> ret;
+inline void split(const std::string& source, std::vector<std::string>& ret,
+    int maxsplit=-1) {
+  std::string str(source);
   int numsplit = 0;
   int len = str.size();
 
@@ -105,10 +98,21 @@ inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
       str = str.substr(pos);
     }
   }
-
-  return ret;
 }
 
+/**
+ * Return a list of words of string str, the word are separated by
+ * separator.
+ *
+ *  @param  str         std::string     the string
+ *  @param  maxsplit    std::string     the sep upperbound
+ *  @return             std::vector<std::string> the words
+ */
+inline std::vector<std::string> split(const std::string& source, int maxsplit = -1) {
+  std::vector<std::string> ret;
+  split(source, ret, maxsplit);
+  return ret;
+}
 
 /**
  * Return a list of words of string str, the word are separated by
@@ -381,6 +385,10 @@ inline bool is_double(const std::string &str) {
     }
   }
   return true;
+}
+
+inline bool is_unicode_punctuation(const std::string& str) {
+  return false;
 }
 
 /**

@@ -194,7 +194,7 @@ public:
           lattice_insert(lattice[i][t], item);
         } else {
           for (size_t pt = 0; pt < T; ++ pt) {
-            if (!con.can_tran(pt, t)) { continue; }
+            if (!con.can_emit(i-1, pt) || !con.can_tran(pt, t)) { continue; }
 
             const ViterbiLatticeItem* prev = lattice[i-1][pt];
             if (!prev) { continue; }
