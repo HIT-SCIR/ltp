@@ -10,6 +10,7 @@
 using ltp::segmentor::Preprocessor;
 using ltp::segmentor::SegmentorConstrain;
 using ltp::strutils::chartypes::CHAR_OTHER;
+using ltp::strutils::chartypes::CHAR_PUNC;
 
 TEST(engpattern_unittest, english_word) {
   Preprocessor preprocessor;
@@ -174,6 +175,27 @@ TEST(segmentor_unittest, preprocess5) {
   EXPECT_EQ(chartypes[3],
       Preprocessor::CHAR_ENG|preprocessor.HAS_SPACE_ON_LEFT|preprocessor.HAS_SPACE_ON_RIGHT);
   EXPECT_EQ(chartypes[4], Preprocessor::CHAR_URI|preprocessor.HAS_SPACE_ON_LEFT);
+}
+
+TEST(segmentor_unittest, preprocess6) {
+  Preprocessor preprocessor;
+
+  std::vector<std::string> raw_forms;
+  std::vector<std::string> forms;
+  std::vector<int> chartypes;
+  int retval = preprocessor.preprocess("套头衫/Jacquad Sweater",
+      raw_forms, forms, chartypes);
+  EXPECT_EQ(retval, 6);
+
+  EXPECT_EQ(raw_forms.size(), 6);
+  EXPECT_STREQ(raw_forms[3].c_str(), "/");
+  EXPECT_STREQ(raw_forms[4].c_str(), "Jacquad");
+  EXPECT_STREQ(raw_forms[5].c_str(), "Sweater");
+
+  EXPECT_EQ(chartypes.size(), 6);
+  EXPECT_EQ(chartypes[3], CHAR_PUNC|preprocessor.HAS_ENG_ON_RIGHT);
+  EXPECT_EQ(chartypes[4], Preprocessor::CHAR_ENG|preprocessor.HAS_SPACE_ON_RIGHT);
+  EXPECT_EQ(chartypes[5], Preprocessor::CHAR_ENG|preprocessor.HAS_SPACE_ON_LEFT);
 }
 
 TEST(segmentor_unittest, constrain1) {

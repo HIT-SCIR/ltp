@@ -27,7 +27,7 @@ CustomizedSegmentorFrontend::CustomizedSegmentorFrontend(
   const size_t& rare_feature_threshold)
   : bs_model(0), bs_model_file(baseline_model_file),
   SegmentorFrontend(reference_file, holdout_file, model_name,
-  algorithm, max_iter, rare_feature_threshold, false) {
+  algorithm, max_iter, rare_feature_threshold, true) {
   good = load_baseline_model();
   timestamp = bs_model->param.last();
 }
@@ -69,7 +69,16 @@ bool CustomizedSegmentorFrontend::load_baseline_model() {
     return false;
   }
 
+  INFO_LOG("report: baseline model, number of labels = %d", bs_model->num_labels());
+  INFO_LOG("report: baseline model, number of features = %d", bs_model->space.num_features());
+  INFO_LOG("report: baseline model, number of dimension = %d", bs_model->space.dim());
   return true;
+}
+
+void CustomizedSegmentorFrontend::setup_lexicons() {
+  lexicons.push_back(&(model->internal_lexicon));
+  lexicons.push_back(&(model->external_lexicon));
+  lexicons.push_back(&(bs_model->internal_lexicon));
 }
 
 void CustomizedSegmentorFrontend::extract_features(const Instance& inst, bool create) {
@@ -91,53 +100,19 @@ void CustomizedSegmentorFrontend::build_configuration(void) {
 
 void CustomizedSegmentorFrontend::calculate_scores(const Instance& inst, bool avg) {
   //bool use_avg = 0;
-  size_t len = inst.size();
-  size_t L = model->num_labels();
-
-  scm.resize(len, L, NEG_INF);
-  
-  for (size_t i = 0; i < len; ++ i) {
-    for (size_t l = 0; l < L; ++ l) {
-      math::FeatureVector* fv = bs_ctx.uni_features[i][l];
-      if (!fv) { continue; }
-
-      if(!avg) {
-        scm.set_emit(i, l, bs_model->param.dot(fv, false));
-      } else {
-        //flush baseline_model and model time to the same level
-        scm.set_emit(i, l, bs_model->param.predict(fv, model->param.last() - bs_model->param.last()));
-      }
-
-      fv = ctx.uni_features[i][l];
-      if (!fv) {
-        continue;
-      }
-      scm.set_emit(i, l, scm.emit(i, l) + model->param.dot(ctx.uni_features[i][l], avg));
-    }
-  }
-
-  for (size_t pl = 0; pl < L; ++ pl) {
-    for (size_t l = 0; l < L; ++ l) {
-      int idx = bs_model->space.index(pl, l);
-
-      if(!avg) {
-        scm.set_tran(pl, l, bs_model->param.dot(idx, false));
-      } else {
-        scm.set_tran(pl, l, bs_model->param.predict(idx, model->param.last() - bs_model->param.last()));
-      }
-
-      idx = model->space.index(pl, l);
-      scm.set_tran(pl, l, scm.tran(pl, l) + model->param.dot(idx, avg));\
-    }
-  }
+  Segmentor::calculate_scores(inst, *bs_model, *model, bs_ctx, ctx, avg, &scm);
 }
 
 void CustomizedSegmentorFrontend::collect_features(const Instance& inst) {
-  Frontend::collect_features(model, ctx.uni_features, inst.tagsidx, ctx.correct_features);
-  Frontend::collect_features(model, ctx.uni_features, inst.predict_tagsidx, ctx.predict_features);
+  Frontend::collect_features(model, ctx.uni_features,
+      inst.tagsidx, ctx.correct_features);
+  Frontend::collect_features(model, ctx.uni_features,
+      inst.predict_tagsidx, ctx.predict_features);
 
-  Frontend::collect_features(bs_model, bs_ctx.uni_features, inst.tagsidx, bs_ctx.correct_features);
-  Frontend::collect_features(bs_model, bs_ctx.uni_features, inst.predict_tagsidx, bs_ctx.predict_features);
+  Frontend::collect_features(bs_model, bs_ctx.uni_features,
+      inst.tagsidx, bs_ctx.correct_features);
+  Frontend::collect_features(bs_model, bs_ctx.uni_features,
+      inst.predict_tagsidx, bs_ctx.predict_features);
 }
 
 void CustomizedSegmentorFrontend::update(const Instance& inst, SparseVec& updated_features) {
@@ -151,14 +126,12 @@ void CustomizedSegmentorFrontend::update(const Instance& inst, SparseVec& update
     bs_updated_features.add(bs_ctx.predict_features, -1.);
 
     double error = (double)inst.num_errors();
-    double score =
-      (model->param.dot(updated_features, false) + bs_model->param.dot(bs_updated_features, false));
+    double score = (model->param.dot(updated_features, false) +
+       bs_model->param.dot(bs_updated_features, false));
 
-    Frontend::learn_passive_aggressive(updated_features,
-      get_timestamp() + bs_model->param.last(), error, score, model);
+    Frontend::learn_passive_aggressive(updated_features, get_timestamp(), error, score, model);
   } else {
-    Frontend::learn_averaged_perceptron(updated_features,
-      get_timestamp() + bs_model->param.last(), model);
+    Frontend::learn_averaged_perceptron(updated_features, get_timestamp(), model);
   }
 }
 

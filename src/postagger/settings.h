@@ -13,9 +13,6 @@ const std::string EOT = "_eot_";
 const std::string BOC = "_boc_";
 const std::string EOC = "_eoc_";
 
-const double EPS        = 1e-8;
-const double NEG_INF    = -1e20;
-
 }   //  end for namespace postagger
 }   //  end for namespace ltp
 

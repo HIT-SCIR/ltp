@@ -9,7 +9,7 @@ namespace ltp {
 namespace depparser {
 
 using framework::LineCountsReader;
-using strutils::chomp;
+using strutils::trim;
 using strutils::split;
 using strutils::to_double;
 using strutils::is_unicode_punctuation;
@@ -20,6 +20,7 @@ NeuralNetworkParserFrontend::NeuralNetworkParserFrontend(
   use_distance = opt.use_distance;
   use_valency = opt.use_valency;
   use_cluster = opt.use_cluster;
+  root = opt.root;
 }
 
 NeuralNetworkParserFrontend::NeuralNetworkParserFrontend(
@@ -45,8 +46,8 @@ void NeuralNetworkParserFrontend::check_dataset(
       ++ nr_non_projective_trees;
     }
   }
-  TRACE_LOG("report: %d tree(s) are illegal.", nr_non_trees);
-  TRACE_LOG("report: %d tree(s) is legal but not projective.", nr_non_projective_trees);
+  INFO_LOG("report: %d tree(s) are illegal.", nr_non_trees);
+  INFO_LOG("report: %d tree(s) is legal but not projective.", nr_non_projective_trees);
 }
 
 bool NeuralNetworkParserFrontend::read_training_data(void) {
@@ -59,12 +60,12 @@ bool NeuralNetworkParserFrontend::read_training_data(void) {
     return false;
   }
 
-  TRACE_LOG("#: start loading dataset from reference file ...");
+  INFO_LOG("#: start loading dataset from reference file ...");
   CoNLLReader reader(ifs, true);
   Instance* inst = NULL;
   while ((inst = reader.next())) { train_dat.push_back(inst); }
 
-  TRACE_LOG("report: %d training instance(s) is loaded.", train_dat.size());
+  INFO_LOG("report: %d training instance(s) is loaded.", train_dat.size());
   check_dataset(train_dat);
 
   std::ifstream ifs2(learn_opt->devel_file.c_str());
@@ -73,7 +74,7 @@ bool NeuralNetworkParserFrontend::read_training_data(void) {
   } else {
     CoNLLReader reader2(ifs2, false);
     while ((inst = reader2.next())) { devel_dat.push_back(inst); }
-    TRACE_LOG("report: %d developing instance(s) is loaded.", devel_dat.size());
+    INFO_LOG("report: %d developing instance(s) is loaded.", devel_dat.size());
     check_dataset(devel_dat);
   }
   return true;
@@ -108,9 +109,6 @@ void NeuralNetworkParserFrontend::build_alphabet(void) {
 
   kNilDistance = (learn_opt->use_distance? 8: 0);
   kNilValency = (learn_opt->use_valency? 8: 0);
-
-  system.set_root_relation(deprels_alphabet.index(learn_opt->root));
-  system.set_number_of_relations(deprels_alphabet.size()- 1);
 }
 
 void NeuralNetworkParserFrontend::build_cluster(void) {
@@ -131,9 +129,9 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
 
   while (std::getline(ifs, line)) {
     if (nr_lines++ % interval == 0) {
-      TRACE_LOG("#: loaded %lf0%% cluster.", nr_lines / interval);
+      INFO_LOG("#: loaded %lf0%% cluster.", nr_lines / interval);
     }
-    line = chomp(line);
+    trim(line);
     if (line.size() == 0) { continue; }
     std::vector<std::string> items = split(line);
     int form = forms_alphabet.index(items[0]);
@@ -165,51 +163,9 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
   kNilCluster = cluster_types_alphabet.push(SpecialOption::NIL);
   cluster6_types_alphabet.push(SpecialOption::ROOT);
 
-  TRACE_LOG("#: loaded %d cluster(4)", cluster4_types_alphabet.size());
-  TRACE_LOG("#: loaded %d cluster(6)", cluster6_types_alphabet.size());
-  TRACE_LOG("#: loaded %d cluster", cluster_types_alphabet.size());
-}
-
-void NeuralNetworkParserFrontend::build_feature_space() {
-  kFormInFeaturespace = 0;
-  kNilForm = forms_alphabet.index(SpecialOption::NIL);
-  kFeatureSpaceEnd = forms_alphabet.size();
-
-  kPostagInFeaturespace = kFeatureSpaceEnd;
-  kNilPostag = kFeatureSpaceEnd+ postags_alphabet.index(SpecialOption::NIL);
-  kFeatureSpaceEnd += postags_alphabet.size();
-
-  kDeprelInFeaturespace = kFeatureSpaceEnd;
-  kNilDeprel = kFeatureSpaceEnd+ deprels_alphabet.index(SpecialOption::NIL);
-  kFeatureSpaceEnd += deprels_alphabet.size();
-
-  kDistanceInFeaturespace = kFeatureSpaceEnd;
-  kNilDistance = kFeatureSpaceEnd+ (use_distance ? 8: 0);
-  kFeatureSpaceEnd += (use_distance? 9: 0);
-
-  kValencyInFeaturespace = kFeatureSpaceEnd;
-  kNilValency = kFeatureSpaceEnd+ (use_valency? 8: 0);
-  kFeatureSpaceEnd += (use_valency? 9: 0);
-
-  kCluster4InFeaturespace = kFeatureSpaceEnd;
-  if (use_cluster) {
-    kNilCluster4 = kFeatureSpaceEnd+ cluster4_types_alphabet.index(SpecialOption::NIL);
-    kFeatureSpaceEnd += cluster4_types_alphabet.size();
-  } else { kNilCluster4 = kFeatureSpaceEnd; }
-
-  kCluster6InFeaturespace = kFeatureSpaceEnd;
-  if (use_cluster) {
-    kNilCluster6 = kFeatureSpaceEnd+ cluster6_types_alphabet.index(SpecialOption::NIL);
-    kFeatureSpaceEnd += cluster4_types_alphabet.size();
-  } else { kNilCluster6 = kFeatureSpaceEnd; }
-
-  kClusterInFeaturespace = kFeatureSpaceEnd;
-  if (use_cluster) {
-    kNilCluster = kFeatureSpaceEnd+ cluster_types_alphabet.index(SpecialOption::NIL);
-    kFeatureSpaceEnd += cluster_types_alphabet.size();
-  } else { kNilCluster = kFeatureSpaceEnd; }
-
-  report();
+  INFO_LOG("#: loaded %d cluster(4)", cluster4_types_alphabet.size());
+  INFO_LOG("#: loaded %d cluster(6)", cluster6_types_alphabet.size());
+  INFO_LOG("#: loaded %d cluster", cluster_types_alphabet.size());
 }
 
 void NeuralNetworkParserFrontend::collect_precomputed_features() {
@@ -245,7 +201,7 @@ void NeuralNetworkParserFrontend::collect_precomputed_features() {
       if (nr_feature_types == 0) {
         nr_feature_types = attributes.size();
       } else if (attributes.size() != nr_feature_types) {
-        TRACE_LOG("#: number of feature types unequal to configed number");
+        INFO_LOG("#: number of feature types unequal to configed number");
       }
 
       if (learn_opt->oracle == "static") {
@@ -270,10 +226,10 @@ void NeuralNetworkParserFrontend::collect_precomputed_features() {
     }
 
     if (++ nr_processed % interval == 0) {
-      TRACE_LOG("#: generated training samples for %d0%% sentences.", nr_processed / interval);
+      INFO_LOG("#: generated training samples for %d0%% sentences.", nr_processed / interval);
     }
   }
-  TRACE_LOG("#: generated %d training samples.", dataset.size());
+  INFO_LOG("#: generated %d training samples.", dataset.size());
 
   std::vector<std::pair<int, int> > top;
   if (features_frequencies.size() < learn_opt->nr_precomputed) {
@@ -291,7 +247,7 @@ void NeuralNetworkParserFrontend::collect_precomputed_features() {
 }
 
 void NeuralNetworkParserFrontend::initialize_classifier() {
-  TRACE_LOG("#: start to load embedding ...");
+  INFO_LOG("#: start to load embedding ...");
   std::vector< std::vector<double> > embeddings;
   std::ifstream ifs(learn_opt->embedding_file.c_str());
   if (!ifs.good()) {
@@ -303,10 +259,10 @@ void NeuralNetworkParserFrontend::initialize_classifier() {
 
     while (std::getline(ifs, line)) {
       if (nr_lines++ % interval == 0) {
-        TRACE_LOG("#: loaded %d0%% embeddings.", nr_lines / interval);
+        INFO_LOG("#: loaded %d0%% embeddings.", nr_lines / interval);
       }
 
-      line = chomp(line);
+      trim(line);
       if (line.size() == 0) { continue; }
       std::vector<std::string> items = split(line);
 
@@ -326,7 +282,7 @@ void NeuralNetworkParserFrontend::initialize_classifier() {
       embeddings.push_back( embedding );
     }
   }
-  TRACE_LOG("report: %d embedding is loaded.", embeddings.size());
+  INFO_LOG("report: %d embedding is loaded.", embeddings.size());
 
   classifier.initialize(kFeatureSpaceEnd,
       deprels_alphabet.size()*2-1,
@@ -335,7 +291,7 @@ void NeuralNetworkParserFrontend::initialize_classifier() {
       embeddings,
       precomputed_features
       );
-  TRACE_LOG("report: classifier is initialized.");
+  INFO_LOG("report: classifier is initialized.");
 }
 
 void NeuralNetworkParserFrontend::generate_training_samples_one_batch(
@@ -377,7 +333,7 @@ void NeuralNetworkParserFrontend::generate_training_samples_one_batch(
           get_features(states[step], attributes);
         }
         if (attributes.size() != nr_feature_types) {
-          TRACE_LOG("#: number of feature types unequal to configed number");
+          INFO_LOG("#: number of feature types unequal to configed number");
         }
         std::vector<double> scores;
         classifier.score(attributes, scores);
@@ -425,57 +381,15 @@ void NeuralNetworkParserFrontend::generate_training_samples_one_batch(
   }
 }
 
-void NeuralNetworkParserFrontend::predict(const Instance& data, std::vector<int>& heads,
-    std::vector<std::string>& deprels) {
-  Dependency dependency;
-  std::vector<int> cluster, cluster4, cluster6;
-  transduce_instance_to_dependency(data, &dependency, false);
-  get_cluster_from_dependency(dependency, cluster, cluster4, cluster6);
-
-  size_t L = data.forms.size();
-  std::vector<State> states(L*2);
-  states[0].copy(State(&dependency));
-  system.transit(states[0], ActionFactory::make_shift(), &states[1]);
-  for (size_t step = 1; step < L*2-1; ++ step) {
-    std::vector<int> attributes;
-    if (use_cluster) {
-      get_features(states[step], cluster4, cluster6, cluster, attributes);
-    } else {
-      get_features(states[step], attributes);
-    }
-
-    std::vector<double> scores(system.number_of_transitions(), 0);
-    classifier.score(attributes, scores);
-
-    std::vector<Action> possible_actions;
-    system.get_possible_actions(states[step], possible_actions);
-
-    size_t best = -1;
-    for (size_t j = 0; j < possible_actions.size(); ++ j) {
-      int l = system.transform(possible_actions[j]);
-      if (best == -1 || scores[best] < scores[l]) { best = l; }
-    }
-
-    Action act = system.transform(best);
-    system.transit(states[step], act, &states[step+ 1]);
-  }
-
-  heads.resize(L);
-  deprels.resize(L);
-  for (size_t i = 0; i < L; ++ i) {
-    heads[i] = states[L*2-1].heads[i];
-    deprels[i] = deprels_alphabet.at(states[L*2-1].deprels[i]);
-  }
-}
-
-
 void NeuralNetworkParserFrontend::train(void) {
   if (!read_training_data()) { return; }
   build_alphabet();
+  setup_system();
   if (learn_opt->use_cluster) {
     build_cluster();
   }
   build_feature_space();
+  report();
   collect_precomputed_features();
   initialize_classifier();
 
@@ -489,12 +403,12 @@ void NeuralNetworkParserFrontend::train(void) {
     generate_training_samples_one_batch(begin, end);
 
     classifier.compute_ada_gradient_step(begin, end);
-    TRACE_LOG("pipe (iter#%d): cost=%lf, accuracy(%)=%lf (%lf)", (iter+1),
+    INFO_LOG("pipe (iter#%d): cost=%lf, accuracy(%)=%lf (%lf)", (iter+1),
        classifier.get_cost(), classifier.get_accuracy(), t.elapsed()); 
     classifier.take_ada_gradient_step();
 
     if (devel_dat.size() > 0 && (iter+1) % learn_opt->evaluation_stops == 0) {
-      TRACE_LOG("eval: start evaluating ...");
+      INFO_LOG("eval: start evaluating ...");
       classifier.precomputing();
 
       std::vector<int> heads;
@@ -520,20 +434,67 @@ void NeuralNetworkParserFrontend::train(void) {
       }
       double uas = (double)corr_heads/nr_tokens;
       double las = (double)corr_deprels/nr_tokens;
-      TRACE_LOG("eval: evaluating done. UAS=%lf LAS=%lf (%lf)", uas, las, t.elapsed());
+      INFO_LOG("eval: evaluating done. UAS=%lf LAS=%lf (%lf)", uas, las, t.elapsed());
 
       if (best_uas < uas && learn_opt->save_intermediate) {
         best_uas = uas;
-        // save_model(model_file);
-        TRACE_LOG("report: model saved to %s", learn_opt->model_file.c_str());
+        save(learn_opt->model_file);
+        INFO_LOG("report: model saved to %s", learn_opt->model_file.c_str());
       }
     }
   }
 }
 
 void NeuralNetworkParserFrontend::test(void) {
-}
+  if (!load(test_opt->model_file)) {
+    WARNING_LOG("failed to load model file.");
+    return;
+  }
+  setup_system();
+  build_feature_space();
+  report();
+  classifier.info();
 
+  std::ifstream ifs(test_opt->input_file.c_str());
+  if (!ifs.good()) {
+    return;
+  }
+
+  CoNLLReader reader(ifs, false);
+  CoNLLWriter writer(std::cout);
+  Instance* inst= NULL;
+  std::vector<int> heads;
+  std::vector<std::string> deprels;
+  size_t corr_heads = 0, corr_deprels = 0, nr_tokens = 0;
+
+  timer t;
+  while (inst = reader.next()) {
+    predict((*inst), heads, deprels);
+    writer.write(*inst, heads, deprels);
+
+    if (test_opt->evaluate) {
+      size_t L = heads.size();
+      for (size_t i = 1; i < L; ++ i) { // ignore dummy root
+        if (is_unicode_punctuation(inst->forms[i])) {
+          continue;
+        }
+        ++ nr_tokens;
+        if (heads[i] == inst->heads[i]) {
+          ++ corr_heads;
+          if (deprels[i] == inst->deprels[i]) { ++ corr_deprels; }
+        }
+      }
+    }
+    delete inst;
+  }
+
+  if (test_opt->evaluate) {
+    double uas = (double)corr_heads/nr_tokens;
+    double las = (double)corr_deprels/nr_tokens;
+    INFO_LOG("eval: evaluating done. UAS=%lf LAS=%lf", uas, las);
+  }
+  INFO_LOG("elapsed time: %lf", t.elapsed());
+}
 
 }   //  end for namespace depparser
 }   //  end for namespace ltp

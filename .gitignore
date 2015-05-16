@@ -21,7 +21,7 @@ config.h
 ###############
 # output      #
 ###############
-include/
+#include/
 lib/
 bin/
 tools/train/lgdpj

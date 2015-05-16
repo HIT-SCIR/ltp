@@ -5,7 +5,54 @@
 namespace ltp {
 namespace depparser {
 
-NeuralNetworkParser::NeuralNetworkParser() {}
+NeuralNetworkParser::NeuralNetworkParser()
+  : classifier(W1, W2, E, b1, saved, precomputation_id_encoder) {}
+
+const std::string NeuralNetworkParser::model_header = "nnparser";
+
+void NeuralNetworkParser::predict(const Instance& data, std::vector<int>& heads,
+    std::vector<std::string>& deprels) {
+  Dependency dependency;
+  std::vector<int> cluster, cluster4, cluster6;
+  transduce_instance_to_dependency(data, &dependency, false);
+  get_cluster_from_dependency(dependency, cluster, cluster4, cluster6);
+
+  size_t L = data.forms.size();
+  std::vector<State> states(L*2);
+  states[0].copy(State(&dependency));
+  system.transit(states[0], ActionFactory::make_shift(), &states[1]);
+  for (size_t step = 1; step < L*2-1; ++ step) {
+    std::vector<int> attributes;
+    if (use_cluster) {
+      get_features(states[step], cluster4, cluster6, cluster, attributes);
+    } else {
+      get_features(states[step], attributes);
+    }
+
+    std::vector<double> scores(system.number_of_transitions(), 0);
+    classifier.score(attributes, scores);
+
+    std::vector<Action> possible_actions;
+    system.get_possible_actions(states[step], possible_actions);
+
+    size_t best = -1;
+    for (size_t j = 0; j < possible_actions.size(); ++ j) {
+      int l = system.transform(possible_actions[j]);
+      if (best == -1 || scores[best] < scores[l]) { best = l; }
+    }
+
+    Action act = system.transform(best);
+    system.transit(states[step], act, &states[step+ 1]);
+  }
+
+  heads.resize(L);
+  deprels.resize(L);
+  for (size_t i = 0; i < L; ++ i) {
+    heads[i] = states[L*2-1].heads[i];
+    deprels[i] = deprels_alphabet.at(states[L*2-1].deprels[i]);
+  }
+}
+
 
 void NeuralNetworkParser::get_context(const State& s, Context* ctx) {
   ctx->S0 = (s.stack.size() > 0 ? s.stack[s.stack.size() - 1]: -1);
@@ -162,41 +209,41 @@ void NeuralNetworkParser::get_cluster_features(const Context& ctx,
 }
 
 void NeuralNetworkParser::report() {
-  TRACE_LOG("report: form located at: [%d ... %d]", kFormInFeaturespace,
+  INFO_LOG("report: form located at: [%d ... %d]", kFormInFeaturespace,
       kPostagInFeaturespace- 1);
-  TRACE_LOG("report: postags located at: [%d ... %d]", kPostagInFeaturespace,
+  INFO_LOG("report: postags located at: [%d ... %d]", kPostagInFeaturespace,
       kDeprelInFeaturespace- 1);
-  TRACE_LOG("report: deprels located at: [%d ... %d]", kDeprelInFeaturespace,
+  INFO_LOG("report: deprels located at: [%d ... %d]", kDeprelInFeaturespace,
       kDistanceInFeaturespace- 1);
   if (use_distance) {
-    TRACE_LOG("report: distance located at: [%d ... %d]", kDistanceInFeaturespace,
+    INFO_LOG("report: distance located at: [%d ... %d]", kDistanceInFeaturespace,
         kValencyInFeaturespace- 1);
   }
   if (use_valency) {
-    TRACE_LOG("report: valency located at: [%d ... %d]", kValencyInFeaturespace,
+    INFO_LOG("report: valency located at: [%d ... %d]", kValencyInFeaturespace,
         kCluster4InFeaturespace- 1);
   }
   if (use_cluster) {
-    TRACE_LOG("report: cluster4 located at: [%d ... %d]", kCluster4InFeaturespace,
+    INFO_LOG("report: cluster4 located at: [%d ... %d]", kCluster4InFeaturespace,
         kCluster6InFeaturespace- 1);
-    TRACE_LOG("report: cluster6 located at: [%d ... %d]", kCluster6InFeaturespace,
+    INFO_LOG("report: cluster6 located at: [%d ... %d]", kCluster6InFeaturespace,
         kClusterInFeaturespace- 1);
-    TRACE_LOG("report: cluster located at: [%d ... %d]", kClusterInFeaturespace,
+    INFO_LOG("report: cluster located at: [%d ... %d]", kClusterInFeaturespace,
         kFeatureSpaceEnd- 1);
   }
-  TRACE_LOG("report: nil form (in f.s.) =%d", kNilForm);
-  TRACE_LOG("report: nil postag (in f.s.) =%d", kNilPostag);
-  TRACE_LOG("report: nil deprel (in f.s.) =%d", kNilDeprel);
+  INFO_LOG("report: nil form (in f.s.) =%d", kNilForm);
+  INFO_LOG("report: nil postag (in f.s.) =%d", kNilPostag);
+  INFO_LOG("report: nil deprel (in f.s.) =%d", kNilDeprel);
   if (use_distance) {
-    TRACE_LOG("report: nil distance (in f.s.) =%d", kNilDistance);
+    INFO_LOG("report: nil distance (in f.s.) =%d", kNilDistance);
   }
   if (use_valency) {
-    TRACE_LOG("report: nil valency (in f.s.) =%d", kNilValency);
+    INFO_LOG("report: nil valency (in f.s.) =%d", kNilValency);
   }
   if (use_cluster) {
-    TRACE_LOG("report: nil cluster4 (in f.s.) =%d", kNilCluster4);
-    TRACE_LOG("report: nil cluster6 (in f.s.) =%d", kNilCluster6);
-    TRACE_LOG("report: nil cluster (in f.s.) =%d", kNilCluster);
+    INFO_LOG("report: nil cluster4 (in f.s.) =%d", kNilCluster4);
+    INFO_LOG("report: nil cluster6 (in f.s.) =%d", kNilCluster6);
+    INFO_LOG("report: nil cluster (in f.s.) =%d", kNilCluster);
   }
 }
 
@@ -232,6 +279,190 @@ void NeuralNetworkParser::get_cluster_from_dependency(const Dependency& data,
           cluster_types_alphabet.index(SpecialOption::ROOT): form_to_cluster[form]);
     }
   }
+}
+
+void NeuralNetworkParser::save(const std::string& filename) {
+  std::ofstream ofs(filename.c_str(), std::ofstream::binary);
+  char chunk[128];
+
+  memset(chunk, 0, sizeof(chunk));
+  strncpy(chunk, model_header.c_str(), 128);
+  ofs.write(chunk, 128);
+
+  memset(chunk, 0, sizeof(chunk));
+  strncpy(chunk, root.c_str(), 128);
+  ofs.write(chunk, 128);
+
+  write_uint(ofs, use_distance);
+  write_uint(ofs, use_valency);
+  write_uint(ofs, use_cluster);
+
+  W1.save(ofs);
+  W2.save(ofs);
+  E.save(ofs);
+  b1.save(ofs);
+  saved.save(ofs);
+
+  forms_alphabet.dump(ofs);
+  postags_alphabet.dump(ofs);
+  deprels_alphabet.dump(ofs);
+
+  int* payload = 0;
+  size_t now = 0;
+  payload = new int[precomputation_id_encoder.size()* 2];
+  for (std::unordered_map<int, size_t>::const_iterator rep = precomputation_id_encoder.begin();
+      rep != precomputation_id_encoder.end(); ++ rep) {
+    payload[now++] = rep->first;
+    payload[now++] = rep->second;
+  }
+  write_uint(ofs, now);
+  ofs.write(reinterpret_cast<const char*>(payload), sizeof(int)*now);
+  delete payload;
+
+  if (use_cluster) {
+    payload = new int[form_to_cluster.size()* 2];
+
+    now = 0;
+    for (std::unordered_map<int, int>::const_iterator rep = form_to_cluster4.begin();
+        rep != form_to_cluster4.end(); ++ rep) {
+      payload[now++] = rep->first;
+      payload[now++] = rep->second;
+    }
+    write_uint(ofs, now);
+    ofs.write(reinterpret_cast<const char*>(payload), sizeof(int)* now);
+
+    now = 0;
+    for (std::unordered_map<int, int>::const_iterator rep = form_to_cluster6.begin();
+        rep != form_to_cluster6.end(); ++ rep) {
+      payload[now++] = rep->first;
+      payload[now++] = rep->second;
+    }
+    write_uint(ofs, now);
+    ofs.write(reinterpret_cast<const char*>(payload), sizeof(int)* now);
+
+    now = 0;
+    for (std::unordered_map<int, int>::const_iterator rep = form_to_cluster.begin();
+        rep != form_to_cluster.end(); ++ rep) {
+      payload[now++] = rep->first;
+      payload[now++] = rep->second;
+    }
+    write_uint(ofs, now);
+    ofs.write(reinterpret_cast<const char*>(payload), sizeof(int)* now);
+    delete payload;
+  }
+}
+
+bool NeuralNetworkParser::load(const std::string& filename) {
+  std::ifstream ifs(filename.c_str(), std::ifstream::binary);
+  if (!ifs.good()) {
+    return false;
+  }
+  char chunk[128];
+  ifs.read(chunk, 128);
+  if (strcmp(chunk, model_header.c_str())) {
+    return false;
+  }
+
+  ifs.read(chunk, 128);
+  root = chunk;
+
+  use_distance = read_uint(ifs);
+  use_valency = read_uint(ifs);
+  use_cluster = read_uint(ifs);
+
+  W1.load(ifs);
+  W2.load(ifs);
+  E.load(ifs);
+  b1.load(ifs);
+  saved.load(ifs);
+
+  forms_alphabet.load(ifs);
+  postags_alphabet.load(ifs);
+  deprels_alphabet.load(ifs);
+
+  int* payload = NULL;
+  size_t now = 0;
+  now= read_uint(ifs);
+  payload = new int[now];
+  ifs.read(reinterpret_cast<char*>(payload), now*sizeof(int));
+  for (size_t i = 0; i < now; i += 2) {
+    precomputation_id_encoder[payload[i]] = payload[i+1];
+  }
+
+  if (use_cluster) {
+    now= read_uint(ifs);
+    payload = new int[now];
+    ifs.read(reinterpret_cast<char*>(payload), now);
+    for (size_t i = 0; i < now; i += 2) {
+      form_to_cluster4[payload[i]] = payload[i+1];
+    }
+    delete payload;
+
+    now= read_uint(ifs);
+    payload = new int[now];
+    ifs.read(reinterpret_cast<char*>(payload), now);
+    for (size_t i = 0; i < now; i += 2) {
+      form_to_cluster6[payload[i]] = payload[i+1];
+    }
+    delete payload;
+
+    now= read_uint(ifs);
+    payload = new int[now];
+    ifs.read(reinterpret_cast<char*>(payload), now);
+    for (size_t i = 0; i < now; i += 2) {
+      form_to_cluster[payload[i]] = payload[i+1];
+    }
+    delete payload;
+  }
+
+  classifier.canonical();
+  return true;
+}
+
+void NeuralNetworkParser::setup_system() {
+  system.set_root_relation(deprels_alphabet.index(root));
+  system.set_number_of_relations(deprels_alphabet.size()- 1);
+}
+
+void NeuralNetworkParser::build_feature_space() {
+  kFormInFeaturespace = 0;
+  kNilForm = forms_alphabet.index(SpecialOption::NIL);
+  kFeatureSpaceEnd = forms_alphabet.size();
+
+  kPostagInFeaturespace = kFeatureSpaceEnd;
+  kNilPostag = kFeatureSpaceEnd+ postags_alphabet.index(SpecialOption::NIL);
+  kFeatureSpaceEnd += postags_alphabet.size();
+
+  kDeprelInFeaturespace = kFeatureSpaceEnd;
+  kNilDeprel = kFeatureSpaceEnd+ deprels_alphabet.index(SpecialOption::NIL);
+  kFeatureSpaceEnd += deprels_alphabet.size();
+
+  kDistanceInFeaturespace = kFeatureSpaceEnd;
+  kNilDistance = kFeatureSpaceEnd+ (use_distance ? 8: 0);
+  kFeatureSpaceEnd += (use_distance? 9: 0);
+
+  kValencyInFeaturespace = kFeatureSpaceEnd;
+  kNilValency = kFeatureSpaceEnd+ (use_valency? 8: 0);
+  kFeatureSpaceEnd += (use_valency? 9: 0);
+
+  kCluster4InFeaturespace = kFeatureSpaceEnd;
+  if (use_cluster) {
+    kNilCluster4 = kFeatureSpaceEnd+ cluster4_types_alphabet.index(SpecialOption::NIL);
+    kFeatureSpaceEnd += cluster4_types_alphabet.size();
+  } else { kNilCluster4 = kFeatureSpaceEnd; }
+
+  kCluster6InFeaturespace = kFeatureSpaceEnd;
+  if (use_cluster) {
+    kNilCluster6 = kFeatureSpaceEnd+ cluster6_types_alphabet.index(SpecialOption::NIL);
+    kFeatureSpaceEnd += cluster4_types_alphabet.size();
+  } else { kNilCluster6 = kFeatureSpaceEnd; }
+
+  kClusterInFeaturespace = kFeatureSpaceEnd;
+  if (use_cluster) {
+    kNilCluster = kFeatureSpaceEnd+ cluster_types_alphabet.index(SpecialOption::NIL);
+    kFeatureSpaceEnd += cluster_types_alphabet.size();
+  } else { kNilCluster = kFeatureSpaceEnd; }
+
 }
 
 } //  namespace depparser

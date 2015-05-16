@@ -61,6 +61,14 @@ protected:
       bool avg,
       framework::ViterbiScoreMatrix* scm);
 
+  void calculate_scores(const Instance& inst,
+      const Model& bs_mdl,
+      const Model& mdl,
+      const framework::ViterbiFeatureContext& bs_ctx,
+      const framework::ViterbiFeatureContext& ctx,
+      bool avg,
+      framework::ViterbiScoreMatrix* scm);
+
   /**
    * build words from tags for certain instance
    *

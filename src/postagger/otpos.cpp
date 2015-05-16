@@ -175,8 +175,8 @@ int dump(int argc, const char* argv[]) {
 }
 
 int main(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE " - Training and testing suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training and testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " [learn|test|dump] <options>";
 
   if (argc == 1) {

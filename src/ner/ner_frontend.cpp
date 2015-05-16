@@ -38,13 +38,13 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
   train_opt.max_iter = max_iter;
   train_opt.rare_feature_threshold = rare_feature_threshold;
 
-  TRACE_LOG("||| ltp ner, trainig ...");
-  TRACE_LOG("report: reference file = %s", train_opt.train_file.c_str());
-  TRACE_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
-  TRACE_LOG("report: algorith = %s", train_opt.algorithm.c_str());
-  TRACE_LOG("report: model name = %s", train_opt.model_name.c_str());
-  TRACE_LOG("report: maximum iteration = %d", train_opt.max_iter);
-  TRACE_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
+  INFO_LOG("||| ltp ner, trainig ...");
+  INFO_LOG("report: reference file = %s", train_opt.train_file.c_str());
+  INFO_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
+  INFO_LOG("report: algorith = %s", train_opt.algorithm.c_str());
+  INFO_LOG("report: model name = %s", train_opt.model_name.c_str());
+  INFO_LOG("report: maximum iteration = %d", train_opt.max_iter);
+  INFO_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
 }
 
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
@@ -56,10 +56,10 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
 
-  TRACE_LOG("||| ltp ner, testing ...");
-  TRACE_LOG("report: input file = %s", test_opt.test_file.c_str());
-  TRACE_LOG("report: model file = %s", test_opt.model_file.c_str());
-  TRACE_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
+  INFO_LOG("||| ltp ner, testing ...");
+  INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
+  INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
+  INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
 }
 
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
@@ -67,8 +67,8 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
   : Frontend(kDump) {
   dump_opt.model_file = model_file;
 
-  TRACE_LOG("||| ltp ner, dumpping ...");
-  TRACE_LOG("report: model file = %s", model_file.c_str());
+  INFO_LOG("||| ltp ner, dumpping ...");
+  INFO_LOG("report: model file = %s", model_file.c_str());
 }
 
 NamedEntityRecognizerFrontend::~NamedEntityRecognizerFrontend() {
@@ -122,7 +122,7 @@ void NamedEntityRecognizerFrontend::build_configuration(void) {
     }
   }
 
-  TRACE_LOG("build-config: detect %d entity types.", ne_types.size());
+  INFO_LOG("build-config: detect %d entity types.", ne_types.size());
 
   std::stringstream S;
   model->labels.push(OTHER);
@@ -160,43 +160,43 @@ void NamedEntityRecognizerFrontend::build_feature_space(void) {
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     NamedEntityRecognizer::extract_features((*train_dat[i]), NULL, true);
     if ((i+ 1) % interval == 0) {
-      TRACE_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
+      INFO_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
     }
   }
-  TRACE_LOG("trace: feature space is built for %d instances.", train_dat.size());
+  INFO_LOG("trace: feature space is built for %d instances.", train_dat.size());
 }
 
 void NamedEntityRecognizerFrontend::train(void) {
   // read in training instance
-  TRACE_LOG("trace: reading reference dataset ...");
+  INFO_LOG("trace: reading reference dataset ...");
   if (!read_instance(train_opt.train_file)) {
     ERROR_LOG("Training file doesn't exist");
   }
-  TRACE_LOG("trace: %d sentences is loaded.", train_dat.size());
+  INFO_LOG("trace: %d sentences is loaded.", train_dat.size());
 
   model = new Model(Extractor::num_templates());
   // build tag dictionary, map string tag to index
-  TRACE_LOG("report: start building configuration ...");
+  INFO_LOG("report: start building configuration ...");
   build_configuration();
-  TRACE_LOG("report: build configuration is done.");
-  TRACE_LOG("report: number of labels (POS and NE tag coupled): %d", model->labels.size());
+  INFO_LOG("report: build configuration is done.");
+  INFO_LOG("report: number of labels (POS and NE tag coupled): %d", model->labels.size());
 
   // build feature space from the training instance
-  TRACE_LOG("report: start building feature space ...");
+  INFO_LOG("report: start building feature space ...");
   build_feature_space();
-  TRACE_LOG("report: building feature space is done ...");
-  TRACE_LOG("report: number of features: %d", model->space.num_features());
+  INFO_LOG("report: building feature space is done ...");
+  INFO_LOG("report: number of features: %d", model->space.num_features());
 
   model->param.realloc(model->space.dim());
-  TRACE_LOG("report: allocate %d dimensition parameter.", model->space.dim());
+  INFO_LOG("report: allocate %d dimensition parameter.", model->space.dim());
 
   int nr_groups = model->space.num_groups();
   std::vector<int> groupwise_update_counters;
   if (train_opt.rare_feature_threshold > 0) {
     groupwise_update_counters.resize(nr_groups, 0);
-    TRACE_LOG("report: allocate %d update-time counters", nr_groups);
+    INFO_LOG("report: allocate %d update-time counters", nr_groups);
   } else {
-    TRACE_LOG("report: model truncation is inactived.");
+    INFO_LOG("report: model truncation is inactived.");
   }
 
   int best_iteration = -1;
@@ -205,13 +205,13 @@ void NamedEntityRecognizerFrontend::train(void) {
   std::vector<size_t> update_counts;
   if (train_opt.rare_feature_threshold > 0) {
     update_counts.resize(nr_groups, 0);
-    TRACE_LOG("report: allocate %d update-time counters", nr_groups);
+    INFO_LOG("report: allocate %d update-time counters", nr_groups);
   } else {
-    TRACE_LOG("report: model truncation is inactived.");
+    INFO_LOG("report: model truncation is inactived.");
   }
 
   for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
-    TRACE_LOG("Training iteration #%d", (iter + 1));
+    INFO_LOG("Training iteration #%d", (iter + 1));
 
     size_t interval = train_dat.size() / 10;
     for (size_t i = 0; i < train_dat.size(); ++ i) {
@@ -238,10 +238,10 @@ void NamedEntityRecognizerFrontend::train(void) {
 
       ctx.clear();
       if ((i+1) % interval == 0) {
-        TRACE_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
+        INFO_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
       }
     }
-    TRACE_LOG("trace: %d instances is trained.", train_dat.size());
+    INFO_LOG("trace: %d instances is trained.", train_dat.size());
     model->param.flush( train_dat.size()*(iter+1) );
 
     Model* new_model = new Model(Extractor::num_templates());
@@ -263,9 +263,9 @@ void NamedEntityRecognizerFrontend::train(void) {
     new_model->save(model_header, Parameters::kDumpAveraged, ofs);
     delete new_model;
 
-    TRACE_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
+    INFO_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
   }
-  TRACE_LOG("Best result (iteration = %d) : F-score = %lf", best_iteration, best_f_score);
+  INFO_LOG("Best result (iteration = %d) : F-score = %lf", best_iteration, best_f_score);
 }
 
 void NamedEntityRecognizerFrontend::evaluate(double& f_score) {
@@ -314,9 +314,9 @@ void NamedEntityRecognizerFrontend::evaluate(double& f_score) {
   double r = (double)num_recalled_entities / num_gold_entities;
   f_score = 2*p*r / (p + r);
 
-  TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_entities, num_predict_entities);
-  TRACE_LOG("R: %lf ( %d / %d )", r, num_recalled_entities, num_gold_entities);
-  TRACE_LOG("F: %lf" , f_score);
+  INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_entities, num_predict_entities);
+  INFO_LOG("R: %lf ( %d / %d )", r, num_recalled_entities, num_gold_entities);
+  INFO_LOG("F: %lf" , f_score);
   return;
 }
 
@@ -344,9 +344,9 @@ void NamedEntityRecognizerFrontend::test(void) {
   }
   build_glob_tran_cons(ne_types);
 
-  TRACE_LOG("report: number of labels %d", model->num_labels());
-  TRACE_LOG("report: number of features %d", model->space.num_features());
-  TRACE_LOG("report: number of dimension %d", model->space.dim());
+  INFO_LOG("report: number of labels %d", model->num_labels());
+  INFO_LOG("report: number of features %d", model->space.num_features());
+  INFO_LOG("report: number of dimension %d", model->space.dim());
 
   const char* test_file = test_opt.test_file.c_str();
   std::ifstream ifs(test_file);
@@ -361,7 +361,7 @@ void NamedEntityRecognizerFrontend::test(void) {
   Instance* inst = NULL;
 
   timer t;
-  TRACE_LOG("report: start testing ...");
+  INFO_LOG("report: start testing ...");
   while ((inst = reader.next())) {
     size_t len = inst->size();
     if (test_opt.evaluate) {
@@ -384,7 +384,7 @@ void NamedEntityRecognizerFrontend::test(void) {
     delete inst;
   }
 
-  TRACE_LOG("Elapsed time %lf", t.elapsed());
+  INFO_LOG("Elapsed time %lf", t.elapsed());
   return;
 }
 
@@ -405,9 +405,9 @@ void NamedEntityRecognizerFrontend::dump() {
   }
 
   int L = model->num_labels();
-  TRACE_LOG("report: number of labels %d", model->num_labels());
-  TRACE_LOG("report: number of features %d", model->space.num_features());
-  TRACE_LOG("report: number of dimension %d", model->space.dim());
+  INFO_LOG("report: number of labels %d", model->num_labels());
+  INFO_LOG("report: number of features %d", model->space.num_features());
+  INFO_LOG("report: number of dimension %d", model->space.dim());
 
   for (framework::FeatureSpaceIterator itx = model->space.begin();
        itx != model->space.end();

@@ -1,28 +1,20 @@
-#include "nnparser/parser_dll.h"
-// #include "nnparser/parser.h"
-// #include "nnparser/settings.h"
+#include "parser.n/parser_dll.h"
+#include "parser.n/parser.h"
 #include "utils/logging.hpp"
-#include "utils/codecs.hpp"
 
 #include <iostream>
 
-class ParserWrapper : public ltp::parser::NeuralNetworkParser {
+class __ltp_dll_parser_wrapper : public ltp::depparser::NeuralNetworkParser {
 public:
-  ParserWrapper() {}
-  ~ParserWrapper() {}
+  __ltp_dll_parser_wrapper() {}
+  ~__ltp_dll_parser_wrapper() {}
 
   bool load(const char * model_file) {
-    std::ifstream mfs(model_file, std::ifstream::binary);
-
-    if (!mfs) {
+    if (!ltp::depparser::NeuralNetworkParser::load(std::string(model_file))) {
       return false;
     }
-
-    model = new ltp::parser::Model;
-    if (!model->load(mfs)) {
-      delete model;
-      return false;
-    }
+    setup_system();
+    build_feature_space();
     return true;
   }
 
@@ -31,40 +23,24 @@ public:
             std::vector<int> & heads,
             std::vector<std::string> & deprels) {
 
-    ltp::parser::Instance * inst = new ltp::parser::Instance;
-    inst->forms.push_back( ltp::parser::ROOT_FORM );
-    inst->postags.push_back( ltp::parser::ROOT_POSTAG );
+    ltp::depparser::Instance inst;
+    inst.forms.push_back( ltp::depparser::SpecialOption::ROOT );
+    inst.postags.push_back( ltp::depparser::SpecialOption::ROOT );
 
-    for (int i = 0; i < words.size(); ++ i) {
-      inst->forms.push_back(words[i]);
-      inst->postags.push_back(postags[i]);
+    for (size_t i = 0; i < words.size(); ++ i) {
+      inst.forms.push_back(words[i]);
+      inst.postags.push_back(postags[i]);
     }
 
-    ltp::parser::Parser::extract_features(inst);
-    ltp::parser::Parser::calculate_score(inst, ltp::parser::Parser::model->param);
-
-    ltp::parser::Decoder * deco;
-    deco = build_decoder();
-    deco->decode(inst);
-
-    int len = inst->size();
-    heads.resize(len - 1);
-    deprels.resize(len - 1);
-    for (int i = 1; i < len; ++ i) {
-      heads[i - 1] = inst->predicted_heads[i];
-      deprels[i - 1] = ltp::parser::Parser::model->deprels.at(
-          inst->predicted_deprelsidx[i]);
-    }
-
-    delete inst;
-    delete deco;
-
+    ltp::depparser::NeuralNetworkParser::predict(inst, heads, deprels);
+    heads.erase(heads.begin());
+    deprels.erase(deprels.begin());
     return heads.size();
   }
 };
 
 void * parser_create_parser(const char * path) {
-  ParserWrapper * wrapper = new ParserWrapper();
+  __ltp_dll_parser_wrapper* wrapper = new __ltp_dll_parser_wrapper();
 
   if (!wrapper->load(path)) {
     delete wrapper;
@@ -77,7 +53,7 @@ int parser_release_parser(void * parser) {
   if (!parser) {
     return -1;
   }
-  delete reinterpret_cast<ParserWrapper *>(parser);
+  delete reinterpret_cast<__ltp_dll_parser_wrapper*>(parser);
   return 0;
 }
 
@@ -95,7 +71,7 @@ int parser_parse(void * parser,
     }
   }
 
-  ParserWrapper * wrapper = 0;
-  wrapper = reinterpret_cast<ParserWrapper *>(parser);
+  __ltp_dll_parser_wrapper* wrapper = 0;
+  wrapper = reinterpret_cast<__ltp_dll_parser_wrapper*>(parser);
   return wrapper->parse(words, postags, heads, deprels);
 }

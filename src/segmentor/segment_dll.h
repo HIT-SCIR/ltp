@@ -52,4 +52,16 @@ SEGMENTOR_DLL_API int segmentor_segment(void * parser,
                                         const std::string & line,
                                         std::vector<std::string> & words);
 
+SEGMENTOR_DLL_API void* customized_segmentor_create_segmentor(
+    const char* path1,
+    const char* path2,
+    const char* lexicon_file = NULL);
+
+SEGMENTOR_DLL_API int customized_segmentor_release_segmentor(void* segmentor);
+
+SEGMENTOR_DLL_API int customized_segmentor_segment(
+    void* segmentor,
+    const std::string& line,
+    std::vector<std::string>& words);
+
 #endif  //  end for __LTP_SEGMENT_DLL_H__

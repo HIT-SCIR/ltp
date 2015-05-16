@@ -6,7 +6,7 @@
 namespace ltp {
 namespace depparser {
 
-using strutils::chomp;
+using strutils::trim;
 using strutils::split;
 using strutils::to_int;
 using strutils::to_str;
@@ -29,7 +29,7 @@ Instance* CoNLLReader::next() {
 
   while (!is.eof()) {
     getline(is, line);
-    chomp(line);
+    trim(line);
 
     if (line.size() == 0) { break; }
     std::vector<std::string> items = split(line);
@@ -63,8 +63,8 @@ void CoNLLWriter::write(const Instance& inst) {
       << inst.forms[i]   << "\t"   // 1 - form
       << inst.lemmas[i]  << "\t"   // 2 - lemma
       << inst.postags[i] << "\t"   // 3 - postag
-      << "_"              << "\t"   // 4 - unknown
-      << "_"              << "\t"   // 5 - unknown
+      << "_\t"   // 4 - unknown
+      << "_\t"   // 5 - unknown
       << inst.heads[i]   << "\t"   // 6 - heads
       << inst.deprels[i] << "\t"   // 7 - deprels
       << (predicted ? to_str(inst.predict_heads[i]) : "_")
@@ -74,6 +74,25 @@ void CoNLLWriter::write(const Instance& inst) {
   }
   f << std::endl;
 }
+
+void CoNLLWriter::write(const Instance& inst, const std::vector<int>& heads,
+    const std::vector<std::string>& deprels) {
+  size_t len = inst.size();
+  for (size_t i = 1; i < len; ++ i) {
+    f << i << "\t"                  // 0 - index
+      << inst.forms[i]   << "\t"   // 1 - form
+      << inst.lemmas[i]  << "\t"   // 2 - lemma
+      << inst.postags[i] << "\t"   // 3 - postag
+      << "_\t"   // 4 - unknown
+      << "_\t"   // 5 - unknown
+      << heads[i]   << "\t"   // 6 - heads
+      << deprels[i] << "\t"   // 7 - deprels
+      << "_\t_"
+      << std::endl;
+  }
+  f << std::endl;
+}
+
 
 } //  namespace depparser
 } //  namespace ltp

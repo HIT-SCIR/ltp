@@ -19,25 +19,55 @@ using ltp::depparser::LearnOption;
 using ltp::depparser::TestOption;
 
 int test(int argc, char** argv) {
-  std::string usage = EXECUTABLE "(test) - Testing suite for " DESCRIPTION ".\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options:";
   options_description optparser = options_description(usage);
   optparser.add_options()
     ("model", value<std::string>(), "The path to the model.")
     ("input", value<std::string>(), "The path to the reference.")
-    ("output", value<std::string>(), "The path to the output file.");
+    ("output", value<std::string>(), "The path to the output file.")
+    ("evaluate", value<bool>(),
+     "if configured, perform evaluation, heads and deprels columns should be filled.")
+    ("help,h", "Show help information");
+
+  variables_map vm;
+  store(parse_command_line(argc, argv, optparser), vm);
+
+  if (vm.count("help")) {
+    std::cerr << optparser << std::endl;
+    return 1;
+  }
 
   TestOption opt;
+  opt.model_file = "";
+  if (!vm.count("model")) {
+    ERROR_LOG("model path should be specified [--model].");
+    return 1;
+  } else {
+    opt.model_file = vm["model"].as<std::string>();
+  }
+
+  opt.input_file = "";
+  if (!vm.count("input")) {
+    ERROR_LOG("input file should be specified [--input].");
+    return 1;
+  } else {
+    opt.input_file = vm["input"].as<std::string>();
+  }
+
+  opt.evaluate = false;
+  if (vm.count("evaluate")) { opt.evaluate = vm["evaluate"].as<bool>(); }
+
   NeuralNetworkParserFrontend frontend(opt);
   frontend.test();
   return 0;
 }
 
 int learn(int argc, char** argv) {
-  std::string usage = EXECUTABLE "(learn) - Learning suite for " DESCRIPTION ".\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options:";
   options_description optparser = options_description(usage);
@@ -225,8 +255,8 @@ int learn(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-  std::string usage = EXECUTABLE " - Training and testing suite for " DESCRIPTION ".\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training and testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " [learn|test] <options>";
 
   if (argc == 1) {

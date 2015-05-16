@@ -24,6 +24,8 @@ public:
   CoNLLWriter(std::ostream& _f): f(_f) {}
 
   void write(const Instance& inst);
+  void write(const Instance& inst, const std::vector<int>& heads,
+      const std::vector<std::string>& deprels);
 private:
   std::ostream& f;
 };  // end for ConnllWriter

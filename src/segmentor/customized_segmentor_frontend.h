@@ -14,7 +14,6 @@ namespace segmentor {
  * words. Most of the function responsibility between Segmentor and
  * Customized is the same, except for that CustomziedSegmentor takes
  * two parts, the baseline and the customized, as input.
- *
  */
 class CustomizedSegmentorFrontend : public SegmentorFrontend {
 protected:
@@ -22,6 +21,7 @@ protected:
   framework::ViterbiFeatureContext bs_ctx;  //! The decode context
   std::string bs_model_file;
   bool good;
+
 public:
   //! Learning model constructor.
   CustomizedSegmentorFrontend(const std::string& reference_file,
@@ -47,25 +47,7 @@ protected:
   void calculate_scores(const Instance& inst, bool avg);
   void collect_features(const Instance& inst);
   void update(const Instance& inst, math::SparseVec& updated_features);
-#if 0
-
-
-  //!
-  void collect_correct_and_predicted_features(Instance * inst);
-
-  //!
-  void build_lexicon_match_state(Instance* inst);
-
-  //!
-  void train_passive_aggressive(int nr_errors);
-
-  //!
-  void train_averaged_perceptron(void);
-
-  //!
-  int get_timestamp(void);
-#endif
-  //CustomizedDumpOptions dump_opts;
+  void setup_lexicons();
 };
 
 } // end for namespace segmentor

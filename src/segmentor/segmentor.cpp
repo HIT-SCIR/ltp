@@ -1,4 +1,4 @@
-#include "utils/time.hpp"
+#include "config.h"
 #include "utils/logging.hpp"
 #include "utils/strvec.hpp"
 #include "utils/strutils.hpp"
@@ -22,7 +22,7 @@ using utility::StringVec;
 using utility::SmartMap;
 using math::FeatureVector;
 using math::SparseVec;
-using strutils::chomp;
+using strutils::trim;
 
 const std::string Segmentor::model_header = "otner";
 
@@ -137,7 +137,7 @@ void Segmentor::calculate_scores(const Instance& inst,
   size_t L = inst.size();
   size_t T = mdl.num_labels();
 
-  scm->resize(L, T, -1e20);
+  scm->resize(L, T, NEG_INF);
 
   for (size_t i = 0; i < L; ++ i) {
     for (size_t t = 0; t < T; ++ t) {
@@ -153,6 +153,56 @@ void Segmentor::calculate_scores(const Instance& inst,
     for (size_t t = 0; t < T; ++ t) {
       int idx = mdl.space.index(pt, t);
       scm->set_tran(pt, t, mdl.param.dot(idx, avg));
+    }
+  }
+}
+
+void Segmentor::calculate_scores(const Instance& inst,
+    const Model& bs_mdl,
+    const Model& mdl,
+    const ViterbiFeatureContext& bs_ctx,
+    const ViterbiFeatureContext& ctx,
+    bool avg,
+    ViterbiScoreMatrix* scm) {
+  size_t len = inst.size();
+  size_t L = model->num_labels();
+
+  scm->resize(len, L, NEG_INF);
+
+  for (size_t i = 0; i < len; ++ i) {
+    for (size_t l = 0; l < L; ++ l) {
+      FeatureVector* fv = bs_ctx.uni_features[i][l];
+      if (!fv) { continue; }
+
+      double score;
+      if(!avg) {
+        score = bs_mdl.param.dot(fv, false);
+      } else {
+        //flush baseline_mdl and mdl time to the same level
+        score = bs_mdl.param.predict(fv, mdl.param.last() - bs_mdl.param.last());
+      }
+
+      fv = ctx.uni_features[i][l];
+      if (!fv) {
+        continue;
+      }
+      scm->set_emit(i, l, score + mdl.param.dot(ctx.uni_features[i][l], avg));
+    }
+  }
+
+  for (size_t pl = 0; pl < L; ++ pl) {
+    for (size_t l = 0; l < L; ++ l) {
+      double score;
+
+      int idx = bs_mdl.space.index(pl, l);
+      if(!avg) {
+        score = bs_mdl.param.dot(idx, false);
+      } else {
+        score = bs_mdl.param.predict(idx, mdl.param.last() - bs_mdl.param.last());
+      }
+
+      idx = mdl.space.index(pl, l);
+      scm->set_tran(pl, l, score + mdl.param.dot(idx, avg));
     }
   }
 }
@@ -183,11 +233,11 @@ void Segmentor::load_lexicon(const char* filename, Model::lexicon_t* lexicon) co
   if (!ifs.good()) { return; }
   std::string line;
   while (std::getline(ifs, line)) {
-    line= chomp(line);
+    trim(line);
     std::string form = line.substr(0, line.find_first_of(" \t"));
     lexicon->set(form.c_str(), true);
   }
-  TRACE_LOG("loaded %d lexicon entries", lexicon->size());
+  INFO_LOG("loaded %d lexicon entries", lexicon->size());
 }
 
 }     //  end for namespace segmentor

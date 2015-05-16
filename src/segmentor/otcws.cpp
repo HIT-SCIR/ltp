@@ -108,7 +108,7 @@ int test(int argc, const char* argv[]) {
      "The lexicon file, (optional, if configured, constrained decoding will be performed).")
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>(),
-     "if configured, perform evaluation, input should contain '#' concatenated tag")
+     "if configured, perform evaluation, input words in sentence should be separated by space.")
     ("help,h", "Show help information")
     ;
 
@@ -184,7 +184,7 @@ int dump(int argc, const char* argv[]) {
 
 int customized_learn(int argc, const char* argv[]) {
   std::string usage = EXECUTABLE "(customized-learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
-  usage += "Training suite for " DESCRIPTION "\n\n";
+  usage += "Customized training suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options";
 
@@ -267,19 +267,21 @@ int customized_learn(int argc, const char* argv[]) {
 }
 
 int customized_test(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(customized-test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
-  usage += "Testing suite for " DESCRIPTION "\n\n";
+  std::string usage = EXECUTABLE "(customized-test) in LTP " LTP_VERSION
+    " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Customized testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options";
 
   options_description optparser = options_description(usage);
   optparser.add_options()
+    ("baseline-model", value<std::string>(), "The path to the baseline model.")
     ("model", value<std::string>(), "The path to the model file.")
     ("lexicon", value<std::string>(),
     "The lexicon file, (optional, if configured, constrained decoding will be performed).")
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>(),
-    "if configured, perform evaluation, input should contain '#' concatenated tag")
+    "if configured, perform evaluation, input words in sentence should be separated by space.")
     ("help,h", "Show help information")
     ;
 
@@ -289,6 +291,14 @@ int customized_test(int argc, const char* argv[]) {
   if (vm.count("help")) {
     std::cerr << optparser << std::endl;
     return 1;
+  }
+
+  std::string baseline_model_file = "";
+  if (!vm.count("baseline-model")) {
+    ERROR_LOG("baseline model should be specified [--baseline-model].");
+    return 1;
+  } else {
+    baseline_model_file = vm["baseline-model"].as<std::string>();
   }
 
   std::string model_file = "";
@@ -318,7 +328,8 @@ int customized_test(int argc, const char* argv[]) {
   bool evaluate;
   if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
 
-  SegmentorFrontend frontend(input_file, model_file, evaluate);
+  CustomizedSegmentorFrontend frontend(input_file, model_file,
+      baseline_model_file, evaluate);
   frontend.test();
   return 0;
 }
@@ -326,7 +337,8 @@ int customized_test(int argc, const char* argv[]) {
 int main(int argc, const char* argv[]) {
   std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
   usage += "Training and testing suite for " DESCRIPTION "\n\n";
-  usage += "usage: ./" EXECUTABLE " [learn|customized-learn|test|customized-test|dump] <options>";
+  usage += "usage: ./" EXECUTABLE;
+  usage += " [learn|customized-learn|test|customized-test|dump] <options>";
 
   if (argc == 1) {
     std::cerr << usage << std::endl;

@@ -10,8 +10,8 @@
 #include <time.h>   // for time
 
 #define LTP_LOG_TRACE      10000
-#define LTP_LOG_INFO       20000
-#define LTP_LOG_DEBUG      30000
+#define LTP_LOG_DEBUG      20000
+#define LTP_LOG_INFO       30000
 #define LTP_LOG_WARNING    40000
 #define LTP_LOG_ERROR      50000
 #define LTP_LOG_FATAL      60000
@@ -58,7 +58,7 @@ public:
     spthread_mutex_init(&mutex, NULL);
     spthread_mutex_lock(&mutex);
     if (_instance == NULL) {
-      _instance = new ul_logger(_filename, _lvl);
+      _instance = new Logger(_filename, _lvl);
     }
     spthread_mutex_unlock(&mutex);
     return 0;
@@ -91,7 +91,7 @@ protected:
     entry->name = new char[strlen("DEBUG") + 1]; strcpy(entry->name, "DEBUG");
     entry++; ++num_lvl_name_entries;
 
-    entry->lvl = LTP_LOG_TRACE;
+    entry->lvl = LTP_LOG_INFO;
     entry->name = new char[strlen("INFO") + 1]; strcpy(entry->name, "INFO");
     entry++; ++num_lvl_name_entries;
 
@@ -127,7 +127,7 @@ public:
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     strftime(buffer, 80,
-      "%Y/%m/%d %H:%M:%S",
+      "%Y-%m-%d %H:%M:%S",
       timeinfo);
 
     int i;

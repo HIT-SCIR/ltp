@@ -42,14 +42,14 @@ SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
   train_opt.rare_feature_threshold = rare_feature_threshold;
   train_opt.dump_model_details = dump_model_details;
 
-  TRACE_LOG("||| ltp segmentor, training ...");
-  TRACE_LOG("report: reference file = %s", train_opt.train_file.c_str());
-  TRACE_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
-  TRACE_LOG("report: algorith = %s", train_opt.algorithm.c_str());
-  TRACE_LOG("report: model name = %s", train_opt.model_name.c_str());
-  TRACE_LOG("report: maximum iteration = %d", train_opt.max_iter);
-  TRACE_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
-  TRACE_LOG("report: dump model details = %s",
+  INFO_LOG("||| ltp segmentor, training ...");
+  INFO_LOG("report: reference file = %s", train_opt.train_file.c_str());
+  INFO_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
+  INFO_LOG("report: algorith = %s", train_opt.algorithm.c_str());
+  INFO_LOG("report: model name = %s", train_opt.model_name.c_str());
+  INFO_LOG("report: maximum iteration = %d", train_opt.max_iter);
+  INFO_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
+  INFO_LOG("report: dump model details = %s",
       (train_opt.dump_model_details? "true": "false"));
 }
 
@@ -61,18 +61,18 @@ SegmentorFrontend::SegmentorFrontend(const std::string& input_file,
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
 
-  TRACE_LOG("||| ltp segmentor, testing ...");
-  TRACE_LOG("report: input file = %s", test_opt.test_file.c_str());
-  TRACE_LOG("report: model file = %s", test_opt.model_file.c_str());
-  TRACE_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
+  INFO_LOG("||| ltp segmentor, testing ...");
+  INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
+  INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
+  INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
 }
 
 SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
   : timestamp(0), Frontend(kDump) {
   dump_opt.model_file = model_file;
 
-  TRACE_LOG("||| ltp segmentor, dumpping ...");
-  TRACE_LOG("report: model file = %s", model_file.c_str());
+  INFO_LOG("||| ltp segmentor, dumpping ...");
+  INFO_LOG("report: model file = %s", model_file.c_str());
 }
 
 SegmentorFrontend::~SegmentorFrontend() {
@@ -101,7 +101,7 @@ void SegmentorFrontend::build_configuration(void) {
     tagsidx.resize(len);
     for (size_t j = 0; j < len; ++ j) { tagsidx[j] = model->labels.push(tags[j]); }
   }
-  TRACE_LOG("Label sets is built");
+  INFO_LOG("Label sets is built");
 
   SmartMap<bool> wordfreq;
   unsigned long long total_freq = 0;
@@ -139,12 +139,13 @@ void SegmentorFrontend::build_configuration(void) {
       model->internal_lexicon.set(itx.key(), true);
     }
   }
+  setup_lexicons();
 
-  TRACE_LOG("report: collecting interanl lexicon is done.");
-  TRACE_LOG("report: total word frequency : %ld", total_freq);
-  TRACE_LOG("report: vocabulary size: %d", wordfreq.size());
-  TRACE_LOG("report: trancation word frequency : %d", target_freq);
-  TRACE_LOG("report: internal lexicon size : %d", model->internal_lexicon.size());
+  INFO_LOG("report: collecting interanl lexicon is done.");
+  INFO_LOG("report: total word frequency : %ld", total_freq);
+  INFO_LOG("report: vocabulary size: %d", wordfreq.size());
+  INFO_LOG("report: trancation word frequency : %d", target_freq);
+  INFO_LOG("report: internal lexicon size : %d", model->internal_lexicon.size());
 }
 
 void SegmentorFrontend::extract_features(const Instance& inst, bool create) {
@@ -171,19 +172,16 @@ void SegmentorFrontend::build_feature_space(void) {
   model->space.set_num_labels(L);
 
   size_t interval = train_dat.size() / 10;
-  std::vector<const Model::lexicon_t*> lexicons;
-  lexicons.push_back(&(model->internal_lexicon));
-  lexicons.push_back(&(model->external_lexicon));
 
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     build_lexicon_match_state(lexicons, train_dat[i]);
     extract_features((*train_dat[i]), true);
 
     if ((i+1) % interval == 0) {
-      TRACE_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
+      INFO_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
     }
   }
-  TRACE_LOG("trace: feature space is built for %d instances.", train_dat.size());
+  INFO_LOG("trace: feature space is built for %d instances.", train_dat.size());
 }
 
 bool SegmentorFrontend::read_instance(const char* train_file) {
@@ -207,32 +205,37 @@ void SegmentorFrontend::update(const Instance& inst, SparseVec& updated_features
   learn(train_opt.algorithm, updated_features, get_timestamp(), inst.num_errors(), model);
 }
 
+void SegmentorFrontend::setup_lexicons() {
+  lexicons.push_back(&(model->internal_lexicon));
+  lexicons.push_back(&(model->external_lexicon));
+}
+
 void SegmentorFrontend::train(void) {
   // if (!train_setup()) { return; }
   // read in training instance
-  TRACE_LOG("trace: reading reference dataset ...");
+  INFO_LOG("trace: reading reference dataset ...");
   if (!read_instance(train_opt.train_file.c_str())) {
     ERROR_LOG("Training file not exist.");
     return;
   }
-  TRACE_LOG("trace: %d sentence is loaded.", train_dat.size());
+  INFO_LOG("trace: %d sentence is loaded.", train_dat.size());
 
   model = new Model;
 
   // build tag dictionary, map string tag to index
-  TRACE_LOG("report: start build configuration ...");
+  INFO_LOG("report: start build configuration ...");
   build_configuration();
-  TRACE_LOG("report: build configuration is done.");
-  TRACE_LOG("report: number of labels: [%d]", model->labels.size());
+  INFO_LOG("report: build configuration is done.");
+  INFO_LOG("report: number of labels: [%d]", model->labels.size());
 
   // build feature space from the training instance
-  TRACE_LOG("report: start building feature space ...");
+  INFO_LOG("report: start building feature space ...");
   build_feature_space();
-  TRACE_LOG("report: building feature space is done.");
-  TRACE_LOG("report: number of features: %d", model->space.num_features());
+  INFO_LOG("report: building feature space is done.");
+  INFO_LOG("report: number of features: %d", model->space.num_features());
 
   model->param.realloc(model->space.dim());
-  TRACE_LOG("report: allocate %d dimensition parameter.", model->space.dim());
+  INFO_LOG("report: allocate %d dimensition parameter.", model->space.dim());
 
   int nr_groups = model->space.num_groups();
   std::vector<int> groupwise_update_counters;
@@ -241,9 +244,9 @@ void SegmentorFrontend::train(void) {
   // feature group updated time.
   if (train_opt.rare_feature_threshold > 0) {
     groupwise_update_counters.resize(nr_groups, 0);
-    TRACE_LOG("report: allocate %d update-time counters", nr_groups);
+    INFO_LOG("report: allocate %d update-time counters", nr_groups);
   } else {
-    TRACE_LOG("report: model truncation is inactived.");
+    INFO_LOG("report: model truncation is inactived.");
   }
 
   int best_iteration = -1;
@@ -251,7 +254,7 @@ void SegmentorFrontend::train(void) {
 
   std::vector<size_t> update_counts;
   for (size_t iter = 0; iter < train_opt.max_iter; ++ iter) {
-    TRACE_LOG("Training iteration #%d", (iter + 1));
+    INFO_LOG("Training iteration #%d", (iter + 1));
 
     size_t interval = train_dat.size()/ 10;
     for (size_t i = 0; i < train_dat.size(); ++ i) {
@@ -274,10 +277,10 @@ void SegmentorFrontend::train(void) {
         increase_groupwise_update_counts(model, updated_features, update_counts);
       }
       if ((i+1) % interval == 0) {
-        TRACE_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
+        INFO_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
       }
     }
-    TRACE_LOG("trace: %d instances is trained.", train_dat.size());
+    INFO_LOG("trace: %d instances is trained.", train_dat.size());
 
     model->param.flush(get_timestamp());
 
@@ -309,10 +312,10 @@ void SegmentorFrontend::train(void) {
         ofs);
 
     delete new_model;
-    TRACE_LOG("Model for iteration #%d is saved to [%s]", iter+1, saved_model_file.c_str());
+    INFO_LOG("Model for iteration #%d is saved to [%s]", iter+1, saved_model_file.c_str());
   }
 
-  TRACE_LOG("Best result (iteratin = %d) P = %lf | R = %lf | F = %lf",
+  INFO_LOG("Best result (iteratin = %d) P = %lf | R = %lf | F = %lf",
       best_iteration, best_p, best_r, best_f);
 }
 
@@ -332,10 +335,6 @@ void SegmentorFrontend::evaluate(double &p, double &r, double &f) {
   size_t num_recalled_words = 0;
   size_t num_predicted_words = 0;
   size_t num_gold_words = 0;
-
-  std::vector<const Model::lexicon_t*> lexicons;
-  lexicons.push_back(&(model->internal_lexicon));
-  lexicons.push_back(&(model->external_lexicon));
 
   while ((inst = reader.next())) {
     size_t len = inst->size();
@@ -366,9 +365,9 @@ void SegmentorFrontend::evaluate(double &p, double &r, double &f) {
   r = (double)num_recalled_words / num_gold_words;
   f = 2 * p * r / (p + r);
 
-  TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
-  TRACE_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
-  TRACE_LOG("F: %lf" , f);
+  INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
+  INFO_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
+  INFO_LOG("F: %lf" , f);
   return;
 }
 
@@ -387,9 +386,9 @@ void SegmentorFrontend::test(void) {
     return;
   }
 
-  TRACE_LOG("report: number of labels = %d", model->num_labels());
-  TRACE_LOG("report: number of features = %d", model->space.num_features());
-  TRACE_LOG("report: number of dimension = %d", model->space.dim());
+  INFO_LOG("report: number of labels = %d", model->num_labels());
+  INFO_LOG("report: number of features = %d", model->space.num_features());
+  INFO_LOG("report: number of dimension = %d", model->space.dim());
 
   size_t num_recalled_words = 0;
   size_t num_predicted_words = 0;
@@ -410,9 +409,7 @@ void SegmentorFrontend::test(void) {
   SegmentWriter writer(std::cout);
   SegmentReader reader(ifs, preprocessor, test_opt.evaluate, false);
 
-  std::vector<const Model::lexicon_t*> lexicons;
-  lexicons.push_back(&(model->internal_lexicon));
-  lexicons.push_back(&(model->external_lexicon));
+  setup_lexicons();
 
   Instance* inst = NULL;
   timer t;
@@ -446,10 +443,10 @@ void SegmentorFrontend::test(void) {
   double r = (double)num_recalled_words / num_gold_words;
   double f = 2 * p * r / (p + r);
 
-  TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
-  TRACE_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
-  TRACE_LOG("F: %lf" , f);
-  TRACE_LOG("Elapsed time %lf", t.elapsed());
+  INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
+  INFO_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
+  INFO_LOG("F: %lf" , f);
+  INFO_LOG("Elapsed time %lf", t.elapsed());
   return;
 }
 
@@ -471,9 +468,9 @@ void SegmentorFrontend::dump() {
   }
 
   int L = model->num_labels();
-  TRACE_LOG("Number of labels %d", model->num_labels());
-  TRACE_LOG("Number of features %d", model->space.num_features());
-  TRACE_LOG("Number of dimension %d", model->space.dim());
+  INFO_LOG("Number of labels %d", model->num_labels());
+  INFO_LOG("Number of features %d", model->space.num_features());
+  INFO_LOG("Number of dimension %d", model->space.dim());
 
   for (framework::FeatureSpaceIterator itx = model->space.begin();
        itx != model->space.end(); ++ itx) {

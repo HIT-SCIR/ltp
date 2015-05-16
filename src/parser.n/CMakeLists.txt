@@ -10,23 +10,23 @@ set (nndeparser_SRC
     classifier.cpp
     parser.cpp)
 
-#add_library(parser_static_lib STATIC parser_dll.cpp ${nndeparser_SRC})
-#set_target_properties (parser_static_lib    PROPERTIES
-#    OUTPUT_NAME     parser)
+add_library(parser_static_lib STATIC parser_dll.cpp ${nndeparser_SRC})
+set_target_properties (parser_static_lib    PROPERTIES
+    OUTPUT_NAME     parser)
 
-#add_library(parser_shared_lib SHARED parser_dll.cpp ${nndeparser_SRC})
-
-#set_target_properties (parser_shared_lib    PROPERTIES
-#    VERSION         ${nndeparser_VERSION}
-#    OUTPUT_NAME     parser)
+add_library(parser_shared_lib SHARED parser_dll.cpp ${nndeparser_SRC})
+set_target_properties (parser_shared_lib    PROPERTIES
+    VERSION         ${nndeparser_VERSION}
+    OUTPUT_NAME     parser)
 
 # redirect output binary to tools/train
 add_executable (nndeparser main.cpp parser_frontend.cpp io.cpp ${nndeparser_SRC})
+target_link_libraries (nndeparser boost_program_options_static_lib)
 if (MSVC)
-  target_link_libraries (nndeparser boost_program_options_static_lib 
-                         ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
+  target_link_libraries (nndeparser
+      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
 else()
-  target_link_libraries (nndeparser boost_program_options_static_lib openblas)
+  target_link_libraries (nndeparser openblas)
 endif ()
 set_target_properties (nndeparser PROPERTIES
     OUTPUT_NAME nndeparser

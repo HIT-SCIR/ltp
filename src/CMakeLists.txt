@@ -10,20 +10,20 @@ set (srl_DIR            ${SOURCE_DIR}/srl/)
 set (ltp_dll_DIR        ${SOURCE_DIR}/__ltp_dll/)
 set (server_DIR         ${SOURCE_DIR}/server/)
 
-#add_subdirectory ("__xml4nlp")
+add_subdirectory ("__xml4nlp")
 add_subdirectory ("splitsnt")
 add_subdirectory ("segmentor")
 add_subdirectory ("postagger")
 add_subdirectory ("ner")
 #add_subdirectory ("parser")
 add_subdirectory ("parser.n")
-#add_subdirectory ("srl")
-#add_subdirectory ("__ltp_dll")
+add_subdirectory ("srl")
+add_subdirectory ("__ltp_dll")
 
 # mongoose server is not supported in windows
 if (UNIX)
     add_subdirectory ("unittest")
-    #add_subdirectory ("server")
+    add_subdirectory ("server")
 endif()
 
 

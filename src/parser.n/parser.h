@@ -6,12 +6,20 @@
 #include "parser.n/system.h"
 #include "parser.n/context.h"
 #include "parser.n/classifier.h"
+#include "framework/serializable.h"
+#include "armadillo"
 
 namespace ltp {
 namespace depparser {
 
-class NeuralNetworkParser {
+class NeuralNetworkParser: public framework::Serializable {
 protected:
+  arma::mat W1;
+  arma::mat W2;
+  arma::mat E;
+  arma::vec b1;
+  arma::mat saved;
+
   utility::IndexableSmartMap forms_alphabet;
   utility::IndexableSmartMap postags_alphabet;
   utility::IndexableSmartMap deprels_alphabet;
@@ -19,13 +27,14 @@ protected:
   utility::IndexableSmartMap cluster6_types_alphabet;
   utility::IndexableSmartMap cluster_types_alphabet;
 
-  std::unordered_map<int, int> precomputation_id_encoder;
+  std::unordered_map<int, size_t> precomputation_id_encoder;
   std::unordered_map<int, int> form_to_cluster4;
   std::unordered_map<int, int> form_to_cluster6;
   std::unordered_map<int, int> form_to_cluster;
 
   NeuralNetworkClassifier classifier;
   TransitionSystem system;
+  std::string root;
 
   size_t kNilForm;
   size_t kNilPostag;
@@ -52,6 +61,7 @@ protected:
   bool use_valency;
   bool use_cluster;
 
+  static const std::string model_header;
 public:
   NeuralNetworkParser();
 
@@ -64,7 +74,10 @@ public:
       const std::vector<int>& cluster,
       std::vector<int>& features);
 
-  void load(const std::string& filename);
+  void predict(const Instance& inst, std::vector<int>& heads,
+      std::vector<std::string>& deprels);
+
+  bool load(const std::string& filename);
 
   void save(const std::string& filename);
 
@@ -91,6 +104,8 @@ protected:
       const std::vector<int>& cluster,
       std::vector<int>& features);
 
+  void build_feature_space();
+  void setup_system();
   void report();
 
   void transduce_instance_to_dependency(const Instance& data,

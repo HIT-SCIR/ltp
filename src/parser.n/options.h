@@ -57,6 +57,7 @@ struct TestOption:
   public BasicOption {
   std::string input_file;   //! The path to the input file.
   std::string output_file;  //! The path to the output file.
+  bool evaluate;
 };
 
 } //  namespace depparser

@@ -16,6 +16,7 @@ protected:
   framework::ViterbiFeatureContext ctx;  //! The decode context
   framework::ViterbiScoreMatrix scm;     //! The score matrix
   std::vector<Instance *> train_dat;     //! The training data.
+  std::vector<const Model::lexicon_t*> lexicons;
 
   TrainOptions train_opt;
   TestOptions  test_opt;
@@ -89,6 +90,8 @@ protected:
   virtual size_t get_timestamp() const;
 
   void increase_timestamp();
+
+  virtual void setup_lexicons();
 };
 
 } //  namespace segmentor

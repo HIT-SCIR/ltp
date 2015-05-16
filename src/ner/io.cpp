@@ -8,7 +8,7 @@ namespace ltp {
 namespace ner {
 
 using strutils::split;
-using strutils::chomp;
+using strutils::trim;
 using strutils::chartypes::sbc2dbc_x;
 
 NERReader::NERReader(std::istream& _is,
@@ -27,14 +27,14 @@ Instance* NERReader::next() {
 
   cursor ++;
   if (trace && cursor % interval == 0) {
-    TRACE_LOG("reading: read %d0%% instances.", (cursor/ interval));
+    INFO_LOG("reading: read %d0%% instances.", (cursor/ interval));
   }
 
   Instance * inst = new Instance;
   std::string line;
 
   std::getline(is, line);
-  chomp(line);
+  trim(line);
 
   if (line.size() == 0) {
     delete inst;

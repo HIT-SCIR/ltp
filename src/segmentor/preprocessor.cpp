@@ -6,7 +6,7 @@
 namespace ltp {
 namespace segmentor {
 
-using strutils::chomp;
+using strutils::trim_copy;
 
 //int Preprocessor::CHAR_ENG = strutils::chartypes::CHAR_PUNC+1;
 //int Preprocessor::CHAR_URI = strutils::chartypes::CHAR_PUNC+2;
@@ -142,7 +142,7 @@ int Preprocessor::preprocess(const std::string& sentence,
     std::vector<std::string>& raw_forms,
     std::vector<std::string>& forms,
     std::vector<int>& chartypes) const {
-  std::string sent = chomp(sentence);
+  std::string sent = trim_copy(sentence);
   // std::cerr << sent << std::endl;
 
   size_t len = sent.size();

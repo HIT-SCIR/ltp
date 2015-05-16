@@ -23,10 +23,10 @@ struct Sample {
 class NeuralNetworkClassifier {
 private:
   // The weight group.
-  arma::mat W1;         // Mat: hidden_layer_size X (nr_feature_types * embedding_size)
-  arma::mat W2;         // Mat: nr_classes X hidden_layer_size
-  arma::mat E;          // Mat: nr_objects X embedding_size
-  arma::vec b1;         // Vec: hidden_layer_size
+  arma::mat& W1;         // Mat: hidden_layer_size X (nr_feature_types * embedding_size)
+  arma::mat& W2;         // Mat: nr_classes X hidden_layer_size
+  arma::mat& E;          // Mat: nr_objects X embedding_size
+  arma::vec& b1;         // Vec: hidden_layer_size
 
   arma::mat grad_W1;
   arma::vec grad_b1;
@@ -42,7 +42,7 @@ private:
   double accuracy;
 
   // Precomputed matrix
-  arma::mat saved;      // Mat: encoder.size() X hidden_layer_size
+  arma::mat& saved;      // Mat: encoder.size() X hidden_layer_size
   arma::mat grad_saved; // Mat: encoder.size() X hidden_layer_size
 
 private:
@@ -62,11 +62,13 @@ private:
   double ada_eps;
   double ada_alpha;
 
-  std::unordered_map<int, size_t> precomputation_id_encoder;
+  std::unordered_map<int, size_t>& precomputation_id_encoder;
 
   bool initialized;
 public:
-  NeuralNetworkClassifier();
+  NeuralNetworkClassifier(arma::mat& W1, arma::mat& W2, arma::mat& E,
+      arma::vec& b1, arma::mat& saved,
+      std::unordered_map<int, size_t>& precomputation_id_encoder);
 
   /**
    * Initialize the neural network
@@ -94,6 +96,7 @@ public:
    */
   void score(const std::vector<int>& attributes, std::vector<double>& retval);
 
+  void canonical();
   void info();
 
   //!
@@ -135,10 +138,6 @@ public:
       const std::unordered_set<int>& precomputed_indices);
 
   void add_l2_regularization();
-
-  void save(std::ofstream& mfs);
-
-  void load(std::ifstream& mfs);
 };
 
 } //  namespace depparser

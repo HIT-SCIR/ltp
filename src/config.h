@@ -5,8 +5,11 @@
 
 #define BOOST_ALL_NO_LIB
 
-#if _MSC_VER
-#define ARMA_USE_WRAPPER
-#endif
+namespace ltp {
+
+const double EPS = 1e-8;
+const double NEG_INF = -1e20;
+
+}
 
 #endif  //  end for __LTP_CONFIG_H__

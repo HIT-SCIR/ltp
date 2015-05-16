@@ -10,7 +10,7 @@ namespace ltp {
 namespace segmentor {
 
 using framework::LineCountsReader;
-using strutils::chomp;
+using strutils::trim;
 
 SegmentReader::SegmentReader(std::istream& _ifs,
     const Preprocessor& processor,
@@ -26,14 +26,14 @@ Instance* SegmentReader::next() {
 
   cursor ++;
   if (trace && cursor % interval == 0) {
-    TRACE_LOG("reading: read %d0%% instances.", (cursor/ interval));
+    INFO_LOG("reading: read %d0%% instances.", (cursor/ interval));
   }
 
   Instance* inst = new Instance;
   std::string line;
 
   std::getline(is, line);
-  line = chomp(line);
+  trim(line);
 
   if (line.size() == 0) {
     delete inst;

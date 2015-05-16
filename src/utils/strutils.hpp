@@ -12,18 +12,9 @@
 namespace ltp {
 namespace strutils {
 
-/**
- * chomp a string
- *
- *  @param  str     std::string
- *  @return         std::string
- */
-inline std::string chomp(std::string str) {
-  int len = str.size();
-
-  if (len == 0) {
-    return "";
-  }
+inline void trim(std::string& str) {
+  size_t len = str.size();
+  if (len == 0) { return; }
 
   while (len -1 >=0 && (str[len-1] == ' '
         || str[len-1]=='\t'
@@ -33,34 +24,24 @@ inline std::string chomp(std::string str) {
   }
   str = str.substr(0, len);
 
-  while (len > 0 && (str[0] == ' ' ||
-         str[0] == '\t' ||
-         str[0] == '\r' ||
-         str[0] == '\n')) {
-    str = str.substr(1, -- len);
-  }
-  return str;
+  size_t i = 0;
+  while (i < len && (str[i] == ' ' ||
+         str[i] == '\t' ||
+         str[i] == '\r' ||
+         str[i] == '\n')) { i ++; }
+  str = str.substr(i);
 }
 
-inline void trim(std::string& str) {
-  size_t len = str.size();
-
-  if (len == 0) { return; }
-
-  while (len > 0 && (str[len - 1] == ' '
-    || str[len - 1] == '\t'
-    || str[len - 1] == '\r'
-    || str[len - 1] == '\n')) {
-    --len;
-  }
-  str = str.substr(0, len);
-
-  while (len > 0 && (str[0] == ' ' ||
-    str[0] == '\t' ||
-    str[0] == '\r' ||
-    str[0] == '\n')) {
-    str = str.substr(1, --len);
-  }
+/**
+ * chomp a string
+ *
+ *  @param  str     std::string
+ *  @return         std::string
+ */
+inline std::string trim_copy(const std::string& source) {
+  std::string str(source);
+  trim(str);
+  return str;
 }
 
 /**
@@ -84,9 +65,13 @@ inline void split(const std::string& source, std::vector<std::string>& ret,
   std::string str(source);
   int numsplit = 0;
   int len = str.size();
+  size_t pos;
+  for (pos = 0; pos < str.size() && (str[pos] == ' ' || str[pos] == '\t'
+        || str[pos] == '\n' || str[pos] == '\r'); ++ pos);
+  str = str.substr(pos);
 
   while (str.size() > 0) {
-    size_t pos = std::string::npos;
+    pos = std::string::npos;
 
     for (pos = 0; pos < str.size() && (str[pos] != ' '
           && str[pos] != '\t'

@@ -131,7 +131,7 @@ int test(int argc, const char* argv[]) {
     output_file = vm["output"].as<std::string>();
   }
 
-  bool evaluate;
+  bool evaluate = false;
   if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
 
   NamedEntityRecognizerFrontend frontend(input_file, model_name, evaluate);

@@ -12,9 +12,13 @@ Sample::Sample(const std::vector<int>& _attributes,
 }
 
 
-NeuralNetworkClassifier::NeuralNetworkClassifier()
-  : initialized(false), embedding_size(0),
-  hidden_layer_size(0), nr_objects(0), nr_feature_types(0), nr_classes(0) {}
+NeuralNetworkClassifier::NeuralNetworkClassifier(arma::mat& _W1,
+    arma::mat& _W2, arma::mat& _E, arma::vec& _b1, arma::mat& _saved,
+    std::unordered_map<int, size_t>& encoder)
+  : initialized(false), W1(_W1), W2(_W2), E(_E), b1(_b1),
+  saved(_saved), precomputation_id_encoder(encoder),
+  embedding_size(0), hidden_layer_size(0),
+  nr_objects(0), nr_feature_types(0), nr_classes(0) {}
 
 void NeuralNetworkClassifier::initialize(
     int _nr_objects,
@@ -90,11 +94,11 @@ void NeuralNetworkClassifier::initialize(
   initialized = true;
 
   info();
-  TRACE_LOG("classifier: size of batch = %d", batch_size);
-  TRACE_LOG("classifier: alpha = %lf", ada_alpha);
-  TRACE_LOG("classifier: eps = %lf", ada_eps);
-  TRACE_LOG("classifier: lambda = %lf", lambda);
-  TRACE_LOG("classifier: fix embedding = %s", (fix_embeddings? "true": "false"));
+  INFO_LOG("classifier: size of batch = %d", batch_size);
+  INFO_LOG("classifier: alpha = %e", ada_alpha);
+  INFO_LOG("classifier: eps = %e", ada_eps);
+  INFO_LOG("classifier: lambda = %e", lambda);
+  INFO_LOG("classifier: fix embedding = %s", (fix_embeddings? "true": "false"));
 }
 
 void NeuralNetworkClassifier::score(const std::vector<int>& attributes,
@@ -184,7 +188,7 @@ void NeuralNetworkClassifier::get_precomputed_features(
       if (encoder.find(fid) != encoder.end()) { retval.insert(fid); }
     }
   }
-  // TRACE_LOG("classifier: percentage of necessary precomputation: %lf%%",
+  // INFO_LOG("classifier: percentage of necessary precomputation: %lf%%",
   // (double)retval.size() / encoder.size() * 100);
 }
 
@@ -208,7 +212,7 @@ void NeuralNetworkClassifier::precomputing(
     saved.col(rank) =
       W1.submat(0, off, hidden_layer_size-1, off+embedding_size-1) * E.col(aid);
   }
-  // TRACE_LOG("classifier: precomputed %d", features.size());
+  // INFO_LOG("classifier: precomputed %d", features.size());
 }
 
 void NeuralNetworkClassifier::compute_gradient(
@@ -340,46 +344,24 @@ void NeuralNetworkClassifier::add_l2_regularization() {
   if (!fix_embeddings) { grad_E += lambda * E; }
 }
 
-void NeuralNetworkClassifier::save(std::ofstream& ofs) {
-#if 0
-  E.save(ofs);
-  W1.save(ofs);
-  b1.save(ofs);
-  W2.save(ofs);
-  saved.save(ofs);
-  boost::archive::text_oarchive oa(ofs);
-  oa << precomputation_id_encoder;
-#endif
+void NeuralNetworkClassifier::info() {
+  INFO_LOG("classifier: E(%d,%d)", E.n_rows, E.n_cols);
+  INFO_LOG("classifier: W1(%d,%d)", W1.n_rows, W1.n_cols);
+  INFO_LOG("classifier: b1(%d)", b1.n_rows);
+  INFO_LOG("classifier: W2(%d,%d)", W2.n_rows, W2.n_cols);
+  INFO_LOG("classifier: saved(%d,%d)", saved.n_rows, saved.n_cols);
+  INFO_LOG("classifier: precomputed size=%d", precomputation_id_encoder.size());
+  INFO_LOG("classifier: hidden layer size=%d", hidden_layer_size);
+  INFO_LOG("classifier: embedding size=%d", embedding_size);
+  INFO_LOG("classifier: number of classes=%d", nr_classes);
+  INFO_LOG("classifier: number of feature types=%d", nr_feature_types);
 }
 
-void NeuralNetworkClassifier::load(std::ifstream& ifs) {
-#if 0
-  E.load(ifs);
-  W1.load(ifs);
-  b1.load(ifs);
-  W2.load(ifs);
-  saved.load(ifs);
-  boost::archive::text_iarchive ia(ifs);
-  ia >> precomputation_id_encoder;
+void NeuralNetworkClassifier::canonical() {
   hidden_layer_size = b1.n_rows;
   nr_feature_types = W1.n_cols / E.n_rows;
   nr_classes = W2.n_rows;
   embedding_size = E.n_rows;
-  info();
-#endif
-}
-
-void NeuralNetworkClassifier::info() {
-  TRACE_LOG("classifier: E(%d,%d)", E.n_rows, E.n_cols);
-  TRACE_LOG("classifier: W1(%d,%d)", W1.n_rows, W1.n_cols);
-  TRACE_LOG("classifier: b1(%d)", b1.n_rows);
-  TRACE_LOG("classifier: W2(%d,%d)", W2.n_rows, W2.n_cols);
-  TRACE_LOG("classifier: saved(%d,%d)", saved.n_rows, saved.n_cols);
-  TRACE_LOG("classifier: precomputed size=%d", precomputation_id_encoder.size());
-  TRACE_LOG("classifier: hidden layer size=%d", hidden_layer_size);
-  TRACE_LOG("classifier: embedding size=%d", embedding_size);
-  TRACE_LOG("classifier: number of classes=%d", nr_classes);
-  TRACE_LOG("classifier: number of feature types=%d", nr_feature_types);
 }
 
 } //  namespace depparser

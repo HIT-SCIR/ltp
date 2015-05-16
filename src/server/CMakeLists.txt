@@ -8,12 +8,9 @@ include_directories (./
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)
 
-set (ltp_server_SRC           ltp_server.cpp mongoose.c mongoose.h)
-
+set (ltp_server_SRC ltp_server.cpp mongoose.c mongoose.h)
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
-
-add_executable (ltp_server     ${ltp_server_SRC})
-
+add_executable (ltp_server ${ltp_server_SRC})
 target_link_libraries (ltp_server
     maxent_static_lib
     ltp
@@ -27,4 +24,11 @@ target_link_libraries (ltp_server
     dl
     pthread
     boost_regex_static_lib)
+
+if (MSVC)
+  target_link_libraries (ltp_server
+      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
+else()
+  target_link_libraries (ltp_server openblas)
+endif ()
 

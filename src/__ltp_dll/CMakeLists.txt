@@ -10,11 +10,6 @@ include_directories (./
     ${srl_DIR}
     ${THIRDPARTY_DIR}/tinyxml)
 
-SET(ltp_SRC
-    Ltp.cpp
-    Ltp.h
-    LTPOption.h
-    LTPResource.cpp
-    LTPResource.h)
+SET(ltp_SRC Ltp.cpp LTPResource.cpp)
 
 ADD_LIBRARY(ltp ${ltp_SRC})

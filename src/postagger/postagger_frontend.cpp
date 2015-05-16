@@ -36,13 +36,13 @@ PostaggerFrontend::PostaggerFrontend(const std::string& reference_file,
   train_opt.max_iter = max_iter;
   train_opt.rare_feature_threshold = rare_feature_threshold;
 
-  TRACE_LOG("||| ltp postagger, training ...");
-  TRACE_LOG("report: reference file = %s", train_opt.train_file.c_str());
-  TRACE_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
-  TRACE_LOG("report: algorith = %s", train_opt.algorithm.c_str());
-  TRACE_LOG("report: model name = %s", train_opt.model_name.c_str());
-  TRACE_LOG("report: maximum iteration = %d", train_opt.max_iter);
-  TRACE_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
+  INFO_LOG("||| ltp postagger, training ...");
+  INFO_LOG("report: reference file = %s", train_opt.train_file.c_str());
+  INFO_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
+  INFO_LOG("report: algorith = %s", train_opt.algorithm.c_str());
+  INFO_LOG("report: model name = %s", train_opt.model_name.c_str());
+  INFO_LOG("report: maximum iteration = %d", train_opt.max_iter);
+  INFO_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
 }
 
 PostaggerFrontend::PostaggerFrontend(const std::string& input_file,
@@ -55,19 +55,19 @@ PostaggerFrontend::PostaggerFrontend(const std::string& input_file,
   test_opt.lexicon_file = lexicon_file;
   test_opt.evaluate = evaluate;
 
-  TRACE_LOG("||| ltp postagger, testing ...");
-  TRACE_LOG("report: input file = %s", test_opt.test_file.c_str());
-  TRACE_LOG("report: model file = %s", test_opt.model_file.c_str());
-  TRACE_LOG("report: lexicon file = %s", test_opt.lexicon_file.c_str());
-  TRACE_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
+  INFO_LOG("||| ltp postagger, testing ...");
+  INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
+  INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
+  INFO_LOG("report: lexicon file = %s", test_opt.lexicon_file.c_str());
+  INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
 }
 
 PostaggerFrontend::PostaggerFrontend(const std::string& model_file)
   : Frontend(kDump) {
   dump_opt.model_file = model_file; 
 
-  TRACE_LOG("||| ltp postagger, dumpping ...");
-  TRACE_LOG("report: model file = %s", model_file.c_str());
+  INFO_LOG("||| ltp postagger, dumpping ...");
+  INFO_LOG("report: model file = %s", model_file.c_str());
 }
 
 PostaggerFrontend::~PostaggerFrontend() {
@@ -117,44 +117,44 @@ void PostaggerFrontend::build_feature_space(void) {
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     Postagger::extract_features((*train_dat[i]), NULL, true);
     if ((i+ 1) % interval == 0) {
-      TRACE_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
+      INFO_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
     }
   }
-  TRACE_LOG("trace: feature space is built for %d instances.", train_dat.size());
+  INFO_LOG("trace: feature space is built for %d instances.", train_dat.size());
 }
 
 void PostaggerFrontend::train(void) {
   // read in training instance
-  TRACE_LOG("trace: reading reference dataset ...");
+  INFO_LOG("trace: reading reference dataset ...");
   if (!read_instances(train_opt.train_file.c_str())) {
     ERROR_LOG("Training file doesn't exist.");
   }
-  TRACE_LOG("trace: %d sentences is loaded.", train_dat.size());
+  INFO_LOG("trace: %d sentences is loaded.", train_dat.size());
 
   model = new Model(Extractor::num_templates());
   // build tag dictionary, map string tag to index
-  TRACE_LOG("report: start building configuration ...");
+  INFO_LOG("report: start building configuration ...");
   build_configuration();
-  TRACE_LOG("report: build configuration is done.");
-  TRACE_LOG("report: number of postags: %d", model->labels.size());
+  INFO_LOG("report: build configuration is done.");
+  INFO_LOG("report: number of postags: %d", model->labels.size());
 
   // build feature space from the training instance
-  TRACE_LOG("report: start building feature space ...");
+  INFO_LOG("report: start building feature space ...");
   build_feature_space();
-  TRACE_LOG("report: building feature space is done.");
-  TRACE_LOG("report: number of features: %d", model->space.num_features());
+  INFO_LOG("report: building feature space is done.");
+  INFO_LOG("report: number of features: %d", model->space.num_features());
 
   model->param.realloc(model->space.dim());
-  TRACE_LOG("report: allocate %d dimensition parameter.", model->space.dim());
+  INFO_LOG("report: allocate %d dimensition parameter.", model->space.dim());
 
   int nr_groups = model->space.num_groups();
   std::vector<int> groupwise_update_counters;
 
   if (train_opt.rare_feature_threshold > 0) {
     groupwise_update_counters.resize(nr_groups, 0);
-    TRACE_LOG("report: allocate %d update-time counters", nr_groups);
+    INFO_LOG("report: allocate %d update-time counters", nr_groups);
   } else {
-    TRACE_LOG("report: model truncation is inactived.");
+    INFO_LOG("report: model truncation is inactived.");
   }
 
   int best_iteration = -1;
@@ -163,7 +163,7 @@ void PostaggerFrontend::train(void) {
   std::vector<size_t> update_counts;
 
   for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
-    TRACE_LOG("Training iteraition #%d", (iter + 1));
+    INFO_LOG("Training iteraition #%d", (iter + 1));
 
     size_t interval= train_dat.size() / 10;
     for (size_t i = 0; i < train_dat.size(); ++ i) {
@@ -189,10 +189,10 @@ void PostaggerFrontend::train(void) {
 
       ctx.clear();
       if ((i+1) % interval == 0) {
-        TRACE_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
+        INFO_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
       }
     }
-    TRACE_LOG("trace: %d instances is trained.", train_dat.size());
+    INFO_LOG("trace: %d instances is trained.", train_dat.size());
     model->param.flush( train_dat.size() * (iter + 1) );
 
     Model* new_model = new Model(Extractor::num_templates());
@@ -214,10 +214,10 @@ void PostaggerFrontend::train(void) {
     new_model->save(model_header, Parameters::kDumpAveraged, ofs);
     delete new_model;
 
-    TRACE_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
+    INFO_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
   }
 
-  TRACE_LOG("Best result (iteration = %d) : P = %lf", best_iteration, best_p);
+  INFO_LOG("Best result (iteration = %d) : P = %lf", best_iteration, best_p);
 }
 
 
@@ -260,7 +260,7 @@ void PostaggerFrontend::evaluate(double &p) {
 
   p = (double)num_recalled_tags / num_tags;
 
-  TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
+  INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
   return;
 }
 
@@ -279,9 +279,9 @@ void PostaggerFrontend::test(void) {
     return;
   }
 
-  TRACE_LOG("report: number of labels = %d", model->num_labels());
-  TRACE_LOG("report: number of features = %d", model->space.num_features());
-  TRACE_LOG("report: number of dimension = %d", model->space.dim());
+  INFO_LOG("report: number of labels = %d", model->num_labels());
+  INFO_LOG("report: number of features = %d", model->space.num_features());
+  INFO_LOG("report: number of dimension = %d", model->space.dim());
 
   // load exteranl lexicon
   // const char * lexicon_file = test_opt.lexicon_file.c_str();
@@ -329,9 +329,9 @@ void PostaggerFrontend::test(void) {
 
   double p = (double)num_recalled_tags / num_tags;
   if (test_opt.evaluate) {
-    TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
+    INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
   }
-  TRACE_LOG("Elapsed time %lf", t.elapsed());
+  INFO_LOG("Elapsed time %lf", t.elapsed());
 
   //sleep(1000000);
   return;
@@ -354,9 +354,9 @@ void PostaggerFrontend::dump() {
   }
 
   int L = model->num_labels();
-  TRACE_LOG("Number of labels %d", model->num_labels());
-  TRACE_LOG("Number of features %d", model->space.num_features());
-  TRACE_LOG("Number of dimension %d", model->space.dim());
+  INFO_LOG("Number of labels %d", model->num_labels());
+  INFO_LOG("Number of features %d", model->space.num_features());
+  INFO_LOG("Number of dimension %d", model->space.dim());
 
   for (framework::FeatureSpaceIterator itx = model->space.begin();
        itx != model->space.end(); ++ itx) {

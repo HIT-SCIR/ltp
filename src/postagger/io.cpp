@@ -9,7 +9,7 @@ namespace postagger {
 using strutils::chartypes::sbc2dbc_x;
 using strutils::rsplit_by_sep;
 using strutils::split;
-using strutils::chomp;
+using strutils::trim;
 using framework::LineCountsReader;
 
 PostaggerReader::PostaggerReader(std::istream& _is,
@@ -27,13 +27,13 @@ Instance* PostaggerReader::next() {
 
   cursor ++;
   if (trace && cursor % interval == 0) {
-    TRACE_LOG("reading: read %d0%% instances.", (cursor/ interval));
+    INFO_LOG("reading: read %d0%% instances.", (cursor/ interval));
   }
   Instance* inst = new Instance;
   std::string line;
 
   std::getline(is, line);
-  line = chomp(line);
+  trim(line);
 
   if (line.size() == 0) {
     delete inst;

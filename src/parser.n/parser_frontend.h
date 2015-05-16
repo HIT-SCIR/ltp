@@ -48,15 +48,11 @@ private:
   void check_dataset(const std::vector<Instance*>& dataset);
   void build_alphabet(void);
   void build_cluster(void);
-  void build_feature_space(void);
   void collect_precomputed_features(void);
   void initialize_classifier(void);
   void generate_training_samples_one_batch(
       std::vector<Sample>::const_iterator& begin,
       std::vector<Sample>::const_iterator& end);
-  void predict(const Instance& data,
-      std::vector<int>& heads,
-      std::vector<std::string>& deprels);
 };  //  end for class Parser
 
 }   //  end for namespace depparser

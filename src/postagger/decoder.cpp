@@ -9,7 +9,7 @@ namespace postagger {
 using utility::Bitset;
 using utility::IndexableSmartMap;
 using strutils::split;
-using strutils::chomp;
+using strutils::trim;
 using strutils::chartypes::sbc2dbc_x;
 
 PostaggerLexiconConstrain::PostaggerLexiconConstrain()
@@ -24,7 +24,7 @@ bool PostaggerLexiconConstrain::load(std::istream& is,
   int num_entries = 0;
 
   while (std::getline(is, buffer)) {
-    buffer = chomp(buffer);
+    trim(buffer);
     if (buffer.size() == 0) {
       WARNING_LOG("line %4d: empty, can not load constrain",
           num_lines);

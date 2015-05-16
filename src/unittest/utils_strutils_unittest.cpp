@@ -3,23 +3,47 @@
 #include <gtest/gtest.h>
 #include "utils/strutils.hpp"
 
-TEST(strutils_unittest, test_chomp_basic) {
-  std::string testcase = ltp::strutils::chomp(" basic test \n");
+TEST(strutils_unittest, test_trim_basic) {
+  std::string testcase = " basic test \n";
+  ltp::strutils::trim(testcase);
   EXPECT_STREQ("basic test", testcase.c_str());
 }
 
-TEST(strutils_unittest, test_chomp_right) {
-  std::string testcase = ltp::strutils::chomp("right strip\n\n");
+TEST(strutils_unittest, test_trim_right) {
+  std::string testcase = "right strip\n\n";
+  ltp::strutils::trim(testcase);
   EXPECT_STREQ("right strip", testcase.c_str());
 }
 
-TEST(strutils_unittest, test_chomp_left) {
-  std::string testcase = ltp::strutils::chomp("\n left strip");
+TEST(strutils_unittest, test_trim_left) {
+  std::string testcase ="\n left strip";
+  ltp::strutils::trim(testcase);
   EXPECT_STREQ("left strip", testcase.c_str());
 }
 
-TEST(strutils_unittest, test_chomp_empty) {
-  std::string testcase = ltp::strutils::chomp(" \n");
+TEST(strutils_unittest, test_trim_empty) {
+  std::string testcase = " \n";
+  ltp::strutils::trim(testcase);
+  EXPECT_STREQ("", testcase.c_str());
+}
+
+TEST(strutils_unittest, test_trim_copy_basic) {
+  std::string testcase = ltp::strutils::trim_copy(" basic test \n");
+  EXPECT_STREQ("basic test", testcase.c_str());
+}
+
+TEST(strutils_unittest, test_trim_copy_right) {
+  std::string testcase = ltp::strutils::trim_copy("right strip\n\n");
+  EXPECT_STREQ("right strip", testcase.c_str());
+}
+
+TEST(strutils_unittest, test_trim_copy_left) {
+  std::string testcase = ltp::strutils::trim_copy("\n left strip");
+  EXPECT_STREQ("left strip", testcase.c_str());
+}
+
+TEST(strutils_unittest, test_trim_copy_empty) {
+  std::string testcase = ltp::strutils::trim_copy(" \n");
   EXPECT_STREQ("", testcase.c_str());
 }
 

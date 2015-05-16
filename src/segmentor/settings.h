@@ -20,9 +20,6 @@ const std::string __s__         = "s";
 const std::string __eng__       = "_eng_";
 const std::string __uri__       = "_uri_";
 
-const double EPS        = 1e-8;
-const double NEG_INF    = -1e20;
-
 const int __num_pos_types__ = 4;
 static const char* __pos_types__[] = { "b", "i", "e", "s", };
 

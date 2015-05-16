@@ -12,9 +12,6 @@ const std::string BOP = "_bop_";
 const std::string EOP = "_eop_";
 const std::string OTHER = "O";
 
-const double EPS        = 1e-8;
-const double NEG_INF    = -1e20;
-
 const int __num_pos_types__ = 4;
 static const char* __pos_types__[] = { "B", "I", "E", "S", };
 

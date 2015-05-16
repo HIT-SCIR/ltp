@@ -6,7 +6,7 @@ namespace ltp {
 namespace ner {
 
 using strutils::split_by_sep;
-using strutils::chomp;
+using strutils::trim_copy;
 
 NERTransitionConstrain::NERTransitionConstrain(const utility::IndexableSmartMap& alphabet,
     const std::vector<std::string>& includes): T(alphabet.size()) {
@@ -18,8 +18,8 @@ NERTransitionConstrain::NERTransitionConstrain(const utility::IndexableSmartMap&
       continue;
     }
 
-    int from = alphabet.index(chomp(tokens[0]));
-    int to = alphabet.index(chomp(tokens[1]));
+    int from = alphabet.index(trim_copy(tokens[0]));
+    int to = alphabet.index(trim_copy(tokens[1]));
     if (-1 == from || -1 == to) {
       WARNING_LOG("label in constrain text \"%s\" is not in alphabet.", include.c_str());
     }

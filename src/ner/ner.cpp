@@ -54,7 +54,7 @@ void NamedEntityRecognizer::build_glob_tran_cons(
     }
   }
 
-  TRACE_LOG("build-config: add %d constrains.", includes.size());
+  INFO_LOG("build-config: add %d constrains.", includes.size());
   glob_con = new NERTransitionConstrain(model->labels, includes);
 }
 
