@@ -17,7 +17,7 @@ public:
   ~Instance() {
   }
 
-  inline size_t size() const {
+  size_t size() const {
     return forms.size();
   }
 
@@ -25,27 +25,25 @@ public:
    * return the number of tags that predict wrong
    *  @return int  the number
    */
-  int num_errors() {
-    int len = size();
+  size_t num_errors() const {
+    size_t len = size();
     if ((len != tagsidx.size()) || (len != predict_tagsidx.size())) {
-      return -1;
+      return len;
     }
 
-    int ret = 0;
-    for (int i = 0; i < len; ++ i) {
-      if (tagsidx[i] != predict_tagsidx[i]) {
-        ++ ret;
-      }
+    size_t ret = 0;
+    for (size_t i = 0; i < len; ++ i) {
+      if (tagsidx[i] != predict_tagsidx[i]) { ++ ret; }
     }
 
     return ret;
   }
 
-  int num_predicted_words() {
+  int num_predicted_words() const {
     return predict_words.size();
   }
 
-  int num_gold_words() {
+  int num_gold_words() const {
     return words.size();
   }
 
@@ -54,16 +52,16 @@ public:
    * calculate the number of words that predict right
    *  @return int  the number
    */
-  int num_recalled_words() {
+  int num_recalled_words() const {
     int len = 0;
     int ret = 0;
     int gold_len = 0, predict_len = 0;
 
-    for (int i = 0; i < words.size(); ++ i) {
+    for (size_t i = 0; i < words.size(); ++ i) {
       len += words[i].size();
     }
 
-    for (int i = 0, j = 0; i < words.size() && j < predict_words.size(); ) {
+    for (size_t i = 0, j = 0; i < words.size() && j < predict_words.size(); ) {
       if (words[i] == predict_words[j]) {
         ++ ret;
         gold_len += words[i].size();

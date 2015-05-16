@@ -11,7 +11,7 @@ set (ltp_dll_DIR        ${SOURCE_DIR}/__ltp_dll/)
 set (server_DIR         ${SOURCE_DIR}/server/)
 
 #add_subdirectory ("__xml4nlp")
-#add_subdirectory ("splitsnt")
+add_subdirectory ("splitsnt")
 add_subdirectory ("segmentor")
 add_subdirectory ("postagger")
 add_subdirectory ("ner")

@@ -31,16 +31,27 @@ inline int split_sentence(const std::string & text,
     } else if (itx->second == itx->first + 3) {
       std::string chunk = text.substr(itx->first, itx->second- itx->first);
       bool found_periods = false;
-      if (itx.has_next()) {
-        std::pair<int, int> next = itx.next();
-        std::string chunk2= chunk+ text.substr(next.first, next.second- next.first);
-        if (chunk2 == __double_periods_utf8_buff__[0]
-            || chunk2 == __double_periods_utf8_buff__[1]
-            || chunk2 == __double_periods_utf8_buff__[2]
-            || chunk2 == __double_periods_utf8_buff__[3]
-            || chunk2 == __double_periods_utf8_buff__[4]
-            || chunk2 == __double_periods_utf8_buff__[5]) {
-          sentence.append(text.substr(itx->first, 6));
+      if (itx->second + 6 < len) {
+        std::string chunk2 = text.substr(itx->first, 9);
+        if (chunk2 == __three_periods_utf8_buff__[0]
+          || chunk2 == __three_periods_utf8_buff__[1]
+          || chunk2 == __three_periods_utf8_buff__[2]) {
+          sentence.append(chunk2);
+          sentences.push_back(sentence);
+          sentence.clear();
+          found_periods = true;
+          ++itx;
+        }
+      }
+      if (!found_periods && itx->second + 3 < len) {
+        std::string chunk2= text.substr(itx->first, 6);
+        if (chunk2 == __two_periods_utf8_buff__[0]
+            || chunk2 == __two_periods_utf8_buff__[1]
+            || chunk2 == __two_periods_utf8_buff__[2]
+            || chunk2 == __two_periods_utf8_buff__[3]
+            || chunk2 == __two_periods_utf8_buff__[4]
+            || chunk2 == __two_periods_utf8_buff__[5]) {
+          sentence.append(chunk2);
           sentences.push_back(sentence);
           sentence.clear();
           found_periods = true;
@@ -48,11 +59,11 @@ inline int split_sentence(const std::string & text,
         }
       }
       if (!found_periods) {
-        if (chunk == __single_periods_utf8_buff__[0]
-            || chunk == __single_periods_utf8_buff__[1]
-            || chunk == __single_periods_utf8_buff__[2]
-            || chunk == __single_periods_utf8_buff__[3]
-            || chunk == __single_periods_utf8_buff__[4]) {
+        if (chunk == __one_periods_utf8_buff__[0]
+            || chunk == __one_periods_utf8_buff__[1]
+            || chunk == __one_periods_utf8_buff__[2]
+            || chunk == __one_periods_utf8_buff__[3]
+            || chunk == __one_periods_utf8_buff__[4]) {
           sentence.append(text.substr(itx->first,3));
           sentences.push_back(sentence);
           sentence.clear();

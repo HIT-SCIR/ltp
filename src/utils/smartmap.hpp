@@ -595,7 +595,7 @@ public:
   }
 
 private:
-  int cap_entries;
+  size_t cap_entries;
   int * entries;
 
 public:
@@ -643,7 +643,7 @@ public:
    *  @param[in]  i         the index
    *  @return   const char *  pointer to the key
    */
-  const char* at(int i) const {
+  const char* at(const size_t& i) const {
     if (i >= 0 && i < _num_entries) {
       return SmartMap<int>::_key_buffer + entries[i];
     } else {
@@ -675,7 +675,7 @@ public:
    *
    *  @param[out] out   the output stream
    */
-  void dump(std::ostream & out) {
+  void dump(std::ostream & out) const {
     SmartMap<int>::dump(out);
     out.write(reinterpret_cast<const char *>(entries), sizeof(int) * _num_entries);
   }

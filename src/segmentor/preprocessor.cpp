@@ -43,7 +43,7 @@ void Preprocessor::special_token(const std::string& sentence,
   for (size_t i = 0; i < ltp::segmentor::special_tokens_size; ++i){
     const std::string& special_token = ltp::segmentor::special_tokens[i];
     while((pos = sentence.find(special_token, pos)) != std::string::npos){
-      int pos_end = pos + special_token.length();
+      size_t pos_end = pos + special_token.length();
 
       if (check_flags(flags, pos, pos_end, NONE)){
         flags[pos] = SPECIAL_TOKEN_BEG;

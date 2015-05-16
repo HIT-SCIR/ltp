@@ -10,16 +10,11 @@
 namespace ltp {
 namespace postagger {
 
-using framework::Frontend;
-using framework::ViterbiDecoder;
-using framework::ViterbiFeatureContext;
-using framework::ViterbiScoreMatrix;
-
-class PostaggerFrontend: public Postagger, Frontend {
+class PostaggerFrontend: public Postagger, framework::Frontend {
 private:
-  ViterbiDecoder* decoder;            //! The decoder.
-  ViterbiFeatureContext* ctx;         //! The decode context
-  ViterbiScoreMatrix* scm;            //! The score matrix
+  framework::ViterbiDecoder decoder;            //! The decoder.
+  framework::ViterbiFeatureContext ctx;         //! The decode context
+  framework::ViterbiScoreMatrix scm;            //! The score matrix
   std::vector<Instance *> train_dat;  //! The training data.
 
   TrainOptions train_opt;

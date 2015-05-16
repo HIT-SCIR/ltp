@@ -17,10 +17,10 @@ using framework::ViterbiScoreMatrix;
 
 class NamedEntityRecognizerFrontend: public NamedEntityRecognizer, Frontend {
 private:
-  ViterbiDecoder* decoder;
-  ViterbiFeatureContext* ctx;
-  ViterbiScoreMatrix* scm;
-  std::vector< Instance * > train_dat;
+  ViterbiDecoder decoder;
+  ViterbiFeatureContext ctx;
+  ViterbiScoreMatrix scm;
+  std::vector<Instance *> train_dat;
 
   TrainOptions train_opt;
   TestOptions test_opt;

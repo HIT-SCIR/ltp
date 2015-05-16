@@ -19,12 +19,10 @@ public:
    *
    *  @return   int   the number of labels
    */
-  int num_labels(void) const {
-    return labels.size();
-  }
+  size_t num_labels(void) const { return labels.size(); }
 
   void save(const std::string& model_name, const Parameters::DumpOption& opt,
-      std::ostream & ofs) {
+      std::ostream & ofs) const {
     save(model_name.c_str(), opt, ofs);
   }
 
@@ -36,34 +34,34 @@ public:
    *  @param[out] ofs         The output stream.
    */
   void save(const char* model_name, const Parameters::DumpOption& opt,
-      std::ostream & ofs) {
+      std::ostream & ofs) const {
     // write a signature into the file
     char chunk[128];
     strncpy(chunk, model_name, 128);
 
     ofs.write(chunk, 128);
-    int off = ofs.tellp();
-    size_t labels_offset    = 0;
-    size_t feature_offset   = 0;
-    size_t parameter_offset = 0;
+    // std::streamoff off = ofs.tellp();
+    // std::streamoff labels_offset = 0;
+    // std::streamoff feature_offset = 0;
+    // std::streamoff parameter_offset = 0;
 
-    write_uint(ofs, 0); //  the label offset
-    write_uint(ofs, 0); //  the features offset
-    write_uint(ofs, 0); //  the parameter offset
+    // write_uint(ofs, 0); //  the label offset
+    // write_uint(ofs, 0); //  the features offset
+    // write_uint(ofs, 0); //  the parameter offset
 
-    labels_offset = ofs.tellp();
+    // labels_offset = ofs.tellp();
     labels.dump(ofs);
 
-    feature_offset = ofs.tellp();
+    // feature_offset = ofs.tellp();
     space.dump(ofs);
 
-    parameter_offset = ofs.tellp();
+    // parameter_offset = ofs.tellp();
     param.dump(ofs, opt);
 
-    ofs.seekp(off);
-    write_uint(ofs, labels_offset);
-    write_uint(ofs, feature_offset);
-    write_uint(ofs, parameter_offset);
+    // ofs.seekp(off);
+    // write_uint(ofs, labels_offset);
+    // write_uint(ofs, feature_offset);
+    // write_uint(ofs, parameter_offset);
   }
 
   bool load(const std::string& model_name, std::istream& ifs) {
@@ -83,22 +81,22 @@ public:
       return false;
     }
 
-    size_t labels_offset = read_uint(ifs);
-    size_t feature_offset = read_uint(ifs);
-    size_t parameter_offset = read_uint(ifs);
+    // size_t labels_offset = read_uint(ifs);
+    // size_t feature_offset = read_uint(ifs);
+    // size_t parameter_offset = read_uint(ifs);
 
-    ifs.seekg(labels_offset);
+    // ifs.seekg(labels_offset);
     if (!labels.load(ifs)) {
       return false;
     }
 
-    ifs.seekg(feature_offset);
+    // ifs.seekg(feature_offset);
     if (!space.load(ifs)) {
       return false;
     }
     space.set_num_labels(labels.size());
 
-    ifs.seekg(parameter_offset);
+    // ifs.seekg(parameter_offset);
     if (!param.load(ifs)) {
       return false;
     }

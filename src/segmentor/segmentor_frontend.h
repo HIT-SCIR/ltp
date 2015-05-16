@@ -10,18 +10,16 @@
 namespace ltp {
 namespace segmentor {
 
-class SegmentorFrontend: public Segmentor, framework::Frontend {
-private:
-  framework::ViterbiDecoder* decoder;     //! The decoder.
-  framework::ViterbiFeatureContext* ctx;  //! The decode context
-  framework::ViterbiScoreMatrix* scm;     //! The score matrix
-  std::vector<Instance *> train_dat;      //! The training data.
+class SegmentorFrontend: public Segmentor, public framework::Frontend {
+protected:
+  framework::ViterbiDecoder decoder;     //! The decoder.
+  framework::ViterbiFeatureContext ctx;  //! The decode context
+  framework::ViterbiScoreMatrix scm;     //! The score matrix
+  std::vector<Instance *> train_dat;     //! The training data.
 
   TrainOptions train_opt;
   TestOptions  test_opt;
   DumpOptions  dump_opt;
-
-  static const std::string model_header;
 
   size_t timestamp;
 public:
@@ -45,7 +43,13 @@ public:
   void test(void);
   void dump(void);
 
-private:
+protected:
+
+  virtual void extract_features(const Instance& inst, bool create);
+  virtual void extract_features(const Instance& inst);
+  virtual void calculate_scores(const Instance& inst, bool avg);
+  virtual void collect_features(const Instance& inst);
+  virtual void update(const Instance& inst, math::SparseVec& updated_features);
 
   /**
    * Read instances from file and store them in train_dat
@@ -82,9 +86,7 @@ private:
    */
   void evaluate(double &p, double &r, double &f);
 
-  void set_timestamp(const size_t& ts);
-
-  size_t get_timestamp() const;
+  virtual size_t get_timestamp() const;
 
   void increase_timestamp();
 };

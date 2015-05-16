@@ -40,7 +40,7 @@ public:
     return _vec.size();
   }
 
-  inline double L2() {
+  inline double L2() const {
     double norm = 0;
     for (const_iterator itx = _vec.begin();
         itx != _vec.end(); ++ itx) {

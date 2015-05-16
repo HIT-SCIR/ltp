@@ -6,6 +6,7 @@
 #define __CODECS_HPP__
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 namespace ltp {
@@ -104,10 +105,8 @@ private:
   }
 };
 
-
-inline
-int decode(const std::string & s,
-    std::vector<std::string>& chars, int encoding=UTF8) {
+inline int decode(const std::string & s, std::vector<std::string>& chars,
+  int encoding=UTF8) {
   int len=0;
   chars.clear();
 
@@ -116,7 +115,7 @@ int decode(const std::string & s,
     chars.push_back(s.substr(itx->first, itx->second- itx->first));
   }
   if (false == itx.is_good()) {
-    std::cerr << "Warning: in codecs.hpp decode: string '" << s 
+    std::cerr << "Warning: in codecs.hpp decode: string '" << s
       << "' is not encoded in unicode utf-8" << std::endl;
     chars.clear();
     return -1;
@@ -125,16 +124,14 @@ int decode(const std::string & s,
 }
 
 
-inline
-size_t length(const std::string & s, int encoding=UTF8) {
+inline size_t length(const std::string & s, int encoding=UTF8) {
   size_t len = 0;
   for (iterator itx = iterator(s, encoding); itx.is_good() && !itx.is_end();++ itx, ++ len);
   return len;
 }
 
 
-inline
-bool initial(const std::string & s, 
+inline bool initial(const std::string & s, 
     std::string & ch, int encoding=UTF8) {
   if (s=="") {
     return false;
@@ -150,8 +147,7 @@ bool initial(const std::string & s,
 }
 
 
-inline
-bool tail(const std::string & s,
+inline bool tail(const std::string & s,
     std::string & ch, int encoding=UTF8) {
   int first = 0, second = 0;
   if (0 == s.size()) {
@@ -174,8 +170,7 @@ bool tail(const std::string & s,
 }
 
 
-inline
-bool isclear(const std::string & s, int encoding=UTF8) {
+inline bool isclear(const std::string & s, int encoding=UTF8) {
   unsigned idx = 0;
   if (encoding != UTF8 && encoding != GBK) {
     return false;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "config.h"
 #include "boost/program_options.hpp"
 #include "utils/logging.hpp"
 #include "ner/ner_frontend.h"
@@ -14,8 +15,8 @@ using boost::program_options::parse_command_line;
 using ltp::ner::NamedEntityRecognizerFrontend;
 
 int learn(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(learn) - Training suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options";
 
@@ -87,8 +88,8 @@ int learn(int argc, const char* argv[]) {
 }
 
 int test(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(test) - Testing suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options";
 
@@ -139,8 +140,8 @@ int test(int argc, const char* argv[]) {
 }
 
 int dump(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(dump) - Model visualization suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(dump) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Model visualization suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " dump <options>\n\n";
   usage += "options";
 
@@ -171,8 +172,8 @@ int dump(int argc, const char* argv[]) {
 }
 
 int main(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE " - Training and testing suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training and testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " [learn|test|dump] <options>";
 
   if (argc == 1) {

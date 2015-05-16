@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include "config.h"
 #include "utils/logging.hpp"
 #include "boost/program_options.hpp"
 #include "parser.n/options.h"

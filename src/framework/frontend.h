@@ -23,6 +23,31 @@ public:
   //! The constructor
   Frontend(const FrontendMode& _mode): mode(_mode) {}
 
+  void learn_passive_aggressive(const math::SparseVec& updated_features,
+    const size_t& timestamp, const double& error, Model* model) {
+    double score = model->param.dot(updated_features, false);
+    learn_passive_aggressive(updated_features, timestamp, error, score, model);
+  }
+
+  void learn_passive_aggressive(const math::SparseVec& updated_features,
+    const size_t& timestamp, const double& error, const double& score, Model* model) {
+    double norm = updated_features.L2();
+    double step = 0.;
+
+    if (norm < 1e-8) {
+      step = 0;
+    }
+    else {
+      step = (error - score) / norm;
+    }
+    model->param.add(updated_features, timestamp, step);
+  }
+
+  void learn_averaged_perceptron(const math::SparseVec& updated_features,
+    const size_t& timestamp, Model* model) {
+    model->param.add(updated_features, timestamp, 1.);
+  }
+
   // The perceptron learning part.
   /**
    * Perform the online learning algorithm to learn the model parameters.
@@ -36,34 +61,14 @@ public:
    *  @param[out] update_features   The features the updated.
    */
   void learn(const std::string& algorithm,
-      const math::SparseVec& correct_features,
-      const math::SparseVec& predict_features,
+      const math::SparseVec& updated_features,
       const size_t& timestamp,
-      const size_t& margin,
-      Model* model,
-      math::SparseVec& update_features) {
-
-    update_features.zero();
+      const double& margin,
+      Model* model) {
     if (algorithm == "pa") {
-      update_features.add(correct_features, 1.);
-      update_features.add(predict_features, -1.);
-
-      double error = margin;
-      double score = model->param.dot(update_features, false);
-      double norm = update_features.L2();
-
-      double step = 0.;
-      if (norm < 1e-8) {
-        step = 0;
-      } else {
-        step = (error - score) / norm;
-      }
-      model->param.add(update_features, timestamp, step);
+      learn_passive_aggressive(updated_features, timestamp, margin, model);
     } else if (algorithm == "ap") {
-      update_features.add(correct_features, 1.);
-      update_features.add(predict_features, -1.);
-
-      model->param.add(update_features, timestamp, 1.);
+      learn_averaged_perceptron(updated_features, timestamp, model);
     } else {
       WARNING_LOG("framework, frontend: unknown learning algorithm: %s", algorithm.c_str());
     }
@@ -134,7 +139,7 @@ public:
 
       if (all_zero) { continue; }
       int idx = source->space.retrieve(tid, key);
-      if (idx < update_counts.size() && update_counts[idx] < threshold) { continue; }
+      if ((size_t)idx < update_counts.size() && update_counts[idx] < threshold) { continue; }
       target->space.retrieve(tid, key, true);
     }
 
@@ -158,8 +163,8 @@ public:
       }
     }
 
-    for (int pt = 0; pt < T; ++ pt) {
-      for (int t = 0; t < T; ++ t) {
+    for (size_t pt = 0; pt < T; ++ pt) {
+      for (size_t t = 0; t < T; ++ t) {
         int old_id = source->space.index(pt, t);
         int new_id = target->space.index(pt, t);
 

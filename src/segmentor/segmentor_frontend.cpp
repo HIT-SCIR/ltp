@@ -24,9 +24,7 @@ using math::SparseVec;
 using math::FeatureVector;
 using strutils::to_str;
 using utility::SmartMap;
-using utility::get_time;
-
-const std::string SegmentorFrontend::model_header = "otcws";
+using utility::timer;
 
 SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
     const std::string& holdout_file,
@@ -35,7 +33,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
     const size_t& max_iter,
     const size_t& rare_feature_threshold,
     bool dump_model_details)
-  : decoder(0), ctx(0), scm(0), timestamp(0), Frontend(kLearn) {
+  : timestamp(0), Frontend(kLearn) {
   train_opt.train_file = reference_file;
   train_opt.holdout_file = holdout_file;
   train_opt.algorithm = algorithm;
@@ -58,7 +56,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
 SegmentorFrontend::SegmentorFrontend(const std::string& input_file,
     const std::string& model_file,
     bool evaluate)
-  : decoder(0), ctx(0), scm(0), timestamp(0), Frontend(kTest) {
+  : timestamp(0), Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
@@ -70,7 +68,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& input_file,
 }
 
 SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
-  : decoder(0), ctx(0), scm(0), timestamp(0), Frontend(kDump) {
+  : timestamp(0), Frontend(kDump) {
   dump_opt.model_file = model_file;
 
   TRACE_LOG("||| ltp segmentor, dumpping ...");
@@ -78,17 +76,9 @@ SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
 }
 
 SegmentorFrontend::~SegmentorFrontend() {
-  if (decoder)  { delete decoder; decoder = 0; }
-  if (ctx)      { delete ctx; ctx = 0; }
-  if (scm)      { delete scm; scm = 0; }
-
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     if (train_dat[i]) { delete train_dat[i]; train_dat[i] = 0; }
   }
-}
-
-void SegmentorFrontend::set_timestamp(const size_t& ts) {
-  timestamp = ts;
 }
 
 size_t SegmentorFrontend::get_timestamp() const {
@@ -157,6 +147,23 @@ void SegmentorFrontend::build_configuration(void) {
   TRACE_LOG("report: internal lexicon size : %d", model->internal_lexicon.size());
 }
 
+void SegmentorFrontend::extract_features(const Instance& inst, bool create) {
+  Segmentor::extract_features(inst, model, &ctx, create);
+}
+
+void SegmentorFrontend::extract_features(const Instance& inst) {
+  Segmentor::extract_features(inst, model, NULL, true);
+}
+
+void SegmentorFrontend::calculate_scores(const Instance& inst, bool avg) {
+  Segmentor::calculate_scores(inst, (*model), ctx, avg, &scm);
+}
+
+void SegmentorFrontend::collect_features(const Instance& inst) {
+  Frontend::collect_features(model, ctx.uni_features, inst.tagsidx, ctx.correct_features);
+  Frontend::collect_features(model, ctx.uni_features, inst.predict_tagsidx, ctx.predict_features);
+}
+
 void SegmentorFrontend::build_feature_space(void) {
   // build feature space, it is a wrapper for featurespace.build_feature_space
   Extractor::num_templates();
@@ -170,7 +177,7 @@ void SegmentorFrontend::build_feature_space(void) {
 
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     build_lexicon_match_state(lexicons, train_dat[i]);
-    extract_features((*train_dat[i]), model, NULL, true);
+    extract_features((*train_dat[i]), true);
 
     if ((i+1) % interval == 0) {
       TRACE_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
@@ -191,6 +198,13 @@ bool SegmentorFrontend::read_instance(const char* train_file) {
   while ((inst = reader.next())) { train_dat.push_back(inst); }
 
   return true;
+}
+
+void SegmentorFrontend::update(const Instance& inst, SparseVec& updated_features) {
+  updated_features.add(ctx.correct_features, 1.);
+  updated_features.add(ctx.predict_features, -1.);
+
+  learn(train_opt.algorithm, updated_features, get_timestamp(), inst.num_errors(), model);
 }
 
 void SegmentorFrontend::train(void) {
@@ -232,16 +246,11 @@ void SegmentorFrontend::train(void) {
     TRACE_LOG("report: model truncation is inactived.");
   }
 
-  ctx = new ViterbiFeatureContext;
-  scm = new ViterbiScoreMatrix;
-  decoder = new ViterbiDecoder;
-  TRACE_LOG("report: allocated plain decoder");
-
   int best_iteration = -1;
   double best_p = -1., best_r = -1., best_f = -1.;
 
   std::vector<size_t> update_counts;
-  for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
+  for (size_t iter = 0; iter < train_opt.max_iter; ++ iter) {
     TRACE_LOG("Training iteration #%d", (iter + 1));
 
     size_t interval = train_dat.size()/ 10;
@@ -249,24 +258,17 @@ void SegmentorFrontend::train(void) {
       increase_timestamp();
 
       Instance* inst = train_dat[i];
-      extract_features((*inst), model, ctx, false);
-      calculate_scores((*inst), (*model), (*ctx), false, scm);
+      extract_features((*inst), false);
+      calculate_scores((*inst), false);
 
       con.regist(&(inst->chartypes));
-      decoder->decode((*scm), con, inst->predict_tagsidx);
+      decoder.decode(scm, con, inst->predict_tagsidx);
       //decoder->decode((*scm), inst->predict_tagsidx);
 
-      collect_features(model, ctx->uni_features, inst->tagsidx, ctx->correct_features);
-      collect_features(model, ctx->uni_features, inst->predict_tagsidx, ctx->predict_features);
+      collect_features((*inst));
 
       SparseVec updated_features;
-      learn(train_opt.algorithm,
-          ctx->correct_features,
-          ctx->predict_features,
-          get_timestamp(),
-          inst->num_errors(),
-          model,
-          updated_features);
+      update((*inst), updated_features);
 
       if (train_opt.rare_feature_threshold > 0) {
         increase_groupwise_update_counts(model, updated_features, update_counts);
@@ -343,12 +345,12 @@ void SegmentorFrontend::evaluate(double &p, double &r, double &f) {
     }
 
     build_lexicon_match_state(lexicons, inst);
-    extract_features((*inst), model, ctx, false);
-    calculate_scores((*inst), (*model), (*ctx), true, scm);
+    extract_features((*inst), false);
+    calculate_scores((*inst), true);
  
     con.regist(&(inst->chartypes));
-    decoder->decode((*scm), con, inst->predict_tagsidx);
-    ctx->clear();
+    decoder.decode(scm, con, inst->predict_tagsidx);
+    ctx.clear();
 
     build_words((*inst), inst->tagsidx, inst->words);
     build_words((*inst), inst->predict_tagsidx, inst->predict_words);
@@ -405,10 +407,6 @@ void SegmentorFrontend::test(void) {
     return;
   }
 
-  scm = new ViterbiScoreMatrix;
-  ctx = new ViterbiFeatureContext;
-  decoder = new ViterbiDecoder;
-
   SegmentWriter writer(std::cout);
   SegmentReader reader(ifs, preprocessor, test_opt.evaluate, false);
 
@@ -417,7 +415,7 @@ void SegmentorFrontend::test(void) {
   lexicons.push_back(&(model->external_lexicon));
 
   Instance* inst = NULL;
-  double before = get_time();
+  timer t;
   while ((inst = reader.next())) {
     int len = inst->size();
     if (test_opt.evaluate) {
@@ -427,12 +425,12 @@ void SegmentorFrontend::test(void) {
       }
     }
     build_lexicon_match_state(lexicons, inst);
-    extract_features((*inst), model, ctx, false);
-    calculate_scores((*inst), (*model), (*ctx), true, scm);
+    extract_features((*inst), false);
+    calculate_scores((*inst), true);
 
     con.regist(&(inst->chartypes));
-    decoder->decode((*scm), con, inst->predict_tagsidx);
-    ctx->clear();
+    decoder.decode(scm, con, inst->predict_tagsidx);
+    ctx.clear();
 
     build_words((*inst), inst->predict_tagsidx, inst->predict_words);
     if (test_opt.evaluate) {
@@ -444,7 +442,6 @@ void SegmentorFrontend::test(void) {
     delete inst;
   }
 
-  double after = get_time();
   double p = (double)num_recalled_words / num_predicted_words;
   double r = (double)num_recalled_words / num_gold_words;
   double f = 2 * p * r / (p + r);
@@ -452,7 +449,7 @@ void SegmentorFrontend::test(void) {
   TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
   TRACE_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
   TRACE_LOG("F: %lf" , f);
-  TRACE_LOG("Elapsed time %lf", after - before);
+  TRACE_LOG("Elapsed time %lf", t.elapsed());
   return;
 }
 

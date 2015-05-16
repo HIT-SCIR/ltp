@@ -176,7 +176,7 @@ public:
    *
    *  @param[in]  ofs   the output stream
    */
-  void dump(std::ostream & ofs) {
+  void dump(std::ostream & ofs) const {
     char chunk[16];
     size_t sz = _num_dicts;
     strncpy(chunk, "featurespace", 16);

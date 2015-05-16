@@ -37,7 +37,7 @@ public:
     size_t len = size();
     size_t ret = 0;
 
-    for (int i = 0; i < len; ++ i) {
+    for (size_t i = 0; i < len; ++ i) {
       if (tagsidx[i] == predict_tagsidx[i]) { ++ ret; }
     }
 
@@ -67,15 +67,13 @@ public:
   }
 
   size_t num_recalled_entites() const {
-    int len = 0;
-    int ret = 0;
-    int gold_len = 0, predict_len = 0;
+    size_t len = 0;
+    size_t ret = 0;
+    size_t gold_len = 0, predict_len = 0;
 
-    for (int i = 0; i < entities.size(); ++ i) {
-      len += entities[i].size();
-    }
+    for (size_t i = 0; i < entities.size(); ++ i) { len += entities[i].size(); }
 
-    for (int i = 0, j = 0; i < entities.size() && j < predict_entities.size(); ) {
+    for (size_t i = 0, j = 0; i < entities.size() && j < predict_entities.size(); ) {
       if ((entities[i] == predict_entities[j]) && 
           (entities_tags[i] == predict_entities_tags[j])) {
         if (entities_tags[i] != OTHER) {

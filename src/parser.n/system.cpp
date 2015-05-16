@@ -1,6 +1,15 @@
 #include "parser.n/system.h"
 #include "utils/math/mat.h"
 #include "utils/logging.hpp"
+#include <algorithm>
+
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
 
 namespace ltp {
 namespace depparser {

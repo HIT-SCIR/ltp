@@ -20,6 +20,7 @@ using math::Mat;
 using math::SparseVec;
 using math::FeatureVector;
 using strutils::to_str;
+using utility::timer;
 
 PostaggerFrontend::PostaggerFrontend(const std::string& reference_file,
     const std::string& holdout_file,
@@ -27,7 +28,7 @@ PostaggerFrontend::PostaggerFrontend(const std::string& reference_file,
     const std::string& algorithm,
     const size_t& max_iter,
     const size_t& rare_feature_threshold)
-  : decoder(0), ctx(0), scm(0), Frontend(kLearn) {
+  : Frontend(kLearn) {
   train_opt.train_file = reference_file;
   train_opt.holdout_file = holdout_file;
   train_opt.algorithm = algorithm;
@@ -48,7 +49,7 @@ PostaggerFrontend::PostaggerFrontend(const std::string& input_file,
     const std::string& model_file,
     const std::string& lexicon_file,
     bool evaluate)
-  : decoder(0), ctx(0), scm(0), Frontend(kTest) {
+  : Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.lexicon_file = lexicon_file;
@@ -62,7 +63,7 @@ PostaggerFrontend::PostaggerFrontend(const std::string& input_file,
 }
 
 PostaggerFrontend::PostaggerFrontend(const std::string& model_file)
-  : decoder(0), ctx(0), scm(0), Frontend(kDump) {
+  : Frontend(kDump) {
   dump_opt.model_file = model_file; 
 
   TRACE_LOG("||| ltp postagger, dumpping ...");
@@ -70,10 +71,6 @@ PostaggerFrontend::PostaggerFrontend(const std::string& model_file)
 }
 
 PostaggerFrontend::~PostaggerFrontend() {
-  if (decoder)  { delete decoder; decoder = 0; }
-  if (ctx)      { delete ctx; ctx = 0; }
-  if (scm)      { delete scm; scm = 0; }
-
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     if (train_dat[i]) { delete train_dat[i]; train_dat[i] = 0; }
   }
@@ -160,12 +157,6 @@ void PostaggerFrontend::train(void) {
     TRACE_LOG("report: model truncation is inactived.");
   }
 
-  // use pa or average perceptron algorithm
-  ctx = new ViterbiFeatureContext;
-  scm = new ViterbiScoreMatrix;
-  decoder = new ViterbiDecoder;
-  TRACE_LOG("trace: allocated plain decoder");
-
   int best_iteration = -1;
   double best_p = -1.;
 
@@ -177,23 +168,26 @@ void PostaggerFrontend::train(void) {
     size_t interval= train_dat.size() / 10;
     for (size_t i = 0; i < train_dat.size(); ++ i) {
       Instance* inst = train_dat[i];
-      extract_features((*inst), ctx, false);
-      calculate_scores((*inst), (*ctx), false, scm);
-      decoder->decode((*scm), inst->predict_tagsidx);
+      extract_features((*inst), &ctx, false);
+      calculate_scores((*inst), ctx, false, &scm);
+      decoder.decode(scm, inst->predict_tagsidx);
 
-      collect_features(model, ctx->uni_features, inst->tagsidx, ctx->correct_features);
-      collect_features(model, ctx->uni_features, inst->predict_tagsidx, ctx->predict_features);
+      collect_features(model, ctx.uni_features, inst->tagsidx, ctx.correct_features);
+      collect_features(model, ctx.uni_features, inst->predict_tagsidx, ctx.predict_features);
 
       SparseVec updated_features;
-      learn(train_opt.algorithm, ctx->correct_features, ctx->predict_features,
-          iter* train_dat.size()+ i+ 1, inst->num_errors(), model,
-          updated_features);
+      updated_features.add(ctx.correct_features, 1.);
+      updated_features.add(ctx.predict_features, -1.);
+
+      learn(train_opt.algorithm, updated_features,
+        iter*train_dat.size() + 1, inst->num_errors(), model);
+
 
       if (train_opt.rare_feature_threshold > 0) {
         increase_groupwise_update_counts(model, updated_features, update_counts);
       }
 
-      ctx->clear();
+      ctx.clear();
       if ((i+1) % interval == 0) {
         TRACE_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
       }
@@ -252,11 +246,11 @@ void PostaggerFrontend::evaluate(double &p) {
       // inst->postag_constrain[i].allsetones();
     }
 
-    Postagger::extract_features((*inst), ctx, false);
-    Postagger::calculate_scores((*inst), (*ctx), true, scm);
+    Postagger::extract_features((*inst), &ctx, false);
+    Postagger::calculate_scores((*inst), ctx, true, &scm);
 
-    decoder->decode((*scm), inst->predict_tagsidx);
-    ctx->clear();
+    decoder.decode(scm, inst->predict_tagsidx);
+    ctx.clear();
 
     num_recalled_tags += inst->num_corrected_predict_tags();
     num_tags += inst->size();
@@ -300,10 +294,6 @@ void PostaggerFrontend::test(void) {
     return;
   }
 
-  scm = new ViterbiScoreMatrix;
-  ctx = new ViterbiFeatureContext;
-  decoder = new ViterbiDecoder;
-
   PostaggerWriter writer(std::cout);
   PostaggerReader reader(ifs, "_", test_opt.evaluate, false);
 
@@ -314,7 +304,7 @@ void PostaggerFrontend::test(void) {
   Instance* inst = NULL;
   size_t num_recalled_tags = 0;
   size_t num_tags = 0;
-  double before = get_time();
+  timer t;
   while ((inst = reader.next())) {
     int len = inst->size();
     if (test_opt.evaluate) {
@@ -323,10 +313,10 @@ void PostaggerFrontend::test(void) {
         inst->tagsidx[i] = model->labels.index(inst->tags[i]);
       }
     }
-    Postagger::extract_features((*inst), ctx, false);
-    Postagger::calculate_scores((*inst), (*ctx), true, scm);
-    decoder->decode((*scm), con, inst->predict_tagsidx);
-    ctx->clear();
+    Postagger::extract_features((*inst), &ctx, false);
+    Postagger::calculate_scores((*inst), ctx, true, &scm);
+    decoder.decode(scm, con, inst->predict_tagsidx);
+    ctx.clear();
 
     build_labels((*inst), inst->predict_tags);
     if (test_opt.evaluate) {
@@ -337,12 +327,11 @@ void PostaggerFrontend::test(void) {
     delete inst;
   }
 
-  double after = get_time();
   double p = (double)num_recalled_tags / num_tags;
   if (test_opt.evaluate) {
     TRACE_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
   }
-  TRACE_LOG("Elapsed time %lf", after - before);
+  TRACE_LOG("Elapsed time %lf", t.elapsed());
 
   //sleep(1000000);
   return;

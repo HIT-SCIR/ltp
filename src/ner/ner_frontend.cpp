@@ -30,7 +30,7 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& algorithm,
     const int max_iter,
     const int rare_feature_threshold)
-  : decoder(0), ctx(0), scm(0), Frontend(kLearn) {
+  : Frontend(kLearn) {
   train_opt.train_file = reference_file;
   train_opt.holdout_file = holdout_file;
   train_opt.algorithm = algorithm;
@@ -51,7 +51,7 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& input_file,
     const std::string& model_file,
     bool evaluate)
-  : decoder(0), ctx(0), scm(0), Frontend(kTest) {
+  : Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
@@ -64,7 +64,7 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& model_file)
-  : decoder(0), ctx(0), scm(0), Frontend(kDump) {
+  : Frontend(kDump) {
   dump_opt.model_file = model_file;
 
   TRACE_LOG("||| ltp ner, dumpping ...");
@@ -72,11 +72,8 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 }
 
 NamedEntityRecognizerFrontend::~NamedEntityRecognizerFrontend() {
-  if (decoder)  { delete decoder;   decoder = 0; }
   if (glob_con) { delete glob_con;  glob_con = 0; }
-  if (ctx)      { delete ctx;       ctx = 0; }
-  if (scm)      { delete scm;       scm = 0; }
-
+  
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     if (train_dat[i]) { delete train_dat[i];  train_dat[i] = 0; }
   }
@@ -202,12 +199,6 @@ void NamedEntityRecognizerFrontend::train(void) {
     TRACE_LOG("report: model truncation is inactived.");
   }
 
-  // use pa or average perceptron algorithm
-  ctx = new ViterbiFeatureContext;
-  scm = new ViterbiScoreMatrix;
-  decoder = new ViterbiDecoder;
-  TRACE_LOG("report: allocated plain decoder");
-
   int best_iteration = -1;
   double best_f_score = -1.;
 
@@ -225,29 +216,27 @@ void NamedEntityRecognizerFrontend::train(void) {
     size_t interval = train_dat.size() / 10;
     for (size_t i = 0; i < train_dat.size(); ++ i) {
       Instance* inst = train_dat[i];
-      NamedEntityRecognizer::extract_features((*inst), ctx, false);
-      NamedEntityRecognizer::calculate_scores((*inst), (*ctx), false, scm);
-      decoder->decode((*scm), (*glob_con), inst->predict_tagsidx);
+      NamedEntityRecognizer::extract_features((*inst), &ctx, false);
+      NamedEntityRecognizer::calculate_scores((*inst), ctx, false, &scm);
+      decoder.decode(scm, (*glob_con), inst->predict_tagsidx);
 
-      Frontend::collect_features(model, ctx->uni_features,
-          inst->tagsidx, ctx->correct_features);
-      Frontend::collect_features(model, ctx->uni_features,
-          inst->predict_tagsidx, ctx->predict_features);
+      Frontend::collect_features(model, ctx.uni_features,
+          inst->tagsidx, ctx.correct_features);
+      Frontend::collect_features(model, ctx.uni_features,
+          inst->predict_tagsidx, ctx.predict_features);
 
-      SparseVec update_features;
-      Frontend::learn(train_opt.algorithm,
-          ctx->correct_features,
-          ctx->predict_features,
-          iter* train_dat.size()+ i+ 1,
-          inst->num_errors(),
-          model,
-          update_features);
+      SparseVec updated_features;
+      updated_features.add(ctx.correct_features, 1.);
+      updated_features.add(ctx.predict_features, -1.);
+
+      learn(train_opt.algorithm, updated_features, 
+        iter*train_dat.size()+1, inst->num_errors(), model);
 
       if (train_opt.rare_feature_threshold > 0) {
-        Frontend::increase_groupwise_update_counts(model, update_features, update_counts);
+        increase_groupwise_update_counts(model, updated_features, update_counts);
       }
 
-      ctx->clear();
+      ctx.clear();
       if ((i+1) % interval == 0) {
         TRACE_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
       }
@@ -304,10 +293,10 @@ void NamedEntityRecognizerFrontend::evaluate(double& f_score) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
     }
 
-    NamedEntityRecognizer::extract_features((*inst), ctx, false);
-    NamedEntityRecognizer::calculate_scores((*inst), (*ctx), true, scm);
-    decoder->decode((*scm), (*glob_con), inst->predict_tagsidx);
-    ctx->clear();
+    NamedEntityRecognizer::extract_features((*inst), &ctx, false);
+    NamedEntityRecognizer::calculate_scores((*inst), ctx, true, &scm);
+    decoder.decode(scm, (*glob_con), inst->predict_tagsidx);
+    ctx.clear();
 
     build_entities(inst, inst->tagsidx, inst->entities,
         inst->entities_tags);
@@ -367,10 +356,6 @@ void NamedEntityRecognizerFrontend::test(void) {
     return;
   }
 
-  ctx = new ViterbiFeatureContext;
-  scm = new ViterbiScoreMatrix;
-  decoder = new framework::ViterbiDecoder;
-
   NERWriter writer(std::cout);
   NERReader reader(ifs, test_opt.evaluate);
   Instance* inst = NULL;
@@ -386,10 +371,10 @@ void NamedEntityRecognizerFrontend::test(void) {
       }
     }
 
-    extract_features((*inst), ctx, false);
-    calculate_scores((*inst), (*ctx), true, scm);
-    decoder->decode((*scm), (*glob_con), inst->predict_tagsidx);
-    ctx->clear();
+    extract_features((*inst), &ctx, false);
+    calculate_scores((*inst), ctx, true, &scm);
+    decoder.decode(scm, (*glob_con), inst->predict_tagsidx);
+    ctx.clear();
 
     inst->predict_tags.resize(len);
     for(size_t i = 0; i < len; ++i) {

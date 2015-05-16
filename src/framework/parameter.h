@@ -73,6 +73,9 @@ public:
     }
   }
 
+  bool is_wrapper() const { return _enable_wrapper; }
+  size_t last() const { return _last_timestamp; }
+
   /**
    * Increase one dimension in the parameter vector by scale.
    *
@@ -171,6 +174,24 @@ public:
     return p[idx];
   }
 
+  double predict(const math::FeatureVector* vec, const size_t& elapsed_time) const {
+    double ret = 0;
+    for (int i = 0; i < vec->n; ++i) {
+      int idx = vec->idx[i] + vec->loff;
+      if (vec->val) {
+        ret += (_W_sum[idx] + _W[idx] * elapsed_time * vec->val[i]);
+      }
+      else {
+        ret += (_W_sum[idx] + _W[idx] * elapsed_time);
+      }
+    }
+    return ret;
+  }
+
+  double predict(const int idx, const size_t& elapsed_time) const {
+    return _W_sum[idx] + _W[idx] * elapsed_time;
+  }
+
   /**
    * Flush the parameter vector.
    *
@@ -193,7 +214,7 @@ public:
       out << "[" << i << "]\t";
     }
     out << std::endl;
-    for (int i = 0; i < _dim; ++ i) {
+    for (size_t i = 0; i < _dim; ++ i) {
       if (i % width == 0) {
         out << "[" << i << "-" << (i / width + 1)  * width - 1 << "]\t";
       }

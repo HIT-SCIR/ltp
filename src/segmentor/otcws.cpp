@@ -1,7 +1,9 @@
 #include <iostream>
+#include "config.h"
 #include "boost/program_options.hpp"
 #include "utils/logging.hpp"
 #include "segmentor/segmentor_frontend.h"
+#include "segmentor/customized_segmentor_frontend.h"
 
 #define DESCRIPTION "Chinese word segmentation"
 #define EXECUTABLE "otcws"
@@ -12,10 +14,11 @@ using boost::program_options::variables_map;
 using boost::program_options::store;
 using boost::program_options::parse_command_line;
 using ltp::segmentor::SegmentorFrontend;
+using ltp::segmentor::CustomizedSegmentorFrontend;
 
 int learn(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(learn) - Training suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options";
 
@@ -93,8 +96,8 @@ int learn(int argc, const char* argv[]) {
 }
 
 int test(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(test) - Testing suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Testing suite for " DESCRIPTION "\n\n"; 
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options";
 
@@ -117,12 +120,12 @@ int test(int argc, const char* argv[]) {
     return 1;
   }
 
-  std::string model_name = "";
+  std::string model_file = "";
   if (!vm.count("model")) {
     ERROR_LOG("model prefix should be specified [--model].");
     return 1;
   } else {
-    model_name = vm["model"].as<std::string>();
+    model_file = vm["model"].as<std::string>();
   }
 
   std::string input_file = "";
@@ -142,14 +145,14 @@ int test(int argc, const char* argv[]) {
   bool evaluate;
   if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
 
-  SegmentorFrontend frontend(input_file, model_name, evaluate);
+  SegmentorFrontend frontend(input_file, model_file, evaluate);
   frontend.test();
   return 0;
 }
 
 int dump(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(dump) - Model visualization suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
+  std::string usage = EXECUTABLE "(dump) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Model visualization suite for " DESCRIPTION "\n\n"; 
   usage += "usage: ./" EXECUTABLE " dump <options>\n\n";
   usage += "options";
 
@@ -174,23 +177,168 @@ int dump(int argc, const char* argv[]) {
     model_name = vm["model"].as<std::string>();
   }
 
-  // NamedEntityRecognizerFrontend frontend(model_name);
-  // frontend.dump();
+  SegmentorFrontend frontend(model_name);
+  frontend.dump();
+  return 0;
+}
+
+int customized_learn(int argc, const char* argv[]) {
+  std::string usage = EXECUTABLE "(customized-learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training suite for " DESCRIPTION "\n\n";
+  usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
+  usage += "options";
+
+  options_description optparser = options_description(usage);
+  optparser.add_options()
+    ("baseline-model", value<std::string>(),
+    "The baseline model, which should be saved with --dump-details options.")
+    ("model", value<std::string>(),
+    "The prefix of the model file, model will be stored as model.$iter.")
+    ("reference", value<std::string>(), "The path to the reference file.")
+    ("development", value<std::string>(), "The path to the development file.")
+    ("algorithm", value<std::string>(), "The learning algorithm\n"
+    " - ap: averaged perceptron\n"
+    " - pa: passive aggressive [default]")
+    ("max-iter", value<int>(), "The number of iteration [default=10].")
+    ("rare-feature-threshold", value<int>(),
+    "The threshold for rare feature, used in model truncation. [default=0]")
+    ("help,h", "Show help information");
+
+  variables_map vm;
+  store(parse_command_line(argc, argv, optparser), vm);
+
+  if (vm.count("help")) {
+    std::cerr << optparser << std::endl;
+    return 0;
+  }
+
+  std::string reference = "";
+  if (!vm.count("reference")) {
+    ERROR_LOG("reference file should be specified [--reference].");
+    return 1;
+  } else {
+    reference = vm["reference"].as<std::string>();
+  }
+
+  std::string baseline_model_file = "";
+  if (!vm.count("baseline-model")) {
+    ERROR_LOG("baseline model should be specified [--baseline-model].");
+    return 1;
+  } else {
+    baseline_model_file = vm["baseline-model"].as<std::string>();
+  }
+
+  std::string model_name = "";
+  if (!vm.count("model")) {
+    ERROR_LOG("model prefix should be specified [--model].");
+    return 1;
+  } else {
+    model_name = vm["model"].as<std::string>();
+  }
+
+  std::string development = "";
+  if (!vm.count("development")) {
+    WARNING_LOG("development file is not configed, evaluation will not be performed.");
+  } else {
+    development = vm["development"].as<std::string>();
+  }
+
+  std::string algorithm = "pa";
+  if (vm.count("algorithm")) {
+    algorithm = vm["algorithm"].as<std::string>();
+    if (algorithm != "pa" && algorithm != "ap") {
+      WARNING_LOG("algorithm should either be ap or pa, set as default [pa].");
+      algorithm = "pa";
+    }
+  }
+
+  int max_iter = 10;
+  if (vm.count("max-iter")) { max_iter = vm["max-iter"].as<int>(); }
+
+  int rare_feature_threshold = 0;
+  if (vm.count("rare-feature-threshold")) {
+    rare_feature_threshold = vm["rare-feature-threshold"].as<int>();
+  }
+
+  CustomizedSegmentorFrontend frontend(reference, development, model_name,
+    baseline_model_file, algorithm, max_iter, rare_feature_threshold);
+  frontend.train();
+  return 0;
+}
+
+int customized_test(int argc, const char* argv[]) {
+  std::string usage = EXECUTABLE "(customized-test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Testing suite for " DESCRIPTION "\n\n";
+  usage += "usage: ./" EXECUTABLE " test <options>\n\n";
+  usage += "options";
+
+  options_description optparser = options_description(usage);
+  optparser.add_options()
+    ("model", value<std::string>(), "The path to the model file.")
+    ("lexicon", value<std::string>(),
+    "The lexicon file, (optional, if configured, constrained decoding will be performed).")
+    ("input", value<std::string>(), "The path to the reference file.")
+    ("evaluate", value<bool>(),
+    "if configured, perform evaluation, input should contain '#' concatenated tag")
+    ("help,h", "Show help information")
+    ;
+
+  variables_map vm;
+  store(parse_command_line(argc, argv, optparser), vm);
+
+  if (vm.count("help")) {
+    std::cerr << optparser << std::endl;
+    return 1;
+  }
+
+  std::string model_file = "";
+  if (!vm.count("model")) {
+    ERROR_LOG("model prefix should be specified [--model].");
+    return 1;
+  }
+  else {
+    model_file = vm["model"].as<std::string>();
+  }
+
+  std::string input_file = "";
+  if (!vm.count("input")) {
+    ERROR_LOG("input file should be specified [--input].");
+    return 1;
+  }
+  else {
+    input_file = vm["input"].as<std::string>();
+  }
+
+  std::string lexicon_file = "";
+  if (vm.count("lexicon")) { lexicon_file = vm["lexicon"].as<std::string>(); }
+
+  std::string output_file = "";
+  if (vm.count("output")) { output_file = vm["output"].as<std::string>(); }
+
+  bool evaluate;
+  if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
+
+  SegmentorFrontend frontend(input_file, model_file, evaluate);
+  frontend.test();
   return 0;
 }
 
 int main(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE " - Training and testing suite for " DESCRIPTION "\n";
-  usage += "Copyright (C) 2012-2015 HIT-SCIR\n\n";
-  usage += "usage: ./" EXECUTABLE " [learn|test|dump] <options>";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += "Training and testing suite for " DESCRIPTION "\n\n";
+  usage += "usage: ./" EXECUTABLE " [learn|customized-learn|test|customized-test|dump] <options>";
 
   if (argc == 1) {
     std::cerr << usage << std::endl;
     return 1;
   } else if (std::string(argv[1]) == "learn") {
-    return learn(argc- 1, argv+ 1);
+    return learn(argc - 1, argv + 1);
+  } else if (std::string(argv[1]) == "customized-learn") {
+    return customized_learn(argc - 1, argv + 1);
   } else if (std::string(argv[1]) == "test") {
-    return test(argc- 1, argv+ 1);
+    return test(argc - 1, argv + 1);
+  } else if (std::string(argv[1]) == "customized-test") {
+    return customized_test(argc - 1, argv + 1);
   } else if (std::string(argv[1]) == "dump") {
     return dump(argc- 1, argv+ 1);
   } else {
