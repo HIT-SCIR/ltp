@@ -2,7 +2,7 @@
 #define __LTP_H__
 
 #include "LTPResource.h"
-#include "Xml4nlp.h"
+#include "xml4nlp/Xml4nlp.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,9 +11,6 @@
 #include <cstring>
 #include <cassert>
 
-using namespace std;
-
-// extern ofstream ltp_log_file;
 #define MAX_SENTENCE_LEN 300
 #define MAX_WORDS_NUM  100
 
@@ -34,28 +31,24 @@ enum ErrorCodes {
 
 class LTP {
 public:
+  static const int kActiveSegmentor = 1<<1;
+  static const int kActivePostagger = 1<<2;
+  static const int kActiveNER       = 1<<3;
+  static const int kActiveParser    = 1<<4;
+  static const int kActiveSRL       = 1<<5;
 
-  /*
-   * the constructor with config filepath specified to `conf/ltp.cnf`
-   */
-  LTP();
+public:
+  LTP(const std::string& last_stage,
+      const std::string& segmentor_model_file,
+      const std::string& segmentor_lexicon_file,
+      const std::string& postagger_model_file,
+      const std::string& postagger_lexicon_file,
+      const std::string& ner_model_file,
+      const std::string& parser_model_file,
+      const std::string& srl_model_dir);
 
-  /*
-   * the another constructor with user specified config file
-   *
-   *  @param[in]  cfg_file  the path to the config file
-   */
-  LTP(const char * cfg_file);
-
-  /*
-   * deallocate the ltp resource
-   */
-  ~LTP();
-
-  /*
-   * return true on the resource successful loaded, otherwise false
-   */
-  bool loaded();
+  ~LTP();  //! The deallocator
+  bool loaded() const;  //! return true on the resource successful loaded, otherwise false
 
   // discard
   // int CreateDOMFromTxt(const char * cszTxtFileName, XML4NLP& m_xml4nlp);
@@ -108,26 +101,24 @@ public:
 
   int splitSentence_dummy(XML4NLP & xml);
 private:
-
-  /*
-   * split the sentence
-   *
-   *  @param[in/out]  xml   the xml storing ltp result
-   *  @return         int   0 on success, otherwise -1
-   */
-  //int splitSentence_dummy(XML4NLP & xml);
-
   /*
    * parse the config file, and load resource according the config
    *
    *  @param[in]  confFileName  the config file
    *  @return     int           0 on success, otherwise -1
    */
-  int ReadConfFile(const char *confFileName = "conf/ltp.cnf");
+  bool load(const std::string& last_stage,
+      const std::string& segmentor_model_file,
+      const std::string& segmentor_lexicon_file,
+      const std::string& postagger_model_file,
+      const std::string& postagger_lexicon_file,
+      const std::string& ner_model_file,
+      const std::string& parser_model_file,
+      const std::string& srl_model_dir);
 
 private:
-  LTPResource m_ltpResource;    /*< the ltp resources */
-  bool        m_loaded;         /*< use to sepcify if the resource is loaded */
+  LTPResource _resource;    /*< the ltp resources */
+  bool        _loaded;         /*< use to sepcify if the resource is loaded */
 };
 
 #endif  //  end for __LTP_H__

@@ -1,51 +1,163 @@
 // Defines the entry point for the Web Service application.
-//
-
 #include <sys/wait.h>
 #include <unistd.h>       /* For pause() */
 #include <stdlib.h>
 #include <signal.h>
-
 #include <iostream>
-
-#include "mongoose.h"
-
-#include "Xml4nlp.h"
-#include "Ltp.h"
-
-#include "codecs.hpp"
-#include "logging.hpp"
-
-#if !defined(LISTENING_PORT)
-#define LISTENING_PORT	"12345"
-#endif /* !LISTENING_PORT */
+#include "config.h"
+#include "ltp/Ltp.h"
+#include "server/mongoose.h"
+#include "boost/program_options.hpp"
+#include "utils/strutils.hpp"
+#include "utils/logging.hpp"
+#include "utils/codecs.hpp"
 
 #define POST_LEN 1024
+#define EXECUTABLE "ltp_server"
+#define DESCRIPTION "The HTTP server frontend for Language Technology Platform."
 
-using namespace std;
-using namespace ltp::strutils::codecs;
+using boost::program_options::options_description;
+using boost::program_options::value;
+using boost::program_options::variables_map;
+using boost::program_options::store;
+using boost::program_options::parse_command_line;
+using ltp::strutils::to_str;
+using ltp::strutils::codecs::isclear;
 
 static LTP * engine = NULL;
-
 static int exit_flag;
-
-static int Service(struct mg_connection *conn);
-
-static void ErrorResponse(struct mg_connection * conn,
-                          enum ErrorCodes code);
+static int Service(struct mg_connection* conn);
+static void ErrorResponse(struct mg_connection* conn,
+    const enum ErrorCodes& code);
 
 static void signal_handler(int sig_num) {
   exit_flag = sig_num;
 }
 
 int main(int argc, char *argv[]) {
-  engine = new LTP;
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  usage += DESCRIPTION "\n\n";
+  usage += "usage: ./" EXECUTABLE " <options>\n\n";
+  usage += "options";
+
+  options_description optparser = options_description(usage);
+  optparser.add_options()
+    ("port", value<int>(), "The port number [default=12345].")
+    ("threads", value<int>(), "The number of threads [default=1].")
+    ("last-stage", value<std::string>(),
+     "The last stage of analysis. This option can be used when the user only"
+     "wants to perform early stage analysis, like only segment without postagging."
+     "value includes:\n"
+     "- ws: Chinese word segmentation\n"
+     "- pos: Part of speech tagging\n"
+     "- ne: Named entity recognization\n"
+     "- dp: Dependency parsing\n"
+     "- srl: Semantic role labeling (equals to all)\n"
+     "- all: The whole pipeline [default]")
+    ("segmentor-model", value<std::string>(),
+     "The path to the segment model [default=ltp_data/cws.model].")
+    ("segmentor-lexicon", value<std::string>(),
+     "The path to the external lexicon in segmentor [optional].")
+    ("postagger-model", value<std::string>(),
+     "The path to the postag model [default=ltp_data/pos.model].")
+    ("postagger-lexicon", value<std::string>(),
+     "The path to the external lexicon in postagger [optional].")
+    ("ner-model", value<std::string>(),
+     "The path to the NER model [default=ltp_data/ner.model].")
+    ("parser-model", value<std::string>(),
+     "The path to the parser model [default=ltp_data/parser.model].")
+    ("srl-data", value<std::string>(),
+     "The path to the SRL model directory [default=ltp_data/srl_data/].")
+    ("debug-level", value<int>(), "The debug level.")
+    ("help,h", "Show help information");
+
+  variables_map vm;
+  store(parse_command_line(argc, argv, optparser), vm);
+
+  if (vm.count("help")) {
+    std::cerr << optparser << std::endl;
+    return 0;
+  }
+
+  int port = 12345;
+  if (vm.count("port")) {
+    port = vm["port"].as<int>();
+    if (port < 80 || port > 65535) {
+      ERROR_LOG("port number %d is not in legal range (80 .. 65535)");
+      return 1;
+    }
+  }
+
+  int threads = 1;
+  if (vm.count("threads")) {
+    threads = vm["threads"].as<int>();
+    if (threads < 0) {
+      WARNING_LOG("number of threads should not less than 0, reset to 1.");
+      threads = 1;
+    }
+  }
+
+  std::string last_stage = "all";
+  if (vm.count("last-stage")) {
+    last_stage = vm["last-stage"].as<std::string>();
+    if (last_stage != "ws" && last_stage != "pos" && last_stage != "dp"
+        && last_stage != "ne" && last_stage != "srl" && last_stage != "all") {
+      WARNING_LOG("Unknown stage name: %s, reset to 'all'", last_stage.c_str());
+      last_stage = "all";
+    }
+  }
+
+  std::string segmentor_model = "ltp_data/cws.model";
+  if (vm.count("segmentor-model")) {
+    segmentor_model = vm["segmentor-model"].as<std::string>();
+  }
+
+  std::string segmentor_lexicon = "";
+  if (vm.count("segmentor-lexicon")) {
+    segmentor_lexicon= vm["segmentor-lexicon"].as<std::string>();
+  }
+
+  std::string postagger_model = "ltp_data/pos.model";
+  if (vm.count("postagger-model")) {
+    postagger_model= vm["segmentor-model"].as<std::string>();
+  }
+
+  std::string postagger_lexcion = "";
+  if (vm.count("postagger-lexicon")) {
+    postagger_lexcion= vm["postagger-lexicon"].as<std::string>();
+  }
+
+  std::string ner_model = "ltp_data/ner.model";
+  if (vm.count("ner-model")) {
+    ner_model= vm["ner-model"].as<std::string>();
+  }
+
+  std::string parser_model = "ltp_data/parser.model";
+  if (vm.count("parser-model")) {
+    parser_model= vm["parser-model"].as<std::string>();
+  }
+
+  std::string srl_data= "ltp_data/srl/";
+  if (vm.count("srl-data")) {
+    srl_data = vm["srl-data"].as<std::string>();
+  }
+
+  engine = new LTP(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
+      postagger_lexcion, ner_model, parser_model, srl_data);
+
+  if (!engine->loaded()) {
+    ERROR_LOG("Failed to setup LTP engine.");
+    return 1;
+  }
+
+  std::string port_str = to_str(port);
+  std::string threads_str = to_str(threads);
 
   signal(SIGTERM, signal_handler);
   signal(SIGINT, signal_handler);
   struct mg_context *ctx;
-  const char *options[] = {"listening_ports", LISTENING_PORT,
-    "num_threads", "1", NULL};
+  const char *options[] = {"listening_ports", port_str.c_str(),
+    "num_threads", threads_str.c_str(), NULL};
   struct mg_callbacks callbacks;
 
   memset(&callbacks, 0, sizeof(callbacks));
@@ -53,6 +165,7 @@ int main(int argc, char *argv[]) {
 
   if ((ctx = mg_start(&callbacks, NULL, options)) == NULL) {
     ERROR_LOG("Cannot initialize Mongoose context");
+    INFO_LOG("please check your network configuration.");
     exit(EXIT_FAILURE);
   }
 
@@ -65,28 +178,23 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-/*
- * Use to 
- *
- *
- */
-static void ErrorResponse(struct mg_connection * conn,
-                          enum ErrorCodes code) {
+static void ErrorResponse(struct mg_connection* conn,
+                          const enum ErrorCodes& code) {
   switch (code) {
-    case kEmptyStringError: 
+    case kEmptyStringError:
       {
         std::string response = "HTTP/1.1 400 EMPTY SENTENCE\r\n\r\n";
         mg_printf(conn, "%s", response.c_str());
         break;
       }
-    case kEncodingError: 
+    case kEncodingError:
       {
         // Input sentence is not clear
         std::string response = "HTTP/1.1 400 ENCODING NOT IN UTF8\r\n\r\n";
         mg_printf(conn, "%s", response.c_str());
         break;
       }
-    case kXmlParseError : 
+    case kXmlParseError :
       {
         // Failed the xml validation check
         std::string response = "HTTP/1.1 400 BAD XML FORMAT\r\n\r\n";
@@ -125,9 +233,9 @@ static int Service(struct mg_connection *conn) {
   char type[10];
   char xml[10];
 
-  string str_post_data;
-  string str_type;
-  string str_xml;
+  std::string str_post_data;
+  std::string str_type;
+  std::string str_xml;
 
   const struct mg_request_info *ri = mg_get_request_info(conn);
 
@@ -140,8 +248,8 @@ static int Service(struct mg_connection *conn) {
       str_post_data += buffer;
     }
 
-    TRACE_LOG("CDATA: %s", str_post_data.c_str());
-    TRACE_LOG("CDATA length: %d", str_post_data.size());
+    // TRACE_LOG("CDATA: %s", str_post_data.c_str());
+    // TRACE_LOG("CDATA length: %d", str_post_data.size());
 
     sentence = new char[str_post_data.size() + 1];
 
@@ -191,8 +299,7 @@ static int Service(struct mg_connection *conn) {
     }
 
     delete []sentence;
-
-    TRACE_LOG("Input sentence is: %s", strSentence.c_str());
+    // TRACE_LOG("Input sentence is: %s", strSentence.c_str());
 
     //Get a XML4NLP instance here.
     XML4NLP  xml4nlp;
@@ -207,7 +314,7 @@ static int Service(struct mg_connection *conn) {
       xml4nlp.CreateDOMFromString(strSentence);
     }
 
-    TRACE_LOG("XML Creation is done.");
+    // TRACE_LOG("XML Creation is done.");
 
     if(str_type == "ws"){
       int ret = engine->wordseg(xml4nlp);
@@ -241,9 +348,9 @@ static int Service(struct mg_connection *conn) {
       }
     }
 
-    TRACE_LOG("Analysis is done.");
+    // TRACE_LOG("Analysis is done.");
 
-    string strResult;
+    std::string strResult;
     xml4nlp.SaveDOM(strResult);
 
     strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;

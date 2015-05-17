@@ -289,7 +289,7 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
  *  @param  sep std::vector<std::string>  the words
  *  @return     std::string               the concatenated string
  */
-inline std::string join(std::vector<std::string> sep) {
+inline std::string join(const std::vector<std::string>& sep) {
   std::string ret = "";
   for (unsigned int i = 0; i < sep.size(); ++ i) {
     // trick, append is faster than plus operator
@@ -306,7 +306,8 @@ inline std::string join(std::vector<std::string> sep) {
  *  @param  delimiter std::string                 the delimiter
  *  @return           std::string                 the concatenated string
  */
-inline std::string join(std::vector<std::string> sep, std::string delimiter) {
+inline std::string join(const std::vector<std::string>& sep,
+    const std::string& delimiter) {
   if (sep.size() == 0) {
     return "";
   }

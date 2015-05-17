@@ -3,13 +3,15 @@
 #include <map>
 #include <string>
 
-#include "Xml4nlp.h"
-#include "SplitSentence.h"
-#include "segment_dll.h"
-#include "postag_dll.h"
-#include "parser_dll.h"
-#include "ner_dll.h"
-#include "SRL_DLL.h"
+#include "xml4nlp/Xml4nlp.h"
+#include "splitsnt/SplitSentence.h"
+#include "segmentor/segment_dll.h"
+#include "postagger/postag_dll.h"
+#include "parser.n/parser_dll.h"
+#include "ner/ner_dll.h"
+#include "srl/SRL_DLL.h"
+#include "utils/codecs.hpp"
+#include "utils/logging.hpp"
 
 #if _WIN32
 #pragma warning(disable: 4786 4284)
@@ -20,140 +22,113 @@
 #pragma comment(lib, "srl.lib")
 #endif
 
-#include "codecs.hpp"
-#include "logging.hpp"
-#include "cfgparser.hpp"
-
-using namespace std;
-
 // create a platform
-LTP::LTP() :
-  m_ltpResource(),
-  m_loaded(false) {
-  ReadConfFile();
+LTP::LTP(const std::string& last_stage,
+    const std::string& segmentor_model_file,
+    const std::string& segmentor_lexicon_file,
+    const std::string& postagger_model_file,
+    const std::string& postagger_lexicon_file,
+    const std::string& ner_model_file,
+    const std::string& parser_model_file,
+    const std::string& srl_model_dir)
+  : _resource(), _loaded(false) {
+  _loaded = load(last_stage,
+      segmentor_model_file, segmentor_lexicon_file,
+      postagger_model_file, postagger_lexicon_file,
+      ner_model_file,
+      parser_model_file,
+      srl_model_dir);
 }
 
-LTP::LTP(const char * config) :
-  m_ltpResource(),
-  m_loaded(false) {
-  ReadConfFile(config);
-}
+bool LTP::load(const std::string& last_stage,
+    const std::string& segmentor_model_file,
+    const std::string& segmentor_lexicon_file,
+    const std::string& postagger_model_file,
+    const std::string& postagger_lexicon_file,
+    const std::string& ner_model_file,
+    const std::string& parser_model_file,
+    const std::string& srl_model_dir) {
 
-LTP::~LTP() {
-}
-
-bool LTP::loaded() {
-  return m_loaded;
-}
-
-int LTP::ReadConfFile(const char * config_file) {
-  ltp::utility::ConfigParser cfg(config_file);
-
-  if (!cfg) {
-    ERROR_LOG("Failed to open config file \"%s\"", config_file);
-    return -1;
+  size_t target_mask = 0;
+  if (last_stage == "ws") {
+    target_mask = kActiveSegmentor;
+  } else if (last_stage == "pos") {
+    target_mask = (kActiveSegmentor|kActivePostagger);
+  } else if (last_stage == "ner") {
+    target_mask = (kActiveSegmentor|kActivePostagger|kActiveNER);
+  } else if (last_stage == "dp") {
+    target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser);
+  } else if ((last_stage == "srl") || (last_stage == "all")) {
+    target_mask =
+      (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|kActiveSRL);
   }
 
-  std::string buffer;
+  size_t loaded_mask = 0;
 
-  int target_mask = 0;
-  // load target from config
-  // initialize target mask
-  if (cfg.get("target", buffer)) {
-    if (buffer == "ws") {
-      target_mask = (1<<1);
-    } else if (buffer == "pos") {
-      target_mask = ((1<<1)|(1<<2));
-    } else if (buffer == "ner") {
-      target_mask = ((1<<1)|(1<<2)|(1<<3));
-    } else if (buffer == "dp") {
-      target_mask = ((1<<1)|(1<<2)|(1<<4));
-    } else if ((buffer == "srl") || (buffer == "all")) {
-      target_mask = ((1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5));
-    }
-  } else {
-    WARNING_LOG("No \"target\" config is found, srl is set as default");
-    target_mask = ((1<<1)|(1<<2)|(1<<3)|(1<<4)|(1<<5));
-  }
-
-  int loaded_mask = 0;
-
-  if (target_mask & (1<<1)) {
-    if (cfg.get("segmentor-model", buffer)) {
-      // segment model item exists
-      // load segmentor model
-      if (0 != m_ltpResource.LoadSegmentorResource(buffer)) {
-        ERROR_LOG("in LTP::wordseg, failed to load segmentor resource");
-        return -1;
-      }
-      loaded_mask |= (1<<1);
+  if (target_mask & kActiveSegmentor) {
+    int ret;
+    if (segmentor_lexicon_file == "") {
+      ret = _resource.LoadSegmentorResource(segmentor_model_file);
     } else {
-      WARNING_LOG("No \"segmentor-model\" config is found");
+      ret = _resource.LoadSegmentorResource(segmentor_model_file, segmentor_lexicon_file);
     }
+    if (0 != ret) {
+      ERROR_LOG("in LTP::wordseg, failed to load segmentor resource");
+      return false;
+    }
+    loaded_mask |= kActiveSegmentor;
   }
 
-  if (target_mask & (1<<2)) {
-    if (cfg.get("postagger-model", buffer)) {
-      // postag model item exists
-      // load postagger model
-      if (0 != m_ltpResource.LoadPostaggerResource(buffer)) {
-        ERROR_LOG("in LTP::postag, failed to load postagger resource.");
-        return -1;
-      }
-      loaded_mask |= (1<<2);
+  if (target_mask & kActivePostagger) {
+    int ret;
+    if (postagger_lexicon_file == "") {
+      ret = _resource.LoadPostaggerResource(postagger_model_file);
     } else {
-      WARNING_LOG("No \"postagger-model\" config is found");
+      ret = _resource.LoadPostaggerResource(postagger_model_file, postagger_lexicon_file);
     }
+    if (0 != ret) {
+      ERROR_LOG("in LTP::wordseg, failed to load postagger resource"); 
+      return false;
+    }
+    loaded_mask |= kActivePostagger;
   }
 
-  if (target_mask & (1<<3)) {
-    if (cfg.get("ner-model", buffer)) {
-      // ner model item exists
-      // load ner model
-      if (0 != m_ltpResource.LoadNEResource(buffer)) {
-        ERROR_LOG("in LTP::ner, failed to load ner resource");
-        return -1;
-      }
-      loaded_mask |= (1<<3);
-    } else {
-      WARNING_LOG("No \"ner-model\" config is found");
+  if (target_mask & kActiveNER) {
+    if (0 != _resource.LoadNEResource(ner_model_file)) {
+      ERROR_LOG("in LTP::ner, failed to load ner resource");
+      return false;
     }
+    loaded_mask |= kActiveNER;
   }
 
-  if (target_mask & (1<<4)) {
-    if (cfg.get("parser-model", buffer)) {
-      //load paser model
-      if ( 0 != m_ltpResource.LoadParserResource(buffer) ) {
-        ERROR_LOG("in LTP::parser, failed to load parser resource");
-        return -1;
-      }
-      loaded_mask |= (1<<4);
-    } else {
-      WARNING_LOG("No \"parser-model\" config is found");
+  if (target_mask & kActiveParser) {
+    if (0 != _resource.LoadParserResource(parser_model_file)) {
+      ERROR_LOG("in LTP::parser, failed to load parser resource");
+      return false;
     }
+    loaded_mask |= kActiveParser;
   }
 
-  if (target_mask & (1<<5)) {
-    if (cfg.get("srl-data", buffer)) {
-      //load srl model
-      if ( 0 != m_ltpResource.LoadSRLResource(buffer) ) {
-        ERROR_LOG("in LTP::srl, failed to load srl resource");
-        return -1;
-      }
-      loaded_mask |= (1<<5);
-    } else {
-      WARNING_LOG("No \"srl-data\" config is found");
+  if (target_mask & kActiveSRL) {
+    if ( 0 != _resource.LoadSRLResource(srl_model_dir)) {
+      ERROR_LOG("in LTP::srl, failed to load srl resource");
+      return false;
     }
+    loaded_mask |= kActiveSRL;
   }
 
   if ((loaded_mask & target_mask) != target_mask) {
     ERROR_LOG("target is config but resource not loaded.");
-    return -1;
+    return false;
   }
 
-  m_loaded = true;
-  return 0;
+  return true;
 }
+
+
+LTP::~LTP() {}
+
+bool LTP::loaded() const { return _loaded; }
 
 // If you do NOT split sentence explicitly,
 // this will be called according to dependencies among modules
@@ -206,7 +181,7 @@ int LTP::wordseg(XML4NLP & xml) {
   }
 
   // get the segmentor pointer
-  void * segmentor = m_ltpResource.GetSegmentor();
+  void * segmentor = _resource.GetSegmentor();
   if (0 == segmentor) {
     ERROR_LOG("in LTP::wordseg, failed to init a segmentor");
     return kWordsegError;
@@ -257,7 +232,7 @@ int LTP::postag(XML4NLP & xml) {
     return ret;
   }
 
-  void * postagger = m_ltpResource.GetPostagger();
+  void * postagger = _resource.GetPostagger();
   if (0 == postagger) {
     ERROR_LOG("in LTP::postag, failed to init a postagger");
     return kPostagError;
@@ -315,7 +290,7 @@ int LTP::ner(XML4NLP & xml) {
     return ret;
   }
 
-  void * ner = m_ltpResource.GetNER();
+  void * ner = _resource.GetNER();
 
   if (NULL == ner) {
     ERROR_LOG("in LTP::ner, failed to init a ner.");
@@ -375,7 +350,7 @@ int LTP::parser(XML4NLP & xml) {
     return ret;
   }
 
-  void * parser = m_ltpResource.GetParser();
+  void * parser = _resource.GetParser();
 
   if (parser == NULL) {
     ERROR_LOG("in LTP::parser, failed to init a parser");

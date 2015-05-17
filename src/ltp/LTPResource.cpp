@@ -1,13 +1,12 @@
 #include "LTPResource.h"
-
-// #include "MyLib.h"
-#include "Xml4nlp.h"
-#include "SplitSentence.h"
-#include "segment_dll.h"
-#include "postag_dll.h"
-#include "parser_dll.h"
-#include "ner_dll.h"
-#include "SRL_DLL.h"
+#include "xml4nlp/Xml4nlp.h"
+#include "splitsnt/SplitSentence.h"
+#include "segmentor/segment_dll.h"
+#include "postagger/postag_dll.h"
+#include "parser.n/parser_dll.h"
+#include "ner/ner_dll.h"
+#include "srl/SRL_DLL.h"
+#include "utils/logging.hpp"
 
 #if _WIN32
 #pragma warning(disable: 4786 4284)
@@ -17,8 +16,6 @@
 #pragma comment(lib, "ner.lib")
 #pragma comment(lib, "srl.lib")
 #endif
-
-#include "logging.hpp"
 
 LTPResource::LTPResource() :
   m_segmentor(NULL),
@@ -32,6 +29,7 @@ LTPResource::LTPResource() :
   m_isSRLResourceLoaded(false) {
 }
 
+
 LTPResource::~LTPResource() {
   ReleaseSegmentorResource();
   ReleasePostaggerResource();
@@ -40,19 +38,13 @@ LTPResource::~LTPResource() {
   ReleaseSRLResource();
 }
 
-
 /* ======================================================== *
  * Segmentor related resource management                    *
  * ======================================================== */
-// function wrapper of segmentor_create_segmentor
 int LTPResource::LoadSegmentorResource(const char * model_file) {
-  //  resource has be loaded.
-  if (m_isSegmentorResourceLoaded) {
-    return 0;
-  }
+  if (m_isSegmentorResourceLoaded) { return 0; }
 
-  TRACE_LOG("Loading segmentor model from \"%s\" ...", model_file);
-
+  INFO_LOG("Loading segmentor model from \"%s\" ...", model_file);
   m_segmentor = segmentor_create_segmentor(model_file);
   if (0 == m_segmentor) {
     ERROR_LOG("Failed to load segmentor model");
@@ -60,71 +52,96 @@ int LTPResource::LoadSegmentorResource(const char * model_file) {
   }
 
   m_isSegmentorResourceLoaded = true;
-  TRACE_LOG("segmentor model is loaded.");
+  INFO_LOG("segmentor model is loaded.");
   return 0;
 }
 
-int LTPResource::LoadSegmentorResource(const std::string & model_file) {
+int LTPResource::LoadSegmentorResource(const char* model_file, const char* lexicon) {
+  if (m_isSegmentorResourceLoaded) { return 0; }
+
+  INFO_LOG("Loading segmentor model from \"%s\", \"%s\" ...", model_file, lexicon);
+  m_segmentor = segmentor_create_segmentor(model_file, lexicon);
+  if (0 == m_segmentor) {
+    ERROR_LOG("Failed to load segmentor model");
+    return -1;
+  }
+
+  m_isSegmentorResourceLoaded = true;
+  INFO_LOG("segmentor model is loaded.");
+  return 0;
+}
+
+int LTPResource::LoadSegmentorResource(const std::string& model_file) {
   return LoadSegmentorResource(model_file.c_str());
 }
 
+int LTPResource::LoadSegmentorResource(const std::string& model_file,
+    const std::string& lexicon) {
+  return LoadSegmentorResource(model_file.c_str(), lexicon.c_str());
+}
+
 void LTPResource::ReleaseSegmentorResource() {
-  if (!m_isSegmentorResourceLoaded) {
-    return;
-  }
+  if (!m_isSegmentorResourceLoaded) { return; }
 
   segmentor_release_segmentor(m_segmentor);
-
   TRACE_LOG("segmentor model is released.");
-
   m_segmentor = 0;
   m_isSegmentorResourceLoaded = false;
 }
 
-void * LTPResource::GetSegmentor() {
-  return m_segmentor;
-}
+void* LTPResource::GetSegmentor() { return m_segmentor; }
 
 /* ======================================================== *
  * Postagger related resource management                    *
  * ======================================================== */
 int LTPResource::LoadPostaggerResource(const char * model_file) {
-  if (m_isPostaggerResourceLoaded) {
-    return 0;
-  }
+  if (m_isPostaggerResourceLoaded) { return 0; }
 
-  TRACE_LOG("Loading postagger model from \"%s\" ...", model_file);
-
+  INFO_LOG("Loading postagger model from \"%s\" ...", model_file);
   m_postagger = postagger_create_postagger(model_file);
-
   if (0 == m_postagger) {
     ERROR_LOG("Failed to load postagger model");
     return -1;
   }
 
   m_isPostaggerResourceLoaded = true;
-  TRACE_LOG("postagger model is loaded");
+  INFO_LOG("postagger model is loaded");
   return 0;
 }
 
-int LTPResource::LoadPostaggerResource(const std::string & model_file) {
+
+int LTPResource::LoadPostaggerResource(const char* model_file, const char* lexicon) {
+  if (m_isPostaggerResourceLoaded) { return 0; }
+
+  INFO_LOG("Loading postagger model from \"%s\" ...", model_file);
+  m_postagger = postagger_create_postagger(model_file);
+  if (0 == m_postagger) {
+    ERROR_LOG("Failed to load postagger model");
+    return -1;
+  }
+
+  m_isPostaggerResourceLoaded = true;
+  INFO_LOG("postagger model is loaded");
+  return 0;
+}
+
+int LTPResource::LoadPostaggerResource(const std::string& model_file) {
   return LoadPostaggerResource(model_file.c_str());
 }
 
+int LTPResource::LoadPostaggerResource(const std::string& model_file,
+    const std::string& lexicon) {
+  return LoadPostaggerResource(model_file.c_str(), lexicon.c_str());
+}
+
 void LTPResource::ReleasePostaggerResource() {
-  if (!m_isPostaggerResourceLoaded) {
-    return;
-  }
-
+  if (!m_isPostaggerResourceLoaded) { return; }
   postagger_release_postagger(m_postagger);
-
   m_postagger = 0;
   m_isPostaggerResourceLoaded = false;
 }
 
-void * LTPResource::GetPostagger() {
-  return m_postagger;
-}
+void * LTPResource::GetPostagger() { return m_postagger; }
 
 /* ======================================================== *
  * NER related resource management                          *

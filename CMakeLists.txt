@@ -43,6 +43,3 @@ add_subdirectory (src)
 
 # enable test
 enable_testing()
-
-# compile testing
-#add_subdirectory (test)

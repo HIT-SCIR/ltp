@@ -1,10 +1,5 @@
 include_directories (./
-    ${SOURCE_DIR}/__util
-    ${SOURCE_DIR}/__xml4nlp
-    ${SOURCE_DIR}/_split_sentence
-    ${SOURCE_DIR}/utils
-    ${SOURCE_DIR}/__ltp_dll
-    ${THIRDPARTY_DIR}/crfpp
+    ${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)
 
@@ -21,9 +16,10 @@ target_link_libraries (ltp_server
     ner_static_lib
     srl_static_lib
     xml4nlp
-    dl
     pthread
-    boost_regex_static_lib)
+    boost_program_options_static_lib
+    boost_regex_static_lib
+    dl)
 
 if (MSVC)
   target_link_libraries (ltp_server
