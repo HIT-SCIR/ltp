@@ -68,7 +68,10 @@ int main(int argc, char *argv[]) {
      "The path to the parser model [default=ltp_data/parser.model].")
     ("srl-data", value<std::string>(),
      "The path to the SRL model directory [default=ltp_data/srl_data/].")
-    ("debug-level", value<int>(), "The debug level.")
+    ("log-level", value<int>(), "The log level:\n"
+     "- 0: TRACE level\n"
+     "- 1: DEBUG level\n"
+     "- 2: INFO level\n")
     ("help,h", "Show help information");
 
   if (argc == 1) {
@@ -149,6 +152,16 @@ int main(int argc, char *argv[]) {
   std::string srl_data= "ltp_data/srl/";
   if (vm.count("srl-data")) {
     srl_data = vm["srl-data"].as<std::string>();
+  }
+
+  int log_level = LTP_LOG_INFO;
+  if (vm.count("log-level")) {
+    log_level = vm["log-level"].as<int>();
+    if (log_level == 0) {
+      ltp::utility::Logger<void>::get_logger()->set_lvl(LTP_LOG_TRACE);
+    } else if (log_level == 1) {
+      ltp::utility::Logger<void>::get_logger()->set_lvl(LTP_LOG_DEBUG);
+    }
   }
 
   engine = new LTP(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
@@ -257,11 +270,14 @@ static int Service(struct mg_connection *conn) {
       str_post_data += buffer;
     }
 
-    // TRACE_LOG("CDATA: %s", str_post_data.c_str());
-    // TRACE_LOG("CDATA length: %d", str_post_data.size());
+    DEBUG_LOG("CDATA: %s (length=%d)", str_post_data.c_str(), str_post_data.size());
+    if (str_post_data.size() == 0) {
+      WARNING_LOG("Input request is empty");
+      ErrorResponse(conn, kEmptyStringError);
+      return 0;
+    }
 
     sentence = new char[str_post_data.size() + 1];
-
     mg_get_var(str_post_data.c_str(),
                str_post_data.size(),
                "s",
@@ -308,7 +324,7 @@ static int Service(struct mg_connection *conn) {
     }
 
     delete []sentence;
-    // TRACE_LOG("Input sentence is: %s", strSentence.c_str());
+    DEBUG_LOG("Input sentence is: %s", strSentence.c_str());
 
     //Get a XML4NLP instance here.
     XML4NLP  xml4nlp;
@@ -355,7 +371,7 @@ static int Service(struct mg_connection *conn) {
       }
     }
 
-    // TRACE_LOG("Analysis is done.");
+    TRACE_LOG("Analysis is done.");
 
     std::string strResult;
     xml4nlp.SaveDOM(strResult);

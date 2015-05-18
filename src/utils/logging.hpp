@@ -155,6 +155,11 @@ public:
     return;
   }
 
+
+  void set_lvl(int lvl) {
+    log_lvl = lvl;
+  }
+
   /**
    *
    *

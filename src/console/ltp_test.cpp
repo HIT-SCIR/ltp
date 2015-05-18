@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
     is = (&ifs);
   }
 
-  ltp::utility::timer t;
+  ltp::utility::WallClockTimer t;
   Dispatcher* dispatcher = new Dispatcher(&engine, (*is), std::cout);
   int num_threads = threads;
   std::cerr << "TRACE: LTP is built" << std::endl;

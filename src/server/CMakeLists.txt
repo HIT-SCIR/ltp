@@ -1,7 +1,8 @@
 include_directories (./
     ${SOURCE_DIR}/
-    ${THIRDPARTY_DIR}/maxent
-    ${THIRDPARTY_DIR}/tinyxml)
+    ${THIRDPARTY_DIR}/boost/include/
+    ${THIRDPARTY_DIR}/maxent/
+    ${THIRDPARTY_DIR}/tinyxml/)
 
 set (ltp_server_SRC ltp_server.cpp mongoose.c mongoose.h)
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
