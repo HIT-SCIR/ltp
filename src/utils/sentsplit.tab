@@ -1,13 +1,21 @@
 #ifndef __LTP_STRUTILS_SENTSPLIT_TAB__
 #define __LTP_STRUTILS_SENTSPLIT_TAB__
+#include "hasher.hpp"
 
 #pragma warning(disable: 4309)
 
-static const int __three_periods_utf8_size__ = 3;
+static const int __three_periods_utf8_size__ = 4;
 static const char* __three_periods_utf8_buff__[] = {
 "\xef\xbc\x9f\xef\xbc\x81\xe2\x80\x9d",
 "\xe3\x80\x82\xe2\x80\x99\xe2\x80\x9d",
 "\xef\xbc\x81\xe2\x80\x99\xe2\x80\x9d",
+"\xe2\x80\xa6\xe2\x80\xa6\xe2\x80\x9d",
+};
+static const size_t __three_periods_utf8_key__[] = {
+ltp::utility::__hash(__three_periods_utf8_buff__[0]),
+ltp::utility::__hash(__three_periods_utf8_buff__[1]),
+ltp::utility::__hash(__three_periods_utf8_buff__[2]),
+ltp::utility::__hash(__three_periods_utf8_buff__[3]),
 };
 static const int __two_periods_utf8_size__ = 6;
 static const char* __two_periods_utf8_buff__[] = {
@@ -15,15 +23,28 @@ static const char* __two_periods_utf8_buff__[] = {
 "\xef\xbc\x81\xe2\x80\x9d",
 "\xef\xbc\x9f\xe2\x80\x9d",
 "\xef\xbc\x9b\xe2\x80\x9d",
-"\xe2\x80\xa6\xe2\x80\xa6\xe2\x80\x9d",
 "\xef\xbc\x9f\xef\xbc\x81",
+"\xe2\x80\xa6\xe2\x80\xa6",
 };
-static const int __one_periods_utf8_size__ = 5;
+static const size_t __two_periods_utf8_key__[] = {
+ltp::utility::__hash(__two_periods_utf8_buff__[0]),
+ltp::utility::__hash(__two_periods_utf8_buff__[1]),
+ltp::utility::__hash(__two_periods_utf8_buff__[2]),
+ltp::utility::__hash(__two_periods_utf8_buff__[3]),
+ltp::utility::__hash(__two_periods_utf8_buff__[4]),
+ltp::utility::__hash(__two_periods_utf8_buff__[5]),
+};
+static const int __one_periods_utf8_size__ = 4;
 static const char* __one_periods_utf8_buff__[] = {
 "\xe3\x80\x82",
 "\xef\xbc\x81",
 "\xef\xbc\x9f",
 "\xef\xbc\x9b",
-"\xe2\x80\xa6\xe2\x80\xa6",
+};
+static const size_t __one_periods_utf8_key__[] = {
+ltp::utility::__hash(__one_periods_utf8_buff__[0]),
+ltp::utility::__hash(__one_periods_utf8_buff__[1]),
+ltp::utility::__hash(__one_periods_utf8_buff__[2]),
+ltp::utility::__hash(__one_periods_utf8_buff__[3]),
 };
 #endif   // end for __LTP_STRUTILS_SENTSPLIT_TAB__

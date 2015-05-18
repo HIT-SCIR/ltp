@@ -26,7 +26,7 @@ using boost::program_options::value;
 using boost::program_options::variables_map;
 using boost::program_options::store;
 using boost::program_options::parse_command_line;
-using ltp::utility::timer;
+using ltp::utility::WallClockTimer;
 using ltp::strutils::split;
 
 void multithreaded_postag( void * args) {
@@ -72,6 +72,11 @@ int main(int argc, char ** argv) {
     ("postagger-lexicon", value<std::string>(),
      "The path to the external lexicon in postagger [optional].")
     ("help,h", "Show help information");
+
+  if (argc == 1) {
+    std::cerr << optparser << std::endl;
+    return 1;
+  }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
@@ -128,16 +133,16 @@ int main(int argc, char ** argv) {
   }
 
   Dispatcher * dispatcher = new Dispatcher( engine, (*is), std::cout );
-  timer t;
+  WallClockTimer t;
   std::list<tthread::thread *> thread_list;
   for (int i = 0; i < threads; ++ i) {
-      tthread::thread * t = new tthread::thread( multithreaded_postag, (void *)dispatcher );
+    tthread::thread * t = new tthread::thread( multithreaded_postag, (void *)dispatcher );
     thread_list.push_back( t );
   }
 
   for (std::list<tthread::thread *>::iterator i = thread_list.begin();
       i != thread_list.end(); ++ i) {
-      tthread::thread * t = *i;
+    tthread::thread * t = *i;
     t->join();
     delete t;
   }

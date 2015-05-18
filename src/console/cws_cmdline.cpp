@@ -27,7 +27,7 @@ using boost::program_options::variables_map;
 using boost::program_options::store;
 using boost::program_options::parse_command_line;
 using ltp::strutils::join;
-using ltp::utility::timer;
+using ltp::utility::WallClockTimer;
 
 void multithreaded_segment( void * args) {
   std::string sentence;
@@ -64,7 +64,10 @@ int main(int argc, char ** argv) {
      "The path to the external lexicon in segmentor [optional].")
     ("help,h", "Show help information");
 
-  void* engine = 0;
+  if (argc == 1) {
+    std::cerr << optparser << std::endl;
+    return 1;
+  }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
@@ -96,6 +99,7 @@ int main(int argc, char ** argv) {
     segmentor_lexicon= vm["segmentor-lexicon"].as<std::string>();
   }
 
+  void* engine = 0;
   if (segmentor_lexicon == "") {
     engine = segmentor_create_segmentor(segmentor_model.c_str());
   } else {
@@ -119,7 +123,7 @@ int main(int argc, char ** argv) {
   }
 
   Dispatcher* dispatcher = new Dispatcher( engine, (*is), std::cout );
-  timer t;
+  WallClockTimer t;
   std::list<tthread::thread *> thread_list;
   for (int i = 0; i < threads; ++ i) {
     tthread::thread* t = new tthread::thread( multithreaded_segment, (void *)dispatcher );

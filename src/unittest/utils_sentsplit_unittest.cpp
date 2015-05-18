@@ -19,3 +19,11 @@ TEST(sentsplit_unittest, test2) {
   EXPECT_STREQ(sentences[0].c_str(), "测试句子一。");
   EXPECT_STREQ(sentences[1].c_str(), "测试句子二。");
 }
+
+TEST(sentsplit_unittest, test3) {
+  std::vector<std::string> sentences;
+
+  ltp::Chinese::split_sentence("3部长号 （2部高音，1部低音）", sentences);
+  EXPECT_EQ(sentences.size(), 1);
+  EXPECT_STREQ(sentences[0].c_str(), "3部长号 （2部高音，1部低音）");
+}

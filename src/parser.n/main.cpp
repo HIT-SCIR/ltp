@@ -32,6 +32,8 @@ int test(int argc, char** argv) {
      "if configured, perform evaluation, heads and deprels columns should be filled.")
     ("help,h", "Show help information");
 
+  if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
+
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
 
@@ -103,6 +105,8 @@ int learn(int argc, char** argv) {
     ("root", value<std::string>(), "The root tag. [default=ROOT]")
     ("verbose", "Logging more details.")
     ("help,h", "Show help information.");
+
+  if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
@@ -246,6 +250,7 @@ int learn(int argc, char** argv) {
       opt.cluster_file = vm["cluster"].as<std::string>();
     } else {
       ERROR_LOG("cluster file should be specified when using cluster feature.");
+      return 1;
     }
   }
 

@@ -88,6 +88,11 @@ void CustomizedSegmentorFrontend::extract_features(const Instance& inst, bool cr
   Segmentor::extract_features(inst, bs_model, &bs_ctx, false);
 }
 
+void CustomizedSegmentorFrontend::clear_context(void) {
+  ctx.clear();
+  bs_ctx.clear();
+}
+
 void CustomizedSegmentorFrontend::build_configuration(void) {
   // First, inherit the tag set from the baseline model.
   for (size_t i = 0; i < bs_model->labels.size(); ++i) {

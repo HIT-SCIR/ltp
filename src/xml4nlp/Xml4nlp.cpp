@@ -10,7 +10,9 @@
 
 #include "Xml4nlp.h"
 #include <cstring>
-#include "boost/algorithm/string.hpp"
+#include "utils/strutils.hpp"
+
+using ltp::strutils::trim;
 
 const char * const NOTE_SENT    = "sent";
 const char * const NOTE_WORD    = "word";
@@ -78,7 +80,7 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
   int i = 0;
   while (getline(in, line)) {
     // clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
-    boost::algorithm::trim(line);
+    trim(line);
     if (line.empty()) {
       continue;
     }
@@ -96,16 +98,12 @@ int XML4NLP::CreateDOMFromString(const string & str) {
   ClearDOM();
   if (0 != BuildDOMFrame()) return -1;
 
-  string strTmp = str;
-
-  boost::algorithm::replace_all(strTmp, "\r", "\n");
-
-  // std::cout << strTmp << std::endl;
-  istringstream in(strTmp);  // How to use istringstream?
+  string strTmp;
+  istringstream in(str);  // How to use istringstream?
   int i = 0;
   while (getline(in, strTmp)) {
     // clean_str(strTmp);
-    boost::algorithm::trim(strTmp);
+    trim(strTmp);
 
     if (strTmp.empty()) {
       continue;

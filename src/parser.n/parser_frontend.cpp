@@ -3,6 +3,7 @@
 #include "parser.n/io.h"
 #include "utils/logging.hpp"
 #include "utils/strutils.hpp"
+#include "utils/codecs.hpp"
 #include "utils/time.hpp"
 
 namespace ltp {
@@ -12,7 +13,7 @@ using framework::LineCountsReader;
 using strutils::trim;
 using strutils::split;
 using strutils::to_double;
-using strutils::is_unicode_punctuation;
+using strutils::codecs::is_unicode_punctuation;
 using utility::timer;
 
 NeuralNetworkParserFrontend::NeuralNetworkParserFrontend(
@@ -129,43 +130,41 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
 
   while (std::getline(ifs, line)) {
     if (nr_lines++ % interval == 0) {
-      INFO_LOG("#: loaded %lf0%% cluster.", nr_lines / interval);
+      INFO_LOG("#: loaded %d0%% cluster.", nr_lines / interval);
     }
     trim(line);
     if (line.size() == 0) { continue; }
     std::vector<std::string> items = split(line);
-    int form = forms_alphabet.index(items[0]);
+
+    if (items.size() < 2) {
+      WARNING_LOG("cluster file in ill format.");
+      continue;
+    }
+
+    int form = forms_alphabet.index(items[1]);
     // TODO to lower fails with utf8 input
     // int transformed_form = forms_alphabet.encode(items[0].tolower());
     if (form == -1) {
       // _TRACE << "report: form\'" << items[0] << "\' not occur in training data, ignore.";
       continue;
     }
-    if (items.size() < 2) {
-      WARNING_LOG("cluster file in ill format.");
-      continue;
-    }
 
-    form_to_cluster4[form] = cluster4_types_alphabet.push(items[1].substr(4));
-    form_to_cluster6[form] = cluster6_types_alphabet.push(items[1].substr(6));
-    form_to_cluster[form] = cluster_types_alphabet.push(items[1]);
+    form_to_cluster4[form] = cluster4_types_alphabet.push(items[0].substr(0, 4));
+    form_to_cluster6[form] = cluster6_types_alphabet.push(items[0].substr(0, 6));
+    form_to_cluster[form] = cluster_types_alphabet.push(items[0]);
   }
   // push nil cluster.
-  cluster4_types_alphabet.push(SpecialOption::UNKNOWN);
+  form_to_cluster4[-1] = cluster4_types_alphabet.push(SpecialOption::UNKNOWN);
   kNilCluster4 = cluster4_types_alphabet.push(SpecialOption::NIL);
   cluster4_types_alphabet.push(SpecialOption::ROOT);
 
-  cluster6_types_alphabet.push(SpecialOption::UNKNOWN);
+  form_to_cluster6[-1] = cluster6_types_alphabet.push(SpecialOption::UNKNOWN);
   kNilCluster6 = cluster6_types_alphabet.push(SpecialOption::NIL);
   cluster6_types_alphabet.push(SpecialOption::ROOT);
 
-  cluster_types_alphabet.push(SpecialOption::UNKNOWN);
+  form_to_cluster[-1] = cluster_types_alphabet.push(SpecialOption::UNKNOWN);
   kNilCluster = cluster_types_alphabet.push(SpecialOption::NIL);
-  cluster6_types_alphabet.push(SpecialOption::ROOT);
-
-  INFO_LOG("#: loaded %d cluster(4)", cluster4_types_alphabet.size());
-  INFO_LOG("#: loaded %d cluster(6)", cluster6_types_alphabet.size());
-  INFO_LOG("#: loaded %d cluster", cluster_types_alphabet.size());
+  cluster_types_alphabet.push(SpecialOption::ROOT);
 }
 
 void NeuralNetworkParserFrontend::collect_precomputed_features() {
@@ -363,7 +362,10 @@ void NeuralNetworkParserFrontend::generate_training_samples_one_batch(
           }
         }
 
-        if (oracle == -1) { ERROR_LOG("# unexpected error occurs!"); }
+        if (oracle == -1) {
+          ERROR_LOG("# unexpected error occurs!");
+          break;
+        }
         classes[oracle] = 1.;
 
         dataset.push_back(Sample(attributes, classes));
@@ -422,7 +424,7 @@ void NeuralNetworkParserFrontend::train(void) {
 
         size_t L = heads.size();
         for (size_t i = 1; i < L; ++ i) { // ignore dummy root
-          if (is_unicode_punctuation(data->forms[i])) {
+          if (is_unicode_punctuation(data->raw_forms[i])) {
             continue;
           }
           ++ nr_tokens;
@@ -446,6 +448,7 @@ void NeuralNetworkParserFrontend::train(void) {
 }
 
 void NeuralNetworkParserFrontend::test(void) {
+  INFO_LOG("report: loading model from %s.", test_opt->model_file.c_str());
   if (!load(test_opt->model_file)) {
     WARNING_LOG("failed to load model file.");
     return;
@@ -475,7 +478,7 @@ void NeuralNetworkParserFrontend::test(void) {
     if (test_opt->evaluate) {
       size_t L = heads.size();
       for (size_t i = 1; i < L; ++ i) { // ignore dummy root
-        if (is_unicode_punctuation(inst->forms[i])) {
+        if (is_unicode_punctuation(inst->raw_forms[i])) {
           continue;
         }
         ++ nr_tokens;

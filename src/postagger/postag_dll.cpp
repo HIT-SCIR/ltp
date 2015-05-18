@@ -12,7 +12,7 @@
 
 class __ltp_dll_postagger_wrapper : public ltp::postagger::Postagger {
 private:
-  ltp::postagger::PostaggerLexiconConstrain con;
+  ltp::postagger::PostaggerLexicon lex;
 
 public:
   __ltp_dll_postagger_wrapper() {}
@@ -33,7 +33,7 @@ public:
 
     std::ifstream lfs(lexicon_file);
     if (lfs.good()) {
-      con.load(lfs, model->labels);
+      lex.load(lfs, model->labels);
     }
 
     return true;
@@ -46,16 +46,21 @@ public:
     ltp::framework::ViterbiDecoder decoder;
     ltp::postagger::Instance inst;
 
+    inst.forms.resize(words.size());
     for (size_t i = 0; i < words.size(); ++ i) {
-      inst.forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
+      ltp::strutils::chartypes::sbc2dbc_x(words[i], inst.forms[i]);
     }
 
     extract_features(inst, &ctx, false);
     calculate_scores(inst, ctx, true, &scm);
-    decoder.decode(scm, con, inst.predict_tagsidx);
+    if (lex.success()) {
+      ltp::postagger::PostaggerLexiconConstrain con = lex.get_con(words);
+      decoder.decode(scm, con, inst.predict_tagsidx);
+    } else {
+      decoder.decode(scm, inst.predict_tagsidx);
+    }
 
     ltp::postagger::Postagger::build_labels(inst, tags);
-
     return tags.size();
   }
 };

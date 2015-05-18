@@ -21,10 +21,11 @@ NERTransitionConstrain::NERTransitionConstrain(const utility::IndexableSmartMap&
     int from = alphabet.index(trim_copy(tokens[0]));
     int to = alphabet.index(trim_copy(tokens[1]));
     if (-1 == from || -1 == to) {
-      WARNING_LOG("label in constrain text \"%s\" is not in alphabet.", include.c_str());
+      WARNING_LOG("label in constrain text \"%s,%s\" is not in alphabet.",
+          trim_copy(tokens[0]).c_str(), trim_copy(tokens[1]).c_str());
+    } else {
+      rep.insert(from * T + to);
     }
-
-    rep.insert(from * T + to);
   }
 }
 

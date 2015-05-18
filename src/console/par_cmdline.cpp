@@ -17,7 +17,7 @@ using boost::program_options::value;
 using boost::program_options::variables_map;
 using boost::program_options::store;
 using boost::program_options::parse_command_line;
-using ltp::utility::timer;
+using ltp::utility::WallClockTimer;
 using ltp::strutils::split;
 
 void multithreaded_parse( void * args) {
@@ -75,6 +75,11 @@ int main(int argc, char * argv[]) {
      "The path to the postag model [default=ltp_data/parser.model].")
     ("help,h", "Show help information");
 
+  if (argc == 1) {
+    std::cerr << optparser << std::endl;
+    return 1;
+  }
+
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
 
@@ -95,13 +100,12 @@ int main(int argc, char * argv[]) {
   std::string input = "";
   if (vm.count("input")) { input = vm["input"].as<std::string>(); }
 
-  std::string postagger_model = "ltp_data/parser.model";
+  std::string parser_model = "ltp_data/parser.model";
   if (vm.count("parser-model")) {
-    postagger_model= vm["parser-model"].as<std::string>();
+    parser_model= vm["parser-model"].as<std::string>();
   }
 
-  void *engine = parser_create_parser(postagger_model.c_str());
-
+  void *engine = parser_create_parser(parser_model.c_str());
   if (!engine) {
     return 1;
   }
@@ -120,16 +124,16 @@ int main(int argc, char * argv[]) {
   }
 
   Dispatcher * dispatcher = new Dispatcher( engine, (*is), std::cout );
-  timer t;
+  WallClockTimer t;
   std::list<tthread::thread *> thread_list;
   for (int i = 0; i < threads; ++ i) {
-      tthread::thread * t = new tthread::thread( multithreaded_parse, (void *)dispatcher );
+    tthread::thread * t = new tthread::thread( multithreaded_parse, (void *)dispatcher );
     thread_list.push_back( t );
   }
 
   for (std::list<tthread::thread *>::iterator i = thread_list.begin();
       i != thread_list.end(); ++ i) {
-      tthread::thread * t = *i;
+    tthread::thread * t = *i;
     t->join();
     delete t;
   }

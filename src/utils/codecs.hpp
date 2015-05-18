@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "unicode.tab"
 
 namespace ltp {
 namespace strutils {
@@ -182,7 +183,34 @@ inline bool isclear(const std::string & s, int encoding=UTF8) {
   return true;
 }
 
+inline bool is_unicode_punctuation(const std::string& str) {
+  if (length(str) != 1) {
+    return false;
+  }
+  size_t code = 0;
+  if(!(str[0]&0x80))      // 0xxxxxxx
+    code = str[0];
+  else if ((str[0]&0xE0)==0xC0)  // 110xxxxx
+    code = (((str[0]&0x1F)<<6) | (str[1]&0x3F));
+  else if ((str[0]&0xF0)==0xE0)  // 1110xxxx
+    code = (((str[0]&0x0F)<<12) | ((str[1]&0x3F)<<6) | (str[2]&0x3F));
+  else if ((str[0]&0xF8)==0xF0)
+    code = (((str[0]&0x07)<<18) | ((str[1]&0x3F)<<12) | ((str[2]&0x3F)<<6) | (str[3]&0x3F));
+  else
+    return false;
+
+  // UTF8 General Punctuation.
+  for (size_t i = 0; i < UNICODE_PUNCTUATION_SIZE; ) {
+    if (code >= UNICODE_PUNCTUATION[i] && code <= UNICODE_PUNCTUATION[i+1]) {
+      return true;
+    }
+    i += 2;
+  }
+  return false;
+}
+
 }       //  end for namespace codecs
 }       //  end for namespace strutils
 }       //  end for namespace ltp
 #endif  //  end for __CODECS_HPP__
+

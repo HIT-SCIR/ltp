@@ -12,11 +12,31 @@ using strutils::split;
 using strutils::trim;
 using strutils::chartypes::sbc2dbc_x;
 
-PostaggerLexiconConstrain::PostaggerLexiconConstrain()
-  : words(0), successful(false) {
+PostaggerLexiconConstrain::PostaggerLexiconConstrain(
+    const std::vector<std::string>& _words,
+    const utility::SmartMap<utility::Bitset>& _rep)
+  : words(_words), rep(_rep) {
 }
 
-bool PostaggerLexiconConstrain::load(std::istream& is,
+bool PostaggerLexiconConstrain::can_emit(const size_t& i, const size_t& j) const {
+  Bitset* entry= rep.get(words[i].c_str());
+  if (NULL == entry) {
+    return true;
+  } else {
+    return entry->get(j);
+  }
+}
+
+PostaggerLexicon::PostaggerLexicon(): successful(false) {}
+
+bool PostaggerLexicon::success() const { return successful; }
+
+PostaggerLexiconConstrain PostaggerLexicon::get_con(
+    const std::vector<std::string>& words) {
+  return PostaggerLexiconConstrain(words, rep);
+}
+
+bool PostaggerLexicon::load(std::istream& is,
     const IndexableSmartMap& labels_alphabet) {
 
   std::string buffer;
@@ -71,22 +91,6 @@ bool PostaggerLexiconConstrain::load(std::istream& is,
     ++ num_lines;
   }
   return (successful = true);
-}
-
-void PostaggerLexiconConstrain::regist(const std::vector<std::string>* _words) {
-  words = _words;
-}
-
-bool PostaggerLexiconConstrain::can_emit(const size_t& i, const size_t& j) const {
-  if (successful && words) {
-    Bitset* entry= rep.get(words->at(i).c_str());
-    if (NULL == entry) {
-      return true;
-    } else {
-      return entry->get(j);
-    }
-  }
-  return true;
 }
 
 }     //  end for namespace postagger

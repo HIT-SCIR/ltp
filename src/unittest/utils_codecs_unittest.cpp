@@ -40,3 +40,12 @@ TEST(codecs_unittest, length_test) {
   EXPECT_EQ(13, length);
 }
 
+TEST(codecs_unittest, is_unicode_punctuation) {
+  EXPECT_TRUE(ltp::strutils::codecs::is_unicode_punctuation("/"));
+  EXPECT_TRUE(ltp::strutils::codecs::is_unicode_punctuation("?"));
+  EXPECT_TRUE(ltp::strutils::codecs::is_unicode_punctuation("。"));
+  EXPECT_TRUE(ltp::strutils::codecs::is_unicode_punctuation("，"));
+  EXPECT_FALSE(ltp::strutils::codecs::is_unicode_punctuation("社"));
+  EXPECT_FALSE(ltp::strutils::codecs::is_unicode_punctuation("3"));
+}
+

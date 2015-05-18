@@ -92,6 +92,8 @@ protected:
   void increase_timestamp();
 
   virtual void setup_lexicons();
+
+  virtual void clear_context();
 };
 
 } //  namespace segmentor

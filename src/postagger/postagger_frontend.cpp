@@ -93,8 +93,6 @@ bool PostaggerFrontend::read_instances(const char* train_file) {
 }
 
 void PostaggerFrontend::build_configuration(void) {
-  // model->labels.push( __dummy__ );
-
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     Instance * inst = train_dat[i];
     size_t len = inst->size();
@@ -102,7 +100,6 @@ void PostaggerFrontend::build_configuration(void) {
     inst->postag_constrain.resize(len);
     for (size_t j = 0; j < len; ++ j) {
       inst->tagsidx[j] = model->labels.push( inst->tags[j] );
-      // inst->postag_constrain[j].allsetones();
     }
   }
 }
@@ -297,9 +294,9 @@ void PostaggerFrontend::test(void) {
   PostaggerWriter writer(std::cout);
   PostaggerReader reader(ifs, "_", test_opt.evaluate, false);
 
-  PostaggerLexiconConstrain con;
+  PostaggerLexicon lex;
   std::ifstream lfs(test_opt.lexicon_file.c_str());
-  if (lfs.good()) { con.load(lfs, model->labels); }
+  if (lfs.good()) { lex.load(lfs, model->labels); }
 
   Instance* inst = NULL;
   size_t num_recalled_tags = 0;
@@ -315,7 +312,12 @@ void PostaggerFrontend::test(void) {
     }
     Postagger::extract_features((*inst), &ctx, false);
     Postagger::calculate_scores((*inst), ctx, true, &scm);
-    decoder.decode(scm, con, inst->predict_tagsidx);
+    if (lex.success()) {
+      PostaggerLexiconConstrain con = lex.get_con(inst->forms);
+      decoder.decode(scm, con, inst->predict_tagsidx);
+    } else {
+      decoder.decode(scm, inst->predict_tagsidx);
+    }
     ctx.clear();
 
     build_labels((*inst), inst->predict_tags);

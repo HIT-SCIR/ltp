@@ -165,6 +165,10 @@ void SegmentorFrontend::collect_features(const Instance& inst) {
   Frontend::collect_features(model, ctx.uni_features, inst.predict_tagsidx, ctx.predict_features);
 }
 
+void SegmentorFrontend::clear_context() {
+  ctx.clear();
+}
+
 void SegmentorFrontend::build_feature_space(void) {
   // build feature space, it is a wrapper for featurespace.build_feature_space
   Extractor::num_templates();
@@ -272,6 +276,7 @@ void SegmentorFrontend::train(void) {
 
       SparseVec updated_features;
       update((*inst), updated_features);
+      clear_context();
 
       if (train_opt.rare_feature_threshold > 0) {
         increase_groupwise_update_counts(model, updated_features, update_counts);

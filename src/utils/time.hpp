@@ -35,6 +35,47 @@ public:
   }
 };
 
+class WallClockTimer {
+private:
+  double _start_time;
+public:
+  WallClockTimer() { 
+    _start_time = get_time();
+  }
+
+  void restart() {
+    _start_time = get_time();
+  }
+
+  double elapsed() const {
+    return get_time() - _start_time;
+  }
+
+  static double get_time() {
+#if _WIN32
+    time_t clock;
+    struct tm tm;
+    SYSTEMTIME wtm;
+    GetLocalTime(&wtm);
+    tm.tm_year = wtm.wYear - 1900;
+    tm.tm_mon  = wtm.wMonth - 1;
+    tm.tm_mday = wtm.wDay;
+    tm.tm_hour = wtm.wHour;
+    tm.tm_min  = wtm.wMinute;
+    tm.tm_sec  = wtm.wSecond;
+    tm.tm_isdst= -1;
+    clock = mktime(&tm);
+    double tv_sec = clock;
+    double tv_usec = wtm.wMilliseconds * 1000;
+    return tv_sec + (tv_usec / 1000000.0);
+#else
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec + (tv.tv_usec / 1000000.0);
+#endif
+  }
+};
+
 } //  namespace utility
 } //  namespace ltp
 

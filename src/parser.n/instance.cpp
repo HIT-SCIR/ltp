@@ -1,8 +1,11 @@
 #include "parser.n/instance.h"
 #include "utils/strutils.hpp"
+#include "utils/codecs.hpp"
 
 namespace ltp {
 namespace depparser {
+
+using strutils::codecs::is_unicode_punctuation;
 
 Instance::Instance() {}
 Instance::~Instance() {}
@@ -11,8 +14,8 @@ size_t Instance::size() const { return forms.size(); }
 
 size_t Instance::num_heads(bool ignore) const {
   size_t ret = 0;
-  for (size_t i = 0; i < forms.size(); ++ i) {
-    if (ignore && strutils::is_unicode_punctuation(forms[i])) { continue; }
+  for (size_t i = 0; i < raw_forms.size(); ++ i) {
+    if (ignore && is_unicode_punctuation(raw_forms[i])) { continue; }
     ++ ret;
   }
   return ret;
@@ -20,8 +23,8 @@ size_t Instance::num_heads(bool ignore) const {
 
 size_t Instance::num_recalled_heads(bool ignore) const {
   size_t ret = 0;
-  for (size_t i = 0; i < forms.size(); ++ i) {
-    if (ignore && strutils::is_unicode_punctuation(forms[i])) { continue; }
+  for (size_t i = 0; i < raw_forms.size(); ++ i) {
+    if (ignore && is_unicode_punctuation(raw_forms[i])) { continue; }
     if (heads[i] == predict_heads[i]) {
       ++ ret;
     }
@@ -31,8 +34,8 @@ size_t Instance::num_recalled_heads(bool ignore) const {
 
 size_t Instance::num_recalled_deprels(bool ignore) const {
   size_t ret= 0;
-  for (size_t i = 0; i < forms.size(); ++ i) {
-    if (ignore && strutils::is_unicode_punctuation(forms[i])) { continue; }
+  for (size_t i = 0; i < raw_forms.size(); ++ i) {
+    if (ignore && is_unicode_punctuation(raw_forms[i])) { continue; }
     if (heads[i] == predict_heads[i] && deprels[i] == predict_deprels[i]) {
       ++ ret;
     }

@@ -1,7 +1,7 @@
 #include "parser.n/parser_dll.h"
 #include "parser.n/parser.h"
 #include "utils/logging.hpp"
-
+#include "utils/sbcdbc.hpp"
 #include <iostream>
 
 class __ltp_dll_parser_wrapper : public ltp::depparser::NeuralNetworkParser {
@@ -28,7 +28,7 @@ public:
     inst.postags.push_back( ltp::depparser::SpecialOption::ROOT );
 
     for (size_t i = 0; i < words.size(); ++ i) {
-      inst.forms.push_back(words[i]);
+      inst.forms.push_back(ltp::strutils::chartypes::sbc2dbc(words[i]));
       inst.postags.push_back(postags[i]);
     }
 

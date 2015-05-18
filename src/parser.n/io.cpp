@@ -1,5 +1,6 @@
 #include "parser.n/io.h"
 #include "utils/codecs.hpp"
+#include "utils/sbcdbc.hpp"
 #include "utils/strutils.hpp"
 #include "utils/logging.hpp"
 
@@ -10,6 +11,7 @@ using strutils::trim;
 using strutils::split;
 using strutils::to_int;
 using strutils::to_str;
+using strutils::chartypes::sbc2dbc;
 
 CoNLLReader::CoNLLReader(std::istream& _is,
     bool _trace): trace(_trace), LineCountsReader(_is) {
@@ -21,6 +23,7 @@ Instance* CoNLLReader::next() {
   Instance* inst = new Instance;
   std::string line;
 
+  inst->raw_forms.push_back( SpecialOption::ROOT );
   inst->forms.push_back( SpecialOption::ROOT );
   inst->lemmas.push_back( SpecialOption::ROOT );
   inst->postags.push_back( SpecialOption::ROOT );
@@ -38,9 +41,10 @@ Instance* CoNLLReader::next() {
       WARNING_LOG("Unknown conll format file");
     }
 
-    inst->forms.push_back( items[1] );    // items[1]: form
-    inst->lemmas.push_back( items[2] );   // items[2]: lemma
-    inst->postags.push_back( items[3] );  // items[4]: postag
+    inst->raw_forms.push_back( items[1] );  // items[1]: form
+    inst->forms.push_back( sbc2dbc(items[1]) );
+    inst->lemmas.push_back( items[2] );     // items[2]: lemma
+    inst->postags.push_back( items[3] );    // items[4]: postag
     inst->heads.push_back( to_int(items[6]) );
     inst->deprels.push_back( items[7] );
   }

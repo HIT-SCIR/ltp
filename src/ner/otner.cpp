@@ -34,6 +34,8 @@ int learn(int argc, const char* argv[]) {
      "The threshold for rare feature, used in model truncation. [default=0]")
     ("help,h", "Show help information");
 
+  if (argc == 1) { std::cerr << optparser << std::endl;  return 1; }
+
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
 
@@ -99,8 +101,9 @@ int test(int argc, const char* argv[]) {
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>(),
      "if configured, perform evaluation, input should contain '#' concatenated tag")
-    ("help,h", "Show help information")
-    ;
+    ("help,h", "Show help information");
+
+  if (argc == 1) { std::cerr << optparser << std::endl;  return 1; }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
@@ -149,6 +152,8 @@ int dump(int argc, const char* argv[]) {
   optparser.add_options()
     ("model", value<std::string>(), "The path to the model file.")
     ("help,h", "Show help information");
+
+  if (argc == 1) { std::cerr << optparser << std::endl;  return 1; }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);

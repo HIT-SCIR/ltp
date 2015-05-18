@@ -70,6 +70,7 @@ inline void split(const std::string& source, std::vector<std::string>& ret,
         || str[pos] == '\n' || str[pos] == '\r'); ++ pos);
   str = str.substr(pos);
 
+  ret.clear();
   while (str.size() > 0) {
     pos = std::string::npos;
 
@@ -393,9 +394,6 @@ inline bool is_double(const std::string &str) {
   return true;
 }
 
-inline bool is_unicode_punctuation(const std::string& str) {
-  return false;
-}
 
 /**
  * Convert a string to a plain integer
@@ -467,7 +465,6 @@ inline void clean(std::string &str) {
   }
 }
 
-
 /**
  *
  *
@@ -477,6 +474,7 @@ inline void clean(std::string &str) {
 //int char_type(const std::string &str);
 
 } //LTP_STRING_NAMESPACE_END
+
 } //LTP_NAMESPACE_END
 
 #endif  // end for __LTP_UTILS_STRUTILS_HPP__

@@ -7,13 +7,17 @@
 namespace ltp {
 namespace utility {
 
+static size_t __hash(const char* s) {
+  size_t hash = 0;
+  while (*s) {
+    hash = hash * 101 + *s ++;
+  }
+  return size_t(hash);
+}
+
 struct __Default_CharArray_HashFunction {
   size_t operator () (const char* s) const {
-    unsigned int hash = 0;
-    while (*s) {
-      hash = hash * 101 + *s ++;
-    }
-    return size_t(hash);
+    return __hash(s);
   }
 
   bool operator() (const char* s1, const char* s2) const {
@@ -29,12 +33,7 @@ struct __Default_CharArray_EqualFunction {
 
 struct __Default_String_HashFunction {
   size_t operator()(const std::string& s) const {
-    size_t hash = 5381;
-    int c;
-    const char* p = s.c_str();
-    while (c = *p++)
-      hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    return hash;
+    return __hash(s.c_str());
   }
 };
 

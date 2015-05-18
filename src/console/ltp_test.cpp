@@ -35,17 +35,17 @@ void multithreaded_ltp( void * args) {
     XML4NLP xml4nlp;
     xml4nlp.CreateDOMFromString(sentence);
 
-    if (type == "sp"){
+    if (type == "sp") {
       engine->splitSentence_dummy(xml4nlp);
-    } else if(type == "ws"){
+    } else if(type == LTP_SERVICE_NAME_SEGMENT) {
       engine->wordseg(xml4nlp);
-    } else if(type == "pos"){
+    } else if(type == LTP_SERVICE_NAME_POSTAG) {
       engine->postag(xml4nlp);
-    } else if(type == "ner"){
+    } else if(type == LTP_SERVICE_NAME_NER) {
       engine->ner(xml4nlp);
-    } else if(type == "dp"){
+    } else if(type == LTP_SERVICE_NAME_DEPPARSE) {
       engine->parser(xml4nlp);
-    } else if(type == "srl"){
+    } else if(type == LTP_SERVICE_NAME_SRL) {
       engine->srl(xml4nlp);
     } else {
       engine->srl(xml4nlp);
@@ -72,11 +72,11 @@ int main(int argc, char *argv[]) {
      "The last stage of analysis. This option can be used when the user only"
      "wants to perform early stage analysis, like only segment without postagging."
      "value includes:\n"
-     "- ws: Chinese word segmentation\n"
-     "- pos: Part of speech tagging\n"
-     "- ne: Named entity recognization\n"
-     "- dp: Dependency parsing\n"
-     "- srl: Semantic role labeling (equals to all)\n"
+     "- " LTP_SERVICE_NAME_SEGMENT ": Chinese word segmentation\n"
+     "- " LTP_SERVICE_NAME_POSTAG ": Part of speech tagging\n"
+     "- " LTP_SERVICE_NAME_NER ": Named entity recognization\n"
+     "- " LTP_SERVICE_NAME_DEPPARSE ": Dependency parsing\n"
+     "- " LTP_SERVICE_NAME_SRL ": Semantic role labeling (equals to all)\n"
      "- all: The whole pipeline [default]")
     ("input", value<std::string>(), "The path to the input file.")
     ("segmentor-model", value<std::string>(),
@@ -95,6 +95,11 @@ int main(int argc, char *argv[]) {
      "The path to the SRL model directory [default=ltp_data/srl_data/].")
     ("debug-level", value<int>(), "The debug level.")
     ("help,h", "Show help information");
+
+  if (argc == 1) {
+    std::cerr << optparser << std::endl;
+    return 1;
+  }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
@@ -116,8 +121,12 @@ int main(int argc, char *argv[]) {
   std::string last_stage = "all";
   if (vm.count("last-stage")) {
     last_stage = vm["last-stage"].as<std::string>();
-    if (last_stage != "ws" && last_stage != "pos" && last_stage != "dp"
-        && last_stage != "ne" && last_stage != "srl" && last_stage != "all") {
+    if (last_stage != LTP_SERVICE_NAME_SEGMENT
+        && last_stage != LTP_SERVICE_NAME_POSTAG
+        && last_stage != LTP_SERVICE_NAME_NER
+        && last_stage != LTP_SERVICE_NAME_DEPPARSE
+        && last_stage != LTP_SERVICE_NAME_SRL
+        && last_stage != "all") {
       std::cerr << "Unknown stage name:" << last_stage << ", reset to 'all'" << std::endl;
       last_stage = "all";
     }

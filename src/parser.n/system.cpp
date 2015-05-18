@@ -307,7 +307,7 @@ int State::cost(const std::vector<int>& gold_heads,
     const std::vector<int>& gold_deprels) {
   std::vector< std::vector<int> > tree(gold_heads.size());
   for (size_t i = 0; i < gold_heads.size(); ++ i) {
-    size_t h = gold_heads[i]; if (h >= 0) { tree[h].push_back(i); }
+    int h = gold_heads[i]; if (h >= 0) { tree[h].push_back(i); }
   }
 
   const std::vector<int>& sigma_l = stack;

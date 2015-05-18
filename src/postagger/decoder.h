@@ -13,16 +13,23 @@ namespace postagger {
 
 class PostaggerLexiconConstrain: public framework::ViterbiDecodeConstrain {
 private:
+  const utility::SmartMap<utility::Bitset>& rep;
+  const std::vector<std::string>& words;
+public:
+  PostaggerLexiconConstrain(const std::vector<std::string>& words,
+      const utility::SmartMap<utility::Bitset>& rep);
+  bool can_emit(const size_t& i, const size_t& j) const;
+};
+
+class PostaggerLexicon {
+private:
   utility::SmartMap<utility::Bitset> rep;
-  const std::vector<std::string>* words;
   bool successful;
 public:
-  PostaggerLexiconConstrain();
+  PostaggerLexicon();
 
-  void regist(const std::vector<std::string>* words);
-
-  bool can_emit(const size_t& i, const size_t& j) const;
-
+  bool success() const;
+  PostaggerLexiconConstrain get_con(const std::vector<std::string>& words);
   bool load(std::istream& is, const utility::IndexableSmartMap& labels_alphabet);
 };
 

@@ -84,7 +84,7 @@ void LTPResource::ReleaseSegmentorResource() {
   if (!m_isSegmentorResourceLoaded) { return; }
 
   segmentor_release_segmentor(m_segmentor);
-  TRACE_LOG("segmentor model is released.");
+  INFO_LOG("segmentor model is released.");
   m_segmentor = 0;
   m_isSegmentorResourceLoaded = false;
 }
@@ -139,6 +139,7 @@ void LTPResource::ReleasePostaggerResource() {
   postagger_release_postagger(m_postagger);
   m_postagger = 0;
   m_isPostaggerResourceLoaded = false;
+  INFO_LOG("postagger resource is released");
 }
 
 void * LTPResource::GetPostagger() { return m_postagger; }
@@ -151,7 +152,7 @@ int LTPResource::LoadNEResource(const char * model_file) {
     return 0;
   }
 
-  TRACE_LOG("Loading NER resource from \"%s\"", model_file);
+  INFO_LOG("Loading NER resource from \"%s\"", model_file);
 
   m_ner = ner_create_recognizer(model_file);
 
@@ -161,7 +162,7 @@ int LTPResource::LoadNEResource(const char * model_file) {
   }
 
   m_isNEResourceLoaded = true;
-  TRACE_LOG("NER resource is loaded.");
+  INFO_LOG("NER resource is loaded.");
   return 0;
 }
 
@@ -178,7 +179,7 @@ void LTPResource::ReleaseNEResource() {
 
   m_ner = NULL;
   m_isNEResourceLoaded = false;
-  TRACE_LOG("NER resource is released");
+  INFO_LOG("NER resource is released");
 }
 
 void * LTPResource::GetNER() {
@@ -193,7 +194,7 @@ int LTPResource::LoadParserResource(const char * model_file) {
     return 0;
   }
 
-  TRACE_LOG("Loading parser resource from \"%s\"", model_file);
+  INFO_LOG("Loading parser resource from \"%s\"", model_file);
 
   m_parser = parser_create_parser(model_file);
   if (!m_parser) {
@@ -201,7 +202,7 @@ int LTPResource::LoadParserResource(const char * model_file) {
     return -1;
   }
 
-  TRACE_LOG("Parser is loaded.");
+  INFO_LOG("parser is loaded.");
 
   m_isParserResourceLoaded = true;
   return 0;
@@ -217,7 +218,7 @@ void LTPResource::ReleaseParserResource() {
   }
 
   parser_release_parser(m_parser);
-  TRACE_LOG("Parser is released");
+  INFO_LOG("Parser is released");
 
   m_parser = NULL;
   m_isParserResourceLoaded = false;
@@ -235,14 +236,14 @@ int LTPResource::LoadSRLResource(const char *data_folder) {
     return 0;
   }
 
-  TRACE_LOG("Loading SRL resource from \"%s\"", data_folder);
+  INFO_LOG("Loading SRL resource from \"%s\"", data_folder);
 
   if (0 != SRL_LoadResource(string(data_folder))) {
     ERROR_LOG("Failed to load SRL resource.");
     return -1;
   }
 
-  TRACE_LOG("SRL resource is loaded.");
+  INFO_LOG("SRL resource is loaded.");
   m_isSRLResourceLoaded = true;
   return 0;
 }
@@ -261,7 +262,7 @@ void LTPResource::ReleaseSRLResource() {
     return;
   }
 
-  TRACE_LOG("SRL is released");
+  INFO_LOG("SRL is released");
 
   m_isSRLResourceLoaded = false;
   return;

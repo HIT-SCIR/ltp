@@ -29,18 +29,17 @@ int learn(int argc, const char* argv[]) {
     ("algorithm", value<std::string>(), "The learning algorithm\n"
                                           " - ap: averaged perceptron\n"
                                           " - pa: passive aggressive [default]")
+    ("max-iter", value<int>(), "The number of iteration [default=10].")
     ("rare-feature-threshold", value<int>(),
      "The threshold for rare feature, used in model truncation. [default=0]")
-    ("help,h", "Show help information")
-    ;
+    ("help,h", "Show help information");
+
+  if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
 
-  if (vm.count("help")) {
-    std::cerr << optparser << std::endl;
-    return 0;
-  }
+  if (vm.count("help")) { std::cerr << optparser << std::endl; return 0; }
 
   std::string reference = "";
   if (!vm.count("reference")) {
@@ -101,8 +100,9 @@ int test(int argc, const char* argv[]) {
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>(),
      "if configured, perform evaluation, input should contain '_' concatenated tag")
-    ("help,h", "Show help information")
-    ;
+    ("help,h", "Show help information");
+
+  if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);
@@ -152,6 +152,8 @@ int dump(int argc, const char* argv[]) {
   optparser.add_options()
     ("model", value<std::string>(), "The path to the model file.")
     ("help,h", "Show help information");
+
+  if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
 
   variables_map vm;
   store(parse_command_line(argc, argv, optparser), vm);

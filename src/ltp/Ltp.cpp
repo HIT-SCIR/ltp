@@ -50,15 +50,15 @@ bool LTP::load(const std::string& last_stage,
     const std::string& srl_model_dir) {
 
   size_t target_mask = 0;
-  if (last_stage == "ws") {
+  if (last_stage == LTP_SERVICE_NAME_SEGMENT) {
     target_mask = kActiveSegmentor;
-  } else if (last_stage == "pos") {
+  } else if (last_stage == LTP_SERVICE_NAME_POSTAG) {
     target_mask = (kActiveSegmentor|kActivePostagger);
-  } else if (last_stage == "ner") {
+  } else if (last_stage == LTP_SERVICE_NAME_NER) {
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveNER);
-  } else if (last_stage == "dp") {
+  } else if (last_stage == LTP_SERVICE_NAME_DEPPARSE) {
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser);
-  } else if ((last_stage == "srl") || (last_stage == "all")) {
+  } else if ((last_stage == LTP_SERVICE_NAME_SRL) || (last_stage == "all")) {
     target_mask =
       (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|kActiveSRL);
   }
@@ -87,7 +87,7 @@ bool LTP::load(const std::string& last_stage,
       ret = _resource.LoadPostaggerResource(postagger_model_file, postagger_lexicon_file);
     }
     if (0 != ret) {
-      ERROR_LOG("in LTP::wordseg, failed to load postagger resource"); 
+      ERROR_LOG("in LTP::wordseg, failed to load postagger resource");
       return false;
     }
     loaded_mask |= kActivePostagger;

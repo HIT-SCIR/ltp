@@ -48,6 +48,7 @@ protected:
   void collect_features(const Instance& inst);
   void update(const Instance& inst, math::SparseVec& updated_features);
   void setup_lexicons();
+  void clear_context();
 };
 
 } // end for namespace segmentor

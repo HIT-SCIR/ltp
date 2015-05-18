@@ -11,8 +11,14 @@
 #include <cstring>
 #include <cassert>
 
-#define MAX_SENTENCE_LEN 300
-#define MAX_WORDS_NUM  100
+#define MAX_SENTENCE_LEN 1024
+#define MAX_WORDS_NUM 256
+
+#define LTP_SERVICE_NAME_SEGMENT  "ws"
+#define LTP_SERVICE_NAME_POSTAG   "pos"
+#define LTP_SERVICE_NAME_NER      "ne"
+#define LTP_SERVICE_NAME_DEPPARSE "dp"
+#define LTP_SERVICE_NAME_SRL      "srl"
 
 enum ErrorCodes {
   kEmptyStringError = 1,  /*< The input sentence is empty */

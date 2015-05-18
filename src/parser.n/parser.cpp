@@ -6,7 +6,8 @@ namespace ltp {
 namespace depparser {
 
 NeuralNetworkParser::NeuralNetworkParser()
-  : classifier(W1, W2, E, b1, saved, precomputation_id_encoder) {}
+  : classifier(W1, W2, E, b1, saved, precomputation_id_encoder),
+  use_cluster(false), use_distance(false), use_valency(false) {}
 
 const std::string NeuralNetworkParser::model_header = "nnparser";
 
@@ -15,7 +16,7 @@ void NeuralNetworkParser::predict(const Instance& data, std::vector<int>& heads,
   Dependency dependency;
   std::vector<int> cluster, cluster4, cluster6;
   transduce_instance_to_dependency(data, &dependency, false);
-  get_cluster_from_dependency(dependency, cluster, cluster4, cluster6);
+  get_cluster_from_dependency(dependency, cluster4, cluster6, cluster);
 
   size_t L = data.forms.size();
   std::vector<State> states(L*2);
@@ -209,6 +210,16 @@ void NeuralNetworkParser::get_cluster_features(const Context& ctx,
 }
 
 void NeuralNetworkParser::report() {
+  INFO_LOG("#: loaded %d forms", forms_alphabet.size());
+  INFO_LOG("#: loaded %d postags", postags_alphabet.size());
+  INFO_LOG("#: loaded %d deprels", deprels_alphabet.size());
+
+  if (use_cluster) {
+    INFO_LOG("#: loaded %d cluster(4)", cluster4_types_alphabet.size());
+    INFO_LOG("#: loaded %d cluster(6)", cluster6_types_alphabet.size());
+    INFO_LOG("#: loaded %d cluster", cluster_types_alphabet.size());
+  }
+
   INFO_LOG("report: form located at: [%d ... %d]", kFormInFeaturespace,
       kPostagInFeaturespace- 1);
   INFO_LOG("report: postags located at: [%d ... %d]", kPostagInFeaturespace,
@@ -254,12 +265,12 @@ void NeuralNetworkParser::transduce_instance_to_dependency(const Instance& data,
     int form = forms_alphabet.index(data.forms[i]);
     if (form == -1) { form = forms_alphabet.index(SpecialOption::UNKNOWN); }
     int postag = postags_alphabet.index(data.postags[i]);
-    int deprels = deprels_alphabet.index(data.deprels[i]);
+    int deprel = (with_dependencies ? deprels_alphabet.index(data.deprels[i]): -1);
 
     dependency->forms.push_back(form);
     dependency->postags.push_back(postag);
     dependency->heads.push_back(with_dependencies? data.heads[i]: -1);
-    dependency->deprels.push_back(with_dependencies? deprels: -1);
+    dependency->deprels.push_back(with_dependencies? deprel: -1);
   }
 }
 
@@ -293,9 +304,9 @@ void NeuralNetworkParser::save(const std::string& filename) {
   strncpy(chunk, root.c_str(), 128);
   ofs.write(chunk, 128);
 
-  write_uint(ofs, use_distance);
-  write_uint(ofs, use_valency);
-  write_uint(ofs, use_cluster);
+  ofs.write(reinterpret_cast<const char*>(&use_distance), sizeof(bool));
+  ofs.write(reinterpret_cast<const char*>(&use_valency), sizeof(bool));
+  ofs.write(reinterpret_cast<const char*>(&use_cluster), sizeof(bool));
 
   W1.save(ofs);
   W2.save(ofs);
@@ -320,6 +331,10 @@ void NeuralNetworkParser::save(const std::string& filename) {
   delete payload;
 
   if (use_cluster) {
+    cluster4_types_alphabet.dump(ofs);
+    cluster6_types_alphabet.dump(ofs);
+    cluster_types_alphabet.dump(ofs);
+
     payload = new int[form_to_cluster.size()* 2];
 
     now = 0;
@@ -366,9 +381,9 @@ bool NeuralNetworkParser::load(const std::string& filename) {
   ifs.read(chunk, 128);
   root = chunk;
 
-  use_distance = read_uint(ifs);
-  use_valency = read_uint(ifs);
-  use_cluster = read_uint(ifs);
+  ifs.read(reinterpret_cast<char*>(&use_distance), sizeof(bool));
+  ifs.read(reinterpret_cast<char*>(&use_valency), sizeof(bool));
+  ifs.read(reinterpret_cast<char*>(&use_cluster), sizeof(bool));
 
   W1.load(ifs);
   W2.load(ifs);
@@ -390,9 +405,13 @@ bool NeuralNetworkParser::load(const std::string& filename) {
   }
 
   if (use_cluster) {
+    cluster4_types_alphabet.load(ifs);
+    cluster6_types_alphabet.load(ifs);
+    cluster_types_alphabet.load(ifs);
+
     now= read_uint(ifs);
     payload = new int[now];
-    ifs.read(reinterpret_cast<char*>(payload), now);
+    ifs.read(reinterpret_cast<char*>(payload), now*sizeof(int));
     for (size_t i = 0; i < now; i += 2) {
       form_to_cluster4[payload[i]] = payload[i+1];
     }
@@ -400,7 +419,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
 
     now= read_uint(ifs);
     payload = new int[now];
-    ifs.read(reinterpret_cast<char*>(payload), now);
+    ifs.read(reinterpret_cast<char*>(payload), now*sizeof(int));
     for (size_t i = 0; i < now; i += 2) {
       form_to_cluster6[payload[i]] = payload[i+1];
     }
@@ -408,7 +427,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
 
     now= read_uint(ifs);
     payload = new int[now];
-    ifs.read(reinterpret_cast<char*>(payload), now);
+    ifs.read(reinterpret_cast<char*>(payload), now*sizeof(int));
     for (size_t i = 0; i < now; i += 2) {
       form_to_cluster[payload[i]] = payload[i+1];
     }
@@ -454,7 +473,7 @@ void NeuralNetworkParser::build_feature_space() {
   kCluster6InFeaturespace = kFeatureSpaceEnd;
   if (use_cluster) {
     kNilCluster6 = kFeatureSpaceEnd+ cluster6_types_alphabet.index(SpecialOption::NIL);
-    kFeatureSpaceEnd += cluster4_types_alphabet.size();
+    kFeatureSpaceEnd += cluster6_types_alphabet.size();
   } else { kNilCluster6 = kFeatureSpaceEnd; }
 
   kClusterInFeaturespace = kFeatureSpaceEnd;

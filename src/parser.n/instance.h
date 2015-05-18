@@ -24,7 +24,8 @@ public:
   bool is_projective() const;
   bool is_non_projective() const;
 public:
-  std::vector<std::string> forms;     //! The forms.
+  std::vector<std::string> raw_forms; //! The original form.
+  std::vector<std::string> forms;     //! The converted form.
   std::vector<std::string> lemmas;    //! The lemmas.
   std::vector<std::string> postags;   //! The postags.
   std::vector<std::string> cpostags;  //! The cpostags.

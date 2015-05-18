@@ -25,10 +25,10 @@ public:
   }
 
 public:
-  int       n;
-  int *     idx;
-  double *  val;
-  int       loff;
+  size_t n;
+  int* idx;
+  double* val;
+  size_t loff;
 };
 
 }     //  end for namespace math
