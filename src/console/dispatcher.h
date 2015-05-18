@@ -17,7 +17,7 @@ public:
   int next(std::string& sentence) {
     sentence = "";
     tthread::lock_guard<tthread::mutex> guard(_mutex);
-    if (!getline(_is, sentence, '\n')) {
+    if (!std::getline(_is, sentence, '\n')) {
       return -1;
     }
     return _max_idx ++;

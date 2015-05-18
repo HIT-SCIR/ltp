@@ -1,5 +1,6 @@
 include_directories (./
     ${SOURCE_DIR}/
+    ${THIRDPARTY_DIR}/boost/include/
     ${THIRDPARTY_DIR}/tinythreadpp
     ${THIRDPARTY_DIR}/maxent
     ${THIRDPARTY_DIR}/tinyxml)

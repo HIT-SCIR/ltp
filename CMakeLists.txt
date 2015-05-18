@@ -14,8 +14,6 @@ if (MINGW)
   set(CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing -fpermissive")
 endif (MINGW)
 
-set (CMAKE_CXX_FLAGS "-g")
-
 # -- config output directories
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
@@ -40,6 +38,3 @@ add_subdirectory (src)
 
 # testing section
 # -- generate configure file for ltp_test
-
-# enable test
-enable_testing()
