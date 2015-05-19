@@ -8,8 +8,17 @@ TEST(sbcdbc_unittest, miss_test) {
   EXPECT_STREQ("ｗ", tmp.c_str());
   ltp::strutils::chartypes::sbc2dbc("1", tmp);
   EXPECT_STREQ("１", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc(" ", tmp);
+  EXPECT_STREQ("　", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc("!", tmp);
+  EXPECT_STREQ("！", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc(",", tmp);
+  EXPECT_STREQ("，", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc("?", tmp);
+  EXPECT_STREQ("？", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc("#", tmp);
+  EXPECT_STREQ("＃", tmp.c_str());
 }
-
 
 // The chartype function should be able to parse at least 5,000 token
 // per millisecond

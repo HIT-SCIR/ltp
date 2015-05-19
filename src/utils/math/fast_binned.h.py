@@ -9,24 +9,24 @@ def encode(num):
         return num
 
 token = ""
-for i in xrange(256):
+for i in xrange(1024):
     if i%10==0:
         token += "    "
     token += ("%d," % encode(i))
     if (i+ 1) % 10 == 0:
         token += "\n"
 
-print '''#ifndef __ZUOPAR_UTILS_MATH_FAST_BINNED_H__
-#define __ZUOPAR_UTILS_MATH_FAST_BINNED_H__
+print '''#ifndef __LTP_UTILS_MATH_FAST_BINNED_H__
+#define __LTP_UTILS_MATH_FAST_BINNED_H__
 
-namespace ZuoPar {
-namespace Math {
+namespace ltp {
+namespace math {
 '''
 
 print ("static int binned_1_2_3_4_5_6_10[] = {\n%s};" % token)
 
 print '''
 } //  end for math
-} //  end for zuopar
+} //  end for ltp
 
-#endif  //  end for __ZUOPAR_UTILS_MATH_FAST_BINNED_H__'''
+#endif  //  end for __LTP_UTILS_MATH_FAST_BINNED_H__ '''
