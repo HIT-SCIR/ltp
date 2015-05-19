@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
     ("log-level", value<int>(), "The log level:\n"
      "- 0: TRACE level\n"
      "- 1: DEBUG level\n"
-     "- 2: INFO level\n")
+     "- 2: INFO level [default]\n")
     ("help,h", "Show help information");
 
   if (argc == 1) {

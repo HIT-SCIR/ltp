@@ -27,22 +27,30 @@ add_executable (cws_cmdline cws_cmdline.cpp
 target_link_libraries (cws_cmdline segmentor_static_lib
     boost_program_options_static_lib
     boost_regex_static_lib)
-set_target_properties(cws_cmdline PROPERTIES
+set_target_properties (cws_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 add_executable (pos_cmdline pos_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 target_link_libraries (pos_cmdline postagger_static_lib
     boost_program_options_static_lib)
-set_target_properties(pos_cmdline PROPERTIES
+set_target_properties (pos_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 add_executable (par_cmdline par_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 target_link_libraries (par_cmdline parser_static_lib
     boost_program_options_static_lib)
-set_target_properties(par_cmdline PROPERTIES
+set_target_properties (par_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+
+add_executable (ner_cmdline ner_cmdline.cpp
+    ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
+target_link_libraries (ner_cmdline ner_static_lib
+    boost_program_options_static_lib)
+set_target_properties (ner_cmdline PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+
 
 if (MSVC)
   target_link_libraries (ltp_test
@@ -52,6 +60,7 @@ else()
   target_link_libraries (cws_cmdline pthread)
   target_link_libraries (pos_cmdline pthread)
   target_link_libraries (par_cmdline openblas pthread)
+  target_link_libraries (ner_cmdline pthread)
 endif ()
 
 

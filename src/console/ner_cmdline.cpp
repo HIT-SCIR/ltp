@@ -3,14 +3,14 @@
 #include <sstream>
 #include <list>
 #include "config.h"
-#include "parser/parser_dll.h"
+#include "ner/ner_dll.h"
 #include "console/dispatcher.h"
 #include "boost/program_options.hpp"
 #include "utils/strutils.hpp"
 #include "utils/time.hpp"
 
-#define EXECUTABLE "par_cmdline"
-#define DESCRIPTION "The console application for dependency parsing."
+#define EXECUTABLE "ner_cmdline"
+#define DESCRIPTION "The console application for named entity recognization."
 
 using boost::program_options::options_description;
 using boost::program_options::value;
@@ -20,11 +20,10 @@ using boost::program_options::parse_command_line;
 using ltp::utility::WallClockTimer;
 using ltp::strutils::split;
 
-void multithreaded_parse( void * args) {
+void multithreaded_recognize( void * args) {
   std::vector<std::string> words;
   std::vector<std::string> postags;
-  std::vector<int> heads;
-  std::vector<std::string> deprels;
+  std::vector<std::string> tags;
 
   Dispatcher * dispatcher = (Dispatcher *)args;
   void * model = dispatcher->get_engine();
@@ -44,16 +43,15 @@ void multithreaded_parse( void * args) {
       postags.push_back(token.substr(npos+ 1));
     }
 
-    heads.clear();
-    deprels.clear();
-    parser_parse(model, words, postags, heads, deprels);
+    tags.clear();
+    ner_recognize(model, words, postags, tags);
+    std::string output;
 
     S.clear(); S.str("");
-    for (size_t i = 0; i < heads.size(); ++ i) {
-      S << words[i] << "\t" << postags[i] << "\t"
-        << heads[i] << "\t" << deprels[i] << std::endl;
+    for (size_t i = 0; i < tags.size(); ++ i) {
+      if (i > 0) { S << "\t"; }
+      S << words[i] << "/" << postags[i] << "#" << tags[i];
     }
-
     dispatcher->output(ret, S.str());
   }
 
@@ -99,12 +97,12 @@ int main(int argc, char * argv[]) {
   std::string input = "";
   if (vm.count("input")) { input = vm["input"].as<std::string>(); }
 
-  std::string parser_model = "ltp_data/parser.model";
-  if (vm.count("parser-model")) {
-    parser_model= vm["parser-model"].as<std::string>();
+  std::string ner_model = "ltp_data/ner.model";
+  if (vm.count("ner-model")) {
+    ner_model = vm["ner-model"].as<std::string>();
   }
 
-  void *engine = parser_create_parser(parser_model.c_str());
+  void *engine = ner_create_recognizer(ner_model.c_str());
   if (!engine) {
     return 1;
   }
@@ -126,7 +124,7 @@ int main(int argc, char * argv[]) {
   WallClockTimer t;
   std::list<tthread::thread *> thread_list;
   for (int i = 0; i < threads; ++ i) {
-    tthread::thread * t = new tthread::thread( multithreaded_parse, (void *)dispatcher );
+    tthread::thread * t = new tthread::thread( multithreaded_recognize, (void *)dispatcher );
     thread_list.push_back( t );
   }
 
@@ -139,7 +137,7 @@ int main(int argc, char * argv[]) {
 
   std::cerr << "TRACE: consume " << t.elapsed() << " seconds." << std::endl;
   delete dispatcher;
-  parser_release_parser(engine);
+  ner_release_recognizer(engine);
   return 0;
 }
 
