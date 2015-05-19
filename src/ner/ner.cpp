@@ -304,7 +304,7 @@ NER::build_entities(Instance * inst,
   int tag_prefix = -1;
   int tag_suffix = tag % __num_ne_types__;
 
-  std::string entity_tag = (tag == 12 ? "O" : __ne_types__[tag_suffix]);
+  std::string entity_tag = (tag == (__num_ne_types__ * __num_pos_types__) ? "O" : __ne_types__[tag_suffix]);
   for (int i = 1; i < len; ++ i) {
     tag = tagsidx[i];
 
@@ -316,7 +316,7 @@ NER::build_entities(Instance * inst,
       entities_tags.push_back(entity_tag);
 
       entity = inst->raw_forms[i];
-      entity_tag = (tag == 12 ? "O" : __ne_types__[tag_suffix]);
+      entity_tag = (tag == (__num_ne_types__ * __num_pos_types__)  ? "O" : __ne_types__[tag_suffix]);
     } else {
       entity += inst->raw_forms[i];
     }
