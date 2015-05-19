@@ -2,6 +2,7 @@
 #define __LTP_CONSOLE_DISPATCHER__
 
 #include <iostream>
+#include <string>
 #include <map>
 #include "tinythread.h"
 

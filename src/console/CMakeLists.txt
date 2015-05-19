@@ -55,6 +55,8 @@ set_target_properties (ner_cmdline PROPERTIES
 if (MSVC)
   target_link_libraries (ltp_test
       ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
+  target_link_libraries (par_cmdline
+      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
 else()
   target_link_libraries (ltp_test openblas pthread)
   target_link_libraries (cws_cmdline pthread)
