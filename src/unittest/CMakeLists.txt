@@ -5,7 +5,8 @@
 include_directories (./
     ${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/gtest/include
-    ${THIRDPARTY_DIR}/boost/include)
+    ${THIRDPARTY_DIR}/boost/include
+    ${THIRDPARTY_DIR}/armadillo-5.100.1/include/)
 link_directories (${LIBRARY_OUTPUT_PATH})
 
 # add unittest executable

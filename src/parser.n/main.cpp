@@ -27,7 +27,6 @@ int test(int argc, char** argv) {
   optparser.add_options()
     ("model", value<std::string>(), "The path to the model.")
     ("input", value<std::string>(), "The path to the reference.")
-    ("output", value<std::string>(), "The path to the output file.")
     ("evaluate", value<bool>(),
      "if configured, perform evaluation, heads and deprels columns should be filled.")
     ("help,h", "Show help information");

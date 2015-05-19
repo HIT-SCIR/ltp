@@ -439,6 +439,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
 }
 
 void NeuralNetworkParser::setup_system() {
+  system.set_dummy_relation(deprels_alphabet.index(SpecialOption::ROOT));
   system.set_root_relation(deprels_alphabet.index(root));
   system.set_number_of_relations(deprels_alphabet.size()- 1);
 }

@@ -248,9 +248,11 @@ class TransitionSystem {
 private:
   size_t L;
   int R;
+  int D;
 public:
   TransitionSystem();  //! Constructor
 
+  void set_dummy_relation(int d);
   void set_root_relation(int r);
   void set_number_of_relations(size_t l);
   //

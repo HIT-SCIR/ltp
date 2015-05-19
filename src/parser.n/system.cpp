@@ -402,7 +402,9 @@ int State::cost(const std::vector<int>& gold_heads,
 bool State::buffer_empty() const { return (this->buffer == this->ref->size()); }
 size_t State::stack_size() const { return (this->stack.size()); }
 
-TransitionSystem::TransitionSystem(): L(0), R(-1) {}
+TransitionSystem::TransitionSystem(): L(0), R(-1), D(-1) {}
+
+void TransitionSystem::set_dummy_relation(int d) { D = d; }
 
 void TransitionSystem::set_root_relation(int r) { R = r; }
 
@@ -411,7 +413,11 @@ void TransitionSystem::set_number_of_relations(size_t l) { L = l; }
 
 void TransitionSystem::get_possible_actions(const State& source,
     std::vector<Action>& actions) {
-  if (0 == L || -1 == R) { WARNING_LOG("decoder: not initialized."); return; }
+  if (0 == L || -1 == R || -1 == D) {
+    WARNING_LOG("decoder: not initialized,"
+        " please check if the root dependency relation is correct set by --root.");
+    return;
+  }
   actions.clear();
 
   if (!source.buffer_empty()) {
@@ -424,7 +430,7 @@ void TransitionSystem::get_possible_actions(const State& source,
     }
   } else if (source.stack_size() > 2) {
     for (size_t l = 0; l < L; ++ l) {
-      if (l == R) { continue; }
+      if (l == R || l == D) { continue; }
       actions.push_back(ActionFactory::make_left_arc(l));
       actions.push_back(ActionFactory::make_right_arc(l));
     }

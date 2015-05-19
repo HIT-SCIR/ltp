@@ -121,6 +121,7 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
   std::ifstream ifs(learn_opt->cluster_file.c_str());
   if (!ifs.good()) {
     ERROR_LOG("#: cluster file open failed, cluster is not loaded.");
+    use_cluster = false;
     return;
   }
 
@@ -460,6 +461,7 @@ void NeuralNetworkParserFrontend::test(void) {
 
   std::ifstream ifs(test_opt->input_file.c_str());
   if (!ifs.good()) {
+    ERROR_LOG("failed to open input file, testing halted.");
     return;
   }
 
