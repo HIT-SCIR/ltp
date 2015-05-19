@@ -162,7 +162,7 @@ def gen(name, prefix, lex):
     print "static const int __chartype_%s_%s_utf8_size__ = %d;" % (
             prefix,
             name.replace("-", "_"),
-            len(dbc[name]))
+            len(lex[name]))
     print "static const char* __chartype_%s_%s_utf8_buff__[] = {" % (
             prefix,
             name.replace("-", "_"))
@@ -183,8 +183,8 @@ gen("uppercase", "dbc", dbc)
 gen("punc-ext", "dbc", dbc)
 gen("lowercase", "dbc", dbc)
 gen("uppercase", "sbc", sbc)
+gen("lowercase", "sbc", sbc)
 gen("digit", "sbc", sbc)
 gen("punc", "sbc", sbc)
-gen("lowercase", "sbc", sbc)
 
 print "#endif   // end for __LTP_STRUTILS_CHARTYPES_TAB__"

@@ -61,7 +61,7 @@ public:
 
 protected:
 #define SETUP_TABLE(name, flag) do { \
-  for (int i = 0; i < (__chartype_##name##_size__); ++ i) { \
+  for (size_t i = 0; i < (__chartype_##name##_size__); ++ i) { \
     if (__chartype_##name##_buff__[i]) { \
       rep[__chartype_##name##_buff__[i]] = (CHAR_##flag); \
     } \

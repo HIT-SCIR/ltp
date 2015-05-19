@@ -27,10 +27,10 @@ bin/
 tools/train/lgdpj
 tools/train/lgsrl
 tools/train/otcws
-tools/train/otcws-customized
 tools/train/otpos
 tools/train/otner
 tools/train/maxent
+tools/train/nndepparser
 
 ###############
 # data file   #
