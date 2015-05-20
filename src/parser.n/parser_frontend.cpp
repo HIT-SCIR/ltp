@@ -86,7 +86,9 @@ void NeuralNetworkParserFrontend::build_alphabet(void) {
   map_t frequencies;
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     const Instance* inst = train_dat[i];
-    for (size_t j = 0; j < inst->size(); ++ j) {
+    for (size_t j = 1; j < inst->size(); ++ j) {
+      // Starting from first effective word. Leave ROOT to the final stage in
+      // this function.
       postags_alphabet.push(inst->postags[j]);
       deprels_alphabet.push(inst->deprels[j]);
       frequencies[inst->forms[j]] += 1;
@@ -107,6 +109,7 @@ void NeuralNetworkParserFrontend::build_alphabet(void) {
   postags_alphabet.push(SpecialOption::ROOT);
 
   kNilDeprel = deprels_alphabet.push(SpecialOption::NIL);
+  deprels_alphabet.push(SpecialOption::ROOT);
 
   kNilDistance = (learn_opt->use_distance? 8: 0);
   kNilValency = (learn_opt->use_valency? 8: 0);
@@ -285,7 +288,7 @@ void NeuralNetworkParserFrontend::initialize_classifier() {
   INFO_LOG("report: %d embedding is loaded.", embeddings.size());
 
   classifier.initialize(kFeatureSpaceEnd,
-      deprels_alphabet.size()*2-1,
+      system.number_of_transitions(),
       nr_feature_types,
       (*learn_opt),
       embeddings,

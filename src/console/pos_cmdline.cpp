@@ -66,7 +66,9 @@ int main(int argc, char ** argv) {
   options_description optparser = options_description(usage);
   optparser.add_options()
     ("threads", value<int>(), "The number of threads [default=1].")
-    ("input", value<std::string>(), "The path to the input file.")
+    ("input", value<std::string>(), "The path to the input file. "
+     "Input data should contain one sentence each line. "
+     "Words should be separated by space (e.g. \"w1 w2 w3 w4\").")
     ("postagger-model", value<std::string>(),
      "The path to the postag model [default=ltp_data/pos.model].")
     ("postagger-lexicon", value<std::string>(),

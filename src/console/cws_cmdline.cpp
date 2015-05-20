@@ -57,7 +57,8 @@ int main(int argc, char ** argv) {
   options_description optparser = options_description(usage);
   optparser.add_options()
     ("threads", value<int>(), "The number of threads [default=1].")
-    ("input", value<std::string>(), "The path to the input file.")
+    ("input", value<std::string>(), "The path to the input file. "
+     "Input data should contain one raw sentence each line.")
     ("segmentor-model", value<std::string>(),
      "The path to the segment model [default=ltp_data/cws.model].")
     ("segmentor-lexicon", value<std::string>(),

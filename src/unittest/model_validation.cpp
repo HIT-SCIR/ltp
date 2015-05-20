@@ -11,6 +11,7 @@
 #include "postagger/extractor.h"
 #include "postagger/postagger.h"
 #include "ner/extractor.h"
+#include "ner/ner.h"
 #include "parser.n/parser.h"
 
 using boost::program_options::options_description;
@@ -51,6 +52,11 @@ bool test_segmentor_model(const std::string& filename) {
       return false;
     }
   }
+
+  if (model->param.is_wrapper()) {
+    WARNING_LOG("testing segment model: release model should be in dump details mode.");
+    return false;
+  }
   delete model;
   return true;
 }
@@ -65,7 +71,7 @@ const char * kPostags[] = {"a",  "b",  "c",
 bool test_postagger_model(const std::string& filename) {
   std::ifstream mfs(filename.c_str());
   if (!mfs) {
-    WARNING_LOG("testing segment model: model not exist.");
+    WARNING_LOG("testing postag model: model not exist.");
     return false;
   }
 
@@ -92,6 +98,34 @@ bool test_postagger_model(const std::string& filename) {
       WARNING_LOG("testing postag model: tag(%s) not found.", kPostags[i]);
       return false;
     }
+  }
+
+  if (!model->param.is_wrapper()) {
+    WARNING_LOG("testing postag model: release model should be in simplified mode.");
+    return false;
+  }
+  delete model;
+  return true;
+}
+
+bool test_ner_model(const std::string& filename) {
+  std::ifstream mfs(filename.c_str());
+  if (!mfs) {
+    WARNING_LOG("testing ne model: model not exist.");
+    return false;
+  }
+
+  ltp::framework::Model* model =
+    new ltp::framework::Model(ltp::ner::Extractor::num_templates());
+
+  if (!model->load(ltp::ner::NamedEntityRecognizer::model_header, mfs)) {
+    WARNING_LOG("testing ne model: failed to load model.");
+    return false;
+  }
+
+  if (!model->param.is_wrapper()) {
+    WARNING_LOG("testing postag model: release model should be in simplified mode.");
+    return false;
   }
   delete model;
   return true;
@@ -214,6 +248,12 @@ int main(int argc, char* argv[]) {
     WARNING_LOG("testing postag model: failed.");
   } else {
     INFO_LOG("testing postag model: success.");
+  }
+
+  if (!test_ner_model(ner_model)) {
+    WARNING_LOG("testing ne model: failed.");
+  } else {
+    INFO_LOG("testing ne model: success.");
   }
 
   if (!test_parser_model(parser_model)) {

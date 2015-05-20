@@ -26,6 +26,7 @@ add_executable (model_validation ${model_validation_SRC})
 target_link_libraries (model_validation
     segmentor_static_lib
     postagger_static_lib
+    ner_static_lib
     parser_static_lib
     openblas
     boost_program_options_static_lib)

@@ -408,12 +408,13 @@ void TransitionSystem::set_dummy_relation(int d) { D = d; }
 
 void TransitionSystem::set_root_relation(int r) { R = r; }
 
-// l should include ROOT but exclude NIL
+// l should exclude Special::ROOT and Special::NIL, but the root, which is linked
+// to zero should be included.
 void TransitionSystem::set_number_of_relations(size_t l) { L = l; }
 
 void TransitionSystem::get_possible_actions(const State& source,
     std::vector<Action>& actions) {
-  if (0 == L || -1 == R || -1 == D) {
+  if (0 == L || -1 == R) {
     WARNING_LOG("decoder: not initialized,"
         " please check if the root dependency relation is correct set by --root.");
     return;
@@ -430,7 +431,7 @@ void TransitionSystem::get_possible_actions(const State& source,
     }
   } else if (source.stack_size() > 2) {
     for (size_t l = 0; l < L; ++ l) {
-      if (l == R || l == D) { continue; }
+      if (l == R) { continue; }
       actions.push_back(ActionFactory::make_left_arc(l));
       actions.push_back(ActionFactory::make_right_arc(l));
     }
