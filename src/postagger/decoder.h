@@ -2,64 +2,37 @@
 #define __LTP_POSTAGGER_DECODER_H__
 
 #include <iostream>
-#include <map>
 #include <vector>
+#include "framework/decoder.h"
 #include "postagger/instance.h"
-#include "postagger/score_matrix.h"
-#include "utils/math/mat.h"
+#include "utils/tinybitset.hpp"
+#include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace postagger {
 
-// data structure for lattice item
-class LatticeItem {
+class PostaggerLexiconConstrain: public framework::ViterbiDecodeConstrain {
+private:
+  const utility::SmartMap<utility::Bitset>& rep;
+  const std::vector<std::string>& words;
 public:
-  LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev)
-    : i(_i),
-      l(_l),
-      score(_score),
-      prev(_prev) {}
-
-  LatticeItem (int _l, double _score)
-    : i(0),
-      l(_l),
-      score(_score),
-      prev(0) {}
-
-public:
-  int         i;
-  int         l;
-  double      score;
-  const LatticeItem * prev;
+  PostaggerLexiconConstrain(const std::vector<std::string>& words,
+      const utility::SmartMap<utility::Bitset>& rep);
+  bool can_emit(const size_t& i, const size_t& j) const;
 };
 
-class Decoder {
+class PostaggerLexicon {
+private:
+  utility::SmartMap<utility::Bitset> rep;
+  bool successful;
 public:
-  Decoder (int _l) : L(_l) {}
-  void decode(Instance * inst, const ScoreMatrix* scm);
-private:
-  void init_lattice(const Instance * inst);
-  void viterbi_decode_inner(const Instance * inst,const ScoreMatrix* scm, int i,int l);
-  void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
-  void get_result(Instance * inst);
-  void free_lattice();
+  PostaggerLexicon();
 
-private:
-  int L;
-
-  math::Mat< const LatticeItem * > lattice;
-
-  void lattice_insert(const LatticeItem * &position, const LatticeItem * const item) {
-    if (position == NULL) {
-      position = item;
-    } else if (position->score < item->score) {
-      delete position;
-      position = item;
-    } else {
-      delete item;
-    }
-  }
+  bool success() const;
+  PostaggerLexiconConstrain get_con(const std::vector<std::string>& words);
+  bool load(std::istream& is, const utility::IndexableSmartMap& labels_alphabet);
 };
+
 
 }       //  end for namespace postagger
 }       //  end for namespace ltp

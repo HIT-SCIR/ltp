@@ -13,6 +13,7 @@
 #include "FeatureExtractor.h"
 #include "Configuration.h"
 #include "boost/bind.hpp"
+#include "boost/algorithm/string.hpp"
 
 // Load necessary resources into memory
 int DepSRL::LoadResource(const string &ConfigDir)
@@ -741,7 +742,7 @@ bool DepSRL::IsPosPattern(
         const string& strPattern) const
 {
     vector<string> vecItem;
-    split_bychar(strPattern, vecItem, C_PATTERN_SEP);
+    boost::algorithm::split(vecItem, strPattern, boost::is_any_of("|"));
 
     for (int index = intBegin; index < intEnd; index++)
     {

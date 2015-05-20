@@ -5,96 +5,30 @@
 include_directories (./
     ${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/gtest/include
-    ${THIRDPARTY_DIR}/boost/include)
+    ${THIRDPARTY_DIR}/boost/include
+    ${THIRDPARTY_DIR}/armadillo-5.100.1/include/)
 link_directories (${LIBRARY_OUTPUT_PATH})
+
 # add unittest executable
-set (utils_strutils_unittest_SRC ./utils_strutils_unittest.cpp)
-add_executable (utils_strutils_unittest ${utils_strutils_unittest_SRC})
-target_link_libraries (utils_strutils_unittest gtest pthread)
-set_target_properties(utils_strutils_unittest PROPERTIES
+set (unittest_SRC unittest.cpp
+    ${SOURCE_DIR}/segmentor/preprocessor.cpp
+    ${SOURCE_DIR}/segmentor/decoder.cpp
+    ${SOURCE_DIR}/parser.n/io.cpp
+    ${SOURCE_DIR}/parser.n/instance.cpp
+    ${SOURCE_DIR}/parser.n/options.cpp)
+add_executable (unittest ${unittest_SRC})
+target_link_libraries (unittest gtest boost_regex_static_lib pthread)
+set_target_properties(unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
 
-set (utils_tinybitset_unittest_SRC ./utils_tinybitset_unittest.cpp)
-add_executable (utils_tinybitset_unittest ${utils_tinybitset_unittest_SRC})
-target_link_libraries (utils_tinybitset_unittest gtest pthread)
-set_target_properties(utils_tinybitset_unittest PROPERTIES
+set (model_validation_SRC ./model_validation.cpp)
+add_executable (model_validation ${model_validation_SRC})
+target_link_libraries (model_validation
+    segmentor_static_lib
+    postagger_static_lib
+    ner_static_lib
+    parser_static_lib
+    openblas
+    boost_program_options_static_lib)
+set_target_properties(model_validation PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (utils_chartypes_unittest_SRC ./utils_chartypes_unittest.cpp)
-add_executable (utils_chartypes_unittest ${utils_chartypes_unittest_SRC})
-target_link_libraries (utils_chartypes_unittest gtest pthread)
-set_target_properties(utils_chartypes_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (utils_sbcdbc_unittest_SRC ./utils_sbcdbc_unittest.cpp)
-add_executable (utils_sbcdbc_unittest ${utils_sbcdbc_unittest_SRC})
-target_link_libraries (utils_sbcdbc_unittest gtest pthread)
-set_target_properties(utils_sbcdbc_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (utils_codecs_unittest_SRC ./utils_codecs_unittest.cpp)
-add_executable (utils_codecs_unittest ${utils_codecs_unittest_SRC})
-target_link_libraries (utils_codecs_unittest gtest pthread)
-set_target_properties(utils_codecs_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (utils_template_unittest_SRC ./utils_template_unittest.cpp)
-add_executable (utils_template_unittest ${utils_template_unittest_SRC})
-target_link_libraries (utils_template_unittest gtest pthread)
-set_target_properties(utils_template_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (utils_strpaste_unittest_SRC ./utils_strpaste_unittest.cpp)
-add_executable (utils_strpaste_unittest ${utils_strpaste_unittest_SRC})
-target_link_libraries (utils_strpaste_unittest gtest pthread)
-set_target_properties(utils_strpaste_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (engpattern_unittest_SRC ./engpattern_unittest.cpp)
-add_executable (engpattern_unittest ${engpattern_unittest_SRC})
-target_link_libraries (engpattern_unittest boost_regex gtest pthread)
-set_target_properties(engpattern_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-
-set (segmentor_unittest_SRC ./segmentor_unittest.cpp)
-add_executable (segmentor_unittest ${segmentor_unittest_SRC})
-target_link_libraries (segmentor_unittest segmentor_static_lib gtest pthread)
-set_target_properties(segmentor_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (postagger_internal_unittest_SRC ./postagger_internal_unittest.cpp)
-add_executable (postagger_internal_unittest
-${postagger_internal_unittest_SRC})
-target_link_libraries (postagger_internal_unittest postagger_static_lib gtest pthread)
-set_target_properties(postagger_internal_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (postagger_interface_unittest_SRC ./postagger_interface_unittest.cpp)
-add_executable (postagger_interface_unittest
-${postagger_interface_unittest_SRC})
-target_link_libraries (postagger_interface_unittest postagger gtest pthread)
-set_target_properties(postagger_interface_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (parser_unittest_SRC ./parser_unittest.cpp)
-add_executable (parser_unittest ${parser_unittest_SRC})
-target_link_libraries (parser_unittest parser_static_lib gtest pthread)
-set_target_properties(parser_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (parser_interface_unittest_SRC ./parser_interface_unittest.cpp)
-add_executable (parser_interface_unittest
-${parser_interface_unittest_SRC})
-target_link_libraries (parser_interface_unittest parser_static_lib gtest pthread)
-set_target_properties(parser_interface_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-set (srl_interface_unittest_SRC ./srl_interface_unittest.cpp)
-add_executable (srl_interface_unittest
-${srl_interface_unittest_SRC})
-target_link_libraries (srl_interface_unittest srl_static_lib gtest pthread)
-set_target_properties(srl_interface_unittest PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
-
-

@@ -1,75 +1,54 @@
 #ifndef __LTP_NER_NER_H__
 #define __LTP_NER_NER_H__
 
-#include "utils/cfgparser.hpp"
-#include "ner/model.h"
+#include "framework/decoder.h"
+#include "framework/model.h"
+#include "ner/instance.h"
 #include "ner/decoder.h"
+#include "utils/unordered_set.hpp"
 
 namespace ltp {
 namespace ner {
 
-class NER {
-public:
-  NER();
-  NER(ltp::utility::ConfigParser & cfg);
-  ~NER();
-
-  void run();
-
-private:
-  /*
-   * parse the configuration, return true on success, otherwise false
-   *
-   *  @param[in]  cfg   the config class
-   *  @return     bool  return true on success, otherwise false
-   */
-  bool parse_cfg(ltp::utility::ConfigParser & cfg);
-
-  /*
-   * read instances from file and store them in train_dat
-   *
-   *  @param[in]  file_name   the filename
-   *  @return     bool        true on success, otherwise false
-   */
-  bool read_instance( const char * file_name );
-  void build_configuration(void);
-  void build_feature_space(void);
-
-  /*
-   * the training process
-   */
-  void train(void);
-
-  /*
-   * the evaluating process
-   */
-  void evaluate(void);
-
-  /*
-   * the testing process
-   */
-  void test(void);
-
-  /*
-   * the dumping model process
-   */
-  void dump(void);
-
-  /*
-   * do feature trauncation on the model. create a model duplation
-   * on the model and return their
-   *
-   *  @return Model   the duplication of the model
-   */
-  Model * truncate(void);
+class NamedEntityRecognizer {
 protected:
-  /*
-   * extract features from one instance,
-   *
-   */
-  void extract_features(Instance * inst, bool create = false);
+  framework::Model* model;  //! The pointer to the model.
+  NERTransitionConstrain* glob_con;
+  static const std::string model_header;
+  static const std::string delimiter;  //! The delimiter between position tag and ne type
+public:
+  NamedEntityRecognizer();
+  ~NamedEntityRecognizer();
 
-  /*
+protected:
+  /**
+   * extract feature from the instance, store the extracted features in a
+   * framework::ViterbiFeatureContext class.
+   *
+   *  @param[in]   inst     The instance.
+   *  @param[out]  ctx      The decode context result.
+   *  @param[in]   create   If create is true, create feature for new feature
+   *                        in the model otherwise not create.
+   */
+  void extract_features(const Instance& inst,
+      framework::ViterbiFeatureContext* ctx,
+      bool create = false) const;
+
+  /**
+   * Cache all the score for the certain instance. The cached results are
+   * stored in a Scorematrix.
+   *
+   *  @param[in]  inst    the instance
+   *  @param[in]  ctx     the decode context
+   *  @param[in]  avg     use to specify use average parameter
+   *  @param[out] scm     the score matrix
+   */
+  void calculate_scores(const Instance& inst,
+      const framework::ViterbiFeatureContext& ctx,
+      bool avg,
+      framework::ViterbiScoreMatrix* scm) const;
+
+  /**
    * build words from tags for certain instance
    *
    *  @param[in/out]  inst    the instance
@@ -78,44 +57,13 @@ protected:
    *  @param[in]      begtag0 first of the word begin tag
    *  @param[in]      begtag1 second of the word begin tag
    */
-  void build_entities(Instance * inst,
-                      const std::vector<int> & tagsidx,
-                      std::vector<std::string> & entities,
-                      std::vector<std::string> & entities_tags,
-                      int beg_tag0,
-                      int beg_tag1,
-                      int beg_tag2);
+  void build_entities(const Instance* inst,
+      const std::vector<int>& tagsidx,
+      std::vector<std::string>& entities,
+      std::vector<std::string> & entities_tags,
+      const size_t& delimiter_length = 1) const;
 
-  /*
-   * cache all the score for the certain instance.
-   *
-   *  @param[in/out]  inst  the instance
-   *  @param[in]    use_avg use to specify use average parameter
-   */
-  void calculate_scores(Instance * inst, bool use_avg);
-
-  /*
-   * collect feature when given the tags index
-   *
-   *  @param[in]    inst  the instance
-   *  @param[in]    tagsidx the tags index
-   *  @param[out]   vec   the output sparse vector
-   */
-  void collect_features(Instance * inst,
-                        const std::vector<int> & tagsidx,
-                        ltp::math::SparseVec & vec);
-
-private:
-  bool  __TRAIN__;
-  bool  __TEST__;
-  bool  __DUMP__;
-
-private:
-  std::vector< Instance * > train_dat;
-
-protected:
-  Model * model;
-  Decoder * decoder;
+  void build_glob_tran_cons(const std::unordered_set<std::string>& ne_types);
 };
 
 }     //  end for namespace segmentor

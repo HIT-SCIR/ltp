@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include "MyStruct.h"
 #include "ConstVar.h"
-#include "MyLib.h"
 
 class MyTree
 {

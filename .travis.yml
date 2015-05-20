@@ -7,6 +7,8 @@ compiler:
 before_install:
     - sudo apt-get install gfortran
     - sudo apt-get install cmake
+    - sudo apt-get install libopenblas-dev
+    - sudo ln -s /usr/lib/openblas-base/libopenblas.so /usr/lib/
 
 script:
     - ./configure

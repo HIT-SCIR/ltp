@@ -12,18 +12,9 @@
 namespace ltp {
 namespace strutils {
 
-/**
- * chomp a string
- *
- *  @param  str     std::string
- *  @return         std::string
- */
-inline std::string chomp(std::string str) {
-  int len = str.size();
-
-  if (len == 0) {
-    return "";
-  }
+inline void trim(std::string& str) {
+  size_t len = str.size();
+  if (len == 0) { return; }
 
   while (len -1 >=0 && (str[len-1] == ' '
         || str[len-1]=='\t'
@@ -33,15 +24,25 @@ inline std::string chomp(std::string str) {
   }
   str = str.substr(0, len);
 
-  while (len > 0 && (str[0] == ' ' ||
-         str[0] == '\t' ||
-         str[0] == '\r' ||
-         str[0] == '\n')) {
-    str = str.substr(1, -- len);
-  }
-  return str;
+  size_t i = 0;
+  while (i < len && (str[i] == ' ' ||
+         str[i] == '\t' ||
+         str[i] == '\r' ||
+         str[i] == '\n')) { i ++; }
+  str = str.substr(i);
 }
 
+/**
+ * chomp a string
+ *
+ *  @param  str     std::string
+ *  @return         std::string
+ */
+inline std::string trim_copy(const std::string& source) {
+  std::string str(source);
+  trim(str);
+  return str;
+}
 
 /**
  * Cut off the following string after mark
@@ -59,21 +60,19 @@ inline std::string cutoff(std::string str, std::string mark) {
   }
 }
 
-/**
- * Return a list of words of string str, the word are separated by
- * separator.
- *
- *  @param  str         std::string     the string
- *  @param  maxsplit    std::string     the sep upperbound
- *  @return             std::vector<std::string> the words
- */
-inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
-  std::vector<std::string> ret;
+inline void split(const std::string& source, std::vector<std::string>& ret,
+    int maxsplit=-1) {
+  std::string str(source);
   int numsplit = 0;
   int len = str.size();
+  size_t pos;
+  for (pos = 0; pos < str.size() && (str[pos] == ' ' || str[pos] == '\t'
+        || str[pos] == '\n' || str[pos] == '\r'); ++ pos);
+  str = str.substr(pos);
 
+  ret.clear();
   while (str.size() > 0) {
-    size_t pos = std::string::npos;
+    pos = std::string::npos;
 
     for (pos = 0; pos < str.size() && (str[pos] != ' '
           && str[pos] != '\t'
@@ -105,10 +104,21 @@ inline std::vector<std::string> split(std::string str, int maxsplit = -1) {
       str = str.substr(pos);
     }
   }
-
-  return ret;
 }
 
+/**
+ * Return a list of words of string str, the word are separated by
+ * separator.
+ *
+ *  @param  str         std::string     the string
+ *  @param  maxsplit    std::string     the sep upperbound
+ *  @return             std::vector<std::string> the words
+ */
+inline std::vector<std::string> split(const std::string& source, int maxsplit = -1) {
+  std::vector<std::string> ret;
+  split(source, ret, maxsplit);
+  return ret;
+}
 
 /**
  * Return a list of words of string str, the word are separated by
@@ -280,7 +290,7 @@ inline std::vector<std::string> rsplit_by_sep(std::string str, std::string sep =
  *  @param  sep std::vector<std::string>  the words
  *  @return     std::string               the concatenated string
  */
-inline std::string join(std::vector<std::string> sep) {
+inline std::string join(const std::vector<std::string>& sep) {
   std::string ret = "";
   for (unsigned int i = 0; i < sep.size(); ++ i) {
     // trick, append is faster than plus operator
@@ -297,7 +307,8 @@ inline std::string join(std::vector<std::string> sep) {
  *  @param  delimiter std::string                 the delimiter
  *  @return           std::string                 the concatenated string
  */
-inline std::string join(std::vector<std::string> sep, std::string delimiter) {
+inline std::string join(const std::vector<std::string>& sep,
+    const std::string& delimiter) {
   if (sep.size() == 0) {
     return "";
   }
@@ -383,6 +394,7 @@ inline bool is_double(const std::string &str) {
   return true;
 }
 
+
 /**
  * Convert a string to a plain integer
  *
@@ -453,7 +465,6 @@ inline void clean(std::string &str) {
   }
 }
 
-
 /**
  *
  *
@@ -463,6 +474,7 @@ inline void clean(std::string &str) {
 //int char_type(const std::string &str);
 
 } //LTP_STRING_NAMESPACE_END
+
 } //LTP_NAMESPACE_END
 
 #endif  // end for __LTP_UTILS_STRUTILS_HPP__

@@ -10,8 +10,6 @@
 namespace ltp {
 namespace segmentor {
 
-namespace utils = ltp::utility;
-
 /**
  * A singleton for extracting features
  *
@@ -29,13 +27,13 @@ public:
    *  @param[in]  idx     The index of the current form.
    *  @param[out] cache   The cached.
    */
-  static int extract1o(const Instance * inst, int idx,
-      std::vector< utils::StringVec >& cache);
+  static int extract1o(const Instance& inst, int idx,
+      std::vector< utility::StringVec >& cache);
 protected:
   Extractor();
   ~Extractor();
 private:
-  static std::vector< utils::Template* > templates;
+  static std::vector< utility::Template* > templates;
 };
 
 }     //  end for namespace segmentor

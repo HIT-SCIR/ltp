@@ -3,76 +3,23 @@
 
 #include <iostream>
 #include <vector>
-#include "segmentor/instance.h"
-#include "segmentor/rulebase.h"
-#include "segmentor/score_matrix.h"
+#include "framework/decoder.h"
 #include "utils/math/mat.h"
 
 namespace ltp {
 namespace segmentor {
 
-// data structure for lattice item
-class LatticeItem {
-public:
-  LatticeItem (int _i, int _l, double _score, const LatticeItem * _prev) :
-    i(_i),
-    l(_l),
-    score(_score),
-    prev(_prev) {}
-
-  LatticeItem (int _l, double _score) :
-    i(0),
-    l(_l),
-    score(_score),
-    prev(0) {}
-
-public:
-  int         i;
-  int         l;
-  double        score;
-  const LatticeItem * prev;
-};
-
-// class to perform the decode algorithm
-class Decoder {
-public:
-  Decoder (int _l, rulebase::RuleBase & _base) : L(_l), base(_base) {}
-
-  /**
-   * The main decoding process
-   *  @param[in/out]  the instance
-   *  @param[in]  the score matrix
-   */
-  void decode(Instance * inst, const ScoreMatrix* scm);
-
+class SegmentorConstrain: public framework::ViterbiDecodeConstrain {
 private:
-  void init_lattice(const Instance * inst);
-  void viterbi_decode(const Instance * inst, const ScoreMatrix* scm);
+  const std::vector<int>* chartypes;
+public:
+  SegmentorConstrain();
 
-  /**
-   * Backtracking to get the best result from the lattice matrix
-   *  @param[in/out]  the instance
-   */
-  void get_result(Instance * inst);
-  void free_lattice();
+  void regist(const std::vector<int>* chartypes);
 
-private:
-  int L;
+  bool can_tran(const size_t& i, const size_t& j) const;
 
-  math::Mat< const LatticeItem * > lattice;
-  rulebase::RuleBase base;
-
-  void lattice_insert(const LatticeItem * &position,
-                      const LatticeItem * const item) {
-    if (position == NULL) {
-      position = item;
-    } else if (position->score < item->score) {
-      delete position;
-      position = item;
-    } else {
-      delete item;
-    }
-  }
+  bool can_emit(const size_t& i, const size_t& j) const;
 };
 
 }       //  end for namespace segmentor

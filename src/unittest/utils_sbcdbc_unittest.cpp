@@ -8,8 +8,17 @@ TEST(sbcdbc_unittest, miss_test) {
   EXPECT_STREQ("ｗ", tmp.c_str());
   ltp::strutils::chartypes::sbc2dbc("1", tmp);
   EXPECT_STREQ("１", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc(" ", tmp);
+  EXPECT_STREQ("　", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc("!", tmp);
+  EXPECT_STREQ("！", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc(",", tmp);
+  EXPECT_STREQ("，", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc("?", tmp);
+  EXPECT_STREQ("？", tmp.c_str());
+  ltp::strutils::chartypes::sbc2dbc("#", tmp);
+  EXPECT_STREQ("＃", tmp.c_str());
 }
-
 
 // The chartype function should be able to parse at least 5,000 token
 // per millisecond
@@ -38,7 +47,3 @@ TEST(sbcdbc_unittest, performance_sbc2dbc2_test) {
   EXPECT_LT(5000, throughput_per_millisecond);
 }
 
-int main(int argc, char ** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

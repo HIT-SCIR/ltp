@@ -2,14 +2,14 @@
 #include "utils/strutils.hpp"
 #include "utils/sentsplit.hpp"
 
-//using namespace util;
+using ltp::strutils::trim;
 
-SPLIT_SENTENCE_DLL_API int SplitSentence(const std::string& strPara, std::vector<std::string>& vecSentence) {
-    ltp::Chinese::split_sentence(strPara, vecSentence);
+SPLIT_SENTENCE_DLL_API int SplitSentence(const std::string& text,
+    std::vector<std::string>& sentences) {
 
-    for (int i = 0; i < vecSentence.size(); ++ i) {
-        vecSentence[i] = ltp::strutils::chomp(vecSentence[i]);
-    }
-
-    return 1;
+  ltp::Chinese::split_sentence(text, sentences);
+  for (size_t i = 0; i < sentences.size(); ++ i) {
+    trim(sentences[i]);
+  }
+  return 1;
 }

@@ -1,112 +1,154 @@
 #include "segmentor/segment_dll.h"
 #include "segmentor/segmentor.h"
 #include "segmentor/settings.h"
-//#include "instance.h"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
 
 #include <iostream>
+#include <fstream>
 
-namespace seg = ltp::segmentor;
-
-class SegmentorWrapper : public seg::Segmentor {
+class __ltp_dll_segmentor_wrapper: public ltp::segmentor::Segmentor {
+private:
+  std::vector<const ltp::segmentor::Model::lexicon_t*> lexicons;
 public:
-  SegmentorWrapper()
-    : beg_tag0(-1),
-    beg_tag1(-1),
-    rule(0) {}
+  __ltp_dll_segmentor_wrapper() {}
+  ~__ltp_dll_segmentor_wrapper() {}
 
-  ~SegmentorWrapper() {
-    if (rule) { delete rule; }
-  }
-
-  bool load(const char * model_file, const char * lexicon_file = NULL) {
+  bool load(const char* model_file, const char * lexicon_file = NULL) {
     std::ifstream mfs(model_file, std::ifstream::binary);
 
     if (!mfs) {
       return false;
     }
 
-    model = new seg::Model;
-    if (!model->load(mfs)) {
+    model = new ltp::segmentor::Model;
+    if (!model->load(model_header.c_str(), mfs)) {
       delete model;
       model = 0;
       return false;
     }
 
     if (NULL != lexicon_file) {
-      std::ifstream lfs(lexicon_file);
-
-      if (lfs) {
-        std::string buffer;
-        while (std::getline(lfs, buffer)) {
-          buffer = ltp::strutils::chomp(buffer);
-          if (buffer.size() == 0) {
-            continue;
-          }
-          model->external_lexicon.set(buffer.c_str(), true);
-        }
-      }
+      load_lexicon(lexicon_file, &model->external_lexicon);
     }
 
-    beg_tag0 = model->labels.index( ltp::segmentor::__b__ );
-    beg_tag1 = model->labels.index( ltp::segmentor::__s__ );
-
-    rule = new seg::rulebase::RuleBase(model->labels);
-
+    lexicons.push_back(&(model->internal_lexicon));
+    lexicons.push_back(&(model->external_lexicon));
     return true;
   }
 
-  int segment(const char * str,
-      std::vector<std::string> & words) {
-    seg::Instance * inst = new seg::Instance;
-    // ltp::strutils::codecs::decode(str, inst->forms);
-    int ret = seg::rulebase::preprocess(str,
-        inst->raw_forms,
-        inst->forms,
-        inst->chartypes);
+  int segment(const char* str, std::vector<std::string> & words) {
+    ltp::framework::ViterbiFeatureContext ctx;
+    ltp::framework::ViterbiScoreMatrix scm;
+    ltp::framework::ViterbiDecoder decoder;
+    ltp::segmentor::Instance inst;
+ 
+    int ret = preprocessor.preprocess(str, inst.raw_forms, inst.forms,
+      inst.chartypes);
 
     if (-1 == ret || 0 == ret) {
-      delete inst;
       words.clear();
       return 0;
     }
 
-    seg::DecodeContext* ctx = new seg::DecodeContext;
-    seg::ScoreMatrix* scm = new seg::ScoreMatrix;
-    seg::Segmentor::build_lexicon_match_state(inst);
-    seg::Segmentor::extract_features(inst, seg::Segmentor::model, ctx);
-    seg::Segmentor::calculate_scores(inst, seg::Segmentor::model, ctx, true, scm);
+    ltp::segmentor::SegmentorConstrain con;
+    con.regist(&(inst.chartypes));
+    build_lexicon_match_state(lexicons, &inst);
+    extract_features(inst, model, &ctx, false);
+    calculate_scores(inst, (*model), ctx, true, &scm);
 
     // allocate a new decoder so that the segmentor support multithreaded
     // decoding. this modification was committed by niuox
-    seg::Decoder decoder(model->num_labels(), *rule);
-    decoder.decode(inst, scm);
-    seg::Segmentor::build_words(inst, inst->predicted_tagsidx,
-        words, beg_tag0, beg_tag1);
+    decoder.decode(scm, con, inst.predict_tagsidx);
+    build_words(inst, inst.predict_tagsidx, words);
 
-    delete ctx;
-    delete scm;
-    delete inst;
     return words.size();
   }
 
-  int segment(const std::string & str,
-      std::vector<std::string> & words) {
+  int segment(const std::string& str, std::vector<std::string> & words) {
     return segment(str.c_str(), words);
   }
+};
+
+class __ltp_dll_customized_segmentor_wrapper: public ltp::segmentor::Segmentor {
 private:
-  int beg_tag0;
-  int beg_tag1;
+  std::vector<const ltp::segmentor::Model::lexicon_t*> lexicons;
+  ltp::segmentor::Model* bs_model;
+public:
+  __ltp_dll_customized_segmentor_wrapper(): bs_model(0) {}
+  ~__ltp_dll_customized_segmentor_wrapper() {
+    if (bs_model) { delete bs_model; bs_model = 0; }
+  }
 
-  // don't need to allocate a decoder
-  // one sentence, one decoder
-  seg::rulebase::RuleBase* rule;
+  bool load(const char* model1, const char* model2,
+      const char * lexicon_file = NULL) {
+    std::ifstream mfs(model1, std::ifstream::binary);
+    if (!mfs) { return false; }
 
+    model = new ltp::segmentor::Model;
+    if (!model->load(model_header.c_str(), mfs)) {
+      delete model;
+      model = 0;
+      return false;
+    }
+
+    mfs.close();
+    mfs.open(model2);
+    if (!mfs) { return false; }
+
+    bs_model = new ltp::segmentor::Model;
+    if (!bs_model->load(model_header.c_str(), mfs)) {
+      delete model;     model = 0;
+      delete bs_model;  bs_model = 0;
+      return false;
+    }
+
+    if (NULL != lexicon_file) {
+      load_lexicon(lexicon_file, &model->external_lexicon);
+    }
+
+    lexicons.push_back(&(bs_model->internal_lexicon));
+    lexicons.push_back(&(model->internal_lexicon));
+    lexicons.push_back(&(model->external_lexicon));
+    return true;
+  }
+
+  int segment(const char* str, std::vector<std::string> & words) {
+    ltp::framework::ViterbiFeatureContext ctx, bs_ctx;
+    ltp::framework::ViterbiScoreMatrix scm;
+    ltp::framework::ViterbiDecoder decoder;
+    ltp::segmentor::Instance inst;
+ 
+    int ret = preprocessor.preprocess(str, inst.raw_forms, inst.forms,
+      inst.chartypes);
+
+    if (-1 == ret || 0 == ret) {
+      words.clear();
+      return 0;
+    }
+
+    ltp::segmentor::SegmentorConstrain con;
+    con.regist(&(inst.chartypes));
+    build_lexicon_match_state(lexicons, &inst);
+    extract_features(inst, model, &ctx, false);
+    extract_features(inst, bs_model, &bs_ctx, false);
+    calculate_scores(inst, (*bs_model), (*model), bs_ctx, ctx, true, &scm);
+
+    // allocate a new decoder so that the segmentor support multithreaded
+    // decoding. this modification was committed by niuox
+    decoder.decode(scm, con, inst.predict_tagsidx);
+    build_words(inst, inst.predict_tagsidx, words);
+
+    return words.size();
+  }
+
+  int segment(const std::string& str, std::vector<std::string> & words) {
+    return segment(str.c_str(), words);
+  }
 };
 
 void * segmentor_create_segmentor(const char * path, const char * lexicon_file) {
-  SegmentorWrapper * wrapper = new SegmentorWrapper();
+  __ltp_dll_segmentor_wrapper* wrapper = new __ltp_dll_segmentor_wrapper();
 
   if (!wrapper->load(path, lexicon_file)) {
     delete wrapper;
@@ -120,18 +162,50 @@ int segmentor_release_segmentor(void * segmentor) {
   if (!segmentor) {
     return -1;
   }
-  delete reinterpret_cast<SegmentorWrapper *>(segmentor);
+  delete reinterpret_cast<__ltp_dll_segmentor_wrapper*>(segmentor);
   return 0;
 }
 
-int segmentor_segment(void * segmentor,
-    const std::string & str,
-    std::vector<std::string> & words) {
+int segmentor_segment(void * segmentor, const std::string & str,
+  std::vector<std::string> & words) {
   if (str.empty()) {
     return 0;
   }
 
-  SegmentorWrapper * wrapper = 0;
-  wrapper = reinterpret_cast<SegmentorWrapper *>(segmentor);
+  __ltp_dll_segmentor_wrapper* wrapper = 0;
+  wrapper = reinterpret_cast<__ltp_dll_segmentor_wrapper*>(segmentor);
+  return wrapper->segment(str.c_str(), words);
+}
+
+void * customized_segmentor_create_segmentor(const char * path1,
+    const char* path2,
+    const char * lexicon_file) {
+  __ltp_dll_customized_segmentor_wrapper* wrapper =
+    new __ltp_dll_customized_segmentor_wrapper();
+
+  if (!wrapper->load(path1, path2, lexicon_file)) {
+    delete wrapper;
+    return 0;
+  }
+
+  return reinterpret_cast<void *>(wrapper);
+}
+
+int customized_segmentor_release_segmentor(void * segmentor) {
+  if (!segmentor) {
+    return -1;
+  }
+  delete reinterpret_cast<__ltp_dll_customized_segmentor_wrapper*>(segmentor);
+  return 0;
+}
+
+int customized_segmentor_segment(void * segmentor, const std::string & str,
+  std::vector<std::string> & words) {
+  if (str.empty()) {
+    return 0;
+  }
+
+  __ltp_dll_customized_segmentor_wrapper* wrapper = 0;
+  wrapper = reinterpret_cast<__ltp_dll_customized_segmentor_wrapper*>(segmentor);
   return wrapper->segment(str.c_str(), words);
 }

@@ -38,9 +38,3 @@ add_subdirectory (src)
 
 # testing section
 # -- generate configure file for ltp_test
-
-# enable test
-enable_testing()
-
-# compile testing
-add_subdirectory (test)

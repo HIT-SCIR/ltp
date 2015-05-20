@@ -40,8 +40,8 @@ public:
 
   // push the string str to StringVector
   int push_back(const char * str) {
-    int len = strlen(str) + 1;
-    int new_len;
+    size_t len = strlen(str) + 1;
+    size_t new_len;
 
     if (_cap_pool <= (new_len = (_len_pool + len))) {
       _cap_pool = (new_len << 1);
@@ -74,16 +74,14 @@ public:
     return _len_index;
   }
 
-  const char * operator [](int i) {
-    if (i < 0 || i >= _len_index) {
+  const char * operator [](const size_t& i) const {
+    if (i >= _len_index) {
       return 0;
     }
     return _pool + _index[i];
   }
 
-  inline int size() {
-    return _len_index;
-  }
+  size_t size() const { return _len_index; }
 
   void clear() {
     _len_pool = 0;
@@ -92,23 +90,23 @@ public:
 
   void debug() {
     printf("%p ", _pool);
-    for (int i = 0; i < _len_pool; ++ i) {
+    for (size_t i = 0; i < _len_pool; ++ i) {
       putchar(_pool[i]);
     }
     putchar('\n');
-    for (int i = 0; i < _len_index; ++ i) {
+    for (size_t i = 0; i < _len_index; ++ i) {
       printf("%p %s\n", _pool + _index[i], _pool + _index[i]);
     }
   }
 
 private:
   char * _pool;
-  int _len_pool;
-  int _cap_pool;
+  size_t _len_pool;
+  size_t _cap_pool;
 
   int * _index;
-  int _len_index;
-  int _cap_index;
+  size_t _len_index;
+  size_t _cap_index;
 };
 
 }

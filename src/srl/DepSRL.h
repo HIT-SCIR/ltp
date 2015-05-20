@@ -12,7 +12,6 @@
 #define _DEP_SRL_
 
 #include "MyStruct.h"
-#include "MyLib.h"
 #include "SRLBaselineExt.h"
 #include <vector>
 #include <utility>

@@ -58,7 +58,3 @@ TEST(chartypes_unittest, performance_test) {
   EXPECT_LT(5000, throughput_per_millisecond);
 }
 
-int main(int argc, char ** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

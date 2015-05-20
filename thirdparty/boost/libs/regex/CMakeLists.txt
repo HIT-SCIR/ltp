@@ -1,7 +1,7 @@
 INCLUDE_DIRECTORIES( ./
     ${THIRDPARTY_DIR}/boost/include/ )
 
-set (boost_regex_VERSION "3.12")
+set (boost_regex_VERSION "1.57")
 
 set (boost_regex_SRC
   src/c_regex_traits.cpp

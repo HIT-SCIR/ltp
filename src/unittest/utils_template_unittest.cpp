@@ -91,9 +91,8 @@ TEST(template_unittest, test_template_efficiency) {
 
   long throughput_per_millisecond = ((kNumRepeats * kNumTemplates)
       / ((clock() -start_time) / 1000));
-  std::cout << throughput_per_millisecond << std::endl;
+  std::cerr << "#throughput: " <<throughput_per_millisecond << std::endl;
 }
-
 
 TEST(template_DeathTest, test_template_null) {
   Template T("1={test}");
@@ -106,7 +105,3 @@ TEST(template_DeathTest, test_template_null) {
   ASSERT_DEATH(T.render(data, feat), "");
 }
 
-int main(int argc, char ** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

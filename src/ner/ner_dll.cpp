@@ -1,34 +1,41 @@
 #include "ner/ner_dll.h"
 #include "ner/ner.h"
+#include "ner/extractor.h"
 #include "ner/settings.h"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
+#include "utils/sbcdbc.hpp"
+#include "utils/unordered_set.hpp"
+#include "framework/decoder.h"
 
 #include <iostream>
+#include <fstream>
 
-class NERWrapper : public ltp::ner::NER {
+class __ltp_dll_ner_wrapper : public ltp::ner::NamedEntityRecognizer {
 public:
-  NERWrapper()
-    : beg_tag0(-1),
-      beg_tag1(-1) {}
+  __ltp_dll_ner_wrapper() {}
+  ~__ltp_dll_ner_wrapper() {}
 
-  ~NERWrapper() {}
-
-  bool load(const char * model_file) {
+  bool load(const char* model_file) {
     std::ifstream mfs(model_file, std::ifstream::binary);
 
     if (!mfs) {
       return false;
     }
 
-    model = new ltp::ner::Model;
-    if (!model->load(mfs)) {
+    model = new ltp::framework::Model(ltp::ner::Extractor::num_templates());
+    if (!model->load(ltp::ner::NamedEntityRecognizer::model_header, mfs)) {
       delete model;
       return false;
     }
 
-    // beg_tag0 = model->labels.index( );
-    // beg_tag1 = model->labels.index( );
+    std::unordered_set<std::string> ne_types;
+    for (size_t i = 0; i < model->num_labels(); ++ i) {
+      std::string tag = model->labels.at(i);
+      if (tag == ltp::ner::OTHER) { continue; }
+      ne_types.insert(tag.substr(1+delimiter.size()));
+    }
+    build_glob_tran_cons(ne_types);
 
     return true;
   }
@@ -36,35 +43,31 @@ public:
   int recognize(const std::vector<std::string> & words,
       const std::vector<std::string> & postags,
       std::vector<std::string> & tags) {
-    ltp::ner::rulebase::RuleBase base(model->labels);
-    ltp::ner::Decoder deco(model->num_labels(), base);
+    ltp::framework::ViterbiFeatureContext ctx;
+    ltp::framework::ViterbiScoreMatrix scm;
+    ltp::framework::ViterbiDecoder decoder;
+    ltp::ner::Instance inst;
 
-    ltp::ner::Instance * inst = new ltp::ner::Instance;
-
-    for (int i = 0; i < words.size(); ++ i) {
-      inst->forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
-      inst->postags.push_back(postags[i]);
+    for (size_t i = 0; i < words.size(); ++ i) {
+      inst.forms.push_back(ltp::strutils::chartypes::sbc2dbc_x(words[i]));
+      inst.postags.push_back(postags[i]);
     }
 
-    ltp::ner::NER::extract_features(inst);
-    ltp::ner::NER::calculate_scores(inst, true);
-    deco.decode(inst);
+    extract_features(inst, &ctx, false);
+    calculate_scores(inst, ctx, true, &scm);
+    decoder.decode(scm, (*glob_con), inst.predict_tagsidx);
 
-    for (int i = 0; i < words.size(); ++ i) {
-      tags.push_back(model->labels.at(inst->predicted_tagsidx[i]));
+    for (size_t i = 0; i < words.size(); ++ i) {
+      tags.push_back(model->labels.at(inst.predict_tagsidx[i]));
     }
 
-    delete inst;
     return tags.size();
   }
 
-private:
-  int beg_tag0;
-  int beg_tag1;
 };
 
 void * ner_create_recognizer(const char * path) {
-  NERWrapper * wrapper = new NERWrapper();
+  __ltp_dll_ner_wrapper* wrapper = new __ltp_dll_ner_wrapper();
 
   if (!wrapper->load(path)) {
     delete wrapper;
@@ -78,7 +81,7 @@ int ner_release_recognizer(void * ner) {
   if (!ner) {
     return -1;
   }
-  delete reinterpret_cast<NERWrapper *>(ner);
+  delete reinterpret_cast<__ltp_dll_ner_wrapper *>(ner);
   return 0;
 }
 
@@ -97,7 +100,7 @@ int ner_recognize(void * ner,
     }
   }
 
-  NERWrapper * wrapper = 0;
-  wrapper = reinterpret_cast<NERWrapper *>(ner);
+  __ltp_dll_ner_wrapper* wrapper = 0;
+  wrapper = reinterpret_cast<__ltp_dll_ner_wrapper*>(ner);
   return wrapper->recognize(words, postags, tags);
 }
