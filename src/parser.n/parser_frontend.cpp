@@ -387,6 +387,41 @@ void NeuralNetworkParserFrontend::generate_training_samples_one_batch(
   }
 }
 
+void NeuralNetworkParserFrontend::evaluate_one_instance(const Instance& data,
+    const std::vector<int>& heads, const std::vector<std::string>& deprels,
+    size_t& corr_heads, size_t& corr_deprels, size_t& nr_tokens) {
+  size_t L = heads.size();
+  for (size_t i = 1; i < L; ++ i) { // ignore dummy root
+    if (is_unicode_punctuation(data.raw_forms[i])) {
+      continue;
+    }
+    ++ nr_tokens;
+    if (heads[i] == data.heads[i]) {
+      ++ corr_heads;
+      if (deprels[i] == data.deprels[i]) { ++ corr_deprels; }
+    }
+  }
+}
+
+void NeuralNetworkParserFrontend::evaluate(double& uas, double& las) {
+  INFO_LOG("eval: start evaluating ...");
+  classifier.precomputing();
+
+  std::vector<int> heads;
+  std::vector<std::string> deprels;
+  size_t corr_heads = 0, corr_deprels = 0, nr_tokens = 0;
+
+  for (size_t i = 0; i < devel_dat.size(); ++ i) {
+    Instance* data = devel_dat[i];
+    predict((*data), heads, deprels);
+    evaluate_one_instance((*data), heads, deprels, corr_heads,
+        corr_deprels, nr_tokens);
+  }
+
+  uas = (double)corr_heads/nr_tokens;
+  las = (double)corr_deprels/nr_tokens;
+}
+
 void NeuralNetworkParserFrontend::train(void) {
   if (!read_training_data()) { return; }
   build_alphabet();
@@ -414,32 +449,9 @@ void NeuralNetworkParserFrontend::train(void) {
     classifier.take_ada_gradient_step();
 
     if (devel_dat.size() > 0 && (iter+1) % learn_opt->evaluation_stops == 0) {
-      INFO_LOG("eval: start evaluating ...");
-      classifier.precomputing();
-
-      std::vector<int> heads;
-      std::vector<std::string> deprels;
-      size_t corr_heads = 0, corr_deprels = 0, nr_tokens = 0;
-
       t.restart();
-      for (size_t i = 0; i < devel_dat.size(); ++ i) {
-        Instance* data = devel_dat[i];
-        predict((*data), heads, deprels);
-
-        size_t L = heads.size();
-        for (size_t i = 1; i < L; ++ i) { // ignore dummy root
-          if (is_unicode_punctuation(data->raw_forms[i])) {
-            continue;
-          }
-          ++ nr_tokens;
-          if (heads[i] == data->heads[i]) {
-            ++ corr_heads;
-            if (deprels[i] == data->deprels[i]) { ++ corr_deprels; }
-          }
-        }
-      }
-      double uas = (double)corr_heads/nr_tokens;
-      double las = (double)corr_deprels/nr_tokens;
+      double uas, las;
+      evaluate(uas, las);
       INFO_LOG("eval: evaluating done. UAS=%lf LAS=%lf (%lf)", uas, las, t.elapsed());
 
       if (best_uas < uas && learn_opt->save_intermediate) {
@@ -448,6 +460,22 @@ void NeuralNetworkParserFrontend::train(void) {
         INFO_LOG("report: model saved to %s", learn_opt->model_file.c_str());
       }
     }
+  }
+
+  if (devel_dat.size() > 0) {
+    timer t;
+    double uas, las;
+    evaluate(uas, las);
+    INFO_LOG("eval: evaluating done. UAS=%lf LAS=%lf (%lf)", uas, las, t.elapsed());
+
+    if (best_uas < uas && learn_opt->save_intermediate) {
+      best_uas = uas;
+      save(learn_opt->model_file);
+      INFO_LOG("report: model saved to %s", learn_opt->model_file.c_str());
+    }
+  } else {
+    save(learn_opt->model_file);
+    INFO_LOG("report: model saved to %s", learn_opt->model_file.c_str());
   }
 }
 
@@ -481,17 +509,8 @@ void NeuralNetworkParserFrontend::test(void) {
     writer.write(*inst, heads, deprels);
 
     if (test_opt->evaluate) {
-      size_t L = heads.size();
-      for (size_t i = 1; i < L; ++ i) { // ignore dummy root
-        if (is_unicode_punctuation(inst->raw_forms[i])) {
-          continue;
-        }
-        ++ nr_tokens;
-        if (heads[i] == inst->heads[i]) {
-          ++ corr_heads;
-          if (deprels[i] == inst->deprels[i]) { ++ corr_deprels; }
-        }
-      }
+      evaluate_one_instance((*inst), heads, deprels, corr_heads,
+          corr_deprels, nr_tokens);
     }
     delete inst;
   }

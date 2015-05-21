@@ -48,6 +48,13 @@ private:
   void check_dataset(const std::vector<Instance*>& dataset);
   void build_alphabet(void);
   void build_cluster(void);
+  void evaluate_one_instance(const Instance& data,
+      const std::vector<int>& heads,
+      const std::vector<std::string>& deprels,
+      size_t& corr_heads,
+      size_t& corr_deprels,
+      size_t& nr_tokens);
+  void evaluate(double& uas, double& las);
   void collect_precomputed_features(void);
   void initialize_classifier(void);
   void generate_training_samples_one_batch(
