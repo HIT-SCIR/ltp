@@ -28,7 +28,8 @@ extern const char * const NOTE_SENT;
 extern const char * const NOTE_WORD;
 extern const char * const NOTE_POS;
 extern const char * const NOTE_NE;
-extern const char * const NOTE_PARSER;
+extern const char * const NOTE_PARSER;  // need a copy for NOTE_SEMANTIC PARSER
+extern const char * const NOTE_SEMANTIC_PARSER; 
 extern const char * const NOTE_WSD;
 extern const char * const NOTE_SRL;
 extern const char * const NOTE_CLASS;
@@ -371,6 +372,20 @@ public:
       int wid) const;
 
   /*
+   * Get word's semantic parsing result
+   *
+   *  @param[out] parent_relation the (parent, relation) pair
+   *  @param[in]  pid       the index of paragraph
+   *  @param[in]  sid       the index of sentence
+   *  @param[in]  wid       the index of word
+   *  @return   int       0 on success, -1 on illegal index
+   */
+  int GetSemanticParse(pair<int, const char *> & parent_relation,
+      int pid,
+      int sid,
+      int wid) const;	 
+	  
+  /*
    * Get word's parsing result
    *
    *  @param[out] parent_relation the (parent, relation) pair
@@ -379,6 +394,18 @@ public:
    *  @return   int       0 on success, -1 on illegal index
    */
   int GetParse(pair<int, const char *> & parent_relation,
+      int global_sid,
+      int wid) const;
+	  
+  /*
+   * Get word's semantic parsing result
+   *
+   *  @param[out] parent_relation the (parent, relation) pair
+   *  @param[in]  global_sid    the global index of sentence
+   *  @param[in]  wid       the index of the word
+   *  @return   int       0 on success, -1 on illegal index
+   */
+  int GetSemanticParse(pair<int, const char *> & parent_relation,
       int global_sid,
       int wid) const;
 
@@ -390,6 +417,16 @@ public:
    *  @return   int       0 on success, -1 on illegal index
    */
   int GetParse(pair<int, const char *> &parent_relation,
+      int glabal_wid) const;
+	  
+  /*
+   * Get word's semantic parsing result
+   *
+   *  @param[out] parent_relation the (parent, relation) pair
+   *  @param[in]  global_wid    the global index of sentence
+   *  @return   int       0 on success, -1 on illegal index
+   */
+  int GetSemanticParse(pair<int, const char *> &parent_relation,
       int glabal_wid) const;
 
   /*
@@ -589,6 +626,37 @@ public:
   int SetParsesToSentence(const vector<int> &vecHead,
       const vector<string> &vecRel,
       int sentenceIdx);
+	  
+  // for Semantic Parser
+  int GetSemanticParsesFromSentence(vector< pair<int, const char *> > &vecParse,
+      int paragraphIdx,
+      int sentenceIdx) const;
+
+  int GetSemanticParsesFromSentence(vector< pair<int, const char *> > &vecParse,
+      int sentenceIdx) const;
+
+  int GetSemanticParsesFromSentence(vector< pair<int, string> > &vecParse,
+      int paragraphIdx,
+      int sentenceIdx) const;
+
+  int GetSemanticParsesFromSentence(vector< pair<int, string> > &vecParse,
+      int sentenceIdx) const;
+
+  int SetSemanticParsesToSentence(const vector< pair<int, string> > &vecParse,
+      int paragraphIdx,
+      int sentenceIdx);
+
+  int SetSemanticParsesToSentence(const vector< pair<int, string> > &vecParse,
+      int sentenceIdx);
+
+  int SetSemanticParsesToSentence(const vector<int> &vecHead,
+      const vector<string> &vecRel,
+      int paragraphIdx,
+      int sentenceIdx);
+
+  int SetSemanticParsesToSentence(const vector<int> &vecHead,
+      const vector<string> &vecRel,
+      int sentenceIdx);
 
   // for text summarization
   const char* GetTextSummary() const;
@@ -719,6 +787,7 @@ private:
 
   typedef std::pair<const char *, const char *> WSDResult;
   typedef std::pair<int, const char *>          ParseResult;
+  typedef std::pair<int, const char *>          SemanticParseResult;
 private:
   // initialization during loading txt
   int BuildDOMFrame();
@@ -816,6 +885,8 @@ private:
   static const char * const TAG_WSD_EXP;
   static const char * const TAG_PSR_PARENT;
   static const char * const TAG_PSR_RELATE;
+  static const char * const TAG_SEMPSR_PARENT;
+  static const char * const TAG_SEMPSR_RELATE;
   static const char * const TAG_SRL_ARG;
   static const char * const TAG_SRL_TYPE;
   static const char * const TAG_BEGIN;  // cr, srl

@@ -51,6 +51,16 @@ public:
    */
   int LoadParserResource(const char* model_file);
   int LoadParserResource(const std::string& model_file);
+  
+  /**
+   * load semantic parser resource from model file. Return 0 on success,
+   * otherwise -1.
+   *
+   *  @param[in]  model_file
+   *  @return     int             0 on success, otherwise -1
+   */
+  int LoadSemanticParserResource(const char* model_file);
+  int LoadSemanticParserResource(const std::string& model_file);
 
   /**
    * load srl resource from model file. Return 0 on success,
@@ -66,22 +76,26 @@ public:
   void ReleasePostaggerResource(void);
   void ReleaseNEResource(void);
   void ReleaseParserResource(void);
+  void ReleaseSemanticParserResource(void);
   void ReleaseSRLResource(void);
 
   void* GetSegmentor();   // access the segmentor.
   void* GetPostagger();   // access the postagger.
   void* GetParser();      // access the parser.
+  void* GetSemanticParser();      // access the semanticparser.
   void* GetNER();         // access the ner.
 private:
   void* m_segmentor;
   void* m_postagger;
   void* m_parser;
+  void* m_semanticparser;
   void* m_ner;
 private:
   bool m_isSegmentorResourceLoaded;
   bool m_isPostaggerResourceLoaded;
   bool m_isNEResourceLoaded;
   bool m_isParserResourceLoaded;
+  bool m_isSemanticParserResourceLoaded;
   bool m_isSRLResourceLoaded;
 };
 

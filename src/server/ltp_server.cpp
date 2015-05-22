@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
      "- " LTP_SERVICE_NAME_POSTAG ": Part of speech tagging\n"
      "- " LTP_SERVICE_NAME_NER ": Named entity recognization\n"
      "- " LTP_SERVICE_NAME_DEPPARSE ": Dependency parsing\n"
+     "- " LTP_SERVICE_NAME_SEMDEPPARSE ": Semantic dependency parsing\n"
      "- " LTP_SERVICE_NAME_SRL ": Semantic role labeling (equals to all)\n"
      "- all: The whole pipeline [default]")
     ("segmentor-model", value<std::string>(),
@@ -66,6 +67,8 @@ int main(int argc, char *argv[]) {
      "The path to the NER model [default=ltp_data/ner.model].")
     ("parser-model", value<std::string>(),
      "The path to the parser model [default=ltp_data/parser.model].")
+    ("semantic_parser_model", value<std::string>(),
+     "The path to the semparser model [default=ltp_data/semparser.model].")
     ("srl-data", value<std::string>(),
      "The path to the SRL model directory [default=ltp_data/srl_data/].")
     ("log-level", value<int>(), "The log level:\n"
@@ -112,6 +115,7 @@ int main(int argc, char *argv[]) {
         && last_stage != LTP_SERVICE_NAME_POSTAG
         && last_stage != LTP_SERVICE_NAME_NER
         && last_stage != LTP_SERVICE_NAME_DEPPARSE
+        && last_stage != LTP_SERVICE_NAME_SEMDEPPARSE
         && last_stage != LTP_SERVICE_NAME_SRL
         && last_stage != "all") {
       std::cerr << "Unknown stage name:" << last_stage << ", reset to 'all'" << std::endl;
@@ -148,6 +152,13 @@ int main(int argc, char *argv[]) {
   if (vm.count("parser-model")) {
     parser_model= vm["parser-model"].as<std::string>();
   }
+  INFO_LOG("parser model after vm :\"%s\"", parser_model.c_str());
+
+  std::string semantic_parser_model = "ltp_data/semparser.model";
+  if (vm.count("semantic_parser_model")) {
+    semantic_parser_model= vm["semantic_parser_model"].as<std::string>();
+  }
+  INFO_LOG("semantic parser model after model: \"%s\"" ,semantic_parser_model.c_str());
 
   std::string srl_data= "ltp_data/srl/";
   if (vm.count("srl-data")) {
@@ -164,9 +175,10 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  INFO_LOG("parser model :\"%s\"", parser_model.c_str());
+  INFO_LOG("semantic parser model: \"%s\"" ,semantic_parser_model.c_str());
   engine = new LTP(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
-      postagger_lexcion, ner_model, parser_model, srl_data);
-
+      postagger_lexcion, ner_model, parser_model, semantic_parser_model, srl_data);
   if (!engine->loaded()) {
     ERROR_LOG("Failed to setup LTP engine.");
     return 1;
@@ -235,6 +247,7 @@ static void ErrorResponse(struct mg_connection* conn,
     case kWordsegError:
     case kPostagError:
     case kParserError:
+    case kSemanticParserError:
     case kNERError:
     case kSRLError:
       {
@@ -363,8 +376,26 @@ static int Service(struct mg_connection *conn) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
         return 0;
       }
-    } else { // srl or all
+    } else if (str_type == LTP_SERVICE_NAME_SEMDEPPARSE){
+      int ret = engine->semantic_parser(xml4nlp);
+      if (0 != ret) {
+        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
+        return 0;
+      }
+    } else if (str_type == LTP_SERVICE_NAME_SRL){ // srl
       int ret = engine->srl(xml4nlp);
+      if (0 != ret) {
+        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
+        return 0;
+      }
+    } else {   // all
+      int ret = engine->srl(xml4nlp); //srl
+      if (0 != ret) {
+        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
+        return 0;
+      }
+
+      ret = engine->semantic_parser(xml4nlp); //semantic parser
       if (0 != ret) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
         return 0;
