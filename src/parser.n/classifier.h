@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include "armadillo"
 #include "parser.n/options.h"
 #include "utils/unordered_map.hpp"
 #include "utils/unordered_set.hpp"
+#include "Eigen/Dense"
 
 namespace ltp {
 namespace depparser {
@@ -23,7 +23,7 @@ struct Sample {
 class NeuralNetworkClassifier {
 private:
   // The weight group.
-  arma::mat& W1;         // Mat: hidden_layer_size X (nr_feature_types * embedding_size)
+  /*arma::mat& W1;         // Mat: hidden_layer_size X (nr_feature_types * embedding_size)
   arma::mat& W2;         // Mat: nr_classes X hidden_layer_size
   arma::mat& E;          // Mat: nr_objects X embedding_size
   arma::vec& b1;         // Vec: hidden_layer_size
@@ -36,14 +36,31 @@ private:
   arma::mat eg2W1;
   arma::mat eg2W2;
   arma::mat eg2E;
-  arma::vec eg2b1;
+  arma::vec eg2b1;*/
+
+  Eigen::MatrixXd& W1;
+  Eigen::MatrixXd& W2;
+  Eigen::MatrixXd& E;
+  Eigen::VectorXd& b1;
+  Eigen::MatrixXd& saved;
+
+  Eigen::MatrixXd grad_W1;
+  Eigen::MatrixXd grad_W2;
+  Eigen::MatrixXd grad_E;
+  Eigen::VectorXd grad_b1;
+  Eigen::MatrixXd grad_saved;
+
+  Eigen::MatrixXd eg2W1;
+  Eigen::MatrixXd eg2W2;
+  Eigen::MatrixXd eg2E;
+  Eigen::VectorXd eg2b1;
 
   double loss;
   double accuracy;
 
   // Precomputed matrix
-  arma::mat& saved;      // Mat: encoder.size() X hidden_layer_size
-  arma::mat grad_saved; // Mat: encoder.size() X hidden_layer_size
+  /*arma::mat& saved;      // Mat: encoder.size() X hidden_layer_size
+  arma::mat grad_saved; // Mat: encoder.size() X hidden_layer_size*/
 
 private:
   // The configuration
@@ -66,9 +83,17 @@ private:
 
   bool initialized;
 public:
-  NeuralNetworkClassifier(arma::mat& W1, arma::mat& W2, arma::mat& E,
+  /*NeuralNetworkClassifier(arma::mat& W1, arma::mat& W2, arma::mat& E,
       arma::vec& b1, arma::mat& saved,
-      std::unordered_map<int, size_t>& precomputation_id_encoder);
+      std::unordered_map<int, size_t>& precomputation_id_encoder);*/
+
+  NeuralNetworkClassifier(
+      Eigen::MatrixXd& _W1,
+      Eigen::MatrixXd& _W2,
+      Eigen::MatrixXd& _E,
+      Eigen::VectorXd& _b1,
+      Eigen::MatrixXd& _saved,
+      std::unordered_map<int, size_t>& encoder);
 
   /**
    * Initialize the neural network

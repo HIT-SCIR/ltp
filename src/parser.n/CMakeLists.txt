@@ -1,6 +1,7 @@
 include_directories (${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/boost/include
-    ${THIRDPARTY_DIR}/armadillo-5.100.1/include/)
+    ${THIRDPARTY_DIR}/eigen-3.2.4/
+    )
 
 set (nndepparser_VERSION "0.0.1")
 set (nndepparser_SRC
@@ -22,18 +23,6 @@ set_target_properties (parser_shared_lib    PROPERTIES
 # redirect output binary to tools/train
 add_executable (nndepparser main.cpp parser_frontend.cpp io.cpp ${nndepparser_SRC})
 target_link_libraries (nndepparser boost_program_options_static_lib)
-if (MSVC)
-  target_link_libraries (parser_static_lib
-      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
-  target_link_libraries (parser_shared_lib
-      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
-  target_link_libraries (nndepparser
-      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
-else()
-  target_link_libraries (parser_static_lib openblas)
-  target_link_libraries (parser_shared_lib openblas)
-  target_link_libraries (nndepparser openblas)
-endif ()
 set_target_properties (nndepparser PROPERTIES
     OUTPUT_NAME nndepparser
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)

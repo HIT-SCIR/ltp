@@ -21,11 +21,3 @@ target_link_libraries (ltp_server
     boost_program_options_static_lib
     boost_regex_static_lib
     dl)
-
-if (MSVC)
-  target_link_libraries (ltp_server
-      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
-else()
-  target_link_libraries (ltp_server openblas)
-endif ()
-

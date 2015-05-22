@@ -7,18 +7,23 @@
 #include "parser.n/context.h"
 #include "parser.n/classifier.h"
 #include "framework/serializable.h"
-#include "armadillo"
+#include "Eigen/Dense"
 
 namespace ltp {
 namespace depparser {
 
 class NeuralNetworkParser: public framework::Serializable {
 protected:
-  arma::mat W1;
+  /*arma::mat W1;
   arma::mat W2;
   arma::mat E;
   arma::vec b1;
-  arma::mat saved;
+  arma::mat saved;*/
+  Eigen::MatrixXd W1;
+  Eigen::MatrixXd W2;
+  Eigen::MatrixXd E;
+  Eigen::VectorXd b1;
+  Eigen::MatrixXd saved;
 
   utility::IndexableSmartMap forms_alphabet;
   utility::IndexableSmartMap postags_alphabet;
@@ -115,6 +120,15 @@ protected:
       std::vector<int>& cluster4,
       std::vector<int>& cluster6,
       std::vector<int>& cluster);
+
+  template<class Matrix> void write_matrix(std::ostream& os,
+      const Matrix& matrix);
+  template<class Matrix> void read_matrix(std::istream& is,
+      Matrix& matrix);
+  template<class Vector> void write_vector(std::ostream& os,
+      const Vector& vector);
+  template<class Vector> void read_vector(std::istream& is,
+      Vector& vector);
 };
 
 } //  namespace depparser

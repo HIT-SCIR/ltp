@@ -1,3 +1,4 @@
+#include <fstream>
 #include "parser.n/parser.h"
 #include "utils/logging.hpp"
 #include "utils/math/fast_binned.h"
@@ -292,6 +293,34 @@ void NeuralNetworkParser::get_cluster_from_dependency(const Dependency& data,
   }
 }
 
+template<class Matrix> void NeuralNetworkParser::write_matrix(std::ostream& os, const Matrix& mat) {
+  typename Matrix::Index rows = mat.rows(), cols = mat.cols();
+  os.write((char*) (&rows), sizeof(typename Matrix::Index));
+  os.write((char*) (&cols), sizeof(typename Matrix::Index));
+  os.write((char*) mat.data(), rows * cols * sizeof(typename Matrix::Scalar) );
+}
+
+template<class Matrix> void NeuralNetworkParser::read_matrix(std::istream& is, Matrix& mat) {
+  typename Matrix::Index rows=0, cols=0;
+  is.read((char*) (&rows),sizeof(typename Matrix::Index));
+  is.read((char*) (&cols),sizeof(typename Matrix::Index));
+  mat.resize(rows, cols);
+  is.read((char *) mat.data() , rows * cols * sizeof(typename Matrix::Scalar));
+}
+
+template<class Vector> void NeuralNetworkParser::write_vector(std::ostream& os, const Vector& vec) {
+  typename Vector::Index rows = vec.rows();
+  os.write((char*) (&rows), sizeof(typename Vector::Index));
+  os.write((char*) vec.data(), rows * sizeof(typename Vector::Scalar) );
+}
+
+template<class Vector> void NeuralNetworkParser::read_vector(std::istream& is, Vector& vec) {
+  typename Vector::Index rows = 0;
+  is.read((char*) (&rows), sizeof(typename Vector::Index));
+  vec.resize(rows);
+  is.read((char *) vec.data() , rows * sizeof(typename Vector::Scalar));
+}
+
 void NeuralNetworkParser::save(const std::string& filename) {
   std::ofstream ofs(filename.c_str(), std::ofstream::binary);
   char chunk[128];
@@ -308,11 +337,16 @@ void NeuralNetworkParser::save(const std::string& filename) {
   ofs.write(reinterpret_cast<const char*>(&use_valency), sizeof(bool));
   ofs.write(reinterpret_cast<const char*>(&use_cluster), sizeof(bool));
 
-  W1.save(ofs);
+  /*W1.save(ofs);
   W2.save(ofs);
   E.save(ofs);
   b1.save(ofs);
-  saved.save(ofs);
+  saved.save(ofs);*/
+  write_matrix(ofs, W1);
+  write_matrix(ofs, W2);
+  write_matrix(ofs, E);
+  write_vector(ofs, b1);
+  write_matrix(ofs, saved);
 
   forms_alphabet.dump(ofs);
   postags_alphabet.dump(ofs);
@@ -385,11 +419,17 @@ bool NeuralNetworkParser::load(const std::string& filename) {
   ifs.read(reinterpret_cast<char*>(&use_valency), sizeof(bool));
   ifs.read(reinterpret_cast<char*>(&use_cluster), sizeof(bool));
 
-  W1.load(ifs);
+  /*W1.load(ifs);
   W2.load(ifs);
   E.load(ifs);
   b1.load(ifs);
-  saved.load(ifs);
+  saved.load(ifs);*/
+
+  read_matrix(ifs, W1);
+  read_matrix(ifs, W2);
+  read_matrix(ifs, E);
+  read_vector(ifs, b1);
+  read_matrix(ifs, saved);
 
   forms_alphabet.load(ifs);
   postags_alphabet.load(ifs);

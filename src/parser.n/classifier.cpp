@@ -12,8 +12,12 @@ Sample::Sample(const std::vector<int>& _attributes,
 }
 
 
-NeuralNetworkClassifier::NeuralNetworkClassifier(arma::mat& _W1,
-    arma::mat& _W2, arma::mat& _E, arma::vec& _b1, arma::mat& _saved,
+NeuralNetworkClassifier::NeuralNetworkClassifier(
+    Eigen::MatrixXd& _W1,
+    Eigen::MatrixXd& _W2,
+    Eigen::MatrixXd& _E,
+    Eigen::VectorXd& _b1,
+    Eigen::MatrixXd& _saved,
     std::unordered_map<int, size_t>& encoder)
   : initialized(false), W1(_W1), W2(_W2), E(_E), b1(_b1),
   saved(_saved), precomputation_id_encoder(encoder),
@@ -51,18 +55,19 @@ void NeuralNetworkClassifier::initialize(
   // Initialize the network
   int nrows = hidden_layer_size;
   int ncols = embedding_size * nr_feature_types;
-  W1 = (2.* arma::randu<arma::mat>(nrows, ncols)- 1.) * sqrt(6./ (nrows+ ncols));
-  b1 = (2.* arma::randu<arma::vec>(nrows)- 1.) * sqrt(6./ (nrows+ ncols));
+  W1 = Eigen::MatrixXd::Random(nrows, ncols) * sqrt(6. / (nrows+ ncols));
+  b1 = Eigen::VectorXd::Random(nrows) * sqrt(6. / (nrows+ ncols));
 
   nrows = _nr_classes;  //
   ncols = hidden_layer_size;
-  W2 = (2.* arma::randu<arma::mat>(nrows, ncols)- 1.) * sqrt(6./ (nrows+ ncols));
+  W2 = Eigen::MatrixXd::Random(nrows, ncols)* sqrt(6./ (nrows+ ncols));
 
   // Initialized the embedding
   nrows = embedding_size;
   ncols= _nr_objects;
 
-  E = (2.* arma::randu<arma::mat>(nrows, ncols) - 1.) * opt.init_range;
+  E = Eigen::MatrixXd::Random(nrows, ncols)* opt.init_range;
+
   for (size_t i = 0; i < embeddings.size(); ++ i) {
     const std::vector<double>& embedding = embeddings[i];
     int id = embedding[0];
@@ -71,10 +76,10 @@ void NeuralNetworkClassifier::initialize(
     }
   }
 
-  grad_W1 = arma::zeros<arma::mat>(W1.n_rows, W1.n_cols);
-  grad_b1 = arma::zeros<arma::vec>(b1.n_rows);
-  grad_W2 = arma::zeros<arma::mat>(W2.n_rows, W2.n_cols);
-  grad_E = arma::zeros<arma::mat>(E.n_rows, E.n_cols);
+  grad_W1 = Eigen::MatrixXd::Zero(W1.rows(), W1.cols());
+  grad_b1 = Eigen::VectorXd::Zero(b1.rows());
+  grad_W2 = Eigen::MatrixXd::Zero(W2.rows(), W2.cols());
+  grad_E = Eigen::MatrixXd::Zero(E.rows(), E.cols());
 
   // Initialized the precomputed features
   std::unordered_map<int, size_t>& encoder = precomputation_id_encoder;
@@ -85,8 +90,8 @@ void NeuralNetworkClassifier::initialize(
     encoder[fid] = rank ++;
   }
 
-  saved.zeros(hidden_layer_size, encoder.size());
-  grad_saved.zeros(hidden_layer_size, encoder.size());
+  saved = Eigen::MatrixXd::Zero(hidden_layer_size, encoder.size());
+  grad_saved = Eigen::MatrixXd::Zero(hidden_layer_size, encoder.size());
 
   //
   initialize_gradient_histories();
@@ -104,25 +109,25 @@ void NeuralNetworkClassifier::initialize(
 void NeuralNetworkClassifier::score(const std::vector<int>& attributes,
     std::vector<double>& retval) {
   const std::unordered_map<int, size_t>& encoder = precomputation_id_encoder;
-  arma::vec hidden_layer = arma::zeros<arma::vec>(hidden_layer_size);
+  // arma::vec hidden_layer = arma::zeros<arma::vec>(hidden_layer_size);
+  Eigen::VectorXd hidden_layer = Eigen::VectorXd::Zero(hidden_layer_size);
 
   for (size_t i = 0, off = 0; i < attributes.size(); ++ i, off += embedding_size) {
     int aid = attributes[i];
     int fid = aid * nr_feature_types + i;
     std::unordered_map<int, size_t>::const_iterator rep = encoder.find(fid);
     if (rep != encoder.end()) {
+      /* hidden_layer += saved.col(rep->second);*/
       hidden_layer += saved.col(rep->second);
     } else {
       // W1[0:hidden_layer, off:off+embedding_size] * E[fid:]'
-      hidden_layer += W1.submat(0, off, hidden_layer_size-1, off+embedding_size-1) *
-        E.col(aid);
+      hidden_layer += W1.block(0, off, hidden_layer_size, embedding_size)* E.col(aid);
     }
   }
 
   hidden_layer += b1;
-  hidden_layer = hidden_layer % hidden_layer % hidden_layer;
 
-  arma::vec output = W2 * hidden_layer;
+  Eigen::VectorXd output = W2 * Eigen::VectorXd(hidden_layer.array().cube());
   retval.resize(nr_classes, 0.);
   for (int i = 0; i < nr_classes; ++ i) { retval[i] = output(i); }
 }
@@ -142,7 +147,8 @@ void NeuralNetworkClassifier::compute_ada_gradient_step(
   precomputing(precomputed_features);
 
   // calculate gradient
-  grad_saved.zeros();
+  /*grad_saved.zeros();*/
+  grad_saved.setZero();
   compute_gradient(begin, end, end- begin);
   compute_saved_gradient(precomputed_features);
 
@@ -151,25 +157,25 @@ void NeuralNetworkClassifier::compute_ada_gradient_step(
 }
 
 void NeuralNetworkClassifier::initialize_gradient_histories() {
-  eg2E = arma::zeros<arma::mat>(E.n_rows, E.n_cols);
-  eg2W1 = arma::zeros<arma::mat>(W1.n_rows, W1.n_cols);
-  eg2W2 = arma::zeros<arma::mat>(W2.n_rows, W2.n_cols);
-  eg2b1 = arma::zeros<arma::vec>(b1.n_rows);
+  eg2W1 = Eigen::MatrixXd::Zero(W1.rows(), W1.cols());
+  eg2b1 = Eigen::VectorXd::Zero(b1.rows());
+  eg2W2 = Eigen::MatrixXd::Zero(W2.rows(), W2.cols());
+  eg2E = Eigen::MatrixXd::Zero(E.rows(), E.cols());
 }
 
 void NeuralNetworkClassifier::take_ada_gradient_step() {
-  eg2W1 += grad_W1 % grad_W1;
-  W1 -= ada_alpha * (grad_W1 / arma::sqrt(eg2W1 + ada_eps));
+  eg2W1 += Eigen::MatrixXd(grad_W1.array().square());
+  W1 -= ada_alpha * Eigen::MatrixXd(grad_W1.array() / (eg2W1.array() + ada_eps).sqrt());
 
-  eg2b1 += grad_b1 % grad_b1;
-  b1 -= ada_alpha * (grad_b1 / arma::sqrt(eg2b1 + ada_eps));
+  eg2b1 += Eigen::VectorXd(grad_b1.array().square());
+  b1 -= ada_alpha * Eigen::VectorXd(grad_b1.array() / (eg2b1.array() + ada_eps).sqrt());
 
-  eg2W2 += grad_W2 % grad_W2;
-  W2 -= ada_alpha * (grad_W2 / arma::sqrt(eg2W2 + ada_eps));
+  eg2W2 += Eigen::MatrixXd(grad_W2.array().square());
+  W2 -= ada_alpha * Eigen::MatrixXd(grad_W2.array() / (eg2W2.array() + ada_eps).sqrt());
 
   if (!fix_embeddings) {
-    eg2E += grad_E % grad_E;
-    E -= ada_alpha * (grad_E / arma::sqrt(eg2E + ada_eps));
+    eg2E += Eigen::MatrixXd(grad_E.array().square());
+    E -= ada_alpha * Eigen::MatrixXd(grad_E.array() / (eg2E.array() + ada_eps).sqrt());
   }
 }
 
@@ -202,15 +208,14 @@ void NeuralNetworkClassifier::precomputing() {
 
 void NeuralNetworkClassifier::precomputing(
     const std::unordered_set<int>& features) {
-  saved.zeros();
+  saved.setZero();
   for (std::unordered_set<int>::const_iterator rep = features.begin();
       rep != features.end(); ++ rep) {
     int fid = (*rep);
     size_t rank = precomputation_id_encoder[fid];
     size_t aid = fid / nr_feature_types;
     size_t off = (fid % nr_feature_types)*embedding_size;
-    saved.col(rank) =
-      W1.submat(0, off, hidden_layer_size-1, off+embedding_size-1) * E.col(aid);
+    saved.col(rank) = W1.block(0, off, hidden_layer_size, embedding_size)* E.col(aid);
   }
   // INFO_LOG("classifier: precomputed %d", features.size());
 }
@@ -221,45 +226,42 @@ void NeuralNetworkClassifier::compute_gradient(
     size_t batch_size) {
   const std::unordered_map<int, size_t>& encoder = precomputation_id_encoder;
 
-  grad_W1.zeros();
-  grad_b1.zeros();
-  grad_W2.zeros();
-  grad_E.zeros();
+  grad_W1.setZero();
+  grad_b1.setZero();
+  grad_W2.setZero();
+  grad_E.setZero();
 
   loss = 0; accuracy = 0;
 
+  // special for Eigen::XXX::Random
+  double mask_prob = dropout_probability* 2- 1;
   for (std::vector<Sample>::const_iterator sample = begin; sample != end; ++ sample) {
     const std::vector<int>& attributes = sample->attributes;
     const std::vector<double>& classes = sample->classes;
 
-    arma::vec Y(classes);
-
-    arma::uvec dropout_mask = arma::find(
-        arma::randu<arma::vec>(hidden_layer_size) > dropout_probability );
-
-    arma::vec hidden_layer = arma::zeros<arma::vec>(dropout_mask.n_rows);
+    Eigen::VectorXd Y = Eigen::VectorXd::Map(&classes[0], classes.size());
+    Eigen::VectorXd _ = (Eigen::ArrayXd::Random(hidden_layer_size) > mask_prob).select(
+        Eigen::VectorXd::Ones(hidden_layer_size),
+        Eigen::VectorXd::Zero(hidden_layer_size));
+    Eigen::VectorXd hidden_layer = Eigen::VectorXd::Zero(hidden_layer_size);
 
     for (size_t i = 0, off = 0; i < attributes.size(); ++ i, off += embedding_size) {
       int aid = attributes[i];
       int fid = aid * nr_feature_types + i;
       std::unordered_map<int, size_t>::const_iterator rep = encoder.find(fid);
       if (rep != encoder.end()) {
-        arma::uvec _;
-        _ << rep->second;
-        hidden_layer += saved.submat(dropout_mask, _);
+        hidden_layer += _.asDiagonal() * saved.col(rep->second);
       } else {
-        arma::uvec __ = arma::linspace<arma::uvec>(off, off+embedding_size-1, embedding_size);
-        hidden_layer += (W1.submat(dropout_mask, __)* E.col(aid));
+        hidden_layer +=
+          _.asDiagonal() * W1.block(0, off, hidden_layer_size, embedding_size) * E.col(aid);
       }
     }
 
-    hidden_layer += b1(dropout_mask);
-    // arma::vec cubic_hidden_layer = hidden_layer % hidden_layer % hidden_layer;
-    arma::vec cubic_hidden_layer = arma::clamp(arma::pow(hidden_layer, 3), -50., 50);
+    hidden_layer += _.asDiagonal() * b1;
 
-    // Mat(nr_classes, hidden_layer_size) * Vec(hidden_layer_size)
-    // arma::vec output = W2.cols(dropout_mask) * cubic_hidden_layer(dropout_mask);
-    arma::vec output = W2.cols(dropout_mask) * cubic_hidden_layer;
+    Eigen::VectorXd cubic_hidden_layer = hidden_layer.array().cube().min(50).max(-50);
+    Eigen::VectorXd output = W2 * cubic_hidden_layer;
+
     int opt_class = -1, correct_class = -1;
     for (size_t i = 0; i < nr_classes; ++ i) {
       if (classes[i] >= 0 && (opt_class < 0 || output(i) > output(opt_class))) {
@@ -267,43 +269,41 @@ void NeuralNetworkClassifier::compute_gradient(
       if (classes[i] == 1) { correct_class = i; }
     }
 
-    arma::uvec classes_mask = arma::find(Y >= 0);
+    /*arma::uvec classes_mask = arma::find(Y >= 0);*/
+    Eigen::VectorXd __ = (Y.array() >= 0).select(
+        Eigen::VectorXd::Ones(hidden_layer_size),
+        Eigen::VectorXd::Zero(hidden_layer_size));
     double best = output(opt_class);
-    output(classes_mask) = arma::exp(output(classes_mask) - best);
+    output = __.asDiagonal() * Eigen::VectorXd((output.array() - best).exp());
     double sum1 = output(correct_class);
-    double sum2 = arma::sum(output(classes_mask));
+    double sum2 = output.sum();
 
     loss += (log(sum2) - log(sum1));
     if (classes[opt_class] == 1) { accuracy += 1; }
 
-    // delta(classes_mask, 1)
-    arma::vec delta =
-      -(Y(classes_mask) - output(classes_mask) / sum2) / batch_size;
+    Eigen::VectorXd delta =
+      -(__.asDiagonal()*Y - Eigen::VectorXd(output.array()/sum2)) / batch_size;
 
-    grad_W2.submat(classes_mask, dropout_mask) += delta * cubic_hidden_layer.t();
+    grad_W2 += delta * cubic_hidden_layer.transpose();
+    Eigen::VectorXd grad_cubic_hidden_layer = _.asDiagonal() * W2.transpose() * delta;
 
-    arma::vec grad_cubic_hidden_layer =
-      W2.submat(classes_mask, dropout_mask).t() * delta;
+    Eigen::VectorXd grad_hidden_layer =
+      3 * grad_cubic_hidden_layer.array() * hidden_layer.array().square();
 
-    arma::vec grad_hidden_layer = 3 * grad_cubic_hidden_layer
-                                  % hidden_layer
-                                  % hidden_layer;
-
-    grad_b1(dropout_mask) += grad_hidden_layer;
+    grad_b1 += grad_hidden_layer;
 
     for (size_t i = 0, off = 0; i < attributes.size(); ++ i, off += embedding_size) {
       int aid = attributes[i];
       int fid = aid * nr_feature_types + i;
       std::unordered_map<int, size_t>::const_iterator rep = encoder.find(fid);
       if (rep != encoder.end()) {
-        arma::uvec _;
-        _ << rep->second;
-        grad_saved.submat(dropout_mask, _) += grad_hidden_layer;
+        grad_saved.col(rep->second) += grad_hidden_layer;
       } else {
-        arma::uvec __ = arma::linspace<arma::uvec>(off, off+embedding_size-1, embedding_size);
-        grad_W1.submat(dropout_mask, __) += grad_hidden_layer * E.col(aid).t();
+        grad_W1.block(0, off, hidden_layer_size, embedding_size) +=
+          grad_hidden_layer * E.col(aid).transpose();
         if (!fix_embeddings) {
-          grad_E.col(aid) += W1.submat(dropout_mask, __).t() * grad_hidden_layer;
+          grad_E.col(aid) +=
+            W1.block(0, off, hidden_layer_size, embedding_size).transpose()* grad_hidden_layer;
         }
       }
     }
@@ -323,20 +323,21 @@ void NeuralNetworkClassifier::compute_saved_gradient(
     size_t aid = fid / nr_feature_types;
     size_t off = (fid % nr_feature_types)*embedding_size;
 
-    grad_W1.submat(0, off, hidden_layer_size-1, off+embedding_size-1) +=
-      grad_saved.col(rank) * E.col(aid).t();
+    grad_W1.block(0, off, hidden_layer_size, embedding_size) +=
+      grad_saved.col(rank) * E.col(aid).transpose();
 
     if (!fix_embeddings) {
-      grad_E.col(aid) += 
-        W1.submat(0, off, hidden_layer_size-1, off+ embedding_size-1).t()
-        * grad_saved.col(rank);
+      grad_E.col(aid) +=
+        W1.block(0, off, hidden_layer_size, embedding_size).transpose() * grad_saved.col(rank);
     }
   }
 }
 
 void NeuralNetworkClassifier::add_l2_regularization() {
-  loss += (lambda * .5 * (arma::dot(W1, W1)+ arma::dot(b1, b1)+ arma::dot(W2, W2)));
-  if (!fix_embeddings) { loss += (lambda * .5 * arma::dot(E, E)); }
+  loss += lambda * .5 * (W1.squaredNorm() + b1.squaredNorm() + W2.squaredNorm());
+  if (!fix_embeddings) {
+    loss += lambda * .5 * E.squaredNorm();
+  }
 
   grad_W1 += lambda * W1;
   grad_b1 += lambda * b1;
@@ -345,11 +346,11 @@ void NeuralNetworkClassifier::add_l2_regularization() {
 }
 
 void NeuralNetworkClassifier::info() {
-  INFO_LOG("classifier: E(%d,%d)", E.n_rows, E.n_cols);
-  INFO_LOG("classifier: W1(%d,%d)", W1.n_rows, W1.n_cols);
-  INFO_LOG("classifier: b1(%d)", b1.n_rows);
-  INFO_LOG("classifier: W2(%d,%d)", W2.n_rows, W2.n_cols);
-  INFO_LOG("classifier: saved(%d,%d)", saved.n_rows, saved.n_cols);
+  INFO_LOG("classifier: E(%d,%d)", E.rows(), E.cols());
+  INFO_LOG("classifier: W1(%d,%d)", W1.rows(), W1.cols());
+  INFO_LOG("classifier: b1(%d)", b1.rows());
+  INFO_LOG("classifier: W2(%d,%d)", W2.rows(), W2.cols());
+  INFO_LOG("classifier: saved(%d,%d)", saved.rows(), saved.cols());
   INFO_LOG("classifier: precomputed size=%d", precomputation_id_encoder.size());
   INFO_LOG("classifier: hidden layer size=%d", hidden_layer_size);
   INFO_LOG("classifier: embedding size=%d", embedding_size);
@@ -358,10 +359,10 @@ void NeuralNetworkClassifier::info() {
 }
 
 void NeuralNetworkClassifier::canonical() {
-  hidden_layer_size = b1.n_rows;
-  nr_feature_types = W1.n_cols / E.n_rows;
-  nr_classes = W2.n_rows;
-  embedding_size = E.n_rows;
+  hidden_layer_size = b1.rows();
+  nr_feature_types = W1.cols() / E.rows();
+  nr_classes = W2.rows();
+  embedding_size = E.rows();
 }
 
 } //  namespace depparser

@@ -52,16 +52,11 @@ set_target_properties (ner_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 
-if (MSVC)
-  target_link_libraries (ltp_test
-      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
-  target_link_libraries (par_cmdline
-      ${THIRDPARTY_DIR}/openblas/lib/libopenblas.dll.a)
-else()
-  target_link_libraries (ltp_test openblas pthread)
+if (NOT MSVC)
+  target_link_libraries (ltp_test pthread)
   target_link_libraries (cws_cmdline pthread)
   target_link_libraries (pos_cmdline pthread)
-  target_link_libraries (par_cmdline openblas pthread)
+  target_link_libraries (par_cmdline pthread)
   target_link_libraries (ner_cmdline pthread)
 endif ()
 
