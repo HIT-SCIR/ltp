@@ -52,7 +52,7 @@ set_target_properties (ner_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
 
-if (NOT MSVC)
+if (NOT MSVC AND NOT MINGW)
   target_link_libraries (ltp_test pthread)
   target_link_libraries (cws_cmdline pthread)
   target_link_libraries (pos_cmdline pthread)

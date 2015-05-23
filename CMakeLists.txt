@@ -10,10 +10,6 @@ if (APPLE)
   set(CMAKE_CXX_FLAGS "-std=c++11 -Wno-c++11-narrowing")
 endif(APPLE)
 
-if (MINGW)
-  set(CMAKE_CXX_FLAGS "-std=c++11 -Wno-narrowing -fpermissive")
-endif (MINGW)
-
 # -- config output directories
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
