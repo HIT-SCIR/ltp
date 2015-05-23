@@ -6,7 +6,7 @@ include_directories (./
     ${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/gtest/include
     ${THIRDPARTY_DIR}/boost/include
-    ${THIRDPARTY_DIR}/armadillo-5.100.1/include/)
+    ${THIRDPARTY_DIR}/eigen-3.2.4/)
 link_directories (${LIBRARY_OUTPUT_PATH})
 
 # add unittest executable
@@ -28,7 +28,6 @@ target_link_libraries (model_validation
     postagger_static_lib
     ner_static_lib
     parser_static_lib
-    openblas
     boost_program_options_static_lib)
 set_target_properties(model_validation PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
