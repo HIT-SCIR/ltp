@@ -4,233 +4,197 @@
 分词训练套件otcws用法
 -----------------------
 
-otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp的分词模型。
+otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp的分词模型。otcws支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
 
-编译之后，在tools/train下面会产生名为otcws的二进制程序。调用方法是::
+	对外	，	他们	代表	国家	。
 
-	./otcws [config_file]
+编译之后，在tools/train下面会产生名为otcws的二进制程序。运行可见::
 
-otcws分别支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下::
+    $ ./tools/train/otcws 
+    otcws in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    Training and testing suite for Chinese word segmentation
 
-	对外 ， 他们 代表 国家 。
+    usage: ./otcws [learn|customized-learn|test|customized-test|dump] <options>
 
-otcws主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+其中第二个参数调用训练(learn)或测试(test)或可视化模型(dump)，对于customized-learn以及customized-test，请参考**分词个性化**
 
-训练配置的配置文件样例如下所示::
+训练一个模型
+~~~~~~~~~~~~
 
-	[train]
-	train-file = data/ctb5-train.seg
-	holdout-file = data/ctb5-holdout.seg
-	algorithm = pa
-	model-name = model/ctb5-seg
-	max-iter = 5
-	rare-feature-threshold = 0
+如果进行模型训练(learn)，::
+    $ ./tools/train/otcws learn
+    otcws(learn) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    Training suite for Chinese word segmentation
+    
+    usage: ./otcws learn <options>
+    
+    options:
+      --model arg                  The prefix of the model file, model will be 
+                                   stored as model.$iter.
+      --reference arg              The path to the reference file.
+      --development arg            The path to the development file.
+      --algorithm arg              The learning algorithm
+                                    - ap: averaged perceptron
+                                    - pa: passive aggressive [default]
+      --max-iter arg               The number of iteration [default=10].
+      --rare-feature-threshold arg The threshold for rare feature, used in model 
+                                   truncation. [default=0]
+      --dump-details arg           Save the detailed model, used in incremental 
+                                   training. [default=false]
+      -h [ --help ]                Show help information
+
+其中：
+
+* reference：指定训练集文件
+* development：指定开发集文件
+* algorithm：指定参数学习方法，现在LTP在线学习框架支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
+* model：指定输出模型文件名前缀，模型采用model.$iter方式命名
+* max-iter：指定最大迭代次数
+* rare-feature-threshold：模型裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征。关于模型裁剪算法细节，请参考**模型裁剪**部分。
+* dump-details：指定保存模型时输出所有模型信息，这一参数用于**分词个性化**，具体请参考**分词个性化**。
+
+需要注意的是，reference和development都需要是人工切分的句子。
+
+测试模型/切分句子
+~~~~~~~~~~~~~~~~~
+
+如果进行模型测试(test)，::
+
+    $ ./tools/train/otcws test
+    otcws(test) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    Testing suite for Chinese word segmentation
+    
+    usage: ./otcws test <options>
+    
+    options:
+      --model arg           The path to the model file.
+      --lexicon arg         The lexicon file, (optional, if configured, constrained
+                            decoding will be performed).
+      --input arg           The path to the reference file.
+      --evaluate arg        if configured, perform evaluation, input words in 
+                            sentence should be separated by space.
+      -h [ --help ]         Show help information
 
 其中，
 
-* [train] 配置组指定执行训练
-	* train-file 配置项指定训练集文件
-	* holdout-file 配置项指定开发集文件
-	* algorithm 指定参数学习方法，现在otcws支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-	* model-name 指定输出模型文件名
-	* max-iter 指定最大迭代次数
-	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
-
-测试配置的配置文件样例如下所示::
-
-	[test]
-	test-file = data/ctb5-test.seg
-	model-file = model/ctb5-seg.4.model
-
-其中，
-
-* [test] 配置组指定执行测试
-	* test-file 指定测试文件
-	* model-file 指定模型文件位置
-
+* model：指定模型文件位置
+* lexicon：指定外部词典位置，这个参数是可选的
+* input：指定输入文件
+* evaluate：true或false，指定是否进行切词结果准确率的评价。如果进行评价，输入的文件应该是人工切分的数据。
 
 切分结果将输入到标准io中。
 
 词性标注训练套件otpos用法
 --------------------------
 
-otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp的分词模型。
+otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp的分词模型。otpos支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下：
 
-编译之后，在tools/train下面会产生名为otpos的二进制程序。调用方法是::
+	对外_v	，_wp	他们_r	代表_v	国家_n	。_wp
 
-	./otpos [config_file]
+编译之后，在tools/train下面会产生名为otpos的二进制程序。otpos的使用方法与otcws非常相似，同名参数含义也完全相同。其中不同之处在于词性标注模块的外部词典含义与分词的外部词典含义不同。::
 
-otpos分别支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下::
+    $ ./tools/train/otpos test
+    otpos(test) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    Testing suite for Part of Speech Tagging
 
-	对外_v ，_wp 他们_r 代表_v 国家_n 。_wp
+    usage: ./otpos test <options>
 
-otpos主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+    options::
+      --model arg           The path to the model file.
+      --lexicon arg         The lexicon file, (optional, if configured, constrained
+                            decoding will be performed).
+      --input arg           The path to the reference file.
+      --evaluate arg        if configured, perform evaluation, input should contain
+                            '_' concatenated tag
+      -h [ --help ]         Show help information
 
-训练配置的配置文件样例如下所示::
-
-	[train]
-	train-file = data/ctb5-train.pos
-	holdout-file = data/ctb5-holdout.pos
-	algorithm = pa
-	model-name = model/ctb5-pos
-	max-iter = 5
-
-其中，
-
-* [train] 配置组指定执行训练
-	* train-file 配置项指定训练集文件
-	* holdout-file 配置项指定开发集文件
-	* algorithm 指定参数学习方法，现在otpos支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-	* model-name 指定输出模型文件名
-	* max-iter 指定最大迭代次数
-	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
-
-测试配置的配置文件样例如下所示::
-
-	[test]
-	test-file = data/ctb5-test.pos
-	model-file = model/ctb5-pos.3.model
-	lexicon-file = lexicon/pos-lexicon.constrain
-
-其中，
-
-* [test] 配置组指定执行测试
-	* test-file 指定测试文件
-	* model-file 指定模型文件位置
-	* lexicon-file 指定外部词典文件位置（此项可以不配置）
-
-lexicon-file文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。
+lexicon文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。
 
 	雷人 v a
 	】 wp
 
-词性标注结果将输入到标准io中。
 
 命名实体识别训练套件otner用法
 -------------------------------
 
-otner是ltp命名实体识别模型的训练套件，用户可以使用otner训练获得ltp的命名实体识别模型。
-
-编译之后，在tools/train下面会产生名为otner的二进制程序。调用方法是::
-
-	./otner [config_file]
-
-otner分别支持从人工标注的数据中训练命名实体识别模型和调用命名实体识别模型对句子进行标注。人工标注的句子的样例如下::
+otner是ltp命名实体识别模型的训练套件，用户可以使用otner训练获得ltp的命名实体识别模型。otner支持从人工标注的数据中训练命名实体识别模型和调用命名实体识别模型对句子进行标注。人工标注的句子的样例如下：::
 
 	党中央/ni#B-Ni 国务院/ni#E-Ni 要求/v#O ，/wp#O 动员/v#O 全党/n#O 和/c#O 全/a#O社会/n#O 的/u#O 力量/n#O
 
-Otner主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
-
-训练配置的配置文件样例如下所示::
-
-	[train]
-	train-file = data/ctb5-train.ner
-	holdout-file = data/ctb5-holdout.ner
-	algorithm = pa
-	model-name = model/ctb5-ner
-	max-iter = 5
-
-其中，
-
-* [train] 配置组指定执行训练
-	* train-file 配置项指定训练集文件
-	* holdout-file 配置项指定开发集文件
-	* algorithm 指定参数学习方法，现在otner支持两种参数学习方法，分别是passive aggressive（pa）和average perceptron（ap）。
-	* model-name 指定输出模型文件名
-	* max-iter 指定最大迭代次数
-
-测试配置的配置文件样例如下所示::
-
-	[test]
-	test-file = data/ctb5-test.ner
-	model-file = model/ctb5-ner.4.model
-
-其中，
-
-* [test] 配置组指定执行测试
-	* test-file 指定测试文件
-	* model-file 指定模型文件位置
-
-命名实体识别结果将输入到标准io中。
+编译之后，在tools/train下面会产生名为otner的二进制程序。otner的使用方法与otcws非常相似，同名参数含义也完全相同。
 
 依存句法分析训练套件lgdpj用法
 ------------------------------
 
-lgdpj是ltp依存句法分析模型的训练套件，用户可以使用lgdpj训练获得ltp的依存句法分析模型。
+nndepparser是ltp神经网络依存句法分析模型的训练套件，用户可以使用nndepparser训练获得ltp的依存句法分析模型。nndepparser分别支持从人工标注依存句法的数据中训练依存句法分析模型和调用依存句法分析模型对句子进行依存句法分析。人工标注的词性标注依存句法的句子遵从conll格式，其样例如下：::
 
-编译之后，在tools/train下面会产生名为lgdpj的二进制程序。调用方法是::
+	1       对外    _       v       _       _       4       ADV     _       _
+	2       ，      _       wp      _       _       1       WP      _       _
+	3       他们    _       r       _       _       4       SBV     _       _
+	4       代表    _       v       _       _       0       HED     _       _
+	5       国家    _       n       _       _       4       VOB     _       _
+	6       。      _       wp      _       _       4       WP      _       _
 
-	./lgdpj [config_file]
+编译之后，在tools/train下面会产生名为nndepparser的二进制程序。调用方法是::
 
-lgdpj分别支持从人工标注依存句法的数据中训练依存句法分析模型和调用依存句法分析模型对句子进行依存句法分析。人工标注的词性标注依存句法的句子遵从conll格式，其样例如下::
+	./nndepparser [learn|test] <options>
 
-	1   对外    _   v    _   _   4   ADV   _   _
-	2   ，      _   wp   _   _   1   WP    _   _
-	3   他们    _   r    _   _   4   SBV   _   _
-	4   代表    _   v    _   _   0   HED   _   _
-	5   国家    _   n    _   _   4   VOB   _   _
-	6   。      _   wp   _   _   4   WP    _   _
+训练一个parser
+~~~~~~~~~~~~~~
 
-lgdpj主要通过配置文件指定执行的工作，其中主要有两类配置文件：训练配置和测试配置。
+运行./nndepparser learn，可见如下参数::
+    $ ./tools/train/nndepparser learn
+    nndepparser(learn) in ltp 3.3.0 - (c) 2012-2015 hit-scir
+    training suite for neural network parser
+    usage: ./nndepparser learn <options>
 
-训练配置的配置文件样例如下所示::
+    options:
+      --model arg               the path to the model.
+      --embedding arg           the path to the embedding file.
+      --reference arg           the path to the reference file.
+      --development arg         the path to the development file.
 
-	[model]
-	labeled = 1
-	decoder-name = 2o-carreras
+      --init-range arg          the initialization range. [default=0.01]
+      --word-cutoff arg         the frequency of rare word. [default=1]
+      --max-iter arg            the number of max iteration. [default=20000]
+      --batch-size arg          the size of batch. [default=10000]
+      --hidden-size arg         the size of hidden layer. [default=200]
+      --embedding-size arg      the size of embedding. [default=50]
+      --features-number arg     the number of features. [default=48]
+      --precomputed-number arg  the number of precomputed. [default=100000]
+      --evaluation-stops arg    evaluation on per-iteration. [default=100]
+      --ada-eps arg             the eps in adagrad. [defautl=1e-6]
+      --ada-alpha arg           the alpha in adagrad. [default=0.01]
+      --lambda arg              the regularizer parameter. [default=1e-8]
+      --dropout-probability arg the probability for dropout. [default=0.5]
+      --oracle arg              the oracle type
+                                 - static: the static oracle [default]
+                                 - nondet: the non-deterministic oracle
+                                 - explore: the explore oracle.
+      --save-intermediate arg   save the intermediate. [default=true]
+      --fix-embeddings arg      fix the embeddings. [default=false]
+      --use-distance arg        specify to use distance feature. [default=false]
+      --use-valency arg         specify to use valency feature. [default=false]
+      --use-cluster arg         specify to use cluster feature. [default=false]
+      --cluster arg             specify the path to the cluster file.
+      --root arg                the root tag. [default=root]
+      --verbose                 logging more details.
+      -h [ --help ]             show help information.
 
-	[feature]
-	use-postag-unigram = 0
-	use-dependency = 1
-	use-dependency-unigram = 1
-	use-dependency-bigram = 1
-	use-dependency-surrounding = 1
-	use-dependency-between = 1
-	use-sibling = 1
-	use-sibling-basic = 1
-	use-sibling-linear = 1
-	use-grand = 1
-	use-grand-basic = 1
-	use-grand-linear = 1
+nndepparser具有较多参数，但大部分与Chen and Manning (2014)中的定义一直。希望使用nndepparser的用户需要首先阅读其论文。另，经验表明，大部分参数采用默认值亦可取得较好的效果。
 
-	[train]
-	train-file = data/conll/ldc-train.conll
-	holdout-file = data/conll/ldc-holdout.conll
-	max-iter = 5
-	algorithm = pa
-	model-name = model/parser/ldc-o2carreras
-	rare-feature-threshold = 0
+nndepparser中独有的参数包括：
 
-其中，
+* oracle：指定oracle函数类型，可选的oracle包括static，nondet和explore。一般来讲，explore效果最好，具体算法请参考Yoav et. al, (2014)
+* use-distance：指定使用距离特征，具体参考Zhang and Nivre (2011)
+* use-valency：指定使用valency特征，具体参考Zhang and Nivre (2011)
+* use-cluster：指定使用词聚类特征，具体参考Guo et. al, (2015)
+* root：根节点的deprel的类型，需要注意的是，当前版本nndepparser只能处理projective single-root的依存树。
 
-* [mode] 配置组中
-	* labeled 表示是否使用有label的依存句法分析
-	* decoder-name 表示采用的解码算法，现在lgdpj支持三种解码算法，分别是1o，2o-sib，2o-carreras
-* [feature] 配置组指定使用的特征
-* [train] 配置组指定执行训练
-	* train-file 配置项指定训练集文件
-	* holdout-file 配置项指定开发集文件
-	* algorithm 指定参数学习方法，现在lgdpj支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
-	* model-name 指定输出模型文件名
-	* max-iter 指定最大迭代次数
-	* rare-feature-threshold 配置裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征
-
-测试配置的配置文件样例如下所示::
-
-	[test]
-	test-file = data/conll/ldc-test.conll
-	model-file = model/parser/ldc-o2carreras.2.model
-
-其中，
-
-* [test] 配置组指定执行测试
-	* test-file 指定测试文件
-	* model-file 指定模型文件位置
-
-依存句法分析结果将输入到标准io中。
-
-注意
-----
-
-* 对于所有训练套件，[train]与[test]两个配置组不能同时存在 
+参考文献
+--------
+- Danqi Chen and Christopher Manning, 2014, A Fast and Accurate Dependency Parser using Neural Networks, In Proc. _EMNLP2014_
+- Yue Zhang and Joakim Nivre, 2011, Transition-based Dependency Parsing with Rich Non-local Features, In Proc _ACL2011_
+- Yoav Goldberg, Francesco Sartorioand Giorgio Satta, 2014, A Tabular Method for Dynamic Oracles in Transition-Based Parsing, In _TACL2014_
+- Jiang Guo, Wanxiang Che, David Yarowsky, Haifeng Wang and Ting Liu, 2015, Cross-lingual Dependency Parsing Based on Distributed Representations, (to apper) In Proc _ACL2015_
 

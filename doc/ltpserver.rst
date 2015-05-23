@@ -9,7 +9,54 @@
 搭建LTP Server
 ---------------
 
-LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行ltp_server就可以启动LTP Server。LTP Server启动后，将会监听12345 [#f1]_ 端口的HTTP请求。
+LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行`./bin/ltp_server`就可以启动LTP Server。::
+
+    ltp_server in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    The HTTP server frontend for Language Technology Platform.
+    
+    usage: ./ltp_server <options>
+    
+    options:
+      --port arg              The port number [default=12345].
+      --threads arg           The number of threads [default=1].
+      --last-stage arg        The last stage of analysis. This option can be used 
+                              when the user onlywants to perform early stage 
+                              analysis, like only segment without postagging.value 
+                              includes:
+                              - ws: Chinese word segmentation
+                              - pos: Part of speech tagging
+                              - ne: Named entity recognization
+                              - dp: Dependency parsing
+                              - srl: Semantic role labeling (equals to all)
+                              - all: The whole pipeline [default]
+      --segmentor-model arg   The path to the segment model 
+                              [default=ltp_data/cws.model].
+      --segmentor-lexicon arg The path to the external lexicon in segmentor 
+                              [optional].
+      --postagger-model arg   The path to the postag model 
+                              [default=ltp_data/pos.model].
+      --postagger-lexicon arg The path to the external lexicon in postagger 
+                              [optional].
+      --ner-model arg         The path to the NER model [default=ltp_data/ner.model
+                              ].
+      --parser-model arg      The path to the parser model 
+                              [default=ltp_data/parser.model].
+      --srl-data arg          The path to the SRL model directory 
+                              [default=ltp_data/srl_data/].
+      --log-level arg         The log level:
+                              - 0: TRACE level
+                              - 1: DEBUG level
+                              - 2: INFO level [default]
+                              
+      -h [ --help ]           Show help information
+
+
+其中较为重要的参数包括：
+- port：指定LTP server监听的端口
+- threads：指定LTP server运行的线程数，线程数影响并发的处理能力
+- log-level：指定日志级别，TRACE级别最低，显示日志信息最详细。INFO级别最高，显示日志最粗略。WARN与ERROR级日志默认显示。
+
+其余参数用以指定模型路径，具体含义与`ltp_test`相同。
 
 请求LTP Server
 ---------------
