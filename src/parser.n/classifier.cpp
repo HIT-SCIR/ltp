@@ -1,6 +1,14 @@
 #include "parser.n/classifier.h"
 #include "utils/logging.hpp"
 
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
 namespace ltp {
 namespace depparser {
 
