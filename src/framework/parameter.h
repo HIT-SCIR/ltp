@@ -245,13 +245,13 @@ public:
       strncpy(chunk, "param-nonavg", 16);
     }
     out.write(chunk, 16);
-    out.write(reinterpret_cast<const char*>(&_dim), sizeof(size_t));
+    out.write(reinterpret_cast<const char*>(&_dim), sizeof(unsigned long long));
 
     if (_dim > 0) {
       if (opt == kDumpDetails) {
         out.write(reinterpret_cast<const char*>(_W), sizeof(double) * _dim);
         out.write(reinterpret_cast<const char*>(_W_sum), sizeof(double) * _dim);
-        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(size_t));
+        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(unsigned long long));
       } else if (opt == kDumpAveraged) {
         out.write(reinterpret_cast<const char*>(_W_sum), sizeof(double) * _dim);
       } else if (opt == kDumpNonAveraged) {
@@ -278,14 +278,14 @@ public:
       return false;
     }
 
-    in.read(reinterpret_cast<char *>(&_dim), sizeof(size_t));
+    in.read(reinterpret_cast<char *>(&_dim), sizeof(unsigned long long));
     if (_dim > 0) {
       if (!strncmp(body, "details", 11)) {
         _W = new double[_dim];
         _W_sum = new double[_dim];
         in.read(reinterpret_cast<char *>(_W), sizeof(double)* _dim);
         in.read(reinterpret_cast<char *>(_W_sum), sizeof(double)* _dim);
-        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(size_t));
+        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(unsigned long long));
         _enable_wrapper = false;
       } else if (!strncmp(body, "avg", 11)) {
         _W_sum = new double[_dim];

@@ -31,9 +31,11 @@ public:
       return false;
     }
 
-    std::ifstream lfs(lexicon_file);
-    if (lfs.good()) {
-      lex.load(lfs, model->labels);
+    if (NULL != lexicon_file) { // MSVC need check this.
+      std::ifstream lfs(lexicon_file);
+      if (lfs.good()) {
+        lex.load(lfs, model->labels);
+      }
     }
 
     return true;

@@ -110,7 +110,7 @@ int test(int argc, const char* argv[]) {
      "The lexicon file, (optional, if configured, constrained decoding will be performed).")
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>(),
-     "if configured, perform evaluation, input words in sentence should be separated by space.")
+     "if configured, perform evaluation, input words in sentence should be separated by space [default=false].")
     ("help,h", "Show help information");
 
   if (argc == 1) { std::cerr << optparser << std::endl;  return 1; }
@@ -145,7 +145,7 @@ int test(int argc, const char* argv[]) {
   std::string output_file = "";
   if (vm.count("output")) { output_file = vm["output"].as<std::string>(); }
 
-  bool evaluate;
+  bool evaluate = false;
   if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
 
   SegmentorFrontend frontend(input_file, model_file, evaluate);

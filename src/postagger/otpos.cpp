@@ -134,7 +134,7 @@ int test(int argc, const char* argv[]) {
   std::string output_file = "";
   if (vm.count("output")) { output_file = vm["output"].as<std::string>(); }
 
-  bool evaluate;
+  bool evaluate = false;
   if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
 
   PostaggerFrontend frontend(input_file, model_file, lexicon_file, evaluate);

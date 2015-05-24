@@ -294,29 +294,29 @@ void NeuralNetworkParser::get_cluster_from_dependency(const Dependency& data,
 }
 
 template<class Matrix> void NeuralNetworkParser::write_matrix(std::ostream& os, const Matrix& mat) {
-  typename Matrix::Index rows = mat.rows(), cols = mat.cols();
-  os.write((char*) (&rows), sizeof(typename Matrix::Index));
-  os.write((char*) (&cols), sizeof(typename Matrix::Index));
+  unsigned long long rows = mat.rows(), cols = mat.cols();
+  os.write((char*) (&rows), sizeof(unsigned long long));
+  os.write((char*) (&cols), sizeof(unsigned long long));
   os.write((char*) mat.data(), rows * cols * sizeof(typename Matrix::Scalar) );
 }
 
 template<class Matrix> void NeuralNetworkParser::read_matrix(std::istream& is, Matrix& mat) {
-  typename Matrix::Index rows=0, cols=0;
-  is.read((char*) (&rows),sizeof(typename Matrix::Index));
-  is.read((char*) (&cols),sizeof(typename Matrix::Index));
+  unsigned long long rows=0, cols=0;
+  is.read((char*) (&rows),sizeof(unsigned long long));
+  is.read((char*) (&cols),sizeof(unsigned long long));
   mat.resize(rows, cols);
   is.read((char *) mat.data() , rows * cols * sizeof(typename Matrix::Scalar));
 }
 
 template<class Vector> void NeuralNetworkParser::write_vector(std::ostream& os, const Vector& vec) {
-  typename Vector::Index rows = vec.rows();
-  os.write((char*) (&rows), sizeof(typename Vector::Index));
+  unsigned long long rows = vec.rows();
+  os.write((char*) (&rows), sizeof(unsigned long long));
   os.write((char*) vec.data(), rows * sizeof(typename Vector::Scalar) );
 }
 
 template<class Vector> void NeuralNetworkParser::read_vector(std::istream& is, Vector& vec) {
-  typename Vector::Index rows = 0;
-  is.read((char*) (&rows), sizeof(typename Vector::Index));
+  unsigned long long rows = 0;
+  is.read((char*) (&rows), sizeof(unsigned long long));
   vec.resize(rows);
   is.read((char *) vec.data() , rows * sizeof(typename Vector::Scalar));
 }

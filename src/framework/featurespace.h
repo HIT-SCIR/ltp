@@ -182,8 +182,8 @@ public:
     strncpy(chunk, "featurespace", 16);
 
     ofs.write(chunk, 16);
-    ofs.write(reinterpret_cast<const char *>(&_offset), sizeof(size_t));
-    ofs.write(reinterpret_cast<const char *>(&sz), sizeof(size_t));
+    ofs.write(reinterpret_cast<const char *>(&_offset), sizeof(unsigned long long));
+    ofs.write(reinterpret_cast<const char *>(&sz), sizeof(unsigned long long));
 
     for (size_t i = 0; i < _num_dicts; ++ i) {
       dicts[i].dump(ofs);
@@ -199,14 +199,14 @@ public:
    */
   bool load(std::istream& ifs) {
     char chunk[16];
-    size_t sz;
+    unsigned long long sz;
     ifs.read(chunk, 16);
     if (strcmp(chunk, "featurespace")) {
       return false;
     }
 
-    ifs.read(reinterpret_cast<char *>(&_offset), sizeof(size_t));
-    ifs.read(reinterpret_cast<char *>(&sz), sizeof(size_t));
+    ifs.read(reinterpret_cast<char *>(&_offset), sizeof(unsigned long long));
+    ifs.read(reinterpret_cast<char *>(&sz), sizeof(unsigned long long));
 
     if (sz != _num_dicts) {
       return false;
