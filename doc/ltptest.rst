@@ -80,12 +80,14 @@ ltp_test通过命令行参数指定分析任务与模型路径。其中，
 * srl-data：指定语言角色标注模型
 * threads：指定线程数
 * input：指定输入文件，如果输入文件未指定或打开失败，将使用标准输入
-* last-stage：指定分析的最终步骤。这一参数将在Pipeline与last-stage中详细说明
+* last-stage：指定分析的最终步骤。这一参数将在 :ref:`pipeline-reference-label` 中详细说明
 
-分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考**使用ltp_server**结果一节。
+分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考理解 :ref:`ltml-reference-label` 一节。
+
+.. _pipeline-reference-label:
 
 Pipeline与last-stage参数
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 分词、词性标注、句法分析一系列任务之间存在依赖关系。举例来讲，对于词性标注，必须在分词结果之上进行才有意。LTP中提供的5种分析之间的依赖关系如下所示：
 
@@ -105,8 +107,27 @@ Pipeline与last-stage参数
 
 默认情况下，LTP将进行至语义角色标注的分析。但是，对于一部分用户，某些分析并不必要。举例来讲，如果用户只需进行词性标注，则ltp_test的pipeline分析只需进行到pos，`last-stage`用来指明分析的最后状态。同时，如果`last-stage`指定为pos，句法分析、命名实体识别和语义角色标注的模型将不被加载。
 
+xxx_cmdline
+-----------
+除了 :code:`ltp_test` 将全部分析器整合起来，LTP也提供拆分各模块单独分析的命令行程序。他们包括：
 
-分析结果以xml格式显示在stdout中。关于xml如何表示分析结果，请参考理解 :ref:`ltml-reference-label` 一节。
+* :file:`cws_cmdline` ：分词命令行
+* :file:`pos_cmdline` ：词性标注命令行
+* :file:`par_cmdline` ：句法分析命令行
+* :file:`ner_cmdline` ：命名实体识别命令行
+
+xxx_cmdline的主要目标是提供不同于xml，同时可自由组合的语言分析模块。举在已经切分好的结果上做词性标注为例。::
+
+    $ cat input 
+    这 是 测试 文本 。
+    $ cat input | ./bin/pos_cmdline --postagger-model ./ltp_data/pos.model 
+    TRACE: Model is loaded
+    TRACE: Running 1 thread(s)
+    WARN: Cann't open file! use stdin instead.
+    这_r    是_v    测试_v  文本_n  。_wp
+    TRACE: consume 0.000832081 seconds.
+
+关于各模块的用法，与ltp_test基本类似。细节请参考 :code:`xxx_cmdline -h`。
 
 Window动态链接库
 -----------------

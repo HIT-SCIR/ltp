@@ -4,7 +4,7 @@
 分词训练套件otcws用法
 -----------------------
 
-otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp的分词模型。otcws支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：
+otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp的分词模型。otcws支持从人工切分数据中训练分词模型和调用分词模型对句子进行切分。人工切分的句子的样例如下：::
 
 	对外	，	他们	代表	国家	。
 
@@ -16,12 +16,13 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 
     usage: ./otcws [learn|customized-learn|test|customized-test|dump] <options>
 
-其中第二个参数调用训练(learn)或测试(test)或可视化模型(dump)，对于customized-learn以及customized-test，请参考**分词个性化**
+其中第二个参数调用训练(learn)或测试(test)或可视化模型(dump)，对于customized-learn以及customized-test，请参考 :ref:`customized-cws-reference-label`
 
 训练一个模型
 ~~~~~~~~~~~~
 
 如果进行模型训练(learn)，::
+
     $ ./tools/train/otcws learn
     otcws(learn) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
     Training suite for Chinese word segmentation
@@ -50,8 +51,8 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 * algorithm：指定参数学习方法，现在LTP在线学习框架支持两种参数学习方法，分别是passive aggressive(pa)和average perceptron(ap)。
 * model：指定输出模型文件名前缀，模型采用model.$iter方式命名
 * max-iter：指定最大迭代次数
-* rare-feature-threshold：模型裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征。关于模型裁剪算法细节，请参考**模型裁剪**部分。
-* dump-details：指定保存模型时输出所有模型信息，这一参数用于**分词个性化**，具体请参考**分词个性化**。
+* rare-feature-threshold：模型裁剪力度，如果rare-feature-threshold为0，则只去掉为0的特征；rare-feature-threshold；如果大于0时将进一步去掉更新次数低于阈值的特征。关于模型裁剪算法细节，请参考 :ref:`truncate-reference-label` 部分。
+* dump-details：指定保存模型时输出所有模型信息，这一参数用于 :ref:`customized-cws-reference-label` ，具体请参考 :ref:`customized-cws-reference-label` 。
 
 需要注意的是，reference和development都需要是人工切分的句子。
 
@@ -87,7 +88,7 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 词性标注训练套件otpos用法
 --------------------------
 
-otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp的分词模型。otpos支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下：
+otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp的分词模型。otpos支持从人工切分并标注词性的数据中训练词性标注模型和调用词性标注模型对切分好的句子进行词性标注。人工标注的词性标注句子样例如下：::
 
 	对外_v	，_wp	他们_r	代表_v	国家_n	。_wp
 
@@ -108,7 +109,7 @@ otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp�
                             '_' concatenated tag
       -h [ --help ]         Show help information
 
-lexicon文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。
+lexicon文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。::
 
 	雷人 v a
 	】 wp
@@ -123,8 +124,8 @@ otner是ltp命名实体识别模型的训练套件，用户可以使用otner训�
 
 编译之后，在tools/train下面会产生名为otner的二进制程序。otner的使用方法与otcws非常相似，同名参数含义也完全相同。
 
-依存句法分析训练套件lgdpj用法
-------------------------------
+依存句法分析训练套件nndepparser用法
+-----------------------------------
 
 nndepparser是ltp神经网络依存句法分析模型的训练套件，用户可以使用nndepparser训练获得ltp的依存句法分析模型。nndepparser分别支持从人工标注依存句法的数据中训练依存句法分析模型和调用依存句法分析模型对句子进行依存句法分析。人工标注的词性标注依存句法的句子遵从conll格式，其样例如下：::
 
@@ -143,6 +144,7 @@ nndepparser是ltp神经网络依存句法分析模型的训练套件，用户可
 ~~~~~~~~~~~~~~
 
 运行./nndepparser learn，可见如下参数::
+
     $ ./tools/train/nndepparser learn
     nndepparser(learn) in ltp 3.3.0 - (c) 2012-2015 hit-scir
     training suite for neural network parser
@@ -181,9 +183,11 @@ nndepparser是ltp神经网络依存句法分析模型的训练套件，用户可
       --verbose                 logging more details.
       -h [ --help ]             show help information.
 
-nndepparser具有较多参数，但大部分与Chen and Manning (2014)中的定义一直。希望使用nndepparser的用户需要首先阅读其论文。另，经验表明，大部分参数采用默认值亦可取得较好的效果。
+nndepparser具有较多参数，但大部分与Chen and Manning (2014)中的定义一致。希望使用nndepparser的用户需要首先阅读其论文。
+另，经验表明，大部分参数采用默认值亦可取得较好的效果。
+所以在不能明确各参数含义的情况下，可以直接使用默认值。
 
-nndepparser中独有的参数包括：
+相较Chen and Manning (2014)，nndepparser中特有的参数包括：
 
 * oracle：指定oracle函数类型，可选的oracle包括static，nondet和explore。一般来讲，explore效果最好，具体算法请参考Yoav et. al, (2014)
 * use-distance：指定使用距离特征，具体参考Zhang and Nivre (2011)
@@ -193,8 +197,8 @@ nndepparser中独有的参数包括：
 
 参考文献
 --------
-- Danqi Chen and Christopher Manning, 2014, A Fast and Accurate Dependency Parser using Neural Networks, In Proc. _EMNLP2014_
-- Yue Zhang and Joakim Nivre, 2011, Transition-based Dependency Parsing with Rich Non-local Features, In Proc _ACL2011_
-- Yoav Goldberg, Francesco Sartorioand Giorgio Satta, 2014, A Tabular Method for Dynamic Oracles in Transition-Based Parsing, In _TACL2014_
-- Jiang Guo, Wanxiang Che, David Yarowsky, Haifeng Wang and Ting Liu, 2015, Cross-lingual Dependency Parsing Based on Distributed Representations, (to apper) In Proc _ACL2015_
+- Danqi Chen and Christopher Manning, 2014, A Fast and Accurate Dependency Parser using Neural Networks, In Proc. of *EMNLP2014*
+- Yue Zhang and Joakim Nivre, 2011, Transition-based Dependency Parsing with Rich Non-local Features, In Proc. of *ACL2011*
+- Yoav Goldberg, Francesco Sartorioand Giorgio Satta, 2014, A Tabular Method for Dynamic Oracles in Transition-Based Parsing, In *TACL2014*
+- Jiang Guo, Wanxiang Che, David Yarowsky, Haifeng Wang and Ting Liu, 2015, Cross-lingual Dependency Parsing Based on Distributed Representations, (to apper) In Proc. of *ACL2015*
 

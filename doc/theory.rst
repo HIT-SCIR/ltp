@@ -11,6 +11,8 @@
 
 在自然语言处理领域，在线学习已经被广泛地应用在分词、词性标注、依存句法分析等结构化学习任务中。
 
+.. _truncate-reference-label:
+
 模型裁剪
 ---------
 
@@ -18,11 +20,77 @@
 
 具体来讲，LTP特征映射是以特征前缀为单位进行组织的。对应的，我们裁剪了同一前缀下更新次数较少的所有特征。
 
+.. _customized-cws-reference-label:
+
+个性化分词
+----------
+
+个性化分词是LTP的特色功能。个性化分词为了解决测试数据切换到如小说、财经等不同于新闻领域的领域。
+在切换到新领域时，用户只需要标注少量数据。
+个性化分词会在原有新闻数据基础之上进行增量训练。
+从而达到即利用新闻领域的丰富数据，又兼顾目标领域特殊性的目的。
+
+准备基础模型
+~~~~~~~~~~~~
+用户可以从百度云托管上获得符合北大切词规范的基础模型。
+如果需要利用其它切词规范的数据作为基础模型，使用 :file:`./tools/train/otcws learn` 训练模型时需要指定 :code:`--dump-details` 选项为true。
+
+个性化训练
+~~~~~~~~~~
+
+个性化分词模型的训练同样可以通过分词训练套件 :file:`otcws` 来实现。::
+
+    $ ./tools/train/otcws customized-learn
+    otcws(customized-learn) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    Customized training suite for Chinese word segmentation
+
+    usage: ./otcws learn <options>
+
+    options:
+      --baseline-model arg         The baseline model, which should be saved with 
+                                   --dump-details options.
+      --model arg                  The prefix of the model file, model will be 
+                                   stored as model.$iter.
+      --reference arg              The path to the reference file.
+      --development arg            The path to the development file.
+      --algorithm arg              The learning algorithm
+                                    - ap: averaged perceptron
+                                    - pa: passive aggressive [default]
+      --max-iter arg               The number of iteration [default=10].
+      --rare-feature-threshold arg The threshold for rare feature, used in model 
+                                   truncation. [default=0]
+      -h [ --help ]                Show help information
+
+这种情况下，需要指定 :code:`--baseline-model` 参数为前面获得的基础模型。其余选项与 :code:`./tools/train/otcws learn` 一致。
+
+个性化测试
+~~~~~~~~~~
+个性化分词模型的训练同样可以通过分词训练套件 :file:`otcws` 来实现。::
+
+    $ ./tools/train/otcws customized-test
+    otcws(customized-test) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    Customized testing suite for Chinese word segmentation
+
+    usage: ./otcws test <options>
+
+    options:
+      --baseline-model arg  The path to the baseline model.
+      --model arg           The path to the model file.
+      --lexicon arg         The lexicon file, (optional, if configured, constrained
+                            decoding will be performed).
+      --input arg           The path to the reference file.
+      --evaluate arg        if configured, perform evaluation, input words in 
+                            sentence should be separated by space.
+      -h [ --help ]         Show help information
+
+与customized-learn类似，需指定 :code:`--baseline-model` 参数为前面获得的基础模型。其余选项与 :code:`./tools/train/otcws test` 一致。
+
 测试设置
 ---------
 
 下述实验的测试硬件环境如下：
-* CPU: Intel(R) Xeon(R) CPU E5-1620 0 @ 3.60GHz
+
+* CPU: Intel(R) Xeon(R) CPU E5-2620 0 @ 2.00GHz
 * RAM: 128G
 
 分词模块
@@ -160,48 +228,20 @@
 依存句法分析模块
 -----------------
 
-基于图的依存分析方法由McDonald首先提出，他将依存分析问题归结为在一个有向图中寻找最大生成树(Maximum Spanning Tree)的问题。
-在依存句法分析模块中，LTP分别实现了
-
-    * 一阶解码(1o)
-    * 二阶利用子孙信息解码(2o-sib)
-    * 二阶利用子孙和父子信息(2o-carreras)
-
-三种不同的解码方式。依存句法分析模块中使用的特征请参考对应的 `代码 <https://github.com/HIT-SCIR/ltp/blob/master/src/parser/extractor.cpp>`_ 。
-
+依存句法分析模块的主要算法依据神经网络依存句法分析算法，Chen and Manning (2014)。同时加入丰富的全局特征和聚类特征。在模型训练时，我们也参考了Yoav等人关于dynamic oracle的工作。
 在 `Chinese Dependency Treebank(CDT) <https://catalog.ldc.upenn.edu/LDC2012T05>`_ 数据集上，三种不同解码方式对应的性能如下表所示，其中运行速度和内存开销从CDT测试集（平均29.13词/句）上结果中获得。
 
-+------------+------------------------+-----------------+-----------------+
-| model      | 1o                     | 2o-sib          | 2o-carreras     |
-+============+===============+========+========+========+========+========+
-|            | UAS           | LAS    | UAS    | LAS    | UAS    | LAS    |
-+------------+---------------+--------+--------+--------+--------+--------+
-| 开发集     | 0.8192        | 0.7904 | 0.8501 | 0.8213 | 0.8582 | 0.8294 |
-+------------+---------------+--------+--------+--------+--------+--------+
-| 测试集     | 0.8118        | 0.7813 | 0.8421 | 0.8106 | 0.8447 | 0.8138 |
-+------------+---------------+--------+--------+--------+--------+--------+
-| 速度       | 81.71 sent./s          | 15.21 sent./s   |                 |
-+------------+------------------------+-----------------+-----------------+
-| 运行时内存 | 338.06M                | 974.64M         |                 |
-+------------+------------------------+-----------------+-----------------+
-
-特征裁剪对于句法分析模块的运行时内存开销（亦即模型大小）有较大的影响。在进行特征裁剪后，上表性能变化为：
-
-+------------+-----------------+-----------------+-----------------+
-| model      | 1o              | 2o-sib          | 2o-carreras     |
-+============+=================+=================+=================+
-| 裁剪阈值   | 5               | 3               |                 |
-+------------+--------+--------+--------+--------+--------+--------+
-|            | UAS    | LAS    | UAS    | LAS    | UAS    | LAS    |
-+------------+--------+--------+--------+--------+--------+--------+
-| 开发集     | 0.8172 | 0.7886 | 0.8497 | 0.8214 |        |        |
-+------------+--------+--------+--------+--------+--------+--------+
-| 测试集     | 0.8096 | 0.7790 | 0.8408 | 0.8089 |        |        |
-+------------+--------+--------+--------+--------+--------+--------+
-| 速度       | 82.85 sent./s   | 14.84 sent./s   |                 |
-+------------+-----------------+-----------------+-----------------+
-| 运行时内存 | 221.18M         | 584.29M         |                 |
-+------------+-----------------+-----------------+-----------------+
++------------+-------+-------+
+|            | UAS   | LAS   |
++============+=======+=======+
+| 开发集     | 85.80 | 83.19 |
++------------+-------+-------+
+| 测试集     | 84.11 | 81.17 |
++------------+-------+-------+
+| 速度       | 8000 tok./sed |
++------------+---------------+
+| 运行时内存 | 338.06M       |
++------------+---------------+
 
 语义角色标注模块
 -----------------
