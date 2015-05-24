@@ -7,10 +7,10 @@
  * In this software, a open source XML parser TinyXML is used
  * We Thank to the author of it -- Lee Thomason
  */
-
 #include "Xml4nlp.h"
 #include <cstring>
 #include "utils/strutils.hpp"
+#include "utils/logging.hpp"
 
 using ltp::strutils::trim;
 
@@ -98,8 +98,11 @@ int XML4NLP::CreateDOMFromString(const string & str) {
   ClearDOM();
   if (0 != BuildDOMFrame()) return -1;
 
-  string strTmp;
-  istringstream in(str);  // How to use istringstream?
+  string strTmp = str;
+  for (size_t i = 0; i < strTmp.size(); ++ i) {
+    if (strTmp[i] == '\r') { strTmp[i] = '\n'; }
+  }
+  istringstream in(strTmp);  // How to use istringstream?
   int i = 0;
   while (getline(in, strTmp)) {
     // clean_str(strTmp);
