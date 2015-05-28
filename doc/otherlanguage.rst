@@ -1,3 +1,5 @@
+.. _otherlang-reference-label:
+
 使用其他语言调用ltp
 =======================
 

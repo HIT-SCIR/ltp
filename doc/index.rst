@@ -21,6 +21,7 @@
     otherlanguage
     train
     theory
+    faq
     paper
     appendix
     license

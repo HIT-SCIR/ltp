@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
 
   std::string postagger_model = "ltp_data/pos.model";
   if (vm.count("postagger-model")) {
-    postagger_model= vm["segmentor-model"].as<std::string>();
+    postagger_model= vm["postagger-model"].as<std::string>();
   }
 
   std::string postagger_lexcion = "";

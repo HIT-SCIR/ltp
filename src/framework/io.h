@@ -24,6 +24,7 @@ public:
   LineCountsReader(std::istream& _is): cursor(0), buffer(0), Reader(_is) {
     nr_lines = number_of_lines();
     interval = nr_lines / 10;
+    if (interval == 0) { interval = 1; } /* less than 10 lines. */
   }
 
   ~LineCountsReader() { if (buffer) { delete[](buffer); } }

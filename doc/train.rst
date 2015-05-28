@@ -83,6 +83,8 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 * input：指定输入文件
 * evaluate：true或false，指定是否进行切词结果准确率的评价。如果进行评价，输入的文件应该是人工切分的数据。
 
+外部词典 (lexicon) 格式请参考 :ref:`ltpexlex-reference-label` 。
+
 切分结果将输入到标准io中。
 
 词性标注训练套件otpos用法
@@ -109,11 +111,7 @@ otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp�
                             '_' concatenated tag
       -h [ --help ]         Show help information
 
-lexicon文件样例如下所示。每行指定一个词，第一列指定单词，第二列之后指定该词的候选词性（可以有多项，每一项占一列），列与列之间用空格区分。::
-
-	雷人 v a
-	】 wp
-
+外部词典 (lexicon) 格式请参考 :ref:`ltpexlex-reference-label` 。
 
 命名实体识别训练套件otner用法
 -------------------------------
