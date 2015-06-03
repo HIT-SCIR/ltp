@@ -1,3 +1,0 @@
-[test]
-test-file = sample/ner/example-test.ner
-model-file = build/ner/example-ner0.model

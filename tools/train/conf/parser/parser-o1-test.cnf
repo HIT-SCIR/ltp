@@ -1,3 +1,0 @@
-[test]
-test-file = sample/parser/example-test.conll
-model-file = build/parser/example-o1.0.model
