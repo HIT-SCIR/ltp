@@ -6,21 +6,24 @@ from optparse import OptionParser
 
 uri_base = "http://127.0.0.1:12345/ltp"
 
-def EncodingError():
-    '''
-    Construct an request in non-UTF8 encoding.
-
-    Expect get a 400 error, with reason 
-    '''
+def Request(text, xml):
     data = {
-            's': '我爱北京天安门。'.decode('utf-8').encode('gbk'),
-            'x': 'n',
+            's': text,
+            'x': xml,
             't': 'all'}
+
     request  = urllib2.Request(uri_base)
     params   = urllib.urlencode(data)
+    response = urllib2.urlopen(request, params)
+    content  = response.read().strip()
+    return content
+
+
+def EncodingError():
+    '''Construct an request in non-UTF8 encoding.
+    Expect get a 400 error, with reason'''
     try:
-        response = urllib2.urlopen(request, params)
-        content  = response.read().strip()
+        content = Request('我爱北京天安门。'.decode('utf-8').encode('gbk'), 'n')
         print content
         return False
     except urllib2.HTTPError, e:
@@ -31,17 +34,8 @@ def EncodingError():
 
 
 def XMLError():
-    ''' Construct a request specify XML but actually is a plain string. '''
-    data = {
-            's': '我爱北京天安门。',
-            'x': 'y',
-            't': 'all'}
-    request  = urllib2.Request(uri_base)
-    params   = urllib.urlencode(data)
-
     try:
-        response = urllib2.urlopen(request, params)
-        content  = response.read().strip()
+        Request('我爱北京天安门。', 'y')
         return False
     except urllib2.HTTPError, e:
         if e.code == 400 and e.reason == "BAD XML FORMAT":
@@ -50,17 +44,8 @@ def XMLError():
             return False
 
 def XMLError2():
-    ''' Construct a request specify XML but actually is a plain string. '''
-    data = {
-            's': '<xml4nlp><doc></doc></xml4nlp>',
-            'x': 'y',
-            't': 'all'}
-    request  = urllib2.Request(uri_base)
-    params   = urllib.urlencode(data)
-
     try:
-        response = urllib2.urlopen(request, params)
-        content  = response.read().strip()
+        content  = Request('<xml4nlp><doc></doc></xml4nlp>', 'y')
         return False
     except urllib2.HTTPError, e:
         if e.code == 400 and e.reason == "BAD XML FORMAT":
@@ -70,16 +55,19 @@ def XMLError2():
 
 def XMLError3():
     ''' Construct a request specify XML but actually is a plain string. '''
-    data = {
-            's': '<xml4nlp><doc><para></para></doc></xml4nlp>',
-            'x': 'y',
-            't': 'all'}
-    request  = urllib2.Request(uri_base)
-    params   = urllib.urlencode(data)
-
     try:
-        response = urllib2.urlopen(request, params)
-        content  = response.read().strip()
+        content  = Request('<xml4nlp><doc><para></para></doc></xml4nlp>', 'y')
+        return False
+    except urllib2.HTTPError, e:
+        if e.code == 400 and e.reason == "BAD XML FORMAT":
+            return True
+        else:
+            return False
+
+def XMLError4():
+    ''' Construct a request specify XML but actually is a plain string. '''
+    try:
+        content  = Request('<xml4nlp><doc><para><wor></wor></para></doc></xml4nlp>', 'y')
         return False
     except urllib2.HTTPError, e:
         if e.code == 400 and e.reason == "BAD XML FORMAT":
@@ -89,35 +77,13 @@ def XMLError3():
 
 
 def NormalTest():
-    '''
-    Construct a legal request
-    '''
-    data = {
-            's': '我爱北京天安门。',
-            'x': 'n',
-            't': 'all'}
-
+    '''Construct a legal request '''
     try:
-        request  = urllib2.Request(uri_base)
-        params   = urllib.urlencode(data)
-        response = urllib2.urlopen(request, params)
-        content  = response.read().strip()
+        content  = Request('我爱北京天安门。', 'n')
         return True
     except:
         return False
 
-
-def Request(text):
-    data = {
-            's': text,
-            'x': 'n',
-            't': 'all'}
-
-    request  = urllib2.Request(uri_base)
-    params   = urllib.urlencode(data)
-    response = urllib2.urlopen(request, params)
-    content  = response.read().strip()
-    return content
 
 
 if __name__=="__main__":
@@ -138,6 +104,7 @@ if __name__=="__main__":
         TEST(XMLError, "XML ERROR")
         TEST(XMLError2, "XML ERROR 2")
         TEST(XMLError3, "XML ERROR 3")
+        TEST(XMLError4, "XML ERROR 4")
     else:
         try:
             fp=open(opts.filename, "r")
@@ -147,6 +114,6 @@ if __name__=="__main__":
 
         for line in fp:
             try:
-                print Request(line.strip())
+                print Request(line.strip(), 'n')
             except Exception, e:
                 print e

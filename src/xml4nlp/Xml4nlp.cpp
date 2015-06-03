@@ -1157,11 +1157,8 @@ static size_t strnlen(const char *s, size_t max) {
 bool XML4NLP::LTMLValidation() {
   // there should not be any attributes in `<xml4nlp>`
   // but it wont matter
-  if (note.nodePtr == NULL) {
-    return false;
-  }
-
-  if (!note.nodePtr->Attribute(NOTE_SENT)
+  if (note.nodePtr == NULL
+      || !note.nodePtr->Attribute(NOTE_SENT)
       || !note.nodePtr->Attribute(NOTE_WORD)
       || !note.nodePtr->Attribute(NOTE_POS)
       || !note.nodePtr->Attribute(NOTE_PARSER)
@@ -1199,11 +1196,15 @@ bool XML4NLP::LTMLValidation() {
     for (unsigned i = 0; i < document.paragraphs.size(); ++ i) {
       const Paragraph & paragraph = document.paragraphs[i];
       if (!paragraph.sentences.size()) {
-        if (!paragraph.paragraphPtr->GetText()) { return false; }
+        if (!paragraph.paragraphPtr || !paragraph.paragraphPtr->GetText()) {
+          return false;
+        }
       } else {
         for (unsigned j = 0; j < paragraph.sentences.size(); ++ j) {
           const Sentence & sentence = paragraph.sentences[j];
-          if (!sentence.sentencePtr->Attribute(TAG_CONT)) { return false; }
+          if (!sentence.sentencePtr || !sentence.sentencePtr->Attribute(TAG_CONT)) {
+            return false;
+          }
         }
       }
     }
@@ -1221,6 +1222,8 @@ bool XML4NLP::LTMLValidation() {
 
   FOREACH(p, s, w)
     // segment check
+    if (!w.wordPtr) { return false; }
+
     const char * buffer = NULL;
     buffer = w.wordPtr->Attribute(TAG_CONT);
     if ((state & 0x02)
