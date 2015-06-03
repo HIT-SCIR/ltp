@@ -6,6 +6,7 @@
 
 ROOT=
 BUILD_DIR=build
+CONF_DIR=conf
 LOG_DIR=log
 
 # create model output folder
