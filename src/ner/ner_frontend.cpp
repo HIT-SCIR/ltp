@@ -41,7 +41,7 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
   INFO_LOG("||| ltp ner, trainig ...");
   INFO_LOG("report: reference file = %s", train_opt.train_file.c_str());
   INFO_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
-  INFO_LOG("report: algorith = %s", train_opt.algorithm.c_str());
+  INFO_LOG("report: algorithm = %s", train_opt.algorithm.c_str());
   INFO_LOG("report: model name = %s", train_opt.model_name.c_str());
   INFO_LOG("report: maximum iteration = %d", train_opt.max_iter);
   INFO_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
@@ -157,6 +157,7 @@ void NamedEntityRecognizerFrontend::build_feature_space(void) {
   model->space.set_num_labels(L);
 
   size_t interval = train_dat.size() / 10;
+  if (0 == interval) { interval = 1; }
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     NamedEntityRecognizer::extract_features((*train_dat[i]), NULL, true);
     if ((i+ 1) % interval == 0) {
@@ -214,6 +215,7 @@ void NamedEntityRecognizerFrontend::train(void) {
     INFO_LOG("Training iteration #%d", (iter + 1));
 
     size_t interval = train_dat.size() / 10;
+    if (interval == 0) { interval = 1; }
     for (size_t i = 0; i < train_dat.size(); ++ i) {
       Instance* inst = train_dat[i];
       NamedEntityRecognizer::extract_features((*inst), &ctx, false);
@@ -252,18 +254,19 @@ void NamedEntityRecognizerFrontend::train(void) {
     double f_score;
     evaluate(f_score);
 
+    std::swap(model, new_model);
+
     if(f_score > best_f_score){
       best_f_score = f_score;
       best_iteration = iter;
-    }
 
-    std::string saved_model_file = (train_opt.model_name+ "."+ to_str(iter));
-    std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
-    std::swap(model, new_model);
-    new_model->save(model_header, Parameters::kDumpAveraged, ofs);
+      std::ofstream ofs(train_opt.model_name.c_str(), std::ofstream::binary);
+      new_model->save(model_header, Parameters::kDumpAveraged, ofs);
+      INFO_LOG("trace: model for iteration #%d is saved to %s",
+          iter+1, train_opt.model_name.c_str());
+    }
     delete new_model;
 
-    INFO_LOG("trace: model for iteration #%d is saved to %s", iter+1, saved_model_file.c_str());
   }
   INFO_LOG("Best result (iteration = %d) : F-score = %lf", best_iteration, best_f_score);
 }

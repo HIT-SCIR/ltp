@@ -45,7 +45,7 @@ SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
   INFO_LOG("||| ltp segmentor, training ...");
   INFO_LOG("report: reference file = %s", train_opt.train_file.c_str());
   INFO_LOG("report: holdout file = %s", train_opt.holdout_file.c_str());
-  INFO_LOG("report: algorith = %s", train_opt.algorithm.c_str());
+  INFO_LOG("report: algorithm = %s", train_opt.algorithm.c_str());
   INFO_LOG("report: model name = %s", train_opt.model_name.c_str());
   INFO_LOG("report: maximum iteration = %d", train_opt.max_iter);
   INFO_LOG("report: rare threshold = %d", train_opt.rare_feature_threshold);
@@ -176,6 +176,7 @@ void SegmentorFrontend::build_feature_space(void) {
   model->space.set_num_labels(L);
 
   size_t interval = train_dat.size() / 10;
+  if (0 == interval) { interval = 1; }
 
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     build_lexicon_match_state(lexicons, train_dat[i]);
@@ -261,6 +262,7 @@ void SegmentorFrontend::train(void) {
     INFO_LOG("Training iteration #%d", (iter + 1));
 
     size_t interval = train_dat.size()/ 10;
+    if (interval == 0) { interval = 1; }
     for (size_t i = 0; i < train_dat.size(); ++ i) {
       increase_timestamp();
 
@@ -270,7 +272,6 @@ void SegmentorFrontend::train(void) {
 
       con.regist(&(inst->chartypes));
       decoder.decode(scm, con, inst->predict_tagsidx);
-      //decoder->decode((*scm), inst->predict_tagsidx);
 
       collect_features((*inst));
 
@@ -303,21 +304,20 @@ void SegmentorFrontend::train(void) {
     double p, r, f;
     evaluate(p,r,f);
 
+    std::swap(model, new_model);
+
     if (f > best_f) {
       best_p = p; best_r = r; best_f = f;
       best_iteration = iter;
+
+      std::ofstream ofs(train_opt.model_name.c_str(), std::ofstream::binary);
+      new_model->save(model_header.c_str(),
+          (train_opt.dump_model_details? Parameters::kDumpDetails: Parameters::kDumpAveraged),
+          ofs);
+
+      INFO_LOG("Model for iteration #%d is saved to [%s]", iter+1, train_opt.model_name.c_str());
     }
-
-    std::string saved_model_file = (train_opt.model_name + "." + strutils::to_str(iter));
-    std::ofstream ofs(saved_model_file.c_str(), std::ofstream::binary);
-
-    std::swap(model, new_model);
-    new_model->save(model_header.c_str(),
-        (train_opt.dump_model_details? Parameters::kDumpDetails: Parameters::kDumpAveraged),
-        ofs);
-
     delete new_model;
-    INFO_LOG("Model for iteration #%d is saved to [%s]", iter+1, saved_model_file.c_str());
   }
 
   INFO_LOG("Best result (iteratin = %d) P = %lf | R = %lf | F = %lf",
@@ -351,7 +351,7 @@ void SegmentorFrontend::evaluate(double &p, double &r, double &f) {
     build_lexicon_match_state(lexicons, inst);
     extract_features((*inst), false);
     calculate_scores((*inst), true);
- 
+
     con.regist(&(inst->chartypes));
     decoder.decode(scm, con, inst->predict_tagsidx);
     ctx.clear();

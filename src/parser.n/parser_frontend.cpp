@@ -130,6 +130,7 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
 
   std::string line;
   size_t interval = LineCountsReader(ifs).number_of_lines() / 10;
+  if (interval == 0) { interval = 1; }
   size_t nr_lines = 1;
 
   while (std::getline(ifs, line)) {
@@ -176,7 +177,7 @@ void NeuralNetworkParserFrontend::collect_precomputed_features() {
 
   size_t nr_processed = 0;
   nr_feature_types = 0;
-  size_t interval = train_dat.size() / 10; if (interval == 0) { interval = 10; }
+  size_t interval = train_dat.size() / 10; if (interval == 0) { interval = 1; }
   for (size_t d = 0; d < train_dat.size(); ++ d) {
     Instance* inst = train_dat[d];
     if (!inst->is_tree() || !inst->is_projective()) { continue; }
