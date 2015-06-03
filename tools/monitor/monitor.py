@@ -11,15 +11,20 @@ from config import hosts, remote_exe_path, remote_exe, \
         from_addr, to_addrs, \
         mail_username, mail_password, mail_server, mail_server_port
 
-conn = SMTP(mail_server, mail_server_port)
-conn.set_debuglevel(False)
-conn.login(mail_username, mail_password)
-
 import logging
 logging.basicConfig(
         filename='ltp_monitor.log',
         format='[%(levelname)s] %(asctime)s : %(message)s',
         level=logging.INFO)
+
+try:
+    conn = SMTP(mail_server, mail_server_port)
+    conn.set_debuglevel(False)
+    conn.login(mail_username, mail_password)
+except:
+    logging.warning("Failed to logging smtp server.")
+    conn = None
+
 
 mail_content_header = """\
 Report from LTP monitoring script
@@ -177,7 +182,7 @@ def run():
                 h["case"] = ret
 
                 # restart the service
-                cmd = "cd {path}; nohup {exe} >> {host}.server.log 2>&1 &".format(
+                cmd = "cd {path}; nohup {exe} --threads 4 >> {host}.server.log 2>&1 &".format(
                         path = remote_exe_path, 
                         exe = remote_exe, 
                         host = h["name"])
@@ -235,7 +240,7 @@ def start(h):
         logging.info("LTP on {host} is already running.".format(host=h["name"]))
         return
 
-    cmd = "cd {path}; nohup {exe} >> {host}.server.log 2>&1 &".format(
+    cmd = "cd {path}; nohup {exe} --threads 4 >> {host}.server.log 2>&1 &".format(
             path = remote_exe_path, 
             exe = remote_exe, 
             host = h["name"])
@@ -268,7 +273,7 @@ def testall():
         test(h)
 
 if __name__=="__main__":
-    usage = "monitor.py {run|startall|stopall|testall|start [host]|stop [host]|test [host]}"
+    usage = "monitor.py {run|startall|stopall|testall|start [host]|stop [host]|test [host]|list}"
 
     if len(sys.argv) < 2:
         print >> sys.stderr, usage
@@ -298,5 +303,8 @@ if __name__=="__main__":
         for h in hosts:
             if h["name"] == sys.argv[2]:
                 test(h)
+    elif sys.argv[1] == "list":
+        for h in hosts:
+            print >> sys.stderr, "*", h["name"]
     else:
         print >> sys.stderr, usage
