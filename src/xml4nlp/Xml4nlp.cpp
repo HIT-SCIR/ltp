@@ -1157,6 +1157,10 @@ static size_t strnlen(const char *s, size_t max) {
 bool XML4NLP::LTMLValidation() {
   // there should not be any attributes in `<xml4nlp>`
   // but it wont matter
+  if (note.nodePtr == NULL) {
+    return false;
+  }
+
   if (!note.nodePtr->Attribute(NOTE_SENT)
       || !note.nodePtr->Attribute(NOTE_WORD)
       || !note.nodePtr->Attribute(NOTE_POS)
