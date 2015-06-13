@@ -1,61 +1,8 @@
-1	中国	中国	中国	NR	NR	_	_	5	5	NMOD	NMOD	_	_	_
-2	最大	最大	最大	JJ	JJ	_	_	5	5	AMOD	AMOD	_	_	_
-3	氨纶丝	氨纶丝	氨纶丝	NN	NN	_	_	5	5	NMOD	NMOD	_	_	_
-4	生产	生产	生产	NN	NN	_	_	5	5	NMOD	NMOD	_	_	_
-5	基地	基地	基地	NN	NN	_	_	8	8	SBJ	SBJ	_	_	A1
-6	在	在	在	P	P	_	_	8	8	LOC	LOC	_	_	LOC
-7	连云港	连云港	连云港	NR	NR	_	_	6	6	OBJ	OBJ	_	_	_
-8	建成	建成	建成	VV	VV	_	_	0	0	ROOT	ROOT	Y	建成.01	_
-
-1	新华社	新华社	新华社	NN	NR	_	_	5	5	UNK	UNK	_	_
-2	南京	南京	南京	NR	NR	_	_	5	5	UNK	UNK	_	_
-3	十二月	十二月	十二月	NT	NT	_	_	5	5	UNK	UNK	_	_
-4	四日	四日	四日	NT	NT	_	_	5	5	UNK	UNK	_	_
-5	电	电	电	NN	NN	_	_	0	0	ROOT	ROOT	_	_
-
-1	中国	中国	中国	NR	NR	_	_	3	3	LOC	LOC	_	_	LOC	_	_
-2	最	最	最	AD	AD	_	_	3	3	ADV	ADV	_	_	ADV	_	_
-3	大	大	大	VA	VA	_	_	4	4	COMP	COMP	Y	大.01	_	_	_
-4	的	的	的	DEC	DEC	_	_	7	7	RELC	RELC	_	_	_	_	_
-5	氨伦丝	氨伦丝	氨伦丝	NN	NN	_	_	7	7	NMOD	NMOD	_	_	_	_	_
-6	生产	生产	生产	NN	NN	_	_	7	7	NMOD	NMOD	_	_	_	_	_
-7	基地	基地	基地	NN	NN	_	_	18	18	SBJ	SBJ	_	_	A0	A1	A1
-8	－－	－－	－－	PU	PU	_	_	12	12	UNK	UNK	_	_	_	_	_
-9	钟山	钟山	钟山	NR	NR	_	_	12	12	NMOD	NMOD	_	_	_	_	_
-10	氨伦	氨伦	氨伦	NN	NR	_	_	12	12	NMOD	NMOD	_	_	_	_	_
-11	有限	有限	有限	JJ	JJ	_	_	12	12	AMOD	AMOD	_	_	_	_	_
-12	公司	公司	公司	NN	NN	_	_	7	7	UNK	UNK	_	_	_	_	_
-13	，	，	，	PU	PU	_	_	18	18	UNK	UNK	_	_	_	_	_
-14	日前	日前	日前	NT	NT	_	_	18	18	TMP	TMP	_	_	_	TMP	TMP
-15	在	在	在	P	P	_	_	18	18	LOC	LOC	_	_	_	LOC	LOC
-16	连云港	连云港	连云港	NR	NR	_	_	17	17	NMOD	NMOD	_	_	_	_	_
-17	开发区	开发区	开发区	NN	NN	_	_	15	15	OBJ	OBJ	_	_	_	_	_
-18	建成	建成	建成	VV	VV	_	_	0	0	ROOT	ROOT	Y	建成.01	_	_	_
-19	并	并	并	CC	CC	_	_	18	18	CJTN	CJTN	_	_	_	_	_
-20	投产	投产	投产	VV	VV	_	_	19	19	CJT	CJT	Y	投产.01	_	_	_
-21	。	。	。	PU	PU	_	_	18	18	UNK	UNK	_	_	_	_	_
-
-1	这	这	这	DT	DT	_	_	10	10	DMOD	DMOD	_	_	_	_	_
-2	个	个	个	M	M	_	_	1	1	COMP	COMP	_	_	_	_	_
-3	采用	采用	采用	VV	VV	_	_	8	8	ADV	ADV	Y	采用.01	_	_	_
-4	差别化	差别化	差别化	NN	VV	_	_	7	7	NMOD	NMOD	_	_	_	_	_
-5	氨伦丝	氨伦丝	氨伦丝	NN	JJ	_	_	7	7	NMOD	NMOD	_	_	_	_	_
-6	生产	生产	生产	NN	NN	_	_	7	7	NMOD	NMOD	_	_	_	_	_
-7	技术	技术	技术	NN	NN	_	_	3	3	COMP	COMP	_	_	A1	_	_
-8	改造	改造	改造	VV	NN	_	_	9	9	COMP	COMP	Y	改造.01	_	_	_
-9	的	的	的	DEC	DEC	_	_	10	10	RELC	RELC	_	_	_	_	_
-10	项目	项目	项目	NN	NN	_	_	14	14	TPC	TPC	_	_	A0	A1	_
-11	，	，	，	PU	PU	_	_	14	14	UNK	UNK	_	_	_	_	_
-12	总	总	总	JJ	JJ	_	_	13	13	AMOD	AMOD	_	_	_	_	_
-13	投资	投资	投资	NN	NN	_	_	14	14	SBJ	SBJ	_	_	_	_	_
-14	七千万	七千万	七千万	CD	CD	_	_	0	0	ROOT	ROOT	_	_	_	_	_
-15	元	元	元	M	M	_	_	14	14	COMP	COMP	_	_	_	_	_
-16	，	，	，	PU	PU	_	_	14	14	CJTN	CJTN	_	_	_	_	_
-17	累计	累计	累计	AD	AD	_	_	19	19	ADV	ADV	_	_	_	_	ADV
-18	年	年	年	AD	AD	_	_	19	19	ADV	ADV	_	_	_	_	ADV
-19	产	产	产	VV	VV	_	_	16	16	CJT	CJT	Y	产.01	_	_	_
-20	氨纶丝	氨纶丝	氨纶丝	NN	NN	_	_	19	19	COMP	COMP	_	_	_	_	A1
-21	一千五百	一千五百	一千五百	CD	CD	_	_	19	19	EXT	EXT	_	_	_	_	A2
-22	吨	吨	吨	M	M	_	_	21	21	COMP	COMP	_	_	_	_	_
-23	。	。	。	PU	PU	_	_	14	14	UNK	UNK	_	_	_	_	_
-
+1	中国	中国	中国	ns	ns	_	_	3	3	ATT	ATT	_	_	_
+2	进出口	进出口	进出口	n	n	_	_	3	3	ATT	ATT	_	_	_
+3	银行	银行	银行	n	n	_	_	7	7	SBV	SBV	_	_	A0
+4	与	与	与	p	p	_	_	3	3	ADV	ADV	_	_	_
+5	中国	中国	中国	ns	ns	_	_	6	6	ATT	ATT	_	_	_
+6	银行	银行	银行	n	n	_	_	4	4	POB	POB	_	_	_
+7	加强	加强	加强	v	v	_	_	0	0	HED	HED	Y	加强.01	_
+8	合作	合作	合作	v	v	_	_	7	7	VOB	VOB	_	_	A1

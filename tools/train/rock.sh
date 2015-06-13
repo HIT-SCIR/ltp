@@ -27,23 +27,16 @@ mkdir -p $LOG_DIR
 #################################################
 
 # cws dir config
-CWS_MODEL_DIR=$BUILD_DIR/cws
-CWS_MODEL_PATH=$CWS_MODEL_DIR/example-seg.model
-
-CWS_LOG_DIR=$LOG_DIR/cws
-CWS_LOG_TRAIN_PATH=$CWS_LOG_DIR/example-seg.train.log
+CWS_MODEL_PATH=$BUILD_DIR/cws.model
+CWS_LOG_TRAIN_PATH=$LOG_DIR/cws.train.log
 
 CWS_EXE=./otcws
-
-# create cws output dirs
-mkdir -p $CWS_MODEL_DIR
-mkdir -p $CWS_LOG_DIR
 
 # execute the example training process 
 $CWS_EXE learn --model $CWS_MODEL_PATH \
     --reference sample/seg/example-train.seg \
     --development sample/seg/example-holdout.seg \
-    --max-iter 1
+    --max-iter 2
 
 if [ ! -f $CWS_MODEL_PATH ]; then
     echo "[1] ERROR: CWS model is not detected!"
@@ -55,22 +48,15 @@ fi
 # THE POSTAG SESSION                            #
 #################################################
 
-POS_MODEL_DIR=$BUILD_DIR/pos
-POS_MODEL_PATH=$POS_MODEL_DIR/example-pos.model
-
-POS_LOG_DIR=$LOG_DIR/pos
-POS_LOG_TRAIN_PATH=$CWS_LOG_DIR/example-pos.train.log
+POS_MODEL_PATH=$BUILD_DIR/pos.model
+POS_LOG_TRAIN_PATH=$LOG_DIR/pos.train.log
 
 POS_EXE=./otpos
-
-# create pos output dirs
-mkdir -p $POS_MODEL_DIR
-mkdir -p $POS_LOG_DIR
 
 $POS_EXE learn --model $POS_MODEL_PATH \
     --reference sample/pos/example-train.pos \
     --development sample/pos/example-holdout.pos \
-    --max-iter 1
+    --max-iter 2
 
 if [ ! -f $CWS_MODEL_PATH ]; then 
     echo "[2] ERROR: POS model is not detected!"
@@ -83,23 +69,16 @@ fi
 #################################################
 
 # ner dir config
-NER_MODEL_DIR=$BUILD_DIR/ner
-NER_MODEL_PATH=$NER_MODEL_DIR/example-ner.model
-
-NER_LOG_DIR=$LOG_DIR/ner
-NER_LOG_TRAIN_PATH=$NER_LOG_DIR/example-ner.train.log
+NER_MODEL_PATH=$BUILD_DIR/ner.model
+NER_LOG_TRAIN_PATH=$LOG_DIR/ner.train.log
 
 NER_EXE=./otner
-
-# create cws output dirs
-mkdir -p $NER_MODEL_DIR
-mkdir -p $NER_LOG_DIR
 
 # execute the example training process 
 $NER_EXE learn --model $NER_MODEL_PATH \
     --reference sample/ner/example-train.ner \
     --development sample/ner/example-holdout.ner \
-    --max-iter 1
+    --max-iter 2
 
 if [ ! -f $NER_MODEL_PATH ]; then 
     echo "[3] ERROR: NER model is not detected!"
@@ -111,16 +90,10 @@ fi
 # THE PARSER O1 SESSION                         #
 #################################################
 
-PARSER_MODEL_DIR=$BUILD_DIR/parser
-PARSER_MODEL_PATH=$PARSER_MODEL_DIR/example-parser.model
-
-PARSER_LOG_DIR=$LOG_DIR/parser
-PARSER_LOG_TRAIN_PATH=$PARSER_LOG_DIR/example-train.conll
+PARSER_MODEL_PATH=$BUILD_DIR/parser.model
+PARSER_LOG_TRAIN_PATH=$LOG_DIR/parser.train.log
 
 PARSER_EXE=./nndepparser
-
-mkdir -p $PARSER_MODEL_DIR
-mkdir -p $PARSER_LOG_DIR
 
 ./nndepparser learn \
     --model $PARSER_MODEL_PATH \
@@ -128,7 +101,7 @@ mkdir -p $PARSER_LOG_DIR
     --development sample/parser/example-holdout.conll \
     --embedding sample/parser/example.bin \
     --root HED \
-    --max-iter 10
+    --max-iter 100
 
 if [ ! -f $PARSER_MODEL_O2SIB_PATH ]; then 
     echo "[4] ERROR: neural network parser model is not detected!"
