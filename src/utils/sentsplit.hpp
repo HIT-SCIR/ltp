@@ -30,7 +30,7 @@ inline int split_sentence(const std::string & text,
       }
     } else if (itx->second == itx->first + 3) {
       bool found_periods = false;
-      if (itx->second + 6 < len) {
+      if (itx->second + 6 <= len) {
         std::string chunk = text.substr(itx->first, 9);
         size_t hashval = utility::__Default_String_HashFunction()(chunk);
         // The following black magic number is calculated by
@@ -47,7 +47,7 @@ inline int split_sentence(const std::string & text,
           ++itx;
         }
       }
-      if (!found_periods && itx->second + 3 < len) {
+      if (!found_periods && itx->second + 3 <= len) {
         std::string chunk= text.substr(itx->first, 6);
         size_t hashval = utility::__Default_String_HashFunction()(chunk);
         if (hashval == __two_periods_utf8_key__[0]
