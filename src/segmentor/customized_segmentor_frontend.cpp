@@ -130,7 +130,7 @@ void CustomizedSegmentorFrontend::update(const Instance& inst, SparseVec& update
     bs_updated_features.add(bs_ctx.correct_features, 1.);
     bs_updated_features.add(bs_ctx.predict_features, -1.);
 
-    double error = (double)inst.num_errors();
+    double error = (double)InstanceUtils::num_errors(inst.tagsidx, inst.predict_tagsidx);
     double score = (model->param.dot(updated_features, false) +
        bs_model->param.dot(bs_updated_features, false));
 

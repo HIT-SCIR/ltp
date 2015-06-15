@@ -51,7 +51,7 @@ public:
       return 0;
     }
 
-    ltp::segmentor::SegmentorConstrain con;
+    ltp::segmentor::SegmentationConstrain con;
     con.regist(&(inst.chartypes));
     build_lexicon_match_state(lexicons, &inst);
     extract_features(inst, model, &ctx, false);
@@ -60,7 +60,7 @@ public:
     // allocate a new decoder so that the segmentor support multithreaded
     // decoding. this modification was committed by niuox
     decoder.decode(scm, con, inst.predict_tagsidx);
-    build_words(inst, inst.predict_tagsidx, words);
+    build_words(inst.raw_forms, inst.predict_tagsidx, words);
 
     return words.size();
   }
@@ -127,7 +127,7 @@ public:
       return 0;
     }
 
-    ltp::segmentor::SegmentorConstrain con;
+    ltp::segmentor::SegmentationConstrain con;
     con.regist(&(inst.chartypes));
     build_lexicon_match_state(lexicons, &inst);
     extract_features(inst, model, &ctx, false);
@@ -137,7 +137,7 @@ public:
     // allocate a new decoder so that the segmentor support multithreaded
     // decoding. this modification was committed by niuox
     decoder.decode(scm, con, inst.predict_tagsidx);
-    build_words(inst, inst.predict_tagsidx, words);
+    build_words(inst.raw_forms, inst.predict_tagsidx, words);
 
     return words.size();
   }

@@ -1,14 +1,23 @@
-#define private public
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <gtest/gtest.h>
 #include "segmentor/preprocessor.h"
 #include "segmentor/decoder.h"
+#include "segmentor/partial_segmentation.h"
+#include "segmentor/settings.h"
+#include "segmentor/segmentor.h"
 #include "utils/chartypes.hpp"
 #include "boost/regex.hpp"
 
 using ltp::segmentor::Preprocessor;
-using ltp::segmentor::SegmentorConstrain;
+using ltp::segmentor::PartialSegmentationUtils;
+using ltp::segmentor::SegmentationConstrain;
+using ltp::segmentor::Segmentor;
+using ltp::segmentor::__b_id__;
+using ltp::segmentor::__i_id__;
+using ltp::segmentor::__e_id__;
+using ltp::segmentor::__s_id__;
 using ltp::strutils::chartypes::CHAR_OTHER;
 using ltp::strutils::chartypes::CHAR_PUNC;
 
@@ -198,8 +207,141 @@ TEST(segmentor_unittest, preprocess6) {
   EXPECT_EQ(chartypes[5], Preprocessor::CHAR_ENG|preprocessor.HAS_SPACE_ON_LEFT);
 }
 
+TEST(segmentor_unittest, partial_segment_split_by_tag_whole_sentence) {
+  std::vector<std::string> output;
+  PartialSegmentationUtils::split_by_partial_tag(
+      "这是测试句子", output);
+
+  EXPECT_EQ(output.size(), 1);
+}
+
+TEST(segmentor_unittest, partial_segment_split_by_tag_words) {
+  std::vector<std::string> output;
+  PartialSegmentationUtils::split_by_partial_tag(
+      "这 是 测试 句子", output);
+
+  EXPECT_EQ(output.size(), 4);
+  EXPECT_STREQ(output[0].c_str(), "这");
+  EXPECT_STREQ(output[1].c_str(), "是");
+  EXPECT_STREQ(output[2].c_str(), "测试");
+  EXPECT_STREQ(output[3].c_str(), "句子");
+}
+
+
+TEST(segmentor_unittest, partial_segment_split_by_tag_canonical) {
+  std::vector<std::string> output;
+  PartialSegmentationUtils::split_by_partial_tag(
+      "这是<ltp:partial>测试</ltp:partial>句子", output);
+
+  EXPECT_EQ(output.size(), 3);
+  EXPECT_STREQ(output[0].c_str(), "这是");
+  EXPECT_STREQ(output[1].c_str(), "<ltp:partial>测试</ltp:partial>");
+  EXPECT_STREQ(output[2].c_str(), "句子");
+}
+
+TEST(segmentor_unittest, partial_segment_split_by_tag_combo) {
+  std::vector<std::string> output;
+  PartialSegmentationUtils::split_by_partial_tag(
+      "这是<ltp:partial>测试</ltp:partial>句<ltp:word>子</ltp:word>",
+      output);
+
+  EXPECT_EQ(output.size(), 4);
+  EXPECT_STREQ(output[0].c_str(), "这是");
+  EXPECT_STREQ(output[1].c_str(), "<ltp:partial>测试</ltp:partial>");
+  EXPECT_STREQ(output[2].c_str(), "句");
+  EXPECT_STREQ(output[3].c_str(), "<ltp:word>子</ltp:word>");
+}
+
+TEST(segmentor_unittest, partial_segment_split_by_tag_combo2) {
+  std::vector<std::string> output;
+  PartialSegmentationUtils::split_by_partial_tag(
+      "这是<ltp:partial>测试</ltp:partial><ltp:word>句子</ltp:word>",
+      output);
+
+  EXPECT_EQ(output.size(), 3);
+  EXPECT_STREQ(output[0].c_str(), "这是");
+  EXPECT_STREQ(output[1].c_str(), "<ltp:partial>测试</ltp:partial>");
+  EXPECT_STREQ(output[2].c_str(), "<ltp:word>句子</ltp:word>");
+}
+
+TEST(segmentor_unittest, partial_segment_split_by_tag_nested) {
+  std::vector<std::string> output;
+  EXPECT_EQ(-1, PartialSegmentationUtils::split_by_partial_tag(
+      "这是<ltp:partial>测试<ltp:word>句</ltp:word>子</ltp:partial>",
+      output));
+}
+
+TEST(segmentor_unittest, partial_segment_split_by_tag_duplicated) {
+  std::vector<std::string> output;
+  EXPECT_EQ(-1, PartialSegmentationUtils::split_by_partial_tag(
+      "这是<ltp:partial>测试<ltp:partial>句子</ltp:partial>",
+      output));
+}
+
+TEST(segmentor_unittest, partial_segment_trim_tag) {
+  std::string word;
+  PartialSegmentationUtils::trim_partial_tag(
+      "<ltp:partial>句子</ltp:partial>", word);
+  EXPECT_STREQ("句子", word.c_str());
+}
+
+TEST(segmentor_unittest, segmentor_build_words) {
+  // canonical build words.
+  std::vector<std::string> chars;
+  chars.push_back( "这" );
+  chars.push_back( "是" );
+  chars.push_back( "测" );
+  chars.push_back( "试" );
+  chars.push_back( "句" );
+  chars.push_back( "子" );
+
+  std::vector<int> tags;
+  tags.push_back( __s_id__ );
+  tags.push_back( __s_id__ );
+  tags.push_back( __b_id__ );
+  tags.push_back( __e_id__ );
+  tags.push_back( __b_id__ );
+  tags.push_back( __e_id__ );
+
+  Segmentor app;
+  std::vector<std::string> result;
+  app.build_words(chars, tags, result);
+
+  EXPECT_EQ(4, result.size());
+  EXPECT_STREQ( "这", result[0].c_str() );
+  EXPECT_STREQ( "是", result[1].c_str() );
+  EXPECT_STREQ( "测试", result[2].c_str() );
+  EXPECT_STREQ( "句子", result[3].c_str() );
+}
+
+TEST(segmentor_unittest, segmentor_build_words2) {
+  std::vector<std::string> chars;
+  chars.push_back( "这" );
+  chars.push_back( "是" );
+  chars.push_back( "测" );
+  chars.push_back( "试" );
+  chars.push_back( "句" );
+  chars.push_back( "子" );
+
+  std::vector<int> tags;
+  tags.push_back( __s_id__ );
+  tags.push_back( __e_id__ );
+  tags.push_back( __e_id__ );
+  tags.push_back( __b_id__ );
+  tags.push_back( __i_id__ );
+  tags.push_back( __i_id__ );
+
+  Segmentor app;
+  std::vector<std::string> result;
+  app.build_words(chars, tags, result);
+
+  EXPECT_EQ(2, result.size());
+  EXPECT_STREQ( "这是测", result[0].c_str() );
+  EXPECT_STREQ( "试句子", result[1].c_str() );
+}
+
 TEST(segmentor_unittest, constrain1) {
-  SegmentorConstrain con;
+  SegmentationConstrain con;
   EXPECT_TRUE(con.can_tran(0, 2));
 }
 

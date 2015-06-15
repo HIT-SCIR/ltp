@@ -6,6 +6,7 @@
 #include "segmentor/segmentor.h"
 #include "segmentor/instance.h"
 #include "segmentor/options.h"
+#include "segmentor/decoder.h"
 
 namespace ltp {
 namespace segmentor {
@@ -15,7 +16,6 @@ protected:
   framework::ViterbiDecoder decoder;     //! The decoder.
   framework::ViterbiFeatureContext ctx;  //! The decode context
   framework::ViterbiScoreMatrix scm;     //! The score matrix
-  std::vector<Instance *> train_dat;     //! The training data.
   std::vector<const Model::lexicon_t*> lexicons;
 
   TrainOptions train_opt;
@@ -23,6 +23,17 @@ protected:
   DumpOptions  dump_opt;
 
   size_t timestamp;
+
+protected:
+  struct Segmentation {
+    bool is_partial;
+    std::vector<std::string> words;
+    PartialSegmentationConstrain con;
+  };
+
+  std::vector<Instance *> train_data_input;     //! The training data input.
+  std::vector<Segmentation> train_data_output;  //! The training data output.
+
 public:
   SegmentorFrontend(const std::string& reference_file,
       const std::string& holdout_file,

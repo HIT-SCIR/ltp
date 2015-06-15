@@ -1,3 +1,5 @@
+#define private   public
+#define protected public
 #include <iostream>
 #include "utils_chartypes_unittest.cpp"
 #include "utils_codecs_unittest.cpp"

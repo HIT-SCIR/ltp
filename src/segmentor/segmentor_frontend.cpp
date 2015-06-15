@@ -3,6 +3,7 @@
 #include "segmentor/settings.h"
 #include "segmentor/extractor.h"
 #include "segmentor/io.h"
+#include "segmentor/partial_segmentation.h"
 #include "utils/smartmap.hpp"
 #include "utils/strutils.hpp"
 #include "utils/sbcdbc.hpp"
@@ -22,7 +23,7 @@ using framework::kDump;
 using math::Mat;
 using math::SparseVec;
 using math::FeatureVector;
-using strutils::to_str;
+using strutils::trim;
 using utility::SmartMap;
 using utility::timer;
 
@@ -76,8 +77,11 @@ SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
 }
 
 SegmentorFrontend::~SegmentorFrontend() {
-  for (size_t i = 0; i < train_dat.size(); ++ i) {
-    if (train_dat[i]) { delete train_dat[i]; train_dat[i] = 0; }
+  for (size_t i = 0; i < train_data_input.size(); ++ i) {
+    if (train_data_input[i]) {
+      delete train_data_input[i];
+      train_data_input[i] = 0;
+    }
   }
 }
 
@@ -90,25 +94,25 @@ void SegmentorFrontend::increase_timestamp() {
 }
 
 void SegmentorFrontend::build_configuration(void) {
-  // model->full = train_opt->enable_incremental_training
   for (size_t i = 0; i < __num_pos_types__; ++ i) { model->labels.push(__pos_types__[i]); }
-
-  for (size_t i = 0; i < train_dat.size(); ++ i) {
-    const std::vector<std::string>& tags = train_dat[i]->tags;
-    std::vector<int>& tagsidx = train_dat[i]->tagsidx;
-    size_t len = train_dat[i]->size();
-
-    tagsidx.resize(len);
-    for (size_t j = 0; j < len; ++ j) { tagsidx[j] = model->labels.push(tags[j]); }
-  }
   INFO_LOG("Label sets is built");
 
   SmartMap<bool> wordfreq;
   unsigned long long total_freq = 0;
-  for (size_t i = 0; i < train_dat.size(); ++ i) {
-    const std::vector<std::string>& words = train_dat[i]->words;
-    for (size_t j = 0; j < words.size(); ++ j) {
-      wordfreq.set(words[j].c_str(), true);
+  for (size_t i = 0; i < train_data_output.size(); ++ i) {
+    const std::vector<std::string>& words = train_data_output[i].words;
+    if (train_data_output[i].is_partial) {
+      for (size_t j = 0; j < words.size(); ++ j) {
+        if (PartialSegmentationUtils::is_partial_tagged_word(words[j])) {
+          std::string actual_word;
+          PartialSegmentationUtils::trim_partial_tag(words[j], actual_word);
+          wordfreq.set(actual_word.c_str(), true);
+        }
+      }
+    } else {
+      for (size_t j = 0; j < words.size(); ++ j) {
+        wordfreq.set(words[j].c_str(), true);
+      }
     }
     total_freq += words.size();
   }
@@ -175,18 +179,18 @@ void SegmentorFrontend::build_feature_space(void) {
   size_t L = model->num_labels();
   model->space.set_num_labels(L);
 
-  size_t interval = train_dat.size() / 10;
+  size_t interval = train_data_input.size() / 10;
   if (0 == interval) { interval = 1; }
 
-  for (size_t i = 0; i < train_dat.size(); ++ i) {
-    build_lexicon_match_state(lexicons, train_dat[i]);
-    extract_features((*train_dat[i]), true);
+  for (size_t i = 0; i < train_data_input.size(); ++ i) {
+    build_lexicon_match_state(lexicons, train_data_input[i]);
+    extract_features((*train_data_input[i]), true);
 
     if ((i+1) % interval == 0) {
       INFO_LOG("build-featurespace: %d0%% instances is extracted.", (i+1) / interval);
     }
   }
-  INFO_LOG("trace: feature space is built for %d instances.", train_dat.size());
+  INFO_LOG("trace: feature space is built for %d instances.", train_data_input.size());
 }
 
 bool SegmentorFrontend::read_instance(const char* train_file) {
@@ -194,12 +198,85 @@ bool SegmentorFrontend::read_instance(const char* train_file) {
 
   if (!ifs) { return false; }
 
-  SegmentReader reader(ifs, preprocessor, true, true);
-  train_dat.clear();
+  std::string line;
+  size_t nr_lines = 0, nr_fully_segmented = 0, nr_partially_segmented = 0;
 
-  Instance* inst = NULL;
-  while ((inst = reader.next())) { train_dat.push_back(inst); }
+  train_data_input.clear();
+  train_data_output.clear();
+  while (std::getline(ifs, line)) {
+    ++ nr_lines;
 
+    Segmentation output;
+    trim(line);
+
+    if (line.length() == 0) {
+      WARNING_LOG("read inst: line #%d, is empty", nr_lines);
+      continue;
+    }
+
+    int ret = PartialSegmentationUtils::split_by_partial_tag(line, output.words);
+    if (ret == -1) {
+      WARNING_LOG("read inst: line #%d, partial segmented data is in ill-format.");
+      continue;
+    }
+    output.is_partial = (ret == 1);
+    if (output.is_partial) { nr_partially_segmented ++; } else { nr_fully_segmented ++; }
+
+    Instance* input = new Instance;
+    if (!output.is_partial) {
+      for (size_t i = 0; i < output.words.size(); ++ i) {
+        int num_chars = preprocessor.preprocess(output.words[i], input->raw_forms,
+            input->forms, input->chartypes);
+
+        for (size_t j = 0; j < num_chars; ++ j) {
+          if (1 == num_chars) { output.con.append( 1 << __s_id__ ); }
+          else {
+            if (0 == j) { output.con.append( 1 << __b_id__ ); }
+            else if (num_chars - 1 == j) { output.con.append( 1 << __e_id__ ); }
+            else { output.con.append( 1 << __i_id__ ); }
+          }
+        }
+      }
+    } else {
+      for (size_t i = 0; i < output.words.size(); ++ i) {
+        std::string word;
+        bool is_word = PartialSegmentationUtils::is_partial_tagged_word(output.words[i]);
+        PartialSegmentationUtils::trim_partial_tag(output.words[i], word);
+
+        int num_chars = preprocessor.preprocess(word, input->raw_forms,
+            input->forms, input->chartypes);
+
+        if (is_word) {
+          for (size_t j = 0; j < num_chars; ++ j) {
+            if (1 == num_chars) { output.con.append( 1 << __s_id__ ); }
+            else {
+              if (0 == j) { output.con.append( 1 << __b_id__ ); }
+              else if (num_chars - 1 == j) { output.con.append( 1 << __e_id__ ); }
+              else { output.con.append( 1 << __i_id__ ); }
+            }
+          }
+        } else {
+          for (size_t j = 0; j < num_chars; ++ j) {
+            if (1 == num_chars) { output.con.append( 1 << __s_id__ ); }
+            else {
+              if (0 == j) {
+                output.con.append( (1<<__b_id__)|(1<<__s_id__) );
+              } else if (num_chars - 1 == j) {
+                output.con.append( (1<<__e_id__)|(1<<__s_id__) );
+              } else {
+                output.con.append( (1<<__b_id__)|(1<<__i_id__)|(1<<__e_id__)|(1<<__s_id__) );
+              }
+            }
+          }
+        }
+      }
+    }
+    train_data_input.push_back(input);
+    train_data_output.push_back(output);
+  }
+
+  INFO_LOG("report: loaded %d fully segmented data.", nr_fully_segmented);
+  INFO_LOG("report: loaded %d partially segmented data.", nr_partially_segmented);
   return true;
 }
 
@@ -207,7 +284,8 @@ void SegmentorFrontend::update(const Instance& inst, SparseVec& updated_features
   updated_features.add(ctx.correct_features, 1.);
   updated_features.add(ctx.predict_features, -1.);
 
-  learn(train_opt.algorithm, updated_features, get_timestamp(), inst.num_errors(), model);
+  learn(train_opt.algorithm, updated_features, get_timestamp(),
+      InstanceUtils::num_errors(inst.tagsidx, inst.predict_tagsidx), model);
 }
 
 void SegmentorFrontend::setup_lexicons() {
@@ -223,7 +301,7 @@ void SegmentorFrontend::train(void) {
     ERROR_LOG("Training file not exist.");
     return;
   }
-  INFO_LOG("trace: %d sentence is loaded.", train_dat.size());
+  INFO_LOG("trace: %d sentence is loaded.", train_data_input.size());
 
   model = new Model;
 
@@ -261,22 +339,27 @@ void SegmentorFrontend::train(void) {
   for (size_t iter = 0; iter < train_opt.max_iter; ++ iter) {
     INFO_LOG("Training iteration #%d", (iter + 1));
 
-    size_t interval = train_dat.size()/ 10;
+    size_t interval = train_data_input.size()/ 10;
     if (interval == 0) { interval = 1; }
-    for (size_t i = 0; i < train_dat.size(); ++ i) {
+    for (size_t i = 0; i < train_data_input.size(); ++ i) {
       increase_timestamp();
 
-      Instance* inst = train_dat[i];
-      extract_features((*inst), false);
-      calculate_scores((*inst), false);
+      Instance* input = train_data_input[i];
+      extract_features((*input), false);
+      calculate_scores((*input), false);
 
-      con.regist(&(inst->chartypes));
-      decoder.decode(scm, con, inst->predict_tagsidx);
+      Segmentation& output = train_data_output[i];
 
-      collect_features((*inst));
+      output.con.regist(&(input->chartypes));
+      con.regist(&(input->chartypes));
+
+      decoder.decode(scm, output.con, input->tagsidx);
+      decoder.decode(scm, con, input->predict_tagsidx);
+
+      collect_features((*input));
 
       SparseVec updated_features;
-      update((*inst), updated_features);
+      update((*input), updated_features);
       clear_context();
 
       if (train_opt.rare_feature_threshold > 0) {
@@ -286,7 +369,7 @@ void SegmentorFrontend::train(void) {
         INFO_LOG("training: %d0%% (%d) instances is trained.", ((i+1)/interval), i+1);
       }
     }
-    INFO_LOG("trace: %d instances is trained.", train_dat.size());
+    INFO_LOG("trace: %d instances is trained.", train_data_input.size());
 
     model->param.flush(get_timestamp());
 
@@ -356,12 +439,15 @@ void SegmentorFrontend::evaluate(double &p, double &r, double &f) {
     decoder.decode(scm, con, inst->predict_tagsidx);
     ctx.clear();
 
-    build_words((*inst), inst->tagsidx, inst->words);
-    build_words((*inst), inst->predict_tagsidx, inst->predict_words);
+    std::vector<std::string> answer_words;
+    std::vector<std::string> predict_words;
 
-    num_recalled_words += inst->num_recalled_words();
-    num_predicted_words += inst->num_predicted_words();
-    num_gold_words += inst->num_gold_words();
+    build_words(inst->raw_forms, inst->tagsidx, answer_words);
+    build_words(inst->raw_forms, inst->predict_tagsidx, predict_words);
+
+    num_recalled_words += InstanceUtils::num_recalled_words(answer_words, predict_words);
+    num_predicted_words += predict_words.size();
+    num_gold_words += answer_words.size();
 
     delete inst;
   }
@@ -434,11 +520,16 @@ void SegmentorFrontend::test(void) {
     decoder.decode(scm, con, inst->predict_tagsidx);
     ctx.clear();
 
-    build_words((*inst), inst->predict_tagsidx, inst->predict_words);
+    std::vector<std::string> predict_words;
+    build_words(inst->raw_forms, inst->predict_tagsidx, predict_words);
+
     if (test_opt.evaluate) {
-      num_recalled_words += inst->num_recalled_words();
-      num_predicted_words += inst->num_predicted_words();
-      num_gold_words += inst->num_gold_words();
+      std::vector<std::string> answer_words;
+      build_words(inst->raw_forms, inst->tagsidx, answer_words);
+
+      num_recalled_words += InstanceUtils::num_recalled_words(answer_words, predict_words);
+      num_predicted_words += predict_words.size();
+      num_gold_words += answer_words.size();
     }
     writer.write(inst);
     delete inst;

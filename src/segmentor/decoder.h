@@ -9,15 +9,26 @@
 namespace ltp {
 namespace segmentor {
 
-class SegmentorConstrain: public framework::ViterbiDecodeConstrain {
+class SegmentationConstrain: public framework::ViterbiDecodeConstrain {
 private:
   const std::vector<int>* chartypes;
 public:
-  SegmentorConstrain();
+  SegmentationConstrain();
 
   void regist(const std::vector<int>* chartypes);
 
   bool can_tran(const size_t& i, const size_t& j) const;
+
+  bool can_emit(const size_t& i, const size_t& j) const;
+};
+
+class PartialSegmentationConstrain: public SegmentationConstrain {
+public:
+  std::vector<int> mat;
+public:
+  PartialSegmentationConstrain();
+
+  void append(const int& mask);
 
   bool can_emit(const size_t& i, const size_t& j) const;
 };

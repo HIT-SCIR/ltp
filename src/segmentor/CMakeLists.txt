@@ -32,22 +32,11 @@ link_directories ( ${LIBRARY_OUTPUT_PATH} )
 # -----------------------------------------------
 # TOOLKIT #1
 # -----------------------------------------------
-add_executable (otcws otcws.cpp segmentor_frontend.cpp
+add_executable (otcws otcws.cpp segmentor_frontend.cpp partial_segmentation.cpp
     customized_segmentor_frontend.cpp io.cpp ${segment_SRC})
 target_link_libraries (otcws boost_regex_static_lib boost_program_options_static_lib)
 set_target_properties (otcws PROPERTIES  OUTPUT_NAME otcws
     RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
-
-# -----------------------------------------------
-# TOOLKIT #2
-# -----------------------------------------------
-#add_executable (otcws-customized otcws_customized.cpp
-#    ${segment_SRC} customized_segmentor.cpp)
-#target_link_libraries (otcws-customized boost_regex_static_lib)
-#set_target_properties (otcws-customized
-#    PROPERTIES
-#    OUTPUT_NAME otcws-customized
-#    RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
 
 configure_file (
     segment_dll.h

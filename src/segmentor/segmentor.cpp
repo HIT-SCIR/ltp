@@ -24,7 +24,7 @@ using math::FeatureVector;
 using math::SparseVec;
 using strutils::trim;
 
-const std::string Segmentor::model_header = "otner";
+const std::string Segmentor::model_header = "otcws";
 
 Segmentor::Segmentor(): model(0) {}
 Segmentor::~Segmentor() { if (model) { delete model; model = 0; } }
@@ -207,21 +207,22 @@ void Segmentor::calculate_scores(const Instance& inst,
   }
 }
 
-void Segmentor::build_words(const Instance& inst,
+void Segmentor::build_words(const std::vector<std::string>& chars,
     const std::vector<int>& tagsidx,
     std::vector<std::string>& words) {
   words.clear();
-  int len = inst.size();
+  int len = chars.size();
+  if (len == 0) { return; }
 
   // should check the tagsidx size
-  std::string word = inst.raw_forms[0];
+  std::string word = chars[0];
   for (int i = 1; i < len; ++ i) {
     int tag = tagsidx[i];
-    if (tag == 0 || tag == 3) { // b, s
+    if (tag == __b_id__ || tag == __s_id__) { // b, s
       words.push_back(word);
-      word = inst.raw_forms[i];
+      word = chars[i];
     } else {
-      word += inst.raw_forms[i];
+      word += chars[i];
     }
   }
 

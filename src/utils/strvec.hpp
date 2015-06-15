@@ -17,8 +17,8 @@ public:
   // initalize the length.
   StringVec() :
     _pool(0),
-    _cap_pool(0),
     _len_pool(0),
+    _cap_pool(0),
     _index(0),
     _len_index(0),
     _cap_index(0) {}
