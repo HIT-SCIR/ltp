@@ -148,6 +148,7 @@ public:
 
     vfprintf(log_fpo, fmt, lst);
     fprintf(log_fpo, "\n");
+    fflush(log_fpo) ; // clear output buffer
 
     spthread_mutex_unlock(&mutex);
 
