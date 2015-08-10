@@ -26,11 +26,11 @@ int learn(int argc, const char* argv[]) {
      "The prefix of the model file, model will be stored as model.$iter.")
     ("reference", value<std::string>(), "The path to the reference file.")
     ("development", value<std::string>(), "The path to the development file.")
-    ("algorithm", value<std::string>(), "The learning algorithm\n"
+    ("algorithm", value<std::string>()->default_value("pa"), "The learning algorithm\n"
                                           " - ap: averaged perceptron\n"
                                           " - pa: passive aggressive [default]")
-    ("max-iter", value<int>(), "The number of iteration [default=10].")
-    ("rare-feature-threshold", value<int>(),
+    ("max-iter", value<int>()->default_value(10), "The number of iteration [default=10].")
+    ("rare-feature-threshold", value<int>()->default_value(0),
      "The threshold for rare feature, used in model truncation. [default=0]")
     ("help,h", "Show help information");
 
@@ -64,21 +64,14 @@ int learn(int argc, const char* argv[]) {
     development = vm["development"].as<std::string>(); 
   }
 
-  std::string algorithm = "pa";
-  if (vm.count("algorithm")) {
-    algorithm = vm["algorithm"].as<std::string>();
-    if (algorithm != "pa" && algorithm != "ap") {
-      WARNING_LOG("algorithm should either be ap or pa, set as default [pa].");
-      algorithm = "pa";
-    }
+  std::string algorithm = vm["algorithm"].as<std::string>();
+  if (algorithm != "pa" && algorithm != "ap") {
+    WARNING_LOG("algorithm should either be ap or pa, set as default [pa].");
+    algorithm = "pa";
   }
 
-  int max_iter = 10;
-  if (vm.count("max-iter")) { max_iter = vm["max-iter"].as<int>(); }
-
-  int rare_feature_threshold = 0;
-  if (vm.count("rare-feature-threshold")) {
-    rare_feature_threshold= vm["rare-feature-threshold"].as<int>(); }
+  int max_iter = vm["max-iter"].as<int>();
+  int rare_feature_threshold = vm["rare-feature-threshold"].as<int>();
 
   PostaggerFrontend frontend(reference, development, model_name,
       algorithm, max_iter, rare_feature_threshold);
@@ -98,7 +91,7 @@ int test(int argc, const char* argv[]) {
     ("lexicon", value<std::string>(),
      "The lexicon file, (optional, if configured, constrained decoding will be performed).")
     ("input", value<std::string>(), "The path to the reference file.")
-    ("evaluate", value<bool>(),
+    ("evaluate", value<bool>()->default_value(false),
      "if configured, perform evaluation, input should contain '_' concatenated tag")
     ("help,h", "Show help information");
 
@@ -134,8 +127,7 @@ int test(int argc, const char* argv[]) {
   std::string output_file = "";
   if (vm.count("output")) { output_file = vm["output"].as<std::string>(); }
 
-  bool evaluate = false;
-  if (vm.count("evaluate")) { evaluate = vm["evaluate"].as<bool>(); }
+  bool evaluate = vm["evaluate"].as<bool>();
 
   PostaggerFrontend frontend(input_file, model_file, lexicon_file, evaluate);
   frontend.test();

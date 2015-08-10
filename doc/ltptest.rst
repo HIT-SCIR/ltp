@@ -136,6 +136,13 @@ xxx_cmdline的主要目标是提供不同于xml，同时可自由组合的语言
 细节
 ----
 
+.. _ltprestrict-reference-label:
+
+长度限制
+~~~~~~~~
+
+为了防止输入过长句子对稳定性造成影响。ltp限制用户输入字数少于1024字，分词结果少于256词。
+
 .. _ltpexlex-reference-label:
 
 外部词典
