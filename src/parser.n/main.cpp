@@ -23,42 +23,30 @@ int test(int argc, char** argv) {
   usage += "Testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options:";
-  options_description optparser = options_description(usage);
+  TestOption opt;
+  options_description optparser(usage);
   optparser.add_options()
-    ("model", value<std::string>(), "The path to the model.")
-    ("input", value<std::string>(), "The path to the reference.")
-    ("evaluate", value<bool>()->default_value(false),
+    ("model", value<std::string>(&opt.model_file)->required(), "The path to the model.")
+    ("input", value<std::string>(&opt.input_file)->required(), "The path to the reference.")
+    ("evaluate", value<bool>(&opt.evaluate)->default_value(false),
      "if configured, perform evaluation, heads and deprels columns should be filled.")
     ("help,h", "Show help information");
 
   if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
 
   variables_map vm;
-  store(parse_command_line(argc, argv, optparser), vm);
+  try {
+      store(parse_command_line(argc, argv, optparser), vm);
+      if (vm.count("help")) {
+        std::cerr << optparser << std::endl;
+        return 1;
+      }
 
-  if (vm.count("help")) {
-    std::cerr << optparser << std::endl;
-    return 1;
+      boost::program_options::notify(vm);
+  } catch(const boost::program_options::error &e) {
+      std::cerr << e.what() << std::endl;
+      std::cout << optparser << std::endl;
   }
-
-  TestOption opt;
-  opt.model_file = "";
-  if (!vm.count("model")) {
-    ERROR_LOG("model path should be specified [--model].");
-    return 1;
-  } else {
-    opt.model_file = vm["model"].as<std::string>();
-  }
-
-  opt.input_file = "";
-  if (!vm.count("input")) {
-    ERROR_LOG("input file should be specified [--input].");
-    return 1;
-  } else {
-    opt.input_file = vm["input"].as<std::string>();
-  }
-
-  opt.evaluate = vm["evaluate"].as<bool>();
 
   NeuralNetworkParserFrontend frontend(opt);
   frontend.test();
@@ -70,118 +58,76 @@ int learn(int argc, char** argv) {
   usage += "Training suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options:";
-  options_description optparser = options_description(usage);
+  LearnOption opt;
+  options_description optparser(usage);
   optparser.add_options()
-    ("model",     value<std::string>(), "The path to the model.")
-    ("embedding", value<std::string>(), "The path to the embedding file.")
-    ("reference", value<std::string>(), "The path to the reference file.")
-    ("development", value<std::string>(), "The path to the development file.\n")
-    ("init-range", value<double>()->default_value(0.01), "The initialization range. [default=0.01]")
-    ("word-cutoff", value<int>()->default_value(1), "The frequency of rare word. [default=1]")
-    ("max-iter", value<int>()->default_value(20000), "The number of max iteration. [default=20000]")
-    ("batch-size", value<int>()->default_value(10000), "The size of batch. [default=10000]")
-    ("hidden-size", value<int>()->default_value(200), "The size of hidden layer. [default=200]")
-    ("embedding-size", value<int>()->default_value(50), "The size of embedding. [default=50]")
-    ("features-number", value<int>()->default_value(48), "The number of features. [default=48]")
-    ("precomputed-number", value<int>()->default_value(100000), "The number of precomputed. [default=100000]")
-    ("evaluation-stops", value<int>()->default_value(100), "Evaluation on per-iteration. [default=100]")
-    ("ada-eps", value<double>()->default_value(1e-6), "The EPS in AdaGrad. [defautl=1e-6]")
-    ("ada-alpha", value<double>()->default_value(0.01), "The Alpha in AdaGrad. [default=0.01]")
-    ("lambda", value<double>()->default_value(1e-8), "The regularizer parameter. [default=1e-8]")
-    ("dropout-probability", value<double>()->default_value(0.5), "The probability for dropout. [default=0.5]")
-    ("oracle", value<std::string>()->default_value("static"),
+    ("model",     value<std::string>(&opt.model_file)->required(), "The path to the model.")
+    ("embedding", value<std::string>(&opt.embedding_file)->required(), "The path to the embedding file.")
+    ("reference", value<std::string>(&opt.reference_file)->required(), "The path to the reference file.")
+    ("development", value<std::string>(&opt.devel_file), "The path to the development file.\n")
+    ("init-range", value<double>(&opt.init_range)->default_value(0.01), "The initialization range. [default=0.01]")
+    ("word-cutoff", value<int>(&opt.word_cutoff)->default_value(1), "The frequency of rare word. Word with frequency less than cutoff will be considered unknown")
+    ("max-iter", value<int>(&opt.max_iter)->default_value(20000), "The number of max iteration. [default=20000]")
+    ("batch-size", value<int>(&opt.batch_size)->default_value(10000), "The size of batch. [default=10000]")
+    ("hidden-size", value<int>(&opt.hidden_layer_size)->default_value(200), "The size of hidden layer. [default=200]")
+    ("embedding-size", value<int>(&opt.embedding_size)->default_value(50), "The size of embedding. [default=50]")
+    //("features-number", value<int>(), "The number of features. [default=48]")
+    ("precomputed-number", value<int>(&opt.nr_precomputed)->default_value(100000), "The number of precomputed. [default=100000]")
+    ("evaluation-stops", value<int>(&opt.evaluation_stops)->default_value(100), "Evaluation on per-iteration. [default=100]")
+    ("ada-eps", value<double>(&opt.ada_eps)->default_value(1e-6), "The EPS in AdaGrad. [defautl=1e-6]")
+    ("ada-alpha", value<double>(&opt.ada_alpha)->default_value(0.01), "The Alpha in AdaGrad. [default=0.01]")
+    ("lambda", value<double>(&opt.lambda)->default_value(1e-8), "The regularizer parameter. [default=1e-8]")
+    ("dropout-probability", value<double>(&opt.dropout_probability)->default_value(0.5), "The probability for dropout. [default=0.5]")
+    ("oracle", value<std::string>(&opt.oracle)->default_value("static"),
      "The oracle type\n"
      " - static: The static oracle [default]\n"
      " - nondet: The non-deterministic oracle\n"
      " - explore: The explore oracle.")
-    ("save-intermediate", value<bool>()->default_value(true), "Save the intermediate. [default=true]")
-    ("fix-embeddings", value<bool>()->default_value(false), "Fix the embeddings. [default=false]")
-    ("use-distance", value<bool>()->default_value(false), "Specify to use distance feature. [default=false]")
-    ("use-valency", value<bool>()->default_value(false), "Specify to use valency feature. [default=false]")
-    ("use-cluster", value<bool>()->default_value(false), "Specify to use cluster feature. [default=false]")
-    ("cluster", value<std::string>(), "Specify the path to the cluster file.")
-    ("root", value<std::string>()->default_value("ROOT"), "The root tag. [default=ROOT]")
+    ("save-intermediate", value<bool>(&opt.save_intermediate)->default_value(true), "Save the intermediate. [default=true]")
+    ("fix-embeddings", value<bool>(&opt.fix_embeddings)->default_value(false), "Fix the embeddings. [default=false]")
+    ("use-distance", value<bool>(&opt.use_distance)->default_value(false), "Specify to use distance feature. [default=false]")
+    ("use-valency", value<bool>(&opt.use_valency)->default_value(false), "Specify to use valency feature. [default=false]")
+    ("use-cluster", value<bool>(&opt.use_cluster)->default_value(false), "Specify to use cluster feature. [default=false]")
+    ("cluster", value<std::string>(&opt.cluster_file), "Specify the path to the cluster file.")
+    ("root", value<std::string>(&opt.root)->default_value("ROOT"), "The root tag. [default=ROOT]")
     ("verbose", "Logging more details.")
     ("help,h", "Show help information.");
 
   if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
 
   variables_map vm;
-  store(parse_command_line(argc, argv, optparser), vm);
+  try {
+      store(parse_command_line(argc, argv, optparser), vm);
+      if (vm.count("help")) {
+        std::cerr << optparser << std::endl;
+        return 1;
+      }
 
-  if (vm.count("help")) {
-    std::cerr << optparser << std::endl;
-    return 1;
+      boost::program_options::notify(vm);
+  } catch (const boost::program_options::error &e) {
+      std::cerr << e.what() << std::endl;
+      std::cout << optparser << std::endl;
   }
 
-  LearnOption opt;
+//  opt.clear_gradient_per_iter = 0;
+//  if (vm.count("clear-gradient-per-iter")) {
+//    opt.clear_gradient_per_iter = vm["clear-gradient-per-iter"].as<int>();
+//  }
 
-  opt.model_file = "";
-  if (!vm.count("model")) {
-    ERROR_LOG("parse opt: model file must be specified [--model].");
-    return 1;
-  } else {
-    opt.model_file= vm["model"].as<std::string>();
-  }
-
-  opt.embedding_file = "";
-  if (!vm.count("embedding")) {
-    ERROR_LOG("parse opt: embedding file must be specified [--embedding].");
-    return 1;
-  } else {
-    opt.embedding_file = vm["embedding"].as<std::string>();
-  }
-
-  opt.reference_file = "";
-  if (!vm.count("reference")) {
-    ERROR_LOG("parse opt: reference file must be specified [--reference].");
-    return false;
-  } else {
-    opt.reference_file = vm["reference"].as<std::string>();
-  }
-
-  opt.devel_file = "";
-  if (vm.count("development")) {
-    opt.devel_file = vm["development"].as<std::string>();
-  }
-
-  opt.ada_eps = vm["ada-eps"].as<double>();
-  opt.ada_alpha = vm["ada-alpha"].as<double>();
-  opt.lambda = vm["lambda"].as<double>();
-  opt.dropout_probability = vm["dropout-probability"].as<double>();
-  opt.hidden_layer_size = vm["hidden-size"].as<int>();
-  opt.embedding_size = vm["embedding-size"].as<int>();
-  opt.max_iter = vm["max-iter"].as<int>();
-  opt.init_range = vm["init-range"].as<double>();
-  opt.word_cutoff = vm["word-cutoff"].as<int>();
-  opt.batch_size = vm["batch-size"].as<int>();
-  opt.nr_precomputed = vm["precomputed-number"].as<int>();
-  opt.evaluation_stops = vm["evaluation-stops"].as<int>();
-  opt.clear_gradient_per_iter = 0;
-  opt.oracle = vm["oracle"].as<std::string>();
+  //some extra validate of opt
   if (opt.oracle != "static" && opt.oracle != "nondet" && opt.oracle != "explore") {
+    ERROR_LOG("parse opt [--oracle]: oracle value error, allowed values are static|nondet|explore.");
     opt.oracle = "static";
   }
 
-  opt.save_intermediate = vm["save-intermediate"].as<bool>();
-  opt.fix_embeddings = vm["fix-embeddings"].as<bool>();
-  opt.root = vm["root"].as<std::string>();
-  opt.use_distance = vm["use-distance"].as<bool>();
-  opt.use_valency = vm["use-valency"].as<bool>();
-  opt.use_cluster = vm["use-cluster"].as<bool>();
-
-  opt.cluster_file = "";
-  if (opt.use_cluster) {
-    if (vm.count("cluster")) {
-      opt.cluster_file = vm["cluster"].as<std::string>();
-    } else {
-      ERROR_LOG("cluster file should be specified when using cluster feature.");
+  if (opt.use_cluster && vm.count("cluster") == 0) {
+      ERROR_LOG("parse opt [--cluster]: cluster file should be specified when using cluster feature.");
       return 1;
-    }
   }
 
   NeuralNetworkParserFrontend frontend(opt);
   frontend.train();
+
   return 0;
 }
 

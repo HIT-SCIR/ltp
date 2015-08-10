@@ -129,6 +129,7 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
   }
 
   std::string line;
+  //TODO 构造函数 LineCountsReader 会计算 interval，此处的计算重复了
   size_t interval = LineCountsReader(ifs).number_of_lines() / 10;
   if (interval == 0) { interval = 1; }
   size_t nr_lines = 1;
@@ -274,7 +275,7 @@ void NeuralNetworkParserFrontend::initialize_classifier() {
       if (form == -1) { continue; }
 
       if (items.size() != learn_opt->embedding_size + 1) {
-        WARNING_LOG("report: embedding dimension not match to configuration.");
+        WARNING_LOG("report: line %d, embedding dimension(%d) not match to configuration.", nr_lines, items.size()-1);
         continue;
       }
 
