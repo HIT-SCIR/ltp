@@ -146,10 +146,10 @@ void PostaggerFrontend::train(void) {
   INFO_LOG("report: allocate %d dimensition parameter.", model->space.dim());
 
   int nr_groups = model->space.num_groups();
-  std::vector<int> groupwise_update_counters;
+  std::vector<size_t> update_counts;
 
   if (train_opt.rare_feature_threshold > 0) {
-    groupwise_update_counters.resize(nr_groups, 0);
+    update_counts.resize(nr_groups, 0);
     INFO_LOG("report: allocate %d update-time counters", nr_groups);
   } else {
     INFO_LOG("report: model truncation is inactived.");
@@ -158,7 +158,6 @@ void PostaggerFrontend::train(void) {
   int best_iteration = -1;
   double best_p = -1.;
 
-  std::vector<size_t> update_counts;
 
   for (int iter = 0; iter < train_opt.max_iter; ++ iter) {
     INFO_LOG("Training iteraition #%d", (iter + 1));
