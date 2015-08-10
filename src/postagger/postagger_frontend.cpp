@@ -179,7 +179,7 @@ void PostaggerFrontend::train(void) {
       updated_features.add(ctx.predict_features, -1.);
 
       learn(train_opt.algorithm, updated_features,
-        iter*train_dat.size() + 1, inst->num_errors(), model);
+        iter*train_dat.size() + i + 1, inst->num_errors(), model);
 
 
       if (train_opt.rare_feature_threshold > 0) {
