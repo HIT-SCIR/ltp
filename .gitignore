@@ -31,6 +31,8 @@ tools/train/otpos
 tools/train/otner
 tools/train/maxent
 tools/train/nndepparser
+tools/train/Release/
+tools/train/Debug/
 
 ###############
 # data file   #

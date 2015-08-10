@@ -1,0 +1,52 @@
+{
+    "description" : "This File is builded for describe the subporject dependency , including segmentor , postag , ner , parser and so on . currently it just list the segmentor dependency ." ,
+    
+    "format_intro": [" 1. Every subproject dependency is described in a single json object in 'subproject' list " ,
+                     " 2. Every subporject includes some descriptions , every description like this : " ,
+                     " {                                                                                         " ,
+                     "     'type' : ['dir'|'file'|'cmakelists'] , this indicate the object type "                  ,
+                     "     'path' : 'path/to/object/' , relative to the root project.                             ",
+                     "     'change_state' : ['NO_CHANGE'|'MODIFIED'|'ADD'|'SYNC'] , SYNC only for cmakelists , means to sync this file for " ,
+                     "                       the current project according to dir and files of the corresponding dir "  
+                     ],
+    "Attention" : "JSON format is strict . so it will be fine to use command : `cat subporject.d.josn | python -mjson.tool` to check if it is vlaid" ,
+    "subproject"  : {
+        "segmentor" : [
+                        {
+                            "type"          :   "dir" ,
+                            "path"          :   ["thirdparty/boost","thirdparty/tinythreadpp"] ,
+                            "change_state"  :   "NO_CHANGE"
+                        } ,
+                        {
+                            "type"          :   "dir" ,
+                            "path"          :   "thirdparty/boost/libs/" ,
+                            "change_state"  :   "MODIFIED"  
+                        },
+                        {
+                            "type"          :   "dir" ,
+                            "path"          :   [ "src/segmentor" ,
+                                                  "src/framework" ,
+                                                  "src/utils"     ] ,
+                            "change_state"  :   "MODIFIED" 
+                        } ,
+                        {
+                            "type"          :   "file" ,
+                            "path"          :   "src/config.h" ,
+                            "change_state"  :   "ADD" 
+                        } ,
+                        {
+                            "type"          :   "cmakelists" ,
+                            "path"          :   [ "CMakeLists.txt"  ] ,
+                            "change_state"  :   "SYNC"
+                        } ,
+                        {
+                            "type"          :   "cmakelists" ,
+                            "path"          :   [ "src/CMakeLists.txt" ,
+                                                  "CMakeLists.txt" ,
+                                                  "thirdparty/CMakeLists.txt" ] ,
+                            "change_state"  :   "SYNC"
+                        }   
+                    ]
+    }
+
+}

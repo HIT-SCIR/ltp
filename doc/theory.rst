@@ -229,7 +229,7 @@
 -----------------
 
 依存句法分析模块的主要算法依据神经网络依存句法分析算法，Chen and Manning (2014)。同时加入丰富的全局特征和聚类特征。在模型训练时，我们也参考了Yoav等人关于dynamic oracle的工作。
-在 `Chinese Dependency Treebank(CDT) <https://catalog.ldc.upenn.edu/LDC2012T05>`_ 数据集上，三种不同解码方式对应的性能如下表所示，其中运行速度和内存开销从CDT测试集（平均29.13词/句）上结果中获得。
+在 `Chinese Dependency Treebank(CDT) <https://catalog.ldc.upenn.edu/LDC2012T05>`_ 数据集上，其中运行速度和内存开销从CDT测试集上结果中获得。
 
 +------------+-------+-------+
 |            | UAS   | LAS   |
