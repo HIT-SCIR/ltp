@@ -192,9 +192,9 @@ void NamedEntityRecognizerFrontend::train(void) {
   INFO_LOG("report: allocate %d dimensition parameter.", model->space.dim());
 
   int nr_groups = model->space.num_groups();
-  std::vector<int> groupwise_update_counters;
+  std::vector<size_t> update_counts;
   if (train_opt.rare_feature_threshold > 0) {
-    groupwise_update_counters.resize(nr_groups, 0);
+    update_counts.resize(nr_groups, 0);
     INFO_LOG("report: allocate %d update-time counters", nr_groups);
   } else {
     INFO_LOG("report: model truncation is inactived.");
@@ -203,7 +203,6 @@ void NamedEntityRecognizerFrontend::train(void) {
   int best_iteration = -1;
   double best_f_score = -1.;
 
-  std::vector<size_t> update_counts;
   if (train_opt.rare_feature_threshold > 0) {
     update_counts.resize(nr_groups, 0);
     INFO_LOG("report: allocate %d update-time counters", nr_groups);
@@ -232,7 +231,7 @@ void NamedEntityRecognizerFrontend::train(void) {
       updated_features.add(ctx.predict_features, -1.);
 
       learn(train_opt.algorithm, updated_features, 
-        iter*train_dat.size()+1, inst->num_errors(), model);
+        iter*train_dat.size() + i + 1, inst->num_errors(), model);
 
       if (train_opt.rare_feature_threshold > 0) {
         increase_groupwise_update_counts(model, updated_features, update_counts);
