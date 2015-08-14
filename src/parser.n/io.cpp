@@ -64,7 +64,7 @@ void CoNLLWriter::write(const Instance& inst) {
 
   for (size_t i = 1; i < len; ++ i) {
     f << i << "\t"                  // 0 - index
-      << inst.forms[i]   << "\t"   // 1 - form
+      << inst.raw_forms[i]   << "\t"   // 1 - form
       << inst.lemmas[i]  << "\t"   // 2 - lemma
       << inst.postags[i] << "\t"   // 3 - postag
       << "_\t"   // 4 - unknown
@@ -84,7 +84,7 @@ void CoNLLWriter::write(const Instance& inst, const std::vector<int>& heads,
   size_t len = inst.size();
   for (size_t i = 1; i < len; ++ i) {
     f << i << "\t"                  // 0 - index
-      << inst.forms[i]   << "\t"   // 1 - form
+      << inst.raw_forms[i]   << "\t"   // 1 - form
       << inst.lemmas[i]  << "\t"   // 2 - lemma
       << inst.postags[i] << "\t"   // 3 - postag
       << "_\t"   // 4 - unknown
