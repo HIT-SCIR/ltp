@@ -5,6 +5,7 @@
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
 #include "utils/logging.hpp"
+#include "math.h"
 
 namespace ltp {
 namespace framework {
@@ -349,14 +350,14 @@ protected:
 
     for (int i = 0; i < L; ++ i) {
       for (int t = 0; t < T; ++ t) {
-        exp_emit[i][t] = std::exp(scm.emit(i, t) / last_timestamp);
+        exp_emit[i][t] = exp(scm.emit(i, t) / last_timestamp);
       }
     }
 
     exp_tran.resize(T, T);
     for (int i = 0; i < T; ++ i) {
       for (int j = 0; j < T; ++ j) {
-        exp_tran[i][j] = std::exp(scm.tran(i, j) / last_timestamp);
+        exp_tran[i][j] = exp(scm.tran(i, j) / last_timestamp);
       }
     }
   }
