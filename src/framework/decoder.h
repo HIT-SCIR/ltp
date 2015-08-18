@@ -5,7 +5,7 @@
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
 #include "utils/logging.hpp"
-#include "math.h"
+#include <cmath>
 
 namespace ltp {
 namespace framework {
