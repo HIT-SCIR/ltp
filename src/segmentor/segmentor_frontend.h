@@ -13,7 +13,7 @@ namespace segmentor {
 
 class SegmentorFrontend: public Segmentor, public framework::Frontend {
 protected:
-  framework::ViterbiDecoder decoder;     //! The decoder.
+  SegmentationViterbiDecoderWithMarginal decoder;     //! The decoder.
   framework::ViterbiFeatureContext ctx;  //! The decode context
   framework::ViterbiScoreMatrix scm;     //! The score matrix
   std::vector<const Model::lexicon_t*> lexicons;
@@ -45,7 +45,9 @@ public:
 
   SegmentorFrontend(const std::string& input_file,
       const std::string& model_file,
-      bool evaluate);
+      bool evaluate,
+      bool sequence_prob = false,
+      bool marginal_prob = false);
 
   SegmentorFrontend(const std::string& model_file);
 

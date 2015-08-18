@@ -30,11 +30,16 @@ public:
 
 class NERWriter {
 public:
-  NERWriter(std::ostream & _ofs) : ofs(_ofs) {}
+  NERWriter(std::ostream & _ofs, bool _sequence_prob = false, bool _marginal_prob = false)
+      : ofs(_ofs),
+      sequence_prob(_sequence_prob),
+      marginal_prob(_marginal_prob) {}
 
   void write(const Instance* inst);
 private:
   std::ostream & ofs;
+  bool sequence_prob;
+  bool marginal_prob;
 };
 
 }       //  end for namespace ner

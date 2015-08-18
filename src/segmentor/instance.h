@@ -30,6 +30,11 @@ public:
   std::vector< int >          predict_tagsidx;
   std::vector< std::string >  words; // words of the input
   std::vector< std::string >  predict_words;
+
+  double                      sequence_probability;
+  std::vector< double >       point_probabilities;
+  std::vector< double >       partial_probabilities;
+  std::vector< int >          partial_idx;
 };
 
 class InstanceUtils {

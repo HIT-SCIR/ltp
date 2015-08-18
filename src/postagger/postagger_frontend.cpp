@@ -48,23 +48,31 @@ PostaggerFrontend::PostaggerFrontend(const std::string& reference_file,
 PostaggerFrontend::PostaggerFrontend(const std::string& input_file,
     const std::string& model_file,
     const std::string& lexicon_file,
-    bool evaluate)
+    bool evaluate,
+    bool sequence_prob,
+    bool marginal_prob)
   : Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.lexicon_file = lexicon_file;
   test_opt.evaluate = evaluate;
+  test_opt.sequence_prob = sequence_prob;
+  test_opt.marginal_prob = marginal_prob;
+
 
   INFO_LOG("||| ltp postagger, testing ...");
   INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
   INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
   INFO_LOG("report: lexicon file = %s", test_opt.lexicon_file.c_str());
   INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
+  INFO_LOG("report: sequence probability = %s", (test_opt.sequence_prob? "true": "false"));
+  INFO_LOG("report: marginal probability = %s", (test_opt.marginal_prob? "true":"false"));
+
 }
 
 PostaggerFrontend::PostaggerFrontend(const std::string& model_file)
   : Frontend(kDump) {
-  dump_opt.model_file = model_file; 
+  dump_opt.model_file = model_file;
 
   INFO_LOG("||| ltp postagger, dumpping ...");
   INFO_LOG("report: model file = %s", model_file.c_str());
@@ -205,10 +213,10 @@ void PostaggerFrontend::train(void) {
     if(p > best_p){
       best_p = p;
       best_iteration = iter;
- 
+
       std::ofstream ofs(train_opt.model_name.c_str(), std::ofstream::binary);
       new_model->save(model_header, Parameters::kDumpAveraged, ofs);
- 
+
       INFO_LOG("trace: model for iteration #%d is saved to %s",
           iter+1, train_opt.model_name.c_str());
     }
@@ -293,8 +301,11 @@ void PostaggerFrontend::test(void) {
     return;
   }
 
-  PostaggerWriter writer(std::cout);
+  PostaggerWriter writer(std::cout, test_opt.sequence_prob, test_opt.marginal_prob);
   PostaggerReader reader(ifs, "_", test_opt.evaluate, false);
+
+  decoder.set_sequence_prob(test_opt.sequence_prob);
+  decoder.set_marginal_prob(test_opt.marginal_prob);
 
   PostaggerLexicon lex;
   std::ifstream lfs(test_opt.lexicon_file.c_str());
@@ -314,11 +325,31 @@ void PostaggerFrontend::test(void) {
     }
     Postagger::extract_features((*inst), &ctx, false);
     Postagger::calculate_scores((*inst), ctx, true, &scm);
+
     if (lex.success()) {
       PostaggerLexiconConstrain con = lex.get_con(inst->forms);
-      decoder.decode(scm, con, inst->predict_tagsidx);
+      if (test_opt.sequence_prob || test_opt.marginal_prob) {
+        decoder.decode(scm,
+                con,
+                inst->predict_tagsidx,
+                inst->sequence_probability,
+                inst->point_probabilities,
+                true,
+                model->param._last_timestamp);
+      } else {
+        decoder.decode(scm, con, inst->predict_tagsidx);
+      }
     } else {
-      decoder.decode(scm, inst->predict_tagsidx);
+      if (test_opt.sequence_prob || test_opt.marginal_prob) {
+        decoder.decode(scm,
+                inst->predict_tagsidx,
+                inst->sequence_probability,
+                inst->point_probabilities,
+                true,
+                model->param._last_timestamp);
+      } else {
+        decoder.decode(scm, inst->predict_tagsidx);
+      }
     }
     ctx.clear();
 
@@ -342,7 +373,7 @@ void PostaggerFrontend::test(void) {
   return;
 }
 
-void PostaggerFrontend::dump() {
+void PostaggerFrontend::dump(void) {
   // load model
   const char* model_file = dump_opt.model_file.c_str();
   std::ifstream mfs(model_file, std::ifstream::binary);

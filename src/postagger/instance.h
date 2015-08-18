@@ -51,6 +51,9 @@ public:
   std::vector< std::string >  predict_tags;
   std::vector< int >          predict_tagsidx;
 
+  double                      sequence_probability;
+  std::vector< double >       point_probabilities;
+
   std::vector< Bitset >       postag_constrain;   /*< the postag constrain for decode */
 };
 

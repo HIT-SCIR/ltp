@@ -56,16 +56,22 @@ SegmentorFrontend::SegmentorFrontend(const std::string& reference_file,
 
 SegmentorFrontend::SegmentorFrontend(const std::string& input_file,
     const std::string& model_file,
-    bool evaluate)
+    bool evaluate,
+    bool sequence_prob,
+    bool marginal_prob)
   : timestamp(0), Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
+  test_opt.sequence_prob = sequence_prob;
+  test_opt.marginal_prob = marginal_prob;
 
   INFO_LOG("||| ltp segmentor, testing ...");
   INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
   INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
   INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
+  INFO_LOG("report: sequence probability = %s", (test_opt.sequence_prob? "true": "false"));
+  INFO_LOG("report: marginal probability = %s", (test_opt.marginal_prob? "true":"false"));
 }
 
 SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
@@ -496,10 +502,13 @@ void SegmentorFrontend::test(void) {
     return;
   }
 
-  SegmentWriter writer(std::cout);
+  SegmentWriter writer(std::cout, test_opt.sequence_prob, test_opt.marginal_prob);
   SegmentReader reader(ifs, preprocessor, test_opt.evaluate, false);
 
   setup_lexicons();
+
+  decoder.set_sequence_prob(test_opt.sequence_prob);
+  decoder.set_marginal_prob(test_opt.marginal_prob);
 
   Instance* inst = NULL;
   timer t;
@@ -516,7 +525,19 @@ void SegmentorFrontend::test(void) {
     calculate_scores((*inst), true);
 
     con.regist(&(inst->chartypes));
-    decoder.decode(scm, con, inst->predict_tagsidx);
+    if (test_opt.sequence_prob || test_opt.marginal_prob) {
+      decoder.decode(scm,
+              con,
+              inst->predict_tagsidx,
+              inst->sequence_probability,
+              inst->point_probabilities,
+              inst->partial_probabilities,
+              inst->partial_idx,
+              true,
+              model->param._last_timestamp);
+    } else {
+      decoder.decode(scm, con, inst->predict_tagsidx);
+    }
     ctx.clear();
 
     build_words(inst->raw_forms, inst->predict_tagsidx, inst->predict_words);
@@ -547,7 +568,7 @@ void SegmentorFrontend::test(void) {
 }
 
 
-void SegmentorFrontend::dump() {
+void SegmentorFrontend::dump(void) {
   // load model
   const char* model_file = dump_opt.model_file.c_str();
   std::ifstream mfs(model_file, std::ifstream::binary);

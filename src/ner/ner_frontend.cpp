@@ -50,16 +50,22 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
     const std::string& input_file,
     const std::string& model_file,
-    bool evaluate)
+    bool evaluate,
+    bool sequence_prob,
+    bool marginal_prob)
   : Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
+  test_opt.sequence_prob = sequence_prob;
+  test_opt.marginal_prob = marginal_prob;
 
   INFO_LOG("||| ltp ner, testing ...");
   INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
   INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
   INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
+  INFO_LOG("report: sequence probability = %s", (test_opt.sequence_prob? "true": "false"));
+  INFO_LOG("report: marginal probability = %s", (test_opt.marginal_prob? "true":"false"));
 }
 
 NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
@@ -109,7 +115,7 @@ void NamedEntityRecognizerFrontend::build_configuration(void) {
         }
       } else {
         std::string position = tag.substr(0, found);
-        std::string ne_type = tag.substr(found+ 1);
+        std::string ne_type = tag.substr(found+1);
         if (position != "S" && position != "B" && position != "I" && position != "E") {
           WARNING_LOG("build-config: "
               "a error is detected at instance (%d,%d) %s.", i, j, tag.c_str());
@@ -148,6 +154,7 @@ void NamedEntityRecognizerFrontend::build_configuration(void) {
   }
 
   build_glob_tran_cons(ne_types);
+  INFO_LOG("build-config: add %d constrains.", glob_con->size());
 }
 
 void NamedEntityRecognizerFrontend::build_feature_space(void) {
@@ -362,9 +369,12 @@ void NamedEntityRecognizerFrontend::test(void) {
     return;
   }
 
-  NERWriter writer(std::cout);
+  NERWriter writer(std::cout, test_opt.sequence_prob, test_opt.marginal_prob);
   NERReader reader(ifs, test_opt.evaluate);
   Instance* inst = NULL;
+
+  decoder.set_sequence_prob(test_opt.sequence_prob);
+  decoder.set_marginal_prob(test_opt.marginal_prob);
 
   timer t;
   INFO_LOG("report: start testing ...");
@@ -379,7 +389,19 @@ void NamedEntityRecognizerFrontend::test(void) {
 
     extract_features((*inst), &ctx, false);
     calculate_scores((*inst), ctx, true, &scm);
-    decoder.decode(scm, (*glob_con), inst->predict_tagsidx);
+    if (test_opt.sequence_prob || test_opt.marginal_prob) {
+      decoder.decode(scm,
+              (*glob_con),
+              inst->predict_tagsidx,
+              inst->sequence_probability,
+              inst->point_probabilities,
+              inst->partial_probabilities,
+              inst->partial_idx,
+              true,
+              model->param._last_timestamp);
+    } else {
+      decoder.decode(scm, (*glob_con), inst->predict_tagsidx);
+    }
     ctx.clear();
 
     inst->predict_tags.resize(len);
@@ -415,7 +437,7 @@ void NamedEntityRecognizerFrontend::test(void) {
   return;
 }
 
-void NamedEntityRecognizerFrontend::dump() {
+void NamedEntityRecognizerFrontend::dump(void) {
   // load model
   const char * model_file = dump_opt.model_file.c_str();
   std::ifstream mfs(model_file, std::ifstream::binary);

@@ -33,6 +33,31 @@ public:
   bool load(std::istream& is, const utility::IndexableSmartMap& labels_alphabet);
 };
 
+class PostaggerViterbiDecoderWithMarginal: public framework::ViterbiDecoderWithMarginal {
+public:
+  void decode(const framework::ViterbiScoreMatrix& scm, std::vector<int>& output);
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              const framework::ViterbiDecodeConstrain& con,
+              std::vector<int>& output);
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              std::vector<int>& output,
+              double& sequence_probability,
+              std::vector<double>& point_probabilities,
+              bool avg = false,
+              size_t last_timestamp = 1);
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              const framework::ViterbiDecodeConstrain& con,
+              std::vector<int>& output,
+              double& sequence_probability,
+              std::vector<double>& point_probabilities,
+              bool avg = false,
+              size_t last_timestamp = 1);
+
+};
+
 
 }       //  end for namespace postagger
 }       //  end for namespace ltp

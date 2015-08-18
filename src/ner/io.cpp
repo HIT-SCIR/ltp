@@ -93,6 +93,41 @@ void NERWriter::write(const Instance* inst) {
       ofs << std::endl;
     }
   }
+
+  if (sequence_prob) {
+    ofs << inst -> sequence_probability << std::endl;
+  }
+
+  if (marginal_prob) {
+    for (size_t i = 0; i < len; ++ i) {
+      ofs << inst -> point_probabilities[i];
+      if (i + 1 < len) {
+        ofs << "\t";
+      } else {
+        ofs << std::endl;
+      }
+    }
+
+    for (size_t i = 0; i < inst->partial_probabilities.size(); ++ i) {
+      if (i + 1 < inst -> partial_probabilities.size()) {
+        ofs << "("
+            << inst -> partial_idx[i]
+            << ","
+            << inst -> partial_idx[i+1] - 1
+            << "):"
+            << inst -> partial_probabilities[i]
+            << "\t";
+      } else {
+        ofs << "("
+            << inst -> partial_idx[i]
+            << ","
+            << inst -> tagsidx.size() - 1
+            << "):"
+            << inst -> partial_probabilities[i]
+            << std::endl;
+      }
+    }
+  }
 }
 
 

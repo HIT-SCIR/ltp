@@ -24,6 +24,8 @@ struct TestOptions {
   std::string model_file;
   std::string lexicon_file;
   bool evaluate;
+  bool sequence_prob;
+  bool marginal_prob;
 };
 
 struct DumpOptions {

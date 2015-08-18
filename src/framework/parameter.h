@@ -254,6 +254,7 @@ public:
         out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(unsigned long long));
       } else if (opt == kDumpAveraged) {
         out.write(reinterpret_cast<const char*>(_W_sum), sizeof(double) * _dim);
+        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(unsigned long long));
       } else if (opt == kDumpNonAveraged) {
         out.write(reinterpret_cast<const char*>(_W), sizeof(double) * _dim);
       }
@@ -290,6 +291,7 @@ public:
       } else if (!strncmp(body, "avg", 11)) {
         _W_sum = new double[_dim];
         in.read(reinterpret_cast<char *>(_W_sum), sizeof(double)* _dim);
+        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(unsigned long long));
         _W = _W_sum;
         _enable_wrapper = true;
       } else if (!strncmp(body, "nonavg", 11)) {

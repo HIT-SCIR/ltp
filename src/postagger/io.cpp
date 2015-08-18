@@ -61,20 +61,33 @@ Instance* PostaggerReader::next() {
   return inst;
 }
 
-PostaggerWriter::PostaggerWriter(std::ostream& _ofs): ofs(_ofs) {}
-
 void PostaggerWriter::write(const Instance* inst) {
-  int len = inst->size();
+  size_t len = inst->size();
   if (inst->predict_tags.size() != len) {
     return;
   }
 
-  for (int i = 0; i < len; ++ i) {
+  for (size_t i = 0; i < len; ++ i) {
     ofs << inst->raw_forms[i] << "/" << inst->predict_tags[i];
     if (i + 1 < len) {
       ofs << "\t";
     } else {
       ofs << std::endl;
+    }
+  }
+
+  if (sequence_prob) {
+    ofs << inst -> sequence_probability << std::endl;
+  }
+
+  if (marginal_prob) {
+    for (size_t i = 0; i < len; ++ i) {
+      ofs << inst -> point_probabilities[i];
+      if (i + 1 < len) {
+        ofs << "\t";
+      } else {
+        ofs << std::endl;
+      }
     }
   }
 }

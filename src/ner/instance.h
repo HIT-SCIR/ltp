@@ -121,6 +121,11 @@ public:
   std::vector< std::string >  entities_tags;
   std::vector< std::string >  predict_entities;
   std::vector< std::string >  predict_entities_tags;
+
+  double                      sequence_probability;
+  std::vector< double >       point_probabilities;
+  std::vector< double >       partial_probabilities;
+  std::vector< int >          partial_idx;
 };
 
 }     //  end for namespace ner

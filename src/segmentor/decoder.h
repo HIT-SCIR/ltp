@@ -33,6 +33,24 @@ public:
   bool can_emit(const size_t& i, const size_t& j) const;
 };
 
+class SegmentationViterbiDecoderWithMarginal: public framework::ViterbiDecoderWithMarginal {
+public:
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              const framework::ViterbiDecodeConstrain& con,
+              std::vector<int>& output);
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              const framework::ViterbiDecodeConstrain& con,
+              std::vector<int>& output,
+              double& sequence_probability,
+              std::vector<double>& point_probabilities,
+              std::vector<double>& partial_probabilities,
+              std::vector<int>& partial_idx,
+              bool avg = false,
+              size_t last_timestamp = 1);
+};
+
 }       //  end for namespace segmentor
 }       //  end for namespace ltp
 #endif    //  end for __LTP_SEGMENTOR_DECODER_H__
