@@ -331,10 +331,11 @@ void PostaggerFrontend::test(void) {
     delete inst;
   }
 
-  double p = (double)num_recalled_tags / num_tags;
   if (test_opt.evaluate) {
+    double p = (double)num_recalled_tags / num_tags;
     INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_tags, num_tags);
   }
+
   INFO_LOG("Elapsed time %lf", t.elapsed());
 
   //sleep(1000000);

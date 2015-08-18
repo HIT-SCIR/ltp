@@ -519,28 +519,29 @@ void SegmentorFrontend::test(void) {
     decoder.decode(scm, con, inst->predict_tagsidx);
     ctx.clear();
 
-    std::vector<std::string> predict_words;
-    build_words(inst->raw_forms, inst->predict_tagsidx, predict_words);
+    build_words(inst->raw_forms, inst->predict_tagsidx, inst->predict_words);
 
     if (test_opt.evaluate) {
       std::vector<std::string> answer_words;
       build_words(inst->raw_forms, inst->tagsidx, answer_words);
 
-      num_recalled_words += InstanceUtils::num_recalled_words(answer_words, predict_words);
-      num_predicted_words += predict_words.size();
+      num_recalled_words += InstanceUtils::num_recalled_words(answer_words, inst->predict_words);
+      num_predicted_words += inst->predict_words.size();
       num_gold_words += answer_words.size();
     }
     writer.write(inst);
     delete inst;
   }
 
-  double p = (double)num_recalled_words / num_predicted_words;
-  double r = (double)num_recalled_words / num_gold_words;
-  double f = 2 * p * r / (p + r);
+  if (test_opt.evaluate) {
+    double p = (double)num_recalled_words / num_predicted_words;
+    double r = (double)num_recalled_words / num_gold_words;
+    double f = 2 * p * r / (p + r);
 
-  INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
-  INFO_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
-  INFO_LOG("F: %lf" , f);
+    INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_words, num_predicted_words);
+    INFO_LOG("R: %lf ( %d / %d )", r, num_recalled_words, num_gold_words);
+    INFO_LOG("F: %lf" , f);
+  }
   INFO_LOG("Elapsed time %lf", t.elapsed());
   return;
 }

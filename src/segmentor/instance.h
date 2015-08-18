@@ -26,7 +26,7 @@ public:
   std::vector< int >          lexicon_match_state;
   std::vector< std::string >  tags; // tags of characters, {B I E S}
   std::vector< int >          tagsidx; // int tags
-  std::vector< std::string >  predict_tags; 
+  std::vector< std::string >  predict_tags;
   std::vector< int >          predict_tagsidx;
   std::vector< std::string >  words; // words of the input
   std::vector< std::string >  predict_words;

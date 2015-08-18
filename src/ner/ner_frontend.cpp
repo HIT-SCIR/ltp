@@ -73,7 +73,7 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 
 NamedEntityRecognizerFrontend::~NamedEntityRecognizerFrontend() {
   if (glob_con) { delete glob_con;  glob_con = 0; }
-  
+
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     if (train_dat[i]) { delete train_dat[i];  train_dat[i] = 0; }
   }
@@ -230,7 +230,7 @@ void NamedEntityRecognizerFrontend::train(void) {
       updated_features.add(ctx.correct_features, 1.);
       updated_features.add(ctx.predict_features, -1.);
 
-      learn(train_opt.algorithm, updated_features, 
+      learn(train_opt.algorithm, updated_features,
         iter*train_dat.size() + i + 1, inst->num_errors(), model);
 
       if (train_opt.rare_feature_threshold > 0) {
@@ -305,7 +305,7 @@ void NamedEntityRecognizerFrontend::evaluate(double& f_score) {
     build_entities(inst, inst->predict_tagsidx, inst->predict_entities,
         inst->predict_entities_tags);
 
-    num_recalled_entities += inst->num_recalled_entites();
+    num_recalled_entities += inst->num_recalled_entities();
     num_predict_entities += inst->num_predict_entities();
     num_gold_entities += inst->num_gold_entities();
 
@@ -350,6 +350,10 @@ void NamedEntityRecognizerFrontend::test(void) {
   INFO_LOG("report: number of features %d", model->space.num_features());
   INFO_LOG("report: number of dimension %d", model->space.dim());
 
+  size_t num_recalled_entities = 0;
+  size_t num_predict_entities = 0;
+  size_t num_gold_entities = 0;
+
   const char* test_file = test_opt.test_file.c_str();
   std::ifstream ifs(test_file);
 
@@ -382,8 +386,29 @@ void NamedEntityRecognizerFrontend::test(void) {
     for(size_t i = 0; i < len; ++i) {
       inst->predict_tags[i] = model->labels.at(inst->predict_tagsidx[i]);
     }
+
+    if (test_opt.evaluate) {
+      build_entities(inst, inst->tagsidx, inst->entities,
+          inst->entities_tags);
+      build_entities(inst, inst->predict_tagsidx, inst->predict_entities,
+          inst->predict_entities_tags);
+      num_recalled_entities += inst->num_recalled_entities();
+      num_predict_entities += inst->num_predict_entities();
+      num_gold_entities += inst->num_gold_entities();
+    }
+
     writer.write(inst);
     delete inst;
+  }
+
+  if (test_opt.evaluate) {
+    double p = (double)num_recalled_entities / num_predict_entities;
+    double r = (double)num_recalled_entities / num_gold_entities;
+    double f_score = 2*p*r / (p + r);
+
+    INFO_LOG("P: %lf ( %d / %d )", p, num_recalled_entities, num_predict_entities);
+    INFO_LOG("R: %lf ( %d / %d )", r, num_recalled_entities, num_gold_entities);
+    INFO_LOG("F: %lf" , f_score);
   }
 
   INFO_LOG("Elapsed time %lf", t.elapsed());

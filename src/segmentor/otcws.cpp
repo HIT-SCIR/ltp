@@ -89,7 +89,7 @@ int learn(int argc, const char* argv[]) {
 
 int test(int argc, const char* argv[]) {
   std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
-  usage += "Testing suite for " DESCRIPTION "\n\n"; 
+  usage += "Testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options";
 
@@ -144,7 +144,7 @@ int test(int argc, const char* argv[]) {
 
 int dump(int argc, const char* argv[]) {
   std::string usage = EXECUTABLE "(dump) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
-  usage += "Model visualization suite for " DESCRIPTION "\n\n"; 
+  usage += "Model visualization suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " dump <options>\n\n";
   usage += "options";
 
