@@ -94,6 +94,8 @@ int test(int argc, const char* argv[]) {
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>()->default_value(false),
      "if configured, perform evaluation, input should contain '#' concatenated tag")
+    ("sequence", value<bool>()->default_value(false), "Output the probability of the label sequences")
+    ("marginal", value<bool>()->default_value(false), "Output the marginal probabilities of tags")
     ("help,h", "Show help information");
 
   if (argc == 1) { std::cerr << optparser << std::endl;  return 1; }
@@ -128,8 +130,10 @@ int test(int argc, const char* argv[]) {
   }
 
   bool evaluate = vm["evaluate"].as<bool>();
+  bool sequence_prob = vm["sequence"].as<bool>();
+  bool marginal_prob = vm["marginal"].as<bool>();
 
-  NamedEntityRecognizerFrontend frontend(input_file, model_name, evaluate);
+  NamedEntityRecognizerFrontend frontend(input_file, model_name, evaluate, sequence_prob, marginal_prob);
   frontend.test();
   return 0;
 }

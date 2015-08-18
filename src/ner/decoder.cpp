@@ -1,6 +1,7 @@
 #include "ner/decoder.h"
 #include "utils/strutils.hpp"
 #include "utils/logging.hpp"
+#include "ner/settings.h"
 
 namespace ltp {
 namespace ner {
@@ -36,6 +37,53 @@ bool NERTransitionConstrain::can_tran(const size_t& i, const size_t& j) const {
 
   size_t code = i* T+ j;
   return rep.find(code) != rep.end();
+}
+
+size_t NERTransitionConstrain::size(void) const {
+  return rep.size();
+}
+
+void NERViterbiDecoderWithMarginal::decode(const framework::ViterbiScoreMatrix& scm,
+            const framework::ViterbiDecodeConstrain& con,
+            std::vector<int>& output) {
+  ViterbiDecoder::decode(scm, con, output);
+}
+
+
+void NERViterbiDecoderWithMarginal::decode(const framework::ViterbiScoreMatrix& scm,
+        const framework::ViterbiDecodeConstrain& con,
+        std::vector<int>& output,
+        double& sequence_probability,
+        std::vector<double>& point_probabilities,
+        std::vector<double>& partial_probabilities,
+        std::vector<int>& partial_idx,
+        bool avg,
+        size_t last_timestamp) {
+
+  ViterbiDecoder::decode(scm, con, output);
+
+  if (sequence_prob || marginal_prob) {
+    init_prob_ctx(scm, con, avg, last_timestamp);
+
+    if (sequence_prob) {
+      calc_sequence_probability(output, sequence_probability);
+    }
+
+    if (marginal_prob) {
+      calc_point_probabilities(output, point_probabilities);
+
+      for (size_t i = 0; i < output.size(); ++i) {
+        if (output[i] == 0 ||
+                ((output[i]-1) % __num_pos_types__) == 0 ||
+                ((output[i]-1) % __num_pos_types__) == 3) {
+          partial_idx.push_back(i);
+        }
+      }
+
+      calc_partial_probabilities(output, partial_idx, partial_probabilities);
+
+    }
+  }
 }
 
 }     //  end for namespace ner

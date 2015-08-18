@@ -5,6 +5,7 @@
 #include "framework/frontend.h"
 #include "postagger/options.h"
 #include "postagger/postagger.h"
+#include "postagger/decoder.h"
 // #include "postagger/constrainutil.hpp"
 
 namespace ltp {
@@ -12,7 +13,7 @@ namespace postagger {
 
 class PostaggerFrontend: public Postagger, framework::Frontend {
 private:
-  framework::ViterbiDecoder decoder;            //! The decoder.
+  PostaggerViterbiDecoderWithMarginal decoder;            //! The decoder.
   framework::ViterbiFeatureContext ctx;         //! The decode context
   framework::ViterbiScoreMatrix scm;            //! The score matrix
   std::vector<Instance *> train_dat;  //! The training data.
@@ -32,7 +33,9 @@ public:
   PostaggerFrontend(const std::string& input_file,
       const std::string& model_file,
       const std::string& lexicon_file,
-      bool evaluate);
+      bool evaluate,
+      bool sequence_prob = false,
+      bool marginal_prob = false);
 
   PostaggerFrontend(const std::string& model_file);
 

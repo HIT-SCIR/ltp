@@ -93,6 +93,8 @@ int test(int argc, const char* argv[]) {
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>()->default_value(false),
      "if configured, perform evaluation, input should contain '_' concatenated tag")
+    ("sequence", value<bool>()->default_value(false), "Output the probability of the label sequences")
+    ("marginal", value<bool>()->default_value(false), "Output the marginal probabilities of tags")
     ("help,h", "Show help information");
 
   if (argc == 1) { std::cerr << optparser << std::endl; return 1; }
@@ -128,8 +130,10 @@ int test(int argc, const char* argv[]) {
   if (vm.count("output")) { output_file = vm["output"].as<std::string>(); }
 
   bool evaluate = vm["evaluate"].as<bool>();
+  bool sequence_prob = vm["sequence"].as<bool>();
+  bool marginal_prob = vm["marginal"].as<bool>();
 
-  PostaggerFrontend frontend(input_file, model_file, lexicon_file, evaluate);
+  PostaggerFrontend frontend(input_file, model_file, lexicon_file, evaluate, sequence_prob, marginal_prob);
   frontend.test();
   return 0;
 }

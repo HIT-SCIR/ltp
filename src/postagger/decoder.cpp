@@ -93,6 +93,59 @@ bool PostaggerLexicon::load(std::istream& is,
   return (successful = true);
 }
 
+void PostaggerViterbiDecoderWithMarginal::decode(const framework::ViterbiScoreMatrix& scm, std::vector<int>& output) {
+  ViterbiDecoder::decode(scm, output);
+}
+
+void PostaggerViterbiDecoderWithMarginal::decode(const framework::ViterbiScoreMatrix& scm,
+            const framework::ViterbiDecodeConstrain& con,
+            std::vector<int>& output) {
+  ViterbiDecoder::decode(scm, con, output);
+}
+
+void PostaggerViterbiDecoderWithMarginal::decode(const framework::ViterbiScoreMatrix& scm,
+                                                 std::vector<int>& output,
+                                                 double& sequence_probability,
+                                                 std::vector<double>& point_probabilities,
+                                                 bool avg,
+                                                 size_t last_timestamp) {
+  ViterbiDecoder::decode(scm, output);
+
+  if (sequence_prob || marginal_prob) {
+    init_prob_ctx(scm, avg, last_timestamp);
+
+    if (sequence_prob) {
+      calc_sequence_probability(output, sequence_probability);
+    }
+
+    if (marginal_prob) {
+      calc_point_probabilities(output, point_probabilities);
+    }
+  }
+}
+
+void PostaggerViterbiDecoderWithMarginal::decode(const framework::ViterbiScoreMatrix& scm,
+                                                 const framework::ViterbiDecodeConstrain& con,
+                                                 std::vector<int>& output,
+                                                 double& sequence_probability,
+                                                 std::vector<double>& point_probabilities,
+                                                 bool avg,
+                                                 size_t last_timestamp) {
+  ViterbiDecoder::decode(scm, con, output);
+
+  if (sequence_prob || marginal_prob) {
+    init_prob_ctx(scm, con, avg, last_timestamp);
+
+    if (sequence_prob) {
+      calc_sequence_probability(output, sequence_probability);
+    }
+
+    if (marginal_prob) {
+      calc_point_probabilities(output, point_probabilities);
+    }
+  }
+}
+
 }     //  end for namespace postagger
 }     //  end for namespace ltp
 

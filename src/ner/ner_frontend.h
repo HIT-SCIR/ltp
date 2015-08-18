@@ -6,6 +6,7 @@
 #include "ner/options.h"
 #include "ner/ner.h"
 #include "utils/unordered_set.hpp"
+#include "ner/decoder.h"
 
 namespace ltp {
 namespace ner {
@@ -17,7 +18,7 @@ using framework::ViterbiScoreMatrix;
 
 class NamedEntityRecognizerFrontend: public NamedEntityRecognizer, Frontend {
 private:
-  ViterbiDecoder decoder;
+  NERViterbiDecoderWithMarginal decoder;
   ViterbiFeatureContext ctx;
   ViterbiScoreMatrix scm;
   std::vector<Instance *> train_dat;
@@ -38,7 +39,9 @@ public:
   //! The testing model constructor.
   NamedEntityRecognizerFrontend(const std::string& model_file,
       const std::string& input_file,
-      bool evaluate);
+      bool evaluate,
+      bool sequence_prob = false,
+      bool marginal_prob = false);
 
   //! The dumping model constructor.
   NamedEntityRecognizerFrontend(const std::string& model_file);

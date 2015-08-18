@@ -19,6 +19,27 @@ public:
       const std::vector<std::string>& includes);
 
   bool can_tran(const size_t& i, const size_t& j) const;
+
+  size_t size(void) const;
+
+};
+
+class NERViterbiDecoderWithMarginal: public framework::ViterbiDecoderWithMarginal {
+public:
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              const framework::ViterbiDecodeConstrain& con,
+              std::vector<int>& output);
+
+  void decode(const framework::ViterbiScoreMatrix& scm,
+              const framework::ViterbiDecodeConstrain& con,
+              std::vector<int>& output,
+              double& sequence_probability,
+              std::vector<double>& point_probabilities,
+              std::vector<double>& partial_probabilities,
+              std::vector<int>& partial_idx,
+              bool avg = false,
+              size_t last_timestamp = 1);
 };
 
 }           //  end for namespace ner
