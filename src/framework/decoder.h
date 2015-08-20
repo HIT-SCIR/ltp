@@ -237,8 +237,7 @@ protected:
   const double DOUBLE_MIN = std::numeric_limits<double>::lowest();
   math::Mat<int>     back;
   math::Mat<double>  state;
-  math::Mat<bool>    can_emit;
-  math::Mat<bool>    can_tran;
+
 };
 
 
