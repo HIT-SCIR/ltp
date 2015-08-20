@@ -1,6 +1,6 @@
 # LTP: Language Technology Platform
 
-[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.png?branch=master)](https://travis-ci.org/HIT-SCIR/ltp) [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
+[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.svg?branch=master)](https://travis-ci.org/HIT-SCIR/ltp) [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
 
 新闻
 ----
@@ -17,7 +17,7 @@
 简介
 ----
 
-语言技术平台（Language Technology Platform，LTP）是[哈工大社会计算与信息检索研究中心](http://ir.hit.edu.cn/)历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块（包括词法、句法、语义等6项中文处理核心技术），以及基于动态链接库（Dynamic Link Library, DLL）的应用程序接口，可视化工具，并且能够以网络服务（Web Service）的形式进行使用。
+语言技术平台（Language Technology Platform，LTP）是[哈工大社会计算与信息检索研究中心](http://ir.hit.edu.cn/)历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块（包括词法、句法、语义等6项中文处理核心技术），以及基于动态链接库（Dynamic Link Library, DLL）的应用程序接口、可视化工具，并且能够以网络服务（Web Service）的形式进行使用。
 
 从2006年9月5日开始该平台对外免费共享目标代码，截止目前，已经有国内外400多家研究单位共享了LTP，也有国内外多家商业公司购买了LTP，用于实际的商业项目中。
 
@@ -30,7 +30,7 @@
 文档
 ---
 
-关于LTP的使用，请参考[ReadtheDocs在线文档](http://ltp.readthedocs.org/zh_CN/latest/)
+关于LTP的使用，请参考[在线文档](http://ltp.readthedocs.org/zh_CN/latest/)
 
 模型
 ---
@@ -40,6 +40,7 @@
 
 开源协议
 -------
+
 1. 语言技术平台面向国内外大学、中科院各研究所以及个人研究者免费开放源代码，但如上述机构和个人将该平台用于商业目的（如企业合作项目等）则需要付费。
 
 2. 除上述机构以外的企事业单位，如申请使用该平台，需付费。
