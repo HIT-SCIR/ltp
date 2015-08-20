@@ -5,8 +5,7 @@
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
 #include <cmath>
-#include <limits>
-
+#include <float.h>
 
 namespace ltp {
 namespace framework {
@@ -148,10 +147,10 @@ public:
       state[0][t] = scm.emit(0, t);
     }
 
-    double best = DOUBLE_MIN;
+    double best = -DBL_MAX;
     for (size_t i = 1; i < L; ++ i) {
       for (size_t t = 0; t < T; ++ t) {
-        best = DOUBLE_MIN;
+        best = -DBL_MAX;
         for (size_t pt = 0; pt < T; ++ pt) {
           double s = state[i-1][pt] + scm.tran(pt, t);
           if (s > best) {
@@ -180,11 +179,11 @@ public:
       state[0][t] = scm.emit(0, t);
     }
 
-    double best = DOUBLE_MIN;
+    double best = -DBL_MAX;
     for (size_t i = 1; i < L; ++ i) {
       for (size_t t = 0; t < T; ++ t) {
         if (!con.can_emit(i, t)) continue;
-        best = DOUBLE_MIN;
+        best = -DBL_MAX;
         for (size_t pt = 0; pt < T; ++ pt) {
           if (!con.can_emit(i-1, pt) || !con.can_tran(pt, t)) continue;
           double s = state[i-1][pt] + scm.tran(pt, t);
@@ -206,7 +205,7 @@ protected:
     back = -1;
 
     state.resize(L, T);
-    state = DOUBLE_MIN;
+    state = -DBL_MAX;
   }
 
   void get_result(std::vector<int>& output) {
@@ -218,7 +217,7 @@ protected:
     size_t T = back.ncols();
 
     output.resize(p+1);
-    double best = DOUBLE_MIN;
+    double best = -DBL_MAX;
 
     for (size_t t = 0; t < T; ++t) {
       double s = state[p][t];
@@ -234,7 +233,6 @@ protected:
   }
 
 
-  const double DOUBLE_MIN = std::numeric_limits<double>::lowest();
   math::Mat<int>     back;
   math::Mat<double>  state;
 
