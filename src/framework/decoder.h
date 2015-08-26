@@ -369,7 +369,7 @@ protected:
       beta_score[L-1][j] = scale[L-1];
     }
 
-    double tmp_row[T];
+    double * tmp_row = new double[T];
     for (int i = L - 2; i >= 0; --i) {
       for (size_t nt = 0; nt < T; ++nt) {
         tmp_row[nt] = beta_score[i+1][nt] * exp_emit[i+1][nt];
@@ -381,7 +381,7 @@ protected:
       }
       row_scale(beta_score, i, scale[i]);
     }
-
+    delete[] tmp_row;
   }
 
   void calc_alpha_score(const ViterbiDecodeConstrain& con) {
@@ -428,7 +428,7 @@ protected:
       beta_score[L-1][j] = scale[L-1];
     }
 
-    double tmp_row[T];
+    double * tmp_row = new double[T];
     for (int i = L - 2; i >= 0; --i) {
       for (size_t nt = 0; nt < T; ++nt) {
         if (!con.can_emit(i+1, nt)) { continue; }
@@ -443,28 +443,28 @@ protected:
       }
       row_scale(beta_score, i, scale[i], con);
     }
-
+    delete[] tmp_row;
   }
 
-  double row_sum(const math::Mat<double>& mat, int i) const {
+  double row_sum(const math::Mat<double>& mat, size_t i) const {
     double sum = 0.;
-    for (int j = 0; j < mat.ncols(); ++j) {
+    for (size_t j = 0; j < mat.ncols(); ++j) {
       sum += mat[i][j];
     }
     return sum;
   }
 
-  void row_scale(math::Mat<double>& mat, int i, double scale) {
-    for (int j = 0 ; j < mat.ncols(); ++j) {
+  void row_scale(math::Mat<double>& mat, size_t i, double scale) {
+    for (size_t j = 0 ; j < mat.ncols(); ++j) {
       mat[i][j] *= scale;
     }
   }
 
   double row_sum(const math::Mat<double>& mat,
-          int i,
+          size_t i,
           const ViterbiDecodeConstrain& con) const {
     double sum = 0.;
-    for (int j = 0; j < mat.ncols(); ++j) {
+    for (size_t j = 0; j < mat.ncols(); ++j) {
       if (!con.can_emit(i, j)) { continue; }
       sum += mat[i][j];
     }
@@ -472,10 +472,10 @@ protected:
   }
 
   void row_scale(math::Mat<double>& mat,
-          int i,
+          size_t i,
           double scale,
           const ViterbiDecodeConstrain& con) {
-    for (int j = 0 ; j < mat.ncols(); ++j) {
+    for (size_t j = 0 ; j < mat.ncols(); ++j) {
       if (!con.can_emit(i, j)) { continue; }
       mat[i][j] *= scale;
     }
