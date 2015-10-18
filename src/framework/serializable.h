@@ -2,6 +2,7 @@
 #define __LTP_FRAMEWORK_SERIALIZABLE_H__
 
 #include <iostream>
+#include <cstdint>
 
 namespace ltp {
 namespace framework {
