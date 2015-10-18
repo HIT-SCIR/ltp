@@ -8,7 +8,10 @@ set (CMAKE_MODULE_PATH      ${PROJECT_SOURCE_DIR}/cmake)
 if (APPLE)
   add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
   set(CMAKE_CXX_FLAGS "-std=c++11 -Wno-c++11-narrowing")
+else()
+  set(CMAKE_CXX_FLAGS "-std=c++11")
 endif(APPLE)
+
 
 # -- config output directories
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
