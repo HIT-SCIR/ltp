@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <cstdint>
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
 #include "utils/logging.hpp"
@@ -14,12 +15,12 @@ class Parameters {
 public:
   bool _enable_wrapper;
 
-  size_t _dim;
-  size_t _last_timestamp;
+  uint32_t _dim;
+  uint32_t _last_timestamp;
 
   double* _W;
   double* _W_sum;
-  size_t* _W_time;
+  uint32_t* _W_time;
 
 public:
   enum DumpOption {
@@ -33,17 +34,17 @@ public:
     _last_timestamp(0), _enable_wrapper(false) {}
   ~Parameters() { dealloc(); }
 
-  void realloc(const size_t& dim) {
+  void realloc(const uint32_t& dim) {
     dealloc();
     _dim = dim;
 
     if (dim > 0) {
       _W = new double[dim];
       _W_sum = new double[dim];
-      _W_time = new size_t[dim];
+      _W_time = new uint32_t[dim];
     }
 
-    for (size_t i = 0; i < dim; ++ i) {
+    for (uint32_t i = 0; i < dim; ++ i) {
       _W[i] = 0;
       _W_sum[i] = 0;
       _W_time[i] = 0;
@@ -83,8 +84,8 @@ public:
    *  @param[in]  now   The timestamp.
    *  @param[in]  scale The scale
    */
-  void add(const size_t& idx, const size_t& now, const double& scale = 1.) {
-    size_t elapsed = now - _W_time[idx];
+  void add(const uint32_t& idx, const uint32_t& now, const double& scale = 1.) {
+    uint32_t elapsed = now - _W_time[idx];
     double cur_val = _W[idx];
 
     _W[idx] = cur_val + scale;
@@ -103,11 +104,11 @@ public:
    *  @param[in]  now   The timestamp.
    *  @param[in]  scale The scale
    */
-  void add(const math::SparseVec& vec, const size_t& now, const double& scale = 1.) {
+  void add(const math::SparseVec& vec, const uint32_t& now, const double& scale = 1.) {
     for (math::SparseVec::const_iterator itx = vec.begin();
         itx != vec.end(); ++ itx) {
-      int idx = itx->first;
-      int elapsed = now - _W_time[idx];
+      uint32_t idx = itx->first;
+      uint32_t elapsed = now - _W_time[idx];
       double upd = scale * itx->second;
       double cur_val = _W[idx];
 
@@ -169,15 +170,15 @@ public:
    *                      non-averaged one (_W).
    *  @return     double  The dot product.
    */
-  double dot(const int idx, bool avg = false) const {
+  double dot(const uint32_t idx, bool avg = false) const {
     const double * const p = (avg ? _W_sum : _W);
     return p[idx];
   }
 
-  double predict(const math::FeatureVector* vec, const size_t& elapsed_time) const {
+  double predict(const math::FeatureVector* vec, const uint32_t& elapsed_time) const {
     double ret = 0;
-    for (int i = 0; i < vec->n; ++i) {
-      int idx = vec->idx[i] + vec->loff;
+    for (uint32_t i = 0; i < vec->n; ++i) {
+      uint32_t idx = vec->idx[i] + vec->loff;
       if (vec->val) {
         ret += (_W_sum[idx] + _W[idx] * elapsed_time * vec->val[i]);
       }
@@ -188,7 +189,7 @@ public:
     return ret;
   }
 
-  double predict(const int idx, const size_t& elapsed_time) const {
+  double predict(const uint32_t idx, const uint32_t& elapsed_time) const {
     return _W_sum[idx] + _W[idx] * elapsed_time;
   }
 
@@ -197,8 +198,8 @@ public:
    *
    *  @param[in]  now   The timestamp.
    */
-  void flush(const size_t& now) {
-    for (size_t i = 0; i < _dim; ++i) {
+  void flush(const uint32_t& now) {
+    for (uint32_t i = 0; i < _dim; ++i) {
       _W_sum[i] += (now - _W_time[i]) * _W[i];
       _W_time[i] = now;
     }
@@ -208,13 +209,14 @@ public:
     }
   }
 
-  void str(std::ostream& out, int width = 10) {
+  void str(std::ostream& out, uint32_t width = 10) {
+    if (0 == width) return;
     out << "\t";
-    for (int i = 0; i < width; ++ i) {
+    for (uint32_t i = 0; i < width; ++ i) {
       out << "[" << i << "]\t";
     }
     out << std::endl;
-    for (size_t i = 0; i < _dim; ++ i) {
+    for (uint32_t i = 0; i < _dim; ++ i) {
       if (i % width == 0) {
         out << "[" << i << "-" << (i / width + 1)  * width - 1 << "]\t";
       }
@@ -245,16 +247,16 @@ public:
       strncpy(chunk, "param-nonavg", 16);
     }
     out.write(chunk, 16);
-    out.write(reinterpret_cast<const char*>(&_dim), sizeof(unsigned long long));
+    out.write(reinterpret_cast<const char*>(&_dim), sizeof(uint32_t));
 
     if (_dim > 0) {
       if (opt == kDumpDetails) {
         out.write(reinterpret_cast<const char*>(_W), sizeof(double) * _dim);
         out.write(reinterpret_cast<const char*>(_W_sum), sizeof(double) * _dim);
-        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(unsigned long long));
+        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(uint32_t));
       } else if (opt == kDumpAveraged) {
         out.write(reinterpret_cast<const char*>(_W_sum), sizeof(double) * _dim);
-        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(unsigned long long));
+        out.write(reinterpret_cast<const char*>(&_last_timestamp), sizeof(uint32_t));
       } else if (opt == kDumpNonAveraged) {
         out.write(reinterpret_cast<const char*>(_W), sizeof(double) * _dim);
       }
@@ -279,19 +281,19 @@ public:
       return false;
     }
 
-    in.read(reinterpret_cast<char *>(&_dim), sizeof(unsigned long long));
+    in.read(reinterpret_cast<char *>(&_dim), sizeof(uint32_t));
     if (_dim > 0) {
       if (!strncmp(body, "details", 11)) {
         _W = new double[_dim];
         _W_sum = new double[_dim];
         in.read(reinterpret_cast<char *>(_W), sizeof(double)* _dim);
         in.read(reinterpret_cast<char *>(_W_sum), sizeof(double)* _dim);
-        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(unsigned long long));
+        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(uint32_t));
         _enable_wrapper = false;
       } else if (!strncmp(body, "avg", 11)) {
         _W_sum = new double[_dim];
         in.read(reinterpret_cast<char *>(_W_sum), sizeof(double)* _dim);
-        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(unsigned long long));
+        in.read(reinterpret_cast<char *>(&_last_timestamp), sizeof(uint32_t));
         _W = _W_sum;
         _enable_wrapper = true;
       } else if (!strncmp(body, "nonavg", 11)) {

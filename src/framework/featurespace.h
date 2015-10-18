@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdint>
 #include "utils/smartmap.hpp"
 
 namespace ltp {
@@ -17,7 +18,7 @@ public:
     // should be careful about the empty dicts
   }
 
-  FeatureSpaceIterator(const utility::SmartMap<int>* dicts, int num_dicts)
+  FeatureSpaceIterator(const utility::SmartMap<int32_t>* dicts, uint32_t num_dicts)
     : _dicts(dicts),
       _num_dicts(num_dicts),
       _i(0),
@@ -29,8 +30,8 @@ public:
   }
 
   const char* key() { return _j.key(); }
-  int id() { return (*_j.value()); }
-  size_t tid() { return _i; }
+  int32_t id() { return (*_j.value()); }
+  uint32_t tid() { return _i; }
 
   bool operator ==(const FeatureSpaceIterator & other) const {
     return ((_dicts + _i) == other._dicts);
@@ -63,33 +64,33 @@ public:
     }
   }
 
-  size_t _i;
-  size_t _num_dicts;
-  size_t _state;
-  const utility::SmartMap<int>* _dicts;
-  utility::SmartMap<int>::const_iterator _j;
+  uint32_t _i;
+  uint32_t _num_dicts;
+  uint32_t _state;
+  const utility::SmartMap<int32_t>* _dicts;
+  utility::SmartMap<int32_t>::const_iterator _j;
 };
 
 class ViterbiFeatureSpace {
 public:
-  ViterbiFeatureSpace(size_t nr_dicts, size_t nr_labels = 1)
+  ViterbiFeatureSpace(uint32_t nr_dicts, uint32_t nr_labels = 1)
     : _num_dicts(nr_dicts), _num_labels(nr_labels), _offset(0) {
-    dicts = new utility::SmartMap<int>[ nr_dicts ];
+    dicts = new utility::SmartMap<int32_t>[ nr_dicts ];
   }
 
   ~ViterbiFeatureSpace(void) {
     delete [](dicts);
   }
 
-  int retrieve(const size_t& tid, const char* key) const {
-    int val;
+  int32_t retrieve(const uint32_t& tid, const char* key) const {
+    int32_t val;
     if (dicts[tid].get(key, val)) {
       return val;
     }
     return -1;
   }
 
-  int retrieve(const size_t& tid, const std::string& key) const {
+  int32_t retrieve(const uint32_t& tid, const std::string& key) const {
     return retrieve(tid, key.c_str());
   }
 
@@ -101,8 +102,8 @@ public:
    *  @param[in]  create   if create is ture, insert the key into the dict
    *  @return     int   the dimension index
    */
-  int retrieve(const size_t& tid, const char* key, bool create) {
-    int val;
+  int32_t retrieve(const uint32_t& tid, const char* key, bool create) {
+    int32_t val;
     if (dicts[tid].get(key, val)) {
       return val;
     } else {
@@ -116,7 +117,7 @@ public:
     return -1;
   }
 
-  int retrieve(const size_t& tid, const std::string& key, bool create) {
+  int32_t retrieve(const uint32_t& tid, const std::string& key, bool create) {
     return retrieve(tid, key.c_str(), create);
   }
 
@@ -128,15 +129,15 @@ public:
    *  @param[in]  lid   the label
    *  @return     int   the dimension index
    */
-  int index(const size_t& tid, const char* key, const size_t& lid = 0) const {
-    int idx = -1;
+  int32_t index(const uint32_t& tid, const char* key, const uint32_t& lid = 0) const {
+    int32_t idx = -1;
     if (!dicts[tid].get(key, idx)) {
       return -1;
     }
     return idx * _num_labels + lid;
   }
 
-  int index(const size_t& tid, const std::string& key, const size_t& lid = 0) const {
+  int32_t index(const uint32_t& tid, const std::string& key, const uint32_t& lid = 0) const {
     return index(tid, key.c_str(), lid);
   }
 
@@ -147,27 +148,27 @@ public:
    *  @param[in]  lid   the label
    *  @return     int   the dimension index
    */
-  int index(const size_t& prev_lid, const size_t& lid) const {
+  int32_t index(const uint32_t& prev_lid, const uint32_t& lid) const {
     return _offset * _num_labels + prev_lid * _num_labels + lid;
   }
 
-  size_t num_features() const {
+  uint32_t num_features() const {
     return _offset;
   }
 
-  size_t dim() const {
+  uint32_t dim() const {
     return _offset* _num_labels + _num_labels* _num_labels;
   }
 
-  size_t num_groups() const {
+  uint32_t num_groups() const {
     return _offset + _num_labels;
   }
 
-  size_t num_dicts() const {
+  uint32_t num_dicts() const {
     return _num_dicts;
   }
 
-  void set_num_labels(const size_t& num_labels) {
+  void set_num_labels(const uint32_t& num_labels) {
     _num_labels = num_labels;
   }
 
@@ -178,14 +179,14 @@ public:
    */
   void dump(std::ostream & ofs) const {
     char chunk[16];
-    size_t sz = _num_dicts;
+    uint32_t sz = _num_dicts;
     strncpy(chunk, "featurespace", 16);
 
     ofs.write(chunk, 16);
-    ofs.write(reinterpret_cast<const char *>(&_offset), sizeof(unsigned long long));
-    ofs.write(reinterpret_cast<const char *>(&sz), sizeof(unsigned long long));
+    ofs.write(reinterpret_cast<const char *>(&_offset), sizeof(uint32_t));
+    ofs.write(reinterpret_cast<const char *>(&sz), sizeof(uint32_t));
 
-    for (size_t i = 0; i < _num_dicts; ++ i) {
+    for (uint32_t i = 0; i < _num_dicts; ++ i) {
       dicts[i].dump(ofs);
     }
   }
@@ -199,20 +200,20 @@ public:
    */
   bool load(std::istream& ifs) {
     char chunk[16];
-    unsigned long long sz;
+    uint32_t sz;
     ifs.read(chunk, 16);
     if (strcmp(chunk, "featurespace")) {
       return false;
     }
 
-    ifs.read(reinterpret_cast<char *>(&_offset), sizeof(unsigned long long));
-    ifs.read(reinterpret_cast<char *>(&sz), sizeof(unsigned long long));
+    ifs.read(reinterpret_cast<char *>(&_offset), sizeof(uint32_t));
+    ifs.read(reinterpret_cast<char *>(&sz), sizeof(uint32_t));
 
     if (sz != _num_dicts) {
       return false;
     }
 
-    for (size_t i = 0; i < sz; ++ i) {
+    for (uint32_t i = 0; i < sz; ++ i) {
       if (!dicts[i].load(ifs)) {
         return false;
       }
@@ -228,10 +229,10 @@ public:
     return FeatureSpaceIterator(dicts + _num_dicts, _num_dicts);
   }
 private:
-  size_t _offset;
-  size_t _num_labels;
-  size_t _num_dicts;
-  utility::SmartMap<int>* dicts;
+  uint32_t _offset;
+  uint32_t _num_labels;
+  uint32_t _num_dicts;
+  utility::SmartMap<int32_t>* dicts;
 };
 
 } //  namespace framework
