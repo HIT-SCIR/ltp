@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 #include <cstring>
+#include <cstdint>
 #include "utils/hasher.hpp"
 
 namespace ltp {
@@ -29,7 +30,7 @@ public:
   }
 };
 
-template <class T = int>
+template <class T = int32_t>
 struct __SmartMap_Const_Iterator {
   typedef __SmartMap_Hash_Node hash_node_t;
 
@@ -58,8 +59,8 @@ struct __SmartMap_Const_Iterator {
   const T *           val_buffer;
 };
 
-template <class T = int, 
-         class HashFunction = __Default_CharArray_HashFunction, 
+template <class T = int32_t,
+         class HashFunction = __Default_CharArray_HashFunction,
          class StringEqual  = __Default_CharArray_EqualFunction>
 class SmartMap {
 public:
@@ -83,12 +84,12 @@ public:
     _cap_buckets    = PRIMES[_cap_buckets_idx];
     _max_buckets    = int(0.7 * _cap_buckets);
     // allocate memory
-    _hash_buckets   = new int[ _cap_buckets ];
+    _hash_buckets   = new int32_t[ _cap_buckets ];
     _hash_buffer    = new hash_node_t[_cap_entries];
     _key_buffer     = new char[_cap_key_buffer];
     _val_buffer     = new T[_cap_entries];
 
-    _hash_buckets_volumn = new int[ _cap_buckets ];
+    _hash_buckets_volumn = new int32_t[ _cap_buckets ];
 
     // set the hash_table to be empty
     for (unsigned i = 0; i < _cap_buckets; ++ i) {
@@ -131,8 +132,8 @@ public:
         // not find this hash node
         _append(key, val, hv, idx);
 
-        for (p = _hash_buckets[idx]; 
-            _hash_buffer[p].__next_off >= 0; 
+        for (p = _hash_buckets[idx];
+            _hash_buffer[p].__next_off >= 0;
             (p = _hash_buffer[p].__next_off));
 
         _hash_buffer[p].__next_off = (_latest_hash_node - _hash_buffer);
@@ -164,14 +165,14 @@ public:
       _max_buckets = int(_cap_buckets * 0.7);
 
       // allocate a new bucket
-      int * new_hash_buckets_volumn = new int[_cap_buckets];
-      int * new_hash_buckets = new int[_cap_buckets];
-      for (unsigned i = 0; i < _cap_buckets; ++ i) {
+      int32_t * new_hash_buckets_volumn = new int32_t[_cap_buckets];
+      int32_t* new_hash_buckets = new int32_t[_cap_buckets];
+      for (unsigned int i = 0; i < _cap_buckets; ++ i) {
         new_hash_buckets[i] = -1;
         new_hash_buckets_volumn[i] = 0;
       }
 
-      for (unsigned i = 0; i < _num_entries; ++ i) {
+      for (unsigned int i = 0; i < _num_entries; ++ i) {
         unsigned int hash_val = _hash_buffer[i].__hash_val;
         unsigned int bucket_id = (hash_val % _cap_buckets);
         int freq = _hash_buffer[i].__freq;
@@ -224,8 +225,8 @@ public:
    *  @return   bool  true on key exist, otherwise false
    */
   bool get(const char * key, T & val) const {
-    unsigned hv = HashFunction()(key);
-    unsigned idx = (hv % _cap_buckets);
+    unsigned int hv = HashFunction()(key);
+    unsigned int idx = (hv % _cap_buckets);
     int p = _find(key, hv, idx, false);
 
     if (-1 == p) {
@@ -245,8 +246,8 @@ public:
    *            otherwise NULL
    */
   T * get(const char * key) const {
-    unsigned hv = HashFunction()(key);
-    unsigned idx = (hv % _cap_buckets);
+    unsigned int hv = HashFunction()(key);
+    unsigned int idx = (hv % _cap_buckets);
     int p = _find(key, hv, idx, false);
 
     if (-1 == p) {
@@ -355,10 +356,10 @@ public:
     out.write(header, 4);
     header_size += 4;
 
-    out.write(reinterpret_cast<const char *>(&_num_entries),  sizeof(unsigned int));
-    out.write(reinterpret_cast<const char *>(&_len_key_buffer), sizeof(unsigned int));
-    out.write(reinterpret_cast<const char *>(&_cap_buckets),  sizeof(unsigned int));
-    out.write(reinterpret_cast<const char *>(_hash_buckets),  sizeof(int) * _cap_buckets);
+    out.write(reinterpret_cast<const char *>(&_num_entries),  sizeof(uint32_t));
+    out.write(reinterpret_cast<const char *>(&_len_key_buffer), sizeof(uint32_t));
+    out.write(reinterpret_cast<const char *>(&_cap_buckets),  sizeof(uint32_t));
+    out.write(reinterpret_cast<const char *>(_hash_buckets),  sizeof(int32_t) * _cap_buckets);
     out.write(reinterpret_cast<const char *>(_hash_buffer),   sizeof(hash_node_t) * _num_entries);
     out.write(reinterpret_cast<const char *>(_key_buffer),    sizeof(char) * _len_key_buffer);
     out.write(reinterpret_cast<const char *>(_val_buffer),    sizeof(T) * _num_entries);
@@ -381,17 +382,17 @@ public:
       return false;
     }
 
-    in.read(reinterpret_cast<char *>(&_num_entries),  sizeof(unsigned int));
-    in.read(reinterpret_cast<char *>(&_len_key_buffer), sizeof(unsigned int));
-    in.read(reinterpret_cast<char *>(&_cap_buckets),  sizeof(unsigned int));
+    in.read(reinterpret_cast<char *>(&_num_entries),  sizeof(uint32_t));
+    in.read(reinterpret_cast<char *>(&_len_key_buffer), sizeof(uint32_t));
+    in.read(reinterpret_cast<char *>(&_cap_buckets),  sizeof(uint32_t));
 
-    _hash_buckets   = new int[_cap_buckets];
+    _hash_buckets   = new int32_t[_cap_buckets];
     _hash_buffer  = new hash_node_t[_num_entries];
     _key_buffer   = new char[_len_key_buffer];
     _val_buffer   = new T[_num_entries];
 
 
-    in.read(reinterpret_cast<char *>(_hash_buckets),  sizeof(int) * _cap_buckets);
+    in.read(reinterpret_cast<char *>(_hash_buckets),  sizeof(uint32_t) * _cap_buckets);
     in.read(reinterpret_cast<char *>(_hash_buffer),   sizeof(hash_node_t) * _num_entries);
     in.read(reinterpret_cast<char *>(_key_buffer),    sizeof(char) * _len_key_buffer);
     in.read(reinterpret_cast<char *>(_val_buffer),    sizeof(T) * _num_entries);
@@ -438,8 +439,8 @@ protected:
   static const unsigned int PRIMES[100]; 
 
 protected:
-  int *       _hash_buckets;
-  int *       _hash_buckets_volumn;
+  int32_t *       _hash_buckets;
+  int32_t *       _hash_buckets_volumn;
   hash_node_t *   _hash_buffer;
   char *      _key_buffer;  /*< the buffer of key */
   T *       _val_buffer;  /*< the buffer of value */
@@ -584,7 +585,7 @@ const unsigned int SmartMap<T, HashFunction, StringEqual>::PRIMES[100] = {
   1610612741,
 };
 
-class IndexableSmartMap : public SmartMap<int> {
+class IndexableSmartMap : public SmartMap<int32_t> {
 public:
   IndexableSmartMap() : entries(0), cap_entries(0) {}
 
@@ -595,8 +596,8 @@ public:
   }
 
 private:
-  size_t cap_entries;
-  int * entries;
+  uint32_t cap_entries;
+  int32_t* entries;
 
 public:
   /**
@@ -608,32 +609,32 @@ public:
   // offsets of the key in hashmap key buffer is stored in entries.
   // when a new key is insert into the collection, check if entries
   // buffer is big enough. if not, duplicate the memory.
-  int push(const char * key) {
-    if (!SmartMap<int>::contains(key)) {
-      int idx = SmartMap<int>::size();
+  int32_t push(const char * key) {
+    if (!SmartMap<int32_t>::contains(key)) {
+      int32_t idx = SmartMap<int32_t>::size();
       set(key, idx);
 
-      if (cap_entries < SmartMap<int>::_num_entries) {
-        cap_entries = ( SmartMap<int>::_num_entries << 1);
-        int * new_entries = new int[cap_entries];
+      if (cap_entries < SmartMap<int32_t>::_num_entries) {
+        cap_entries = ( SmartMap<int32_t>::_num_entries << 1);
+        int32_t* new_entries = new int32_t[cap_entries];
         if ( entries ) {
-          memcpy(new_entries, entries, sizeof(int) * (SmartMap<int>::_num_entries - 1));
+          memcpy(new_entries, entries, sizeof(int32_t) * (SmartMap<int32_t>::_num_entries - 1));
           delete [](entries);
         }
         entries = new_entries;
       }
 
       // SmartMap<int>::debug(cout);
-      entries[_num_entries-1] = SmartMap<int>::_latest_hash_node->__key_off;
+      entries[_num_entries-1] = SmartMap<int32_t>::_latest_hash_node->__key_off;
       return idx;
     } else {
-      return (*SmartMap<int>::get(key));
+      return (*SmartMap<int32_t>::get(key));
     }
 
     return -1;
   }
 
-  int push(const std::string & key) {
+  int32_t push(const std::string & key) {
     return push(key.c_str());
   }
 
@@ -645,7 +646,7 @@ public:
    */
   const char* at(const size_t& i) const {
     if (i >= 0 && i < _num_entries) {
-      return SmartMap<int>::_key_buffer + entries[i];
+      return SmartMap<int32_t>::_key_buffer + entries[i];
     } else {
       return 0;
     }
@@ -657,9 +658,9 @@ public:
    *  @param[in]  key       the key
    *  @return   int       index of the key if exist, otherwise -1
    */
-  int index(const char * key) const {
-    int val = -1;
-    if (SmartMap<int>::get(key, val)) {
+  int32_t index(const char * key) const {
+    int32_t val = -1;
+    if (SmartMap<int32_t>::get(key, val)) {
       return val;
     }
 
@@ -676,8 +677,8 @@ public:
    *  @param[out] out   the output stream
    */
   void dump(std::ostream & out) const {
-    SmartMap<int>::dump(out);
-    out.write(reinterpret_cast<const char *>(entries), sizeof(int) * _num_entries);
+    SmartMap<int32_t>::dump(out);
+    out.write(reinterpret_cast<const char *>(entries), sizeof(int32_t) * _num_entries);
   }
 
   /**
@@ -687,7 +688,7 @@ public:
    *  @return   bool  true on success, otherwise false
    */
   bool load(std::istream & in) {
-    bool ret = SmartMap<int>::load(in);
+    bool ret = SmartMap<int32_t>::load(in);
     if (!ret) {
       return ret;
     }
@@ -696,12 +697,12 @@ public:
       delete [](entries);
     }
 
-    entries = new int[SmartMap<int>::_num_entries];
+    entries = new int32_t[SmartMap<int32_t>::_num_entries];
     if (!entries) {
       return false;
     }
 
-    in.read(reinterpret_cast<char *>(entries), sizeof(int) * _num_entries);
+    in.read(reinterpret_cast<char *>(entries), sizeof(int32_t) * _num_entries);
     return true;
   }
 };
