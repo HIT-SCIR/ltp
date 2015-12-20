@@ -1,0 +1,55 @@
+# Project: Project1
+# Makefile created by Dev-C++ 4.9.9.1
+
+CPP  = gcc.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = svm_common.o svm_hideo.o svm_learn.o svm_learn_main.o tree_kernel.o tree_manager.o $(RES)
+LINKOBJ  = svm_common.o svm_hideo.o svm_learn.o svm_learn_main.o tree_kernel.o tree_manager.o $(RES)
+OBJCLA  = svm_classify.o svm_common.o svm_hideo.o svm_learn.o tree_kernel.o tree_manager.o $(RES)
+LINKOBJCLA  = svm_classify.o svm_common.o svm_hideo.o svm_learn.o tree_kernel.o tree_manager.o $(RES)
+
+LIBS =  -L"C:/devcpp/Dev-C++/lib"  
+INCS =  -I"C:/devcpp/Dev-C++/include" 
+CXXINCS =  -I"C:/devcpp/Dev-C++/include/c++/3.3.1"  -I"C:/devcpp/Dev-C++/include/c++/3.3.1/mingw32"  -I"C:/devcpp/Dev-C++/include/c++/3.3.1/backward"  -I"C:/devcpp/Dev-C++/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/devcpp/Dev-C++/include" 
+BIN  = svm_learn.exe
+BINCLA  = svm_classify.exe
+
+CXXFLAGS = -Wall $(CXXINCS)
+CFLAGS = $(INCS)  
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before svm_learn.exe svm_classify.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "svm_learn.exe" $(LIBS)
+
+$(BINCLA): $(OBJCLA)
+	$(CPP) $(LINKOBJCLA) -o "svm_classify.exe" $(LIBS)
+
+svm_classify.o: svm_classify.c
+	$(CPP) -c svm_classify.c -o svm_classify.o $(CXXFLAGS)
+
+svm_common.o: svm_common.c
+	$(CPP) -c svm_common.c -o svm_common.o $(CXXFLAGS)
+
+svm_hideo.o: svm_hideo.c
+	$(CPP) -c svm_hideo.c -o svm_hideo.o $(CXXFLAGS)
+
+svm_learn.o: svm_learn.c
+	$(CPP) -c svm_learn.c -o svm_learn.o $(CXXFLAGS)
+
+svm_learn_main.o: svm_learn_main.c
+	$(CPP) -c svm_learn_main.c -o svm_learn_main.o $(CXXFLAGS)
+
+tree_kernel.o: tree_kernel.c
+	$(CPP) -c tree_kernel.c -o tree_kernel.o $(CXXFLAGS)
+
+tree_manager.o: tree_manager.c
+	$(CPP) -c tree_manager.c -o tree_manager.o $(CXXFLAGS)

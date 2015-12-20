@@ -1,0 +1,1 @@
+./bin/ltp_test --input=/home/jiadongyu/homework/ie/ltp/data/input.txt --threads=4
