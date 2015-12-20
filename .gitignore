@@ -19,6 +19,22 @@ config.h
 *.cnf
 
 ###############
+# tmp         #
+###############
+*~
+
+###############
+# svm         #
+###############
+svm/ouput/
+svm/svm_model/
+svm/data/
+svm/svm-light-TK-1.2.1/svm_classify
+svm/svm-light-TK-1.2.1/svm_learn
+
+
+
+###############
 # output      #
 ###############
 #include/
