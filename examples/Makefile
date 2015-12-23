@@ -7,7 +7,8 @@ all: cws \
 	pos \
 	par \
 	ner \
-	srl 
+	srl \
+	genfeature
 
 cws: cws.cpp
 	${cc} ${ccflags} -o cws cws.cpp -I./ \
@@ -35,6 +36,12 @@ srl: srl.cpp
 		-I../include \
 		-L../lib -lsrl
 
+genfeature: genfeature.cpp
+	${cc} ${ccflags} -std=c++11 -o genfeature genfeature.cpp -I./ \
+		-I../include \
+		-L../lib -lsrl -lparser -lner -lpostagger -lsegmentor -lboost_regex
+
+
 .PHONY: clean
 
 clean:
@@ -43,3 +50,4 @@ clean:
 	rm ner
 	rm par
 	rm srl
+	rm genfeature

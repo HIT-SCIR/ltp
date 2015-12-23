@@ -8,8 +8,8 @@ using namespace std;
 
 
 int main(int argc, char * argv[]){
-
-
+    Model model;
+    model.main();
 }
 
 
