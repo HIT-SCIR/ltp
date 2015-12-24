@@ -8,6 +8,23 @@
 *.libs
 
 ###############
+# binary      #
+###############
+example/genfeature
+example/ner
+example/par
+example/pos
+example/srl
+example/cws
+
+###############
+# result      #
+###############
+*.result
+*.result-fn
+*.result-fp
+
+###############
 # build       #
 ###############
 build

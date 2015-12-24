@@ -37,7 +37,7 @@ srl: srl.cpp
 		-L../lib -lsrl
 
 genfeature: genfeature.cpp
-	${cc} ${ccflags} -std=c++11 -o genfeature genfeature.cpp -I./ \
+	${cc} ${ccflags} -std=c++11  -fopenmp  -o genfeature genfeature.cpp -I./ \
 		-I../include \
 		-L../lib -lsrl -lparser -lner -lpostagger -lsegmentor -lboost_regex
 

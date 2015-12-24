@@ -18,6 +18,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
+#include <omp.h>
 
 #include <vector>
 #include <string>
@@ -49,6 +50,7 @@ public:
 
     const string input = "data/input.txt";
     const string featureOutput = "svm/data/feature.txt";
+    const string rawData = "svm/data/raw_data.txt";
 
     int LoadData(vector<string> &sentences, vector<string> &people,
                  vector<string> &institute, vector<int> &label) const {
@@ -69,7 +71,7 @@ public:
             people.push_back(p);
             institute.push_back(i);
             label.push_back(l);
-            cerr<<s<<"#"<<p<<"#"<<i<<l<<endl;
+            cerr<<s<<"#"<<p<<"#"<<i<<"#"<<l<<endl;
         }
         return 0;
     }
@@ -83,16 +85,16 @@ public:
         nes.clear();
         parseTree.clear();
         int len = segmentor_segment(cws_model, sentence, words);
-        cerr<<"finish seg";
+
         postagger_postag(pos_model, words, post_tags);
-        cerr<<"finish post tag";
+
         ner_recognize(ner_model, words, post_tags, nes);
-        cerr<<"finish ner";
+
         std::vector<int> heads;
         std::vector<std::string> deprels;
 
         parser_parse(par_model, words, post_tags, heads, deprels);
-        cerr<<"finish parse";
+
         for (int i = 0; i < heads.size(); i++) {
             parseTree.push_back(make_pair(heads[i], deprels[i]));
         }
@@ -111,6 +113,11 @@ public:
         cerr<<"succ in loading data, size: "<< sentences.size()<<endl;
 
         ofstream ofs(featureOutput);
+        ofstream rawDataWriter(rawData);
+
+        vector<string> toWrite;
+        toWrite.resize(sentences.size());
+#pragma omp parallel for
         for(int i=0;i<sentences.size();i++){
             cerr<<i<<" start"<<endl;
             string & sentence= sentences[i];
@@ -123,13 +130,20 @@ public:
             rtn = getFeature(sentence, people[i],institute[i],labels[i],words,post_tags,nes,parseTree,feature);
             CHECK_RTN_LOGE_CTN(rtn, "error getting feature");
             cerr<<"succ in get feature: "<<feature<<endl<<endl;
+            string tmp;
             if(labels[i]>0){
-                ofs<<1<<" ";
+                tmp = "1 ";
             }else{
-                ofs<<-1<<" ";
+                tmp ="-1 ";
             }
+            toWrite[i]=tmp + feature;
+        }
 
-            ofs<<feature<<endl;
+        for(int i=0;i<toWrite.size();i++){
+            if(toWrite[i].size()>0){
+                ofs<< toWrite[i]<<endl;
+                rawDataWriter<< sentences[i]<<endl;
+            }
         }
         ofs.close();
         return 0;
@@ -189,7 +203,7 @@ private:
             feature.append(subTree);
         }
         feature.push_back(')');
-        cerr<<"finish get Tree: "<<feature<<endl;
+        //cerr<<"finish get Tree: "<<feature<<endl;
         return 0;
     }
 
@@ -215,7 +229,7 @@ private:
                       const int root,  int dest, string & feature) const {
         feature.clear();
         string subTree;
-        cerr<<"getting root:"<<root<<" :size:"<<children[root].size()<<" @ " <<endl;
+       // cerr<<"getting root:"<<root<<" :size:"<<children[root].size()<<" @ " <<endl;
         int rtn = 0;
 
         feature = "(" + parseTree[dest].second + " " + post_tags[dest] + ")";
@@ -230,7 +244,7 @@ private:
             dest = parseTree[dest].first-1;
         }
 
-        cerr<<"finish get Tree: "<<feature<<endl;
+        //cerr<<"finish get Tree: "<<feature<<endl;
         return 0;
     }
 
@@ -239,7 +253,7 @@ private:
                       const int root, string & feature, const int p, const int i)const{
         feature.clear();
         string subTree;
-        cerr<<"getting root:"<<root<<" :size:"<<children[root].size()<<" @ " <<endl;
+        //cerr<<"getting root:"<<root<<" :size:"<<children[root].size()<<" @ " <<endl;
         int rtn = 0;
 
 
@@ -247,8 +261,6 @@ private:
             feature = "(" + parseTree[root].second + " " + post_tags[root] + ")";
             return 0;
         }
-
-
 
         string leaf ="";
         for(int i=0;i<children[root].size();i++) {
@@ -263,7 +275,7 @@ private:
             feature= "(" +parseTree[root].second + leaf+")";
         }
 
-        cerr<<"finish get Tree: "<<feature<<endl;
+        //cerr<<"finish get Tree: "<<feature<<endl;
         return 0;
 
     }
@@ -308,7 +320,7 @@ private:
             cerr<<" root is -1"<<endl;
             return -1;
         }
-        cerr<<"finish get root: "<<endl;
+        //cerr<<"finish get root: "<<endl;
         return 0;
     }
 
@@ -377,7 +389,7 @@ private:
                 deInstitute=a.second;
             }
         }
-        cerr<<"finish detect PI"<<endl;
+        //<<"finish detect PI"<<endl;
         return 0;
     }
 
