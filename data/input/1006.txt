@@ -1,0 +1,12 @@
+贝克特女士首先盛赞在过去一年、尤其是近几个月席卷亚太地区的金融风暴中，中国政府的调控非常出色。
+贝克特
+中国政府
+0
+29
+贝克特 女士 首先 盛赞 在 过去 一 年 、 尤其 是 近 几 个 月 席卷 亚太地区 的 金融 风暴 中 ， 中国 政府 的 调控 非常 出色 。 
+29
+nh n d v p nt m q wp d v a m q n v j u n n nd wp ns n u v d a wp 
+29
+S-Nh O O O O O O O O O O O O O O O O O O O O O B-Ni E-Ni O O O O O 
+29
+2 ATT 4 SBV 4 ADV 0 HED 11 ADV 8 ATT 8 ATT 11 ADV 8 WP 11 ADV 4 VOB 13 ATT 14 ATT 15 ATT 16 ADV 20 ATT 16 VOB 16 RAD 20 ATT 21 ATT 11 VOB 11 WP 24 ATT 26 ATT 24 RAD 11 COO 28 ADV 26 CMP 4 WP 

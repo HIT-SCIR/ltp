@@ -1,0 +1,12 @@
+新疆航空公司经理张瑞甫和党委书记刘春池，带领新航的领导和有关部门的同志，在此迎接１９９７年最后一个航班胜利归来。
+张瑞甫
+新疆航空公司
+1
+30
+新疆 航空 公司 经理 张瑞甫 和 党委 书记 刘春池 ， 带领 新航 的 领导 和 有关 部门 的 同志 ， 在 此 迎接 １９９７年 最后 一个 航班 胜利 归来 。 
+30
+ns n n n nh c n n nh wp v j u n c v n u n wp p r v nt nd m n v v wp 
+30
+B-Ni I-Ni E-Ni O S-Nh O O O S-Nh O O O O O O O O O O O O O O O O O O O O O 
+30
+3 ATT 3 ATT 4 ATT 5 ATT 11 SBV 9 LAD 8 ATT 9 ATT 5 COO 5 WP 0 HED 14 ATT 12 RAD 19 ATT 17 LAD 17 ATT 14 COO 14 RAD 11 VOB 11 WP 23 ADV 21 POB 11 COO 29 ADV 26 ATT 27 ATT 29 SBV 29 ADV 23 VOB 11 WP 

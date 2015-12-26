@@ -1,0 +1,12 @@
+１９９５年５月，江泽民同志亲笔为中国戏曲学院建校４５周年题词：“德艺双馨，继往开来”。
+江泽民
+中国戏曲学院
+0
+21
+１９９５年 ５月 ， 江泽民 同志 亲笔 为 中国 戏曲 学院 建校 ４５ 周年 题词 ： “ 德艺双馨 ， 继往开来 ” 。 
+21
+nt nt wp nh n d p ns n n v m q v wp wp i wp i wp wp 
+21
+O O O S-Nh O O O B-Ni I-Ni E-Ni O O O O O O O O O O O 
+21
+2 ATT 14 ADV 2 WP 5 ATT 14 SBV 14 ADV 14 ADV 10 ATT 10 ATT 11 SBV 7 POB 13 ATT 11 CMP 0 HED 14 WP 17 WP 14 VOB 17 WP 17 COO 17 WP 14 WP 

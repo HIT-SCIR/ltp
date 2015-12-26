@@ -1,0 +1,12 @@
+俄罗斯的阿卡蒂耶夫和美国的罗斯今天分获男女５公里长距离游泳比赛冠军，成绩分别是５５分１８秒６０和５９分２３秒５０。
+罗斯
+美国
+1
+35
+俄罗斯 的 阿卡蒂耶夫 和 美国 的 罗斯 今天 分 获 男 女 ５ 公里 长 距离 游泳 比赛 冠军 ， 成绩 分别 是 ５５ 分 １８ 秒 ６０ 和 ５９ 分 ２３ 秒 ５０ 。 
+35
+ns u nh c ns u nh nt v v b b m q a n v v n wp n d v m q m q m c m q m q m wp 
+35
+S-Ns O S-Nh O S-Ns O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+35
+3 ATT 1 RAD 10 SBV 7 LAD 7 ATT 5 RAD 3 COO 10 ADV 10 ADV 0 HED 12 ATT 16 ATT 14 ATT 16 ATT 16 ATT 19 ATT 18 ATT 19 ATT 10 VOB 10 WP 23 SBV 23 ADV 10 COO 25 ATT 34 ATT 27 ATT 34 ATT 34 ATT 33 LAD 31 ATT 33 ATT 33 ATT 28 COO 23 VOB 10 WP 

@@ -1,0 +1,12 @@
+和平环卫车队的于同志说，用汽车装运垃圾时，他时常好奇地扒开垃圾看看，有时发现一大半都是吃剩的东西，鸡、鸭、鱼、肉应有尽有。
+于同志
+和平环卫车队
+1
+41
+和平 环卫 车队 的 于 同志 说 ， 用 汽车 装运 垃圾 时 ， 他 时常 好奇 地 扒开 垃圾 看看 ， 有时 发现 一大半 都 是 吃 剩 的 东西 ， 鸡 、 鸭 、 鱼 、 肉 应有尽有 。 
+41
+n j n u p n v wp p n v n n wp r d a u v n v wp d v m d v v v u n wp n wp n wp n wp n i wp 
+41
+O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+41
+3 ATT 3 ATT 7 SBV 3 RAD 7 ADV 5 POB 0 HED 7 WP 11 ADV 9 POB 13 ATT 11 VOB 19 ADV 13 WP 19 SBV 19 ADV 19 ADV 17 RAD 7 VOB 19 VOB 19 COO 19 WP 24 ADV 19 COO 27 SBV 27 ADV 24 VOB 27 VOB 31 ATT 29 RAD 28 VOB 27 WP 40 SBV 35 WP 33 COO 37 WP 33 COO 39 WP 33 COO 27 COO 7 WP 

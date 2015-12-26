@@ -1,0 +1,12 @@
+新华社北京１月２３日电（记者李斌）国务委员宋健今天在中科院古脊椎动物与古人类研究所考察时强调，青年科学家要继承老一辈科学家的优良传统，在基础研究领域勇攀科学高峰。
+李斌
+新华社
+1
+42
+新华社 北京 １月 ２３日 电 （ 记者 李斌 ） 国务委员 宋健 今天 在 中科院 古 脊椎动物 与 古人类 研究所 考察 时 强调 ， 青年 科学家 要 继承 老一辈 科学家 的 优良 传统 ， 在 基础 研究 领域 勇 攀 科学 高峰 。 
+42
+ni ns nt nt n wp n nh wp n nh nt p j a i c n n v n v wp n n v v n n u z n wp p n v n a v n n wp 
+42
+S-Ni S-Ns O O O O O S-Nh O O S-Nh O O B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O O O O O O O 
+42
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 CMP 8 WP 11 ATT 22 SBV 20 ADV 20 ADV 16 ATT 16 ATT 13 POB 19 LAD 19 ATT 16 COO 21 ATT 22 ADV 5 VOB 22 WP 25 ATT 27 SBV 27 ADV 22 VOB 29 ATT 32 ATT 29 RAD 32 ATT 27 VOB 27 WP 39 ADV 36 FOB 37 ATT 34 POB 39 ADV 27 COO 41 ATT 39 VOB 5 WP 

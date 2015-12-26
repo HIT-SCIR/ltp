@@ -1,0 +1,12 @@
+美国华盛顿大学饶毅从世界历史和东亚过去半个世纪发展过程来看，科学技术是发展中国家进入发达国家所不可缺少的动力。
+饶毅
+美国华盛顿大学
+1
+29
+美国 华盛顿 大学 饶毅 从 世界 历史 和 东亚 过去 半 个 世纪 发展 过程 来 看 ， 科学技术 是 发展中国家 进入 发达国家 所 不可 缺少 的 动力 。 
+29
+ns ns n nh p n n c ns nt m q n v n v v wp n v i v i u v v u n wp 
+29
+B-Ni I-Ni E-Ni S-Nh O O O O S-Ns O O O O O O O O O O O O O O O O O O O O 
+29
+3 ATT 3 ATT 4 ATT 17 SBV 17 ADV 7 ATT 13 ATT 9 LAD 7 COO 13 ATT 12 ATT 13 ATT 15 ATT 15 ATT 5 POB 17 ADV 0 HED 17 WP 20 SBV 17 COO 22 SBV 20 VOB 22 VOB 26 LAD 26 ADV 28 ATT 26 RAD 22 VOB 17 WP 

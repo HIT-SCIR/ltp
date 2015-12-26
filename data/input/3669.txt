@@ -1,0 +1,12 @@
+国务院总理李鹏为这次会议作出批示，要求航空工业要大力推进两个根本转变，切实搞好结构调整、技术开发和市场营销工作。
+李鹏
+国务院
+1
+33
+国务院 总理 李鹏 为 这 次 会议 作出 批示 ， 要求 航空 工业 要 大力 推进 两 个 根本 转变 ， 切实 搞好 结构 调整 、 技术 开发 和 市场 营销 工作 。 
+33
+ni n nh p r q n v n wp v n n v d v m q a v wp a v n v wp n v c n v v wp 
+33
+S-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+33
+2 ATT 3 ATT 8 SBV 8 ADV 6 ATT 7 ATT 4 POB 0 HED 8 VOB 8 WP 8 COO 13 ATT 11 DBL 16 ADV 16 ADV 11 VOB 18 ATT 20 ATT 20 ADV 16 VOB 16 WP 23 ADV 16 COO 25 FOB 23 VOB 28 WP 28 FOB 25 COO 31 LAD 31 ATT 25 COO 25 COO 8 WP 

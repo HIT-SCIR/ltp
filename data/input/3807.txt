@@ -1,0 +1,12 @@
+会上，曾庆红传达了江泽民同志在中央纪委二次全会上的重要讲话。
+江泽民
+中央纪委
+0
+18
+会上 ， 曾庆红 传达 了 江泽民 同志 在 中央 纪委 二 次 全会 上 的 重要 讲话 。 
+18
+nt wp nh v u nh n p n j m q n nd u a n wp 
+18
+O O S-Nh O O S-Nh O O B-Ni E-Ni O O O O O O O O 
+18
+4 ADV 1 WP 4 SBV 0 HED 4 RAD 7 ATT 17 ATT 17 ATT 10 ATT 13 ATT 12 ATT 13 ATT 14 ATT 8 POB 8 RAD 17 ATT 4 VOB 4 WP 

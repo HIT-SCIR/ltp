@@ -1,0 +1,12 @@
+民政部部长多吉才让代表全国双拥工作领导小组作了１９９７年双拥工作总结。
+多吉才让
+民政部
+1
+16
+民政部 部长 多吉才让 代表 全国 双拥 工作 领导 小组 作 了 １９９７年 双拥 工作 总结 。 
+16
+ni n nh v n j v v n v u nt j v v wp 
+16
+S-Ni O S-Nh O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O 
+16
+2 ATT 3 ATT 4 SBV 0 HED 7 ATT 7 ATT 9 ATT 9 ATT 4 VOB 4 COO 10 RAD 15 ATT 14 ATT 15 ATT 10 VOB 4 WP 

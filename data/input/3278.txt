@@ -1,0 +1,12 @@
+（重庆市长寿县望江路石油采气五队况世明）
+况世明
+重庆市长寿县望江路石油采气五队
+1
+10
+（ 重庆市 长寿县 望江路 石油 采气 五 队 况世明 ） 
+10
+wp ns ns ns n v m n nh wp 
+10
+O B-Ns I-Ns E-Ns O O O O S-Nh O 
+10
+6 WP 3 ATT 4 ATT 5 ATT 6 SBV 0 HED 8 ATT 9 ATT 6 VOB 6 WP 

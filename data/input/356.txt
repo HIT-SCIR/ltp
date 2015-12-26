@@ -1,0 +1,12 @@
+本报讯记者杨明方报道：前不久率先研制成功国产商用ＧＳＭ数字移动通信系统的深圳市华为技术有限公司近日又传佳音，由他们研制成功的独立型ＢＩＴＳ时钟同步网设备近日通过了邮电部电信总局组织的产品定型及试验局验收鉴定。
+杨明方
+深圳市华为技术有限公司
+0
+51
+本报 讯 记者 杨明方 报道 ： 前不久 率先 研制 成功 国产 商用 ＧＳＭ 数字 移动 通信 系统 的 深圳市 华为 技术 有限公司 近日 又 传 佳音 ， 由 他们 研制 成功 的 独立型 ＢＩＴＳ时钟 同步网 设备 近日 通过 了 邮电部 电信 总局 组织 的 产品 定型 及 试验局 验收 鉴定 。 
+51
+r n n nh v wp nt d v a b b ws n v v n u ns nz n n nt d v n wp p r v a u n n n n nt v u ni n n v u n v c n v v wp 
+51
+O O O S-Nh O O O O O O O O O O O O O O B-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O O O 
+51
+2 SBV 0 HED 4 ATT 5 SBV 2 COO 2 WP 22 ATT 22 ATT 22 ATT 9 CMP 17 ATT 13 ATT 14 ATT 17 ATT 17 ATT 17 ATT 22 ATT 17 RAD 22 ATT 21 ATT 22 ATT 25 SBV 25 ADV 25 ADV 2 VOB 25 VOB 25 WP 30 ADV 28 POB 36 ATT 30 CMP 30 RAD 34 ATT 35 ATT 36 ATT 38 SBV 38 ADV 25 COO 38 RAD 42 ATT 42 ATT 43 SBV 45 ATT 43 RAD 46 SBV 38 VOB 49 LAD 49 ATT 46 COO 46 COO 2 WP 

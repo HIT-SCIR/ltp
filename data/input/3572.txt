@@ -1,0 +1,12 @@
+新华社北京１月１５日电世界一些国家领导人１５日致电江泽民主席和李鹏总理，对河北省张家口地区地震灾民表示慰问。
+李鹏
+新华社
+0
+26
+新华社 北京 １月 １５日 电 世界 一些 国家 领导人 １５日 致电 江泽民 主席 和 李鹏 总理 ， 对 河北省 张家口 地区 地震 灾民 表示 慰问 。 
+26
+ni ns nt nt n n m n n nt v nh n c nh n wp p ns ns n n n v v wp 
+26
+S-Ni S-Ns O O O O O O O O O S-Nh O O S-Nh O O O B-Ns I-Ns E-Ns O O O O O 
+26
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 9 ATT 9 ATT 9 ATT 11 SBV 11 ADV 5 VOB 13 ATT 11 VOB 16 LAD 16 ATT 13 COO 11 WP 24 ADV 20 ATT 21 ATT 23 ATT 23 ATT 18 POB 11 COO 24 VOB 5 WP 

@@ -60,6 +60,10 @@ public:
     int LoadData(vector<string> &sentences, vector<string> &people,
                  vector<string> &institute, vector<int> &label) const {
         ifstream fin(input);
+        sentences.reserve(5000);
+        people.reserve(5000);
+        institute.reserve(5000);
+        label.reserve(5000);
         string tmp;
         while (getline(fin, tmp)) {
             stringstream ss(tmp);
@@ -68,7 +72,7 @@ public:
             getline(ss, s, '*');
             getline(ss, p, '*');
             getline(ss, i, '*');
-           // ss >> l;
+            ss >> l;
             if(p.size()==0 || i.size()==0 || s.size()==0){
                 return -1;
             }
@@ -76,7 +80,7 @@ public:
             people.push_back(p);
             institute.push_back(i);
             label.push_back(l);
-            cerr<<s<<"#"<<p<<"#"<<i<<"#"<<l<<endl;
+            //cerr<<s<<"#"<<p<<"#"<<i<<"#"<<l<<endl;
         }
         return 0;
     }
@@ -126,16 +130,19 @@ public:
 
 #pragma omp parallel for
         for(int i=0;i<sentences.size();i++){
-
+            int rtn =0;
             cerr<<i<<" start"<<endl;
             string & sentence= sentences[i];
             vector<string> words, post_tags,nes;
             vector<pair<int,string>> parseTree;
-            rtn = parse(sentence,words,post_tags,nes,parseTree);
+            //rtn = parse(sentence,words,post_tags,nes,parseTree);
             cerr<<i<<" parse succ"<<endl;
             CHECK_RTN_LOGE_CTN(rtn,"parse error");
             string feature;
-            /*
+            //save(sentence,people[i],institute[i],labels[i],words,post_tags,nes,parseTree,"data/input/"+to_string(i)+".txt");
+            rtn = load(sentence,people[i],institute[i],labels[i],words,post_tags,nes,parseTree,"data/input/"+to_string(i)+".txt");
+            CHECK_RTN_LOGE_CTN(rtn, "error loading");
+
             rtn = getFeature(sentence, people[i],institute[i],labels[i],words,post_tags,nes,parseTree,feature);
             CHECK_RTN_LOGE_CTN(rtn, "error getting feature");
             cerr<<"succ in get feature: "<<feature<<endl<<endl;
@@ -145,9 +152,8 @@ public:
             }else{
                 tmp ="-1 ";
             }
-             */
-            labelData(words,nes,toWrite[i]);
-            //toWrite[i]=tmp + feature;
+            //labelData(words,nes,toWrite[i]);
+            toWrite[i]=tmp + feature;
         }
 
         for(int i=0;i<toWrite.size();i++){
@@ -160,10 +166,10 @@ public:
         return 0;
     }
 
-    int save(const string & sentence, const string &person, const string &institute,
+    void save(const string & sentence, const string &person, const string &institute,
              const int &label, const vector<string> &words,
              const vector<string> &post_tags, const vector<string> &nes,
-             const vector<pair<int, string>> &parseTree, string & file){
+             const vector<pair<int, string>> &parseTree,const string file){
         ofstream of(file);
         of<<sentence<<endl;
         of<<person<<endl;
@@ -197,39 +203,43 @@ public:
     int load( string & sentence,  string &person,  string &institute,
               int &label,  vector<string> &words,
               vector<string> &post_tags,  vector<string> &nes,
-              vector<pair<int, string>> &parseTree , const string & file){
+              vector<pair<int, string>> &parseTree , const string  file){
         ifstream ifs(file);
+        if(!ifs.good()){
+            return -1;
+        }
         ifs>>sentence;
         ifs>>person;
         ifs>>institute;
         ifs>>label;
         int tmp;
         ifs>>tmp;
+        words.clear();
         words.resize(tmp);
         for(int i=0;i<tmp;i++){
             ifs>>words[i];
         }
+
         ifs>>tmp;
-        words.resize(tmp);
-        for(int i=0;i<tmp;i++){
-            ifs>>words[i];
-        }
-        ifs>>tmp;
+        post_tags.clear();
         post_tags.resize(tmp);
         for(int i=0;i<tmp;i++){
             ifs>>post_tags[i];
         }
         ifs>>tmp;
+        nes.clear();
         nes.resize(tmp);
         for(int i=0;i<tmp;i++){
             ifs>>nes[i];
         }
 
         ifs>>tmp;
+        parseTree.clear();
         parseTree.resize(tmp);
         for(int i=0;i<tmp;i++){
             ifs>>parseTree[i].first>>parseTree[i].second;
         }
+        return 0;
     }
 
     int labelData(const vector<string> & words, const vector<string> & nes, string & out){

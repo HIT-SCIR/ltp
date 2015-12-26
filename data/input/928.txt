@@ -1,0 +1,12 @@
+钱其琛为中国驻南非大使馆揭开馆牌。
+钱其琛
+中国驻南非大使馆
+0
+9
+钱其琛 为 中国 驻 南非 大使馆 揭开 馆牌 。 
+9
+nh p ns v ns n v n wp 
+9
+S-Nh O B-Ni I-Ni I-Ni E-Ni O O O 
+9
+7 SBV 7 ADV 4 SBV 6 ATT 4 VOB 2 POB 0 HED 7 VOB 7 WP 

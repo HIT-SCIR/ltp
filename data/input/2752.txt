@@ -1,0 +1,12 @@
+中国剧协副主席、中央戏剧学院院长徐晓钟全面评价了这部话剧。
+徐晓钟
+中国剧协
+1
+16
+中国 剧协 副 主席 、 中央 戏剧 学院 院长 徐晓钟 全面 评价 了 这部 话剧 。 
+16
+ns j b n wp n n n n nh a v u r n wp 
+16
+B-Ni E-Ni O O O B-Ni I-Ni E-Ni O S-Nh O O O O O O 
+16
+2 ATT 4 ATT 4 ATT 10 ATT 9 WP 8 ATT 8 ATT 9 ATT 4 COO 12 SBV 12 ADV 0 HED 12 RAD 15 ATT 12 VOB 12 WP 

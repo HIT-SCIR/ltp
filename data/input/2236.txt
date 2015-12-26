@@ -1,0 +1,12 @@
+中国银行行长王雪冰对商业银行来说，取消规模管理并不意味着放任自流。
+王雪冰
+中国银行
+1
+16
+中国银行 行长 王雪冰 对 商业 银行 来说 ， 取消 规模 管理 并 不 意味着 放任自流 。 
+16
+ni n nh p n n u wp v d v d d v i wp 
+16
+S-Ni O S-Nh O O O O O O O O O O O O O 
+16
+2 ATT 3 ATT 14 SBV 14 ADV 6 ATT 4 POB 4 RAD 4 WP 14 SBV 11 ADV 9 VOB 14 ADV 14 ADV 0 HED 14 VOB 14 WP 

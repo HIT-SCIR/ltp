@@ -1,0 +1,12 @@
+印尼总统苏哈托２２日与来访的日本首相桥本龙太郎的特使、外务省次官小村正彦举行了会谈。
+苏哈托
+外务省
+0
+20
+印尼 总统 苏哈托 ２２日 与 来访 的 日本 首相 桥本龙太郎 的 特使 、 外务省 次官 小村正彦 举行 了 会谈 。 
+20
+ns n nh nt p v u ns n nh u n wp ni n nh v u v wp 
+20
+S-Ns O S-Nh O O O O S-Ns O S-Nh O O O S-Ni O S-Nh O O O O 
+20
+2 ATT 3 ATT 17 SBV 17 ADV 17 ADV 10 ATT 6 RAD 9 ATT 10 ATT 12 ATT 10 RAD 5 POB 16 WP 15 ATT 16 ATT 12 COO 0 HED 17 RAD 17 VOB 17 WP 

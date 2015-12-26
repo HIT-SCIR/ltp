@@ -1,0 +1,12 @@
+莫迪凯是在美国中东和谈特别协调员罗斯在巴以之间进行新一轮斡旋之际作出上述表态的。
+罗斯
+美国
+1
+24
+莫迪凯 是 在 美国 中东 和谈 特别 协调员 罗斯 在 巴 以 之间 进行 新 一 轮 斡旋 之际 作出 上述 表态 的 。 
+24
+nh v p ns ns v a n nh p j j nd v a m q v nd v b v u wp 
+24
+S-Nh O O B-Ns E-Ns O O O S-Nh O S-Ns S-Ns O O O O O O O O O O O O 
+24
+2 SBV 0 HED 20 ADV 8 ATT 6 ATT 8 ATT 8 ATT 9 ATT 14 SBV 14 ADV 13 ATT 11 COO 10 POB 19 ATT 17 ATT 17 ATT 18 ATT 14 VOB 3 POB 2 VOB 22 ATT 20 VOB 20 RAD 2 WP 

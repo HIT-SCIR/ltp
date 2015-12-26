@@ -1,0 +1,12 @@
+墨西哥众议院议长卡洛斯?梅迪纳的题词为：“热烈祝贺中国《环球时报》创刊五周年，祝《环球时报》取得更大的成就。”
+卡洛斯?梅迪纳
+墨西哥众议院
+1
+34
+墨西哥 众议院 议长 卡洛斯 ? 梅迪纳 的 题词 为 ： “ 热烈 祝贺 中国 《 环球 时报 》 创刊 五 周年 ， 祝 《 环球 时报 》 取得 更 大 的 成就 。 ” 
+34
+ns n n nh wp ns u n v wp wp a v ns wp n n wp v m q wp v wp n n wp v d a u n wp wp 
+34
+B-Ni E-Ni O S-Nh O S-Ns O O O O O O O S-Ns O O O O O O O O O O O O O O O O O O O O 
+34
+2 ATT 3 ATT 4 ATT 9 SBV 4 WP 8 ATT 6 RAD 9 SBV 0 HED 9 WP 13 WP 13 ADV 9 VOB 17 ATT 17 WP 17 ATT 19 SBV 17 WP 13 VOB 21 ATT 19 CMP 13 WP 13 COO 26 WP 26 ATT 23 DBL 26 WP 23 VOB 30 ADV 32 ATT 30 RAD 28 VOB 13 WP 13 WP 

@@ -1,0 +1,12 @@
+关于伊拉克危机，马吉德表示，阿盟认为伊拉克必须遵守联合国安理会有关决议，同时也反对利用军事手段来对付伊拉克。
+马吉德
+联合国安理会
+0
+27
+关于 伊拉克 危机 ， 马吉德 表示 ， 阿盟 认为 伊拉克 必须 遵守 联合国 安理会 有关 决议 ， 同时 也 反对 利用 军事 手段 来 对付 伊拉克 。 
+27
+p ns n wp nh v wp j v ns d v ni j v n wp c d v v n n v v ns wp 
+27
+O S-Ns O O S-Nh O O O O S-Ns O O B-Ni E-Ni O O O O O O O O O O O S-Ns O 
+27
+6 ADV 3 ATT 1 POB 1 WP 6 SBV 0 HED 6 WP 9 SBV 6 VOB 12 SBV 12 ADV 9 VOB 14 ATT 16 ATT 16 ATT 12 VOB 9 WP 20 ADV 20 ADV 9 COO 20 VOB 23 ATT 21 VOB 25 ADV 21 COO 25 VOB 6 WP 

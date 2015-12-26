@@ -1,0 +1,12 @@
+中国剧协书记处书记霍大寿说：“北方有个‘北京人艺现象’，南方有个‘前话现象’。
+霍大寿
+北京人艺
+0
+25
+中国 剧协 书记处 书记 霍大寿 说 ： “ 北方 有 个 ‘ 北京 人艺 现象 ’ ， 南方 有 个 ‘ 前话 现象 ’ 。 
+25
+ns j n n nh v wp wp nd v q wp ns j n wp wp nl v q wp j n wp wp 
+25
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O B-Ni E-Ni O O O O O O O O O O O 
+25
+2 ATT 3 ATT 4 ATT 5 ATT 6 SBV 0 HED 6 WP 10 WP 10 SBV 6 VOB 15 ATT 15 WP 14 ATT 15 ATT 10 VOB 10 WP 10 WP 19 SBV 10 COO 23 ATT 23 WP 23 ATT 19 VOB 19 WP 6 WP 

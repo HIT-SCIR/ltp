@@ -1,0 +1,12 @@
+古巴共产党第一书记、国务委员会和部长会议主席卡斯特罗１５日向中国国家主席江泽民和国务院总理李鹏发来了慰问电。
+李鹏
+古巴共产党
+0
+26
+古巴 共产党 第一 书记 、 国务 委员会 和 部长会议 主席 卡斯特罗 １５日 向 中国 国家 主席 江泽民 和 国务院 总理 李鹏 发 来 了 慰问电 。 
+26
+ns n m n wp n n c n n nh nt p ns n n nh c ni n nh v v u n wp 
+26
+B-Ni E-Ni O O O O O O O O S-Nh O O S-Ns O O S-Nh O S-Ni O S-Nh O O O O O 
+26
+2 ATT 4 ATT 4 ATT 11 ATT 7 WP 7 ATT 4 COO 10 LAD 10 ATT 4 COO 22 SBV 22 ADV 22 ADV 15 ATT 16 ATT 17 ATT 13 POB 21 LAD 20 ATT 21 ATT 17 COO 0 HED 22 CMP 23 RAD 22 VOB 22 WP 

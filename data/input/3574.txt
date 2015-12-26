@@ -1,0 +1,12 @@
+北京市朝阳区委宣传部长周良洛介绍说，此举旨在营造文明、健康的人文环境，并为此投入了数千万元。
+周良洛
+北京市朝阳区委
+1
+25
+北京市 朝阳 区委 宣传部长 周良洛 介绍 说 ， 此举 旨在 营造 文明 、 健康 的 人文 环境 ， 并 为此 投入 了 数千万 元 。 
+25
+ns ns n n nh v v wp r v v a wp a u n n wp c d v u m q wp 
+25
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O 
+25
+3 ATT 3 ATT 4 ATT 5 ATT 6 SBV 0 HED 6 COO 6 WP 10 SBV 6 COO 10 VOB 17 ATT 14 WP 12 COO 12 RAD 17 ATT 11 VOB 10 WP 21 ADV 21 ADV 10 COO 21 RAD 24 ATT 21 VOB 6 WP 

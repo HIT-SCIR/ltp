@@ -1,0 +1,12 @@
+团中央书记处书记胡春华在新春贺词中希望大学生自强自立，努力成为有理想、有道德、有文化、有纪律的社会主义建设人才。
+胡春华
+团中央书记处
+1
+31
+团中央 书记处 书记 胡春华 在 新春 贺词 中 希望 大学生 自强 自立 ， 努力 成为 有 理想 、 有 道德 、 有 文化 、 有 纪律 的 社会主义 建设 人才 。 
+31
+ni n n nh p nt n nd v n v v wp a v v n wp v n wp v n wp v n u n v n wp 
+31
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+31
+2 ATT 3 ATT 4 ATT 9 SBV 9 ADV 7 ATT 8 ATT 5 POB 0 HED 11 SBV 9 VOB 11 COO 11 WP 15 ADV 11 COO 29 ATT 16 VOB 19 WP 16 COO 19 VOB 22 WP 16 COO 22 VOB 25 WP 16 COO 25 VOB 16 RAD 29 SBV 15 VOB 29 VOB 9 WP 

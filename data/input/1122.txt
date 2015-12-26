@@ -1,0 +1,12 @@
+在此之前，美国国务院发言人鲁宾也表示，美国不能接受伊拉克关于冻结对“总统属区”进行武器核查的建议。
+鲁宾
+美国国务院
+1
+29
+在 此 之前 ， 美国 国务院 发言人 鲁宾 也 表示 ， 美国 不 能 接受 伊拉克 关于 冻结 对 “ 总统 属区 ” 进行 武器 核查 的 建议 。 
+29
+p r nd wp ns n n nh d v wp ns d v v ns p v p wp n n wp v n v u n wp 
+29
+O O O O B-Ni E-Ni O S-Nh O O O S-Ns O O O S-Ns O O O O O O O O O O O O O 
+29
+10 ADV 3 ATT 1 POB 1 WP 6 ATT 7 ATT 8 ATT 10 SBV 10 ADV 0 HED 10 WP 15 SBV 14 ADV 15 ADV 10 VOB 17 SBV 15 VOB 17 POB 24 ADV 22 WP 22 ATT 19 POB 22 WP 28 ATT 26 FOB 24 VOB 24 RAD 18 VOB 10 WP 

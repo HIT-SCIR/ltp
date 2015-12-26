@@ -1,0 +1,12 @@
+江泽民说，中国政府和人民对伊拉克人民因制裁所遭受的苦难深表同情，我们一贯主张在联合国有关决议的基础上尽快公正、合理地解决海湾战争遗留问题。
+江泽民
+中国政府
+0
+40
+江泽民 说 ， 中国 政府 和 人民 对 伊拉克 人民 因 制裁 所 遭受 的 苦难 深表 同情 ， 我们 一贯 主张 在 联合国 有关 决议 的 基础 上 尽快 公正 、 合理 地 解决 海湾 战争 遗留 问题 。 
+40
+nh v wp ns n c n p ns n p v u v u n v v wp r d v p ni v n u n nd d a wp a u v n n v n wp 
+40
+S-Nh O O B-Ni E-Ni O O O S-Ns O O O O O O O O O O O O O O S-Ni O O O O O O O O O O O O O O O O 
+40
+2 SBV 0 HED 2 WP 5 ATT 17 SBV 7 LAD 5 COO 17 ADV 10 ATT 8 POB 14 ADV 11 POB 14 LAD 16 ATT 14 RAD 8 POB 2 VOB 17 VOB 17 WP 22 SBV 22 ADV 17 COO 35 ADV 25 SBV 28 ATT 25 VOB 25 RAD 29 ATT 23 POB 35 ADV 35 ADV 33 WP 31 COO 31 RAD 22 VOB 37 ATT 38 SBV 35 VOB 38 VOB 2 WP 

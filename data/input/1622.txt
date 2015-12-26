@@ -1,0 +1,12 @@
+由天山电影制片厂摄制，万方编剧，董玲执导的电视剧《达列什的草原》（上、下集），为我们讲述了一个充满魅力的古老民族，在时代大潮中，发生的一个小小故事???哈萨克族青年达列什，为爱侣玛丽娅治病，倾尽了家产。
+万方
+天山电影制片厂
+0
+61
+由 天山 电影 制片厂 摄制 ， 万方 编剧 ， 董玲 执导 的 电视剧 《 达列什 的 草原 》 （ 上 、 下集 ） ， 为 我们 讲述 了 一个 充满 魅力 的 古老 民族 ， 在 时代 大潮 中 ， 发生 的 一个 小小 故事 ? ? ? 哈萨克族 青年 达列什 ， 为 爱侣 玛丽娅 治病 ， 倾尽 了 家产 。 
+61
+p ns n n v wp nh n wp nh v u n wp nh u n wp wp nd wp n wp wp p r v u m v n u a n wp p n n nd wp v u m z n wp wp wp nz n nh wp p n nh v wp v u n wp 
+61
+O B-Ni I-Ni E-Ni O O S-Nh O O S-Nh O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O S-Nh O O O S-Nh O O O O O O 
+61
+5 ADV 4 ATT 4 ATT 1 POB 0 HED 5 WP 8 ATT 27 SBV 8 WP 11 SBV 13 ATT 11 RAD 17 ATT 17 WP 17 ATT 15 RAD 8 COO 17 WP 20 WP 17 RAD 20 WP 20 COO 20 WP 8 WP 27 ADV 25 POB 5 COO 27 RAD 34 ATT 34 ATT 30 VOB 30 RAD 34 ATT 27 VOB 27 WP 45 ADV 38 ATT 39 ATT 36 POB 36 WP 45 ATT 41 RAD 45 ATT 45 ATT 27 COO 45 WP 27 WP 27 WP 50 ATT 51 ATT 56 SBV 51 WP 56 ADV 55 ATT 53 POB 27 COO 56 WP 56 COO 58 RAD 58 VOB 5 WP 

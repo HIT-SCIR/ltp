@@ -1,0 +1,12 @@
+何鲁丽说，老挝人民在老挝人民革命党领导下，在改革开放和经济建设的事业中取得了显著成就。
+何鲁丽
+老挝人民革命党
+0
+26
+何鲁丽 说 ， 老挝 人民 在 老挝 人民 革命党 领导 下 ， 在 改革 开放 和 经济 建设 的 事业 中 取得 了 显著 成就 。 
+26
+nh v wp ns n p ns n n v nd wp p v v c n v u n nd v u a n wp 
+26
+S-Nh O O S-Ns O O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O 
+26
+2 SBV 0 HED 2 WP 5 ATT 22 SBV 22 ADV 9 ATT 9 ATT 10 ATT 11 ATT 6 POB 6 WP 22 ADV 20 ATT 14 COO 18 LAD 18 FOB 14 COO 18 RAD 21 ATT 13 POB 2 VOB 22 RAD 25 ATT 22 VOB 2 WP 

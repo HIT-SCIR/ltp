@@ -1,0 +1,12 @@
+今天上午，淮安市委、市政府为周恩来平祖坟事迹立碑。
+周恩来
+淮安市委
+0
+15
+今天 上午 ， 淮安 市委 、 市政府 为 周恩来 平 祖坟 事迹 立 碑 。 
+15
+nt nt wp ns n wp n p nh v n n v n wp 
+15
+O O O B-Ni E-Ni O O O S-Nh O O O O O O 
+15
+2 ATT 8 ADV 2 WP 5 ATT 8 SBV 7 WP 5 COO 0 HED 10 SBV 8 POB 10 VOB 13 SBV 10 COO 13 VOB 8 WP 

@@ -1,0 +1,12 @@
+经调解，原被告双方达成协议，襄樊铁路分局赔偿沈某医药费、误工费、鉴定费、住院期间伙食补助费、精神损失费等共计６０００元，并承担诉讼费７００元。
+沈某
+襄樊铁路分局
+0
+37
+经 调解 ， 原 被告 双方 达成 协议 ， 襄樊 铁路 分局 赔偿 沈某 医药费 、 误工费 、 鉴定费 、 住院 期间 伙食 补助费 、 精神损失费 等 共计 ６０００ 元 ， 并 承担 诉讼费 ７００ 元 。 
+37
+p v wp b n n v n wp ns n n v nh n wp n wp n wp v nd n n wp n u v m q wp c v n m q wp 
+37
+O O O O O O O O O B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O 
+37
+7 ADV 1 POB 1 WP 5 ATT 6 ATT 7 SBV 0 HED 7 VOB 7 WP 12 ATT 12 ATT 24 ATT 24 ATT 15 ATT 24 ATT 17 WP 15 COO 19 WP 15 COO 21 WP 15 COO 24 ATT 24 ATT 28 SBV 26 WP 24 COO 24 RAD 7 COO 30 ATT 28 VOB 28 WP 33 ADV 28 COO 36 ATT 36 ATT 33 VOB 7 WP 

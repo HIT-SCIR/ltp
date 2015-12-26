@@ -1,0 +1,12 @@
+刘伯承元帅次子、总参某部干部刘蒙说，在取得革命胜利之后，父亲大力倡导学习科学文化知识，培养适应未来战争需要的指挥员，充分体现了他无产阶级革命家的战略远见。
+刘蒙
+总参某部
+1
+42
+刘伯承 元帅 次子 、 总参 某部 干部 刘蒙 说 ， 在 取得 革命 胜利 之后 ， 父亲 大力 倡导 学习 科学 文化 知识 ， 培养 适应 未来 战争 需要 的 指挥员 ， 充分 体现 了 他 无产阶级 革命家 的 战略 远见 。 
+42
+nh n n wp j r n nh v wp p v v v nd wp n d v v n n n wp v v nt n n u n wp a v u r n n u n n wp 
+42
+S-Nh O O O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+42
+2 ATT 3 ATT 9 SBV 7 WP 7 ATT 7 ATT 8 ATT 3 COO 0 HED 9 WP 19 ADV 15 ATT 14 ATT 12 VOB 11 POB 11 WP 19 SBV 19 ADV 9 VOB 19 COO 22 ATT 23 ATT 20 VOB 19 WP 19 COO 31 ATT 29 ATT 29 ATT 26 VOB 29 RAD 25 VOB 19 WP 34 ADV 19 COO 34 RAD 38 ATT 38 ATT 41 ATT 38 RAD 41 ATT 34 VOB 9 WP 

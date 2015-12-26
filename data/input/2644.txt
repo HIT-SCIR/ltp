@@ -1,0 +1,12 @@
+农业部党组副书记、副部长刘成果，团中央书记处书记胡春华分别讲话。
+刘成果
+农业部
+1
+16
+农业部 党组 副 书记 、 副 部长 刘成果 ， 团中央 书记处 书记 胡春华 分别 讲话 。 
+16
+ni n b n wp b n nh wp ni n n nh d v wp 
+16
+S-Ni O O O O O O S-Nh O B-Ni E-Ni O S-Nh O O O 
+16
+2 ATT 4 ATT 4 ATT 8 ATT 7 WP 7 ATT 4 COO 15 SBV 8 WP 11 ATT 12 ATT 13 ATT 8 COO 15 ADV 0 HED 15 WP 

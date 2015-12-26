@@ -1,0 +1,12 @@
+河北省委、省政府派出以许永跃副书记为团长、杨迁副省长为副团长的工作团赶赴灾区指挥抗震救灾，省政府已拨款五十万元救灾，并组织医疗队、救护队赶赴灾区。
+许永跃
+河北省委
+1
+40
+河北 省委 、 省政府 派出 以 许永跃 副 书记 为 团长 、 杨迁 副 省长 为 副 团长 的 工作团 赶赴 灾区 指挥 抗震救灾 ， 省政府 已 拨款 五十万 元 救灾 ， 并 组织 医疗队 、 救护队 赶赴 灾区 。 
+40
+ns n wp n v p nh b n v n wp nh b n v b n u n v n v i wp n d v m q v wp c v n wp n v n wp 
+40
+B-Ni E-Ni O O O O S-Nh O O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+40
+2 ATT 5 SBV 4 WP 2 COO 0 HED 16 ADV 9 ATT 9 ATT 6 POB 16 ADV 10 POB 15 WP 15 ATT 15 ATT 11 COO 20 ATT 18 ATT 16 VOB 16 RAD 21 SBV 5 VOB 21 VOB 21 COO 23 VOB 21 WP 28 SBV 28 ADV 21 COO 30 ATT 31 ATT 28 VOB 21 WP 34 ADV 21 COO 34 DBL 37 WP 35 COO 34 VOB 38 VOB 5 WP 

@@ -1,0 +1,12 @@
+分析家们认为，以政府目前在共有１２０个席位的议会中只占６１席，如果莫迪凯宣布辞职，现政府将面临垮台的危险。
+莫迪凯
+以政府
+1
+32
+分析家 们 认为 ， 以 政府 目前 在 共有 １２０ 个 席位 的 议会 中 只 占 ６１ 席 ， 如果 莫迪凯 宣布 辞职 ， 现政府 将 面临 垮台 的 危险 。 
+32
+n k v wp j n nt p v m q n u n nd d v m q wp c nh v v wp n d v v u a wp 
+32
+O O O O B-Ni E-Ni O O O O O O O O O O O O O O O S-Nh O O O O O O O O O O 
+32
+3 SBV 1 RAD 0 HED 3 WP 6 ATT 17 SBV 17 ADV 17 ADV 14 ATT 11 ATT 12 ATT 9 VOB 9 RAD 15 ATT 8 POB 17 ADV 3 VOB 19 ATT 17 VOB 17 WP 23 ADV 23 SBV 17 COO 23 VOB 23 WP 28 SBV 28 ADV 23 COO 31 ATT 29 RAD 28 VOB 3 WP 

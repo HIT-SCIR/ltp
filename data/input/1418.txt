@@ -1,0 +1,12 @@
+针对美国国会１９９６年通过的制裁伊朗和利比亚的达马托法，库克说，利用美国的法律来惩罚在伊朗能源部门投资的欧洲公司的做法是不能接受的，只能取得适得其反的效果，因为它将引发大西洋两岸的贸易战。
+库克
+美国国会
+0
+53
+针对 美国 国会 １９９６年 通过 的 制裁 伊朗 和 利比亚 的 达马托法 ， 库克 说 ， 利用 美国 的 法律 来 惩罚 在 伊朗 能源 部门 投资 的 欧洲 公司 的 做法 是 不 能 接受 的 ， 只能 取得 适得其反 的 效果 ， 因为 它 将 引发 大西洋 两岸 的 贸易战 。 
+53
+p ns n nt v u v ns c ns u n wp nh v wp v ns u n v v p ns n n v u ns n u n v d v v u wp v v i u n wp p r d v ns n u n wp 
+53
+O B-Ni E-Ni O O O O S-Ns O S-Ns O O O S-Nh O O O S-Ns O O O O O S-Ns O O O O S-Ns O O O O O O O O O O O O O O O O O O O S-Ns O O O O 
+53
+15 ADV 3 ATT 5 SBV 5 ADV 7 ATT 5 RAD 1 POB 12 ATT 10 LAD 8 COO 8 RAD 7 VOB 1 WP 15 SBV 0 HED 15 WP 32 ATT 20 ATT 18 RAD 17 VOB 32 ATT 32 ATT 27 ADV 26 ATT 26 ATT 23 POB 30 ATT 27 RAD 30 ATT 32 ATT 30 RAD 33 SBV 15 VOB 35 ADV 36 ADV 33 VOB 36 RAD 33 WP 40 ADV 33 COO 43 ATT 41 RAD 40 VOB 40 WP 48 ADV 48 SBV 48 ADV 40 COO 50 ATT 52 ATT 50 RAD 48 VOB 15 WP 

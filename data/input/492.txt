@@ -1,0 +1,12 @@
+在今天结束的全国训练工作会议上，国家体委副主任徐寅生谈到运动员交流问题时，强调了上述观点。
+徐寅生
+国家体委
+1
+27
+在 今天 结束 的 全国 训练 工作 会议 上 ， 国家 体委 副 主任 徐寅生 谈 到 运动员 交流 问题 时 ， 强调 了 上述 观点 。 
+27
+p nt v u n v v n nd wp n j b n nh v v n v n n wp v u b n wp 
+27
+O O O O O O O O O O B-Ni E-Ni O O S-Nh O O O O O O O O O O O O 
+27
+16 ADV 3 ADV 8 ATT 3 RAD 8 ATT 7 ATT 8 ATT 9 ATT 1 POB 1 WP 12 ATT 14 ATT 14 ATT 15 ATT 16 SBV 0 HED 16 CMP 19 SBV 21 ATT 19 VOB 16 VOB 16 WP 16 COO 23 RAD 26 ATT 23 VOB 16 WP 

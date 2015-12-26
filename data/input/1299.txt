@@ -1,0 +1,12 @@
+八一队本轮以１０７∶７４战胜济南军区队，赛后主教练王非称这场球的目标是锻炼队伍，而队员却只想着进攻，轻视防守，精神不集中。
+王非
+八一队
+1
+36
+八一队 本轮 以 １０７∶７４ 战胜 济南 军区队 ， 赛后 主教练 王非 称 这 场 球 的 目标 是 锻炼 队伍 ， 而 队员 却 只 想 着 进攻 ， 轻视 防守 ， 精神 不 集中 。 
+36
+ni r p m v ns n wp nt n nh v r q n u n v v n wp c n d d v u v wp v v wp n d v wp 
+36
+S-Ni O O O O B-Ni E-Ni O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O 
+36
+5 SBV 5 SBV 5 ADV 3 POB 0 HED 7 ATT 5 VOB 5 WP 10 ATT 11 ATT 12 SBV 17 ATT 14 ATT 15 ATT 12 VOB 12 RAD 18 SBV 5 COO 18 VOB 19 VOB 18 WP 26 ADV 26 SBV 26 ADV 26 ADV 18 COO 26 RAD 26 VOB 26 WP 26 COO 30 VOB 26 WP 35 SBV 35 ADV 26 COO 5 WP 

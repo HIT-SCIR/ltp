@@ -1,0 +1,12 @@
+开馆仪式由中国驻南非共和国首任大使王学贤主持。
+王学贤
+中国
+1
+11
+开馆 仪式 由 中国 驻 南非共和国 首任 大使 王学贤 主持 。 
+11
+v n p ns v ns b n nh v wp 
+11
+O O O S-Ns O S-Ns O O S-Nh O O 
+11
+2 ATT 10 FOB 10 ADV 6 ATT 6 ATT 8 ATT 8 ATT 9 ATT 3 POB 0 HED 10 WP 

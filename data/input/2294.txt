@@ -1,0 +1,12 @@
+谈起亚洲的两支参赛队，彭绍荣认为，哈萨克斯坦队以力量见长，是中国队的主要对手；伊朗队由前苏联队的教练执教，近年有进步，实力不可忽视。
+彭绍荣
+伊朗队
+0
+38
+谈 起 亚洲 的 两 支 参赛队 ， 彭绍荣 认为 ， 哈萨克斯坦队 以 力量 见长 ， 是 中国队 的 主要 对手 ； 伊朗队 由 前 苏联队 的 教练 执教 ， 近年 有 进步 ， 实力 不可 忽视 。 
+38
+v v ns u m q n wp nh v wp ni p n v wp v ni u b n wp ni p nd ni u n v wp nt v v wp n v v wp 
+38
+O O S-Ns O O O O O S-Nh O O S-Ni O O O O O S-Ni O O O O S-Ni O O S-Ni O O O O O O O O O O O O 
+38
+0 HED 1 CMP 7 ATT 3 RAD 6 ATT 7 ATT 1 VOB 1 WP 10 SBV 1 COO 10 WP 15 SBV 15 ADV 13 POB 10 VOB 15 WP 15 COO 21 ATT 18 RAD 21 ATT 17 VOB 1 WP 29 SBV 29 ADV 26 ATT 28 ATT 26 RAD 24 POB 1 COO 29 WP 32 ADV 29 COO 32 VOB 32 WP 37 SBV 37 ADV 32 COO 1 WP 

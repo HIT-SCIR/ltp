@@ -1,0 +1,12 @@
+国务院发展研究中心研究员卢迈农村稳定是全局稳定的重要基础，而良好的村庄公共管理是农村稳定的前提。
+卢迈
+国务院发展研究中心
+1
+27
+国务院 发展 研究 中心 研究员 卢迈 农村 稳定 是 全局 稳定 的 重要 基础 ， 而 良好 的 村庄 公共 管理 是 农村 稳定 的 前提 。 
+27
+ni v v n n nh n a v n a u a n wp c a u n b v v n a u n wp 
+27
+B-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O 
+27
+4 ATT 4 ATT 4 ATT 5 ATT 6 ATT 9 SBV 8 SBV 9 SBV 0 HED 11 SBV 14 ATT 11 RAD 14 ATT 9 VOB 9 WP 22 ADV 21 ATT 17 RAD 21 ATT 21 ATT 22 SBV 9 COO 24 SBV 26 ATT 24 RAD 22 VOB 9 WP 

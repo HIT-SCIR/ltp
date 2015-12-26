@@ -1,0 +1,12 @@
+说起来您或许不相信，宁洪虎放下背包不久，就干上了山东邹城市石油公司第二加油站站长。
+宁洪虎
+山东邹城市石油公司第二加油站
+1
+24
+说 起来 您 或许 不 相信 ， 宁洪虎 放下 背包 不久 ， 就 干 上 了 山东 邹城市 石油 公司 第二 加油站 站长 。 
+24
+v v r d d v wp nh v n m wp d v v u ns ns n n m n n wp 
+24
+O O O O O O O S-Nh O O O O O O O O B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O O 
+24
+0 HED 1 CMP 6 SBV 6 ADV 6 ADV 1 VOB 6 WP 9 SBV 6 VOB 9 VOB 9 CMP 9 WP 14 ADV 9 COO 14 CMP 14 RAD 18 ATT 20 ATT 20 ATT 23 ATT 22 ATT 23 ATT 14 VOB 1 WP 

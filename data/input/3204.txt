@@ -1,0 +1,12 @@
+（江西会昌县人民广播电台华子逸程业长）
+华子逸
+江西会昌县人民广播电台
+1
+9
+（ 江西 会昌县 人民 广播 电台 华子逸 程业长 ） 
+9
+wp ns ns n v n nh nh wp 
+9
+O B-Ni I-Ni I-Ni I-Ni E-Ni O O O 
+9
+8 WP 3 ATT 4 ATT 6 ATT 6 ATT 7 ATT 8 ATT 0 HED 8 WP 

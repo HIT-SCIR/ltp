@@ -1,0 +1,12 @@
+陪同董建华参观的香港特区政府主要官员有：署理政务司司长孙明扬、财政司司长曾荫权、律政司司长梁爱诗等。
+董建华
+香港特区政府
+1
+25
+陪同 董建华 参观 的 香港 特区 政府 主要 官员 有 ： 署理 政务司 司长 孙明扬 、 财政司 司长 曾荫权 、 律政司 司长 梁爱诗 等 。 
+25
+v nh v u ns n n b n v wp n n n nh wp n n nh wp n n nh u wp 
+25
+O S-Nh O O B-Ni I-Ni E-Ni O O O O O O O S-Nh O O O S-Nh O O O S-Nh O O 
+25
+7 ATT 1 DBL 1 VOB 1 RAD 6 ATT 7 ATT 9 ATT 9 ATT 10 SBV 0 HED 10 WP 14 ATT 14 ATT 15 ATT 10 VOB 19 WP 18 ATT 19 ATT 15 COO 23 WP 22 ATT 23 ATT 15 COO 15 RAD 10 WP 

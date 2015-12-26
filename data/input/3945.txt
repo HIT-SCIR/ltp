@@ -1,0 +1,12 @@
+在菜地里，一对矿工夫妇在锄草施肥，男的叫余世江，是林东矿务局蔡冲煤矿工人。
+余世江
+林东矿务局蔡冲煤矿
+1
+24
+在 菜地 里 ， 一 对 矿工 夫妇 在 锄草 施肥 ， 男 的 叫 余世江 ， 是 林东 矿务局 蔡冲 煤矿 工人 。 
+24
+p n nd wp m q n n d v v wp b u v nh wp v ns n nz n n wp 
+24
+O O O O O O O O O O O O O O O S-Nh O O B-Ni I-Ni I-Ni E-Ni O O 
+24
+10 ADV 3 ATT 1 POB 1 WP 6 ATT 8 ATT 8 ATT 10 SBV 10 ADV 0 HED 10 COO 10 WP 15 ATT 13 RAD 18 SBV 15 VOB 15 WP 10 COO 20 ATT 23 ATT 23 ATT 23 ATT 18 VOB 10 WP 

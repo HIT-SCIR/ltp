@@ -1,0 +1,12 @@
+周明认为，眼下中国游泳队急需灵魂人物脱颖而出，这对稳定军心、鼓舞士气极为重要。
+周明
+中国游泳队
+1
+21
+周明 认为 ， 眼下 中国 游泳队 急需 灵魂 人物 脱颖而出 ， 这 对 稳定 军心 、 鼓舞 士气 极为 重要 。 
+21
+nh v wp nt ns n v n n i wp r p v n wp v n d a wp 
+21
+S-Nh O O O B-Ni E-Ni O O O O O O O O O O O O O O O 
+21
+2 SBV 0 HED 2 WP 10 ADV 6 ATT 9 ATT 9 ATT 9 ATT 10 SBV 2 VOB 10 WP 20 SBV 20 ADV 13 POB 14 VOB 17 WP 14 COO 17 VOB 20 ADV 10 COO 2 WP 

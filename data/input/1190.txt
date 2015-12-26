@@ -1,0 +1,12 @@
+中国剧协副主席胡可话剧在我国生根已经九十年了。
+胡可
+中国剧协
+1
+14
+中国 剧协 副 主席 胡可 话剧 在 我国 生根 已经 九十 年 了 。 
+14
+ns j b n nh n p n v d m q u wp 
+14
+B-Ni E-Ni O O S-Nh O O O O O O O O O 
+14
+2 ATT 4 ATT 4 ATT 5 ATT 6 ATT 9 SBV 9 ADV 7 POB 0 HED 12 ADV 12 ATT 9 CMP 12 RAD 9 WP 

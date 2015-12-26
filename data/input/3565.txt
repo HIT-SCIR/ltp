@@ -1,0 +1,12 @@
+王树文原是山东省日照市委书记，他的犯罪可以说与他的妻子徐峰丽有着十分密切的关系。
+王树文
+山东省日照市委
+0
+24
+王树文 原 是 山东省 日照 市委 书记 ， 他 的 犯罪 可以 说 与 他 的 妻子 徐峰丽 有着 十分 密切 的 关系 。 
+24
+nh d v ns ns n n wp r u v v v p r u n nh v m a u n wp 
+24
+S-Nh O O B-Ni I-Ni E-Ni O O O O O O O O O O O S-Nh O O O O O O 
+24
+3 SBV 3 ADV 0 HED 6 ATT 6 ATT 7 ATT 3 VOB 3 WP 11 ATT 9 RAD 13 SBV 13 ADV 3 COO 19 ADV 17 ATT 15 RAD 18 ATT 14 POB 13 VOB 21 ADV 23 ATT 21 RAD 19 VOB 3 WP 

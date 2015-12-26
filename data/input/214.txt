@@ -1,0 +1,12 @@
+沃勒贝克在以色列访问期间曾一再敦促以政府采取措施推动和平进程，并强调和平进程应以奥斯陆协议为基础。
+沃勒贝克
+以政府
+0
+27
+沃勒贝克 在 以色列 访问 期间 曾 一再 敦促 以 政府 采取 措施 推动 和平 进程 ， 并 强调 和平 进程 应 以 奥斯陆 协议 为 基础 。 
+27
+nh p ns v nd d d v j n v n v n n wp c v n n v p ns n v n wp 
+27
+S-Nh O S-Ns O O O O O B-Ni E-Ni O O O O O O O O O O O O S-Ns O O O O 
+27
+8 SBV 8 ADV 4 SBV 5 ATT 2 POB 8 ADV 8 ADV 0 HED 10 ATT 11 SBV 8 VOB 11 VOB 11 COO 15 ATT 13 VOB 8 WP 18 ADV 8 COO 20 ATT 25 SBV 25 ADV 25 ADV 24 ATT 22 POB 18 VOB 25 VOB 8 WP 

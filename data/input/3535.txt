@@ -1,0 +1,12 @@
+国家土地管理局局长邹玉川介绍，有关部门对全国１９９１年至１９９６年的各类非农建设用地进行了全面清查，基本查清了非农建设用地现状。
+邹玉川
+国家土地管理局
+1
+32
+国家 土地 管理局 局长 邹玉川 介绍 ， 有关 部门 对 全国 １９９１年 至 １９９６年 的 各类 非农 建设 用地 进行 了 全面 清查 ， 基本 查清 了 非农 建设 用地 现状 。 
+32
+n n n n nh v wp n n p n nt p nt u r b v n v u a v wp a v u b v v n wp 
+32
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+32
+3 ATT 3 ATT 4 ATT 5 ATT 6 SBV 0 HED 6 WP 9 ATT 20 SBV 20 ADV 13 ADV 13 ADV 19 ATT 13 POB 13 RAD 19 ATT 19 ATT 19 ATT 10 POB 6 VOB 20 RAD 23 ADV 20 VOB 20 WP 26 ADV 20 COO 26 RAD 29 ADV 26 VOB 31 ATT 29 VOB 6 WP 

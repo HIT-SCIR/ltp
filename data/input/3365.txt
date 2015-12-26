@@ -1,0 +1,12 @@
+总政话剧团团长郑振环军旅戏剧作为中国话剧事业的一个重要组成部分，长期以来，在上级领导的大力支持和关怀下，一直十分活跃。
+郑振环
+总政话剧团
+1
+31
+总政 话剧团 团长 郑振环 军旅 戏剧 作为 中国 话剧 事业 的 一个 重要 组成部分 ， 长期以来 ， 在 上级 领导 的 大力 支持 和 关怀 下 ， 一直 十分 活跃 。 
+31
+j n n nh n n p ns n n u m a i wp i wp p n n u d v c v nd wp d m a wp 
+31
+B-Ni E-Ni O S-Nh O O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O 
+31
+2 ATT 3 ATT 4 ATT 6 ATT 6 ATT 30 SBV 30 ADV 9 ATT 10 ATT 14 ATT 10 RAD 14 ATT 14 ATT 7 POB 7 WP 30 ADV 16 WP 30 ADV 20 ATT 23 ATT 20 RAD 23 ADV 26 ATT 25 LAD 23 COO 18 POB 18 WP 30 ADV 30 ADV 0 HED 30 WP 

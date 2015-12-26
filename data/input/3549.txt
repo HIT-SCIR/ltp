@@ -1,0 +1,12 @@
+李波王锋元旦前夕，河南省西峡县五里桥乡乡长杨海韬匆匆赶到西峡县城关高中，替自己的扶贫特困生乔改玉交足了１９９８年上学期的学杂费。
+李波
+西峡县城关高中
+0
+31
+李波 王锋 元旦 前夕 ， 河南省 西峡县 五里桥乡 乡长 杨海韬 匆匆 赶到 西峡县 城关 高中 ， 替 自己 的 扶贫 特困生 乔改玉 交 足 了 １９９８年 上 学期 的 学杂费 。 
+31
+nh nh nt nd wp ns ns ns n nh z v ns nz n wp p r u v n nh v a u nt nd n u n wp 
+31
+B-Nh E-Nh O O O B-Ns I-Ns E-Ns O S-Nh O O B-Ni I-Ni E-Ni O O O O O O S-Nh O O O O O O O O O 
+31
+2 ATT 4 ATT 4 ATT 12 ADV 4 WP 7 ATT 8 ATT 9 ATT 10 ATT 12 SBV 12 ADV 0 HED 15 ATT 15 ATT 12 VOB 12 WP 23 ADV 21 ATT 18 RAD 21 ATT 22 ATT 17 POB 12 COO 23 CMP 23 RAD 27 ATT 28 ATT 30 ATT 28 RAD 23 VOB 12 WP 

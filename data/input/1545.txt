@@ -1,0 +1,12 @@
+封湾小学二年级学生葛娟自小被人抱养，谁知养父又于３年前去世，年仅９岁的葛娟只好跟随姑姑生活。
+葛娟
+封湾小学
+0
+31
+封湾 小学 二 年级 学生 葛娟 自小 被 人 抱养 ， 谁知 养父 又 于 ３ 年 前 去世 ， 年 仅 ９ 岁 的 葛娟 只好 跟随 姑姑 生活 。 
+31
+ns n m n n nh d p n v wp v n d p m q nd v wp n d m q u nh d v n v wp 
+31
+B-Ni E-Ni O O O S-Nh O O O O O O O O O O O O O O O O O O O S-Nh O O O O O 
+31
+2 ATT 5 ATT 4 ATT 5 ATT 6 ATT 10 FOB 10 ADV 10 ADV 8 POB 0 HED 10 WP 10 COO 12 VOB 19 ADV 19 ADV 17 ATT 18 ATT 15 POB 12 COO 19 WP 24 SBV 24 ATT 24 ATT 26 ATT 24 RAD 28 SBV 28 ADV 19 COO 30 ATT 28 VOB 10 WP 

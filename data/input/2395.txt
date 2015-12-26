@@ -1,0 +1,12 @@
+日前，记者带着上述问题走访了英国黄金矿业服务公司总裁斯图尔特?默里先生。
+斯图尔特?默里
+英国黄金矿业服务公司
+1
+20
+日前 ， 记者 带 着 上述 问题 走访 了 英国 黄金 矿业 服务 公司 总裁 斯图尔特 ? 默里 先生 。 
+20
+nt wp n v u b n v u ns n n v n n nh wp nh n wp 
+20
+O O O O O O O O O B-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O S-Nh O O 
+20
+4 ADV 1 WP 4 SBV 0 HED 4 RAD 7 ATT 4 VOB 4 COO 8 RAD 14 ATT 12 ATT 13 ATT 14 ATT 15 ATT 16 ATT 8 VOB 4 WP 19 ATT 4 COO 4 WP 

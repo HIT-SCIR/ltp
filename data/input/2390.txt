@@ -1,0 +1,12 @@
+（江西宜春地委袁志成）
+袁志成
+江西宜春地委
+1
+6
+（ 江西 宜春 地委 袁志成 ） 
+6
+wp ns ns n nh wp 
+6
+O B-Ns E-Ns O S-Nh O 
+6
+5 WP 3 ATT 4 ATT 5 ATT 0 HED 5 WP 

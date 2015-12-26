@@ -1,0 +1,12 @@
+新华社北京１月２３日电中国象棋协会今天消息，广东的许银川和河北的胡明分别以２５６１分和２２７８分列男女棋手等级分榜首。
+胡明
+中国象棋协会
+0
+32
+新华社 北京 １月 ２３日 电 中国 象棋 协会 今天 消息 ， 广东 的 许银川 和 河北 的 胡明 分别 以 ２５６１ 分 和 ２２７８ 分 列 男 女 棋手 等级分 榜首 。 
+32
+ni ns nt nt n ns n n nt n wp ns u nh c ns u nh d p m q c m q v b b n n n wp 
+32
+S-Ni S-Ns O O O B-Ni I-Ni E-Ni O O O S-Ns O S-Nh O S-Ns O S-Nh O O O O O O O O O O O O O O 
+32
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 ATT 8 ATT 10 ATT 10 ATT 5 VOB 5 WP 14 ATT 12 RAD 26 SBV 18 LAD 18 ATT 16 RAD 14 COO 26 ADV 26 ADV 22 ATT 20 POB 25 LAD 25 ATT 22 COO 5 COO 29 ATT 29 ATT 30 ATT 31 ATT 26 VOB 5 WP 

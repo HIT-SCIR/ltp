@@ -1,0 +1,12 @@
+天津市师范大学中文系教授汤吉夫阐明了一名学者的观点。
+汤吉夫
+天津市师范大学中文系
+1
+13
+天津市 师范大学 中文系 教授 汤吉夫 阐明 了 一 名 学者 的 观点 。 
+13
+ns n n n nh v u m q n u n wp 
+13
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O 
+13
+2 ATT 3 ATT 4 ATT 5 ATT 6 SBV 0 HED 6 RAD 9 ATT 10 ATT 12 ATT 10 RAD 6 VOB 6 WP 

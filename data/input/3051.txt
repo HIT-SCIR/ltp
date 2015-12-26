@@ -1,0 +1,12 @@
+引人注目的是，在去年欧洲委员会首脑会议期间，俄、法、德根据叶利钦的倡议，形成了三国首脑定期会晤机制。
+叶利钦
+欧洲委员会
+0
+31
+引人注目 的 是 ， 在 去年 欧洲 委员会 首脑 会议 期间 ， 俄 、 法 、 德 根据 叶利钦 的 倡议 ， 形成 了 三 国 首脑 定期 会晤 机制 。 
+31
+i u v wp p nt ns n n n nd wp j wp j wp j p nh u v wp v u m n n d v n wp 
+31
+O O O O O O B-Ni E-Ni O O O O S-Ns O S-Ns O S-Ns O S-Nh O O O O O O O O O O O O 
+31
+3 SBV 1 RAD 0 HED 3 WP 23 ADV 10 ATT 8 ATT 10 ATT 10 ATT 11 ATT 5 POB 5 WP 23 SBV 15 WP 13 COO 17 WP 13 COO 23 ADV 21 ATT 19 RAD 18 POB 18 WP 3 VOB 23 RAD 26 ATT 27 ATT 29 SBV 29 ADV 30 ATT 23 VOB 3 WP 

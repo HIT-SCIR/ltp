@@ -1,0 +1,12 @@
+李鹏说，西门子公司同中国有着长久的合作关系，在中德经济技术合作中占有重要地位。
+李鹏
+西门子公司
+0
+24
+李鹏 说 ， 西门子 公司 同 中国 有着 长久 的 合作 关系 ， 在 中 德 经济 技术 合作 中 占有 重要 地位 。 
+24
+nh v wp nz n p ns v a u v n wp p j j n n v nd v a n wp 
+24
+S-Nh O O B-Ni E-Ni O S-Ns O O O O O O O S-Ns S-Ns O O O O O O O O 
+24
+2 SBV 0 HED 2 WP 5 ATT 8 SBV 8 ADV 6 POB 2 VOB 12 ATT 9 RAD 12 ATT 8 VOB 8 WP 21 ADV 18 ATT 15 COO 18 ATT 19 ATT 20 ATT 14 POB 8 COO 23 ATT 21 VOB 2 WP 

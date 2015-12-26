@@ -1,0 +1,12 @@
+农业部部长刘江１９９７年我国农业获得较好收成，农民收入继续增加，农村经济全面发展。
+刘江
+农业部
+1
+21
+农业部 部长 刘江 １９９７年 我国 农业 获得 较 好 收成 ， 农民 收入 继续 增加 ， 农村 经济 全面 发展 。 
+21
+ni n nh nt n n v d a n wp n n v v wp n n a v wp 
+21
+S-Ni O S-Nh O O O O O O O O O O O O O O O O O O 
+21
+2 ATT 3 ATT 7 SBV 7 ADV 6 ATT 7 SBV 0 HED 9 ADV 10 ATT 7 VOB 7 WP 13 ATT 14 SBV 7 COO 14 COO 7 WP 18 ATT 20 SBV 20 ADV 7 COO 7 WP 

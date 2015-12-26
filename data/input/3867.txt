@@ -1,0 +1,12 @@
+会议由全国双拥工作领导小组副组长、中共中央办公厅副主任胡光宝主持。
+胡光宝
+中共中央办公厅
+1
+17
+会议 由 全国 双拥 工作 领导 小组 副 组长 、 中共中央 办公厅 副 主任 胡光宝 主持 。 
+17
+n p n j v v n b n wp ni n b n nh v wp 
+17
+O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O B-Ni E-Ni O O S-Nh O O 
+17
+16 FOB 16 ADV 5 ATT 5 ATT 7 ATT 7 ATT 9 ATT 9 ATT 15 ATT 14 WP 12 ATT 14 ATT 14 ATT 9 COO 2 POB 0 HED 16 WP 

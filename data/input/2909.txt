@@ -1,0 +1,12 @@
+江泽民主席对美国成功的国事访问，以及中国政府其他一系列重大外交活动取得的显著成就，进一步扩大了中国的国际影响。
+江泽民
+中国政府
+0
+30
+江泽民 主席 对 美国 成功 的 国事访问 ， 以及 中国 政府 其他 一 系列 重大 外交 活动 取得 的 显著 成就 ， 进一步 扩大 了 中国 的 国际 影响 。 
+30
+nh n p ns a u i wp c ns n r m q a n v v u a n wp d v u ns u n v wp 
+30
+S-Nh O O S-Ns O O O O O B-Ni E-Ni O O O O O O O O O O O O O O S-Ns O O O O 
+30
+2 ATT 7 ATT 7 ATT 5 SBV 7 ATT 5 RAD 24 SBV 7 WP 17 LAD 11 ATT 17 ATT 17 ATT 14 ATT 17 ATT 17 ATT 17 ATT 18 SBV 21 ATT 18 RAD 21 ATT 7 COO 21 WP 24 ADV 0 HED 24 RAD 29 ATT 26 RAD 29 ATT 24 VOB 24 WP 

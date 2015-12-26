@@ -1,0 +1,12 @@
+秦华孙说，中国作为一个大国和安理会常任理事国，在维护世界和平与安全方面肩负着重任。
+秦华孙
+中国
+1
+23
+秦华孙 说 ， 中国 作为 一个 大国 和 安理会 常任 理事国 ， 在 维护 世界 和平 与 安全 方面 肩负 着 重任 。 
+23
+nh v wp ns p m n c j b n wp p v n n c a n v u n wp 
+23
+S-Nh O O S-Ns O O O O O O O O O O O O O O O O O O O 
+23
+2 SBV 0 HED 2 WP 20 SBV 20 ADV 7 ATT 5 POB 11 LAD 11 ATT 11 ATT 7 COO 5 WP 20 ADV 19 ATT 16 ATT 14 VOB 18 LAD 16 COO 13 POB 2 VOB 20 RAD 20 VOB 2 WP 

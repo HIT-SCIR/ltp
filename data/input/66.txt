@@ -1,0 +1,12 @@
+十四日凌晨，在张北县抗震救灾前线指挥部，刚刚开完会的河北省委副书记许永跃告诉记者：『在全国人民和子弟兵的大力支持下，经过灾区人民的共同努力，张家口地震灾区所有无房可住的人民群众，十三日晚已全部住进了帐篷、简易房和厂矿、机关、学校。
+许永跃
+河北省委
+1
+69
+十四日 凌晨 ， 在 张北县 抗震救灾 前线 指挥部 ， 刚刚 开 完 会 的 河北 省委 副 书记 许永跃 告诉 记者 ： 『 在 全国 人民 和 子弟兵 的 大力 支持 下 ， 经过 灾区 人民 的 共同 努力 ， 张家口 地震 灾区 所有 无 房 可 住 的 人民 群众 ， 十三日 晚 已 全部 住 进 了 帐篷 、 简易房 和 厂矿 、 机关 、 学校 。 
+69
+nt nt wp p ns i nl n wp d v v n u ns n b n nh v n wp wp p n n c n u d v nd wp p n n u d a wp ns n n v v n v v u n n wp nt nt d m v v u n wp n c j wp n wp n wp 
+69
+O O O O S-Ns O O O O O O O O O B-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O O O O O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+69
+2 ATT 20 ADV 2 WP 20 ADV 8 ATT 8 ATT 8 ATT 4 POB 4 WP 11 ADV 19 ATT 11 CMP 11 VOB 11 RAD 16 ATT 18 ATT 18 ATT 19 ATT 20 SBV 0 HED 20 IOB 20 WP 57 WP 57 ADV 26 ATT 31 ATT 28 LAD 26 COO 26 RAD 31 ADV 32 ATT 24 POB 24 WP 57 ADV 36 ATT 39 ATT 36 RAD 39 ADV 34 POB 34 WP 43 ATT 43 ATT 51 ATT 51 ATT 51 ATT 45 VOB 48 ADV 45 COO 48 RAD 51 ATT 57 SBV 51 WP 54 ATT 57 ADV 57 ADV 57 ADV 20 VOB 57 CMP 58 RAD 58 VOB 62 WP 60 COO 64 LAD 60 COO 66 WP 60 COO 68 WP 60 COO 20 WP 

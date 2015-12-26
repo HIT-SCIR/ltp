@@ -1,0 +1,12 @@
+华南师范大学吴颖民麦志强围绕素质教育问题的讨论，已经进行了相当一段时间。
+吴颖民
+华南师范大学
+1
+19
+华南 师范大学 吴颖民 麦志强 围绕 素质 教育 问题 的 讨论 ， 已经 进行 了 相当 一 段 时间 。 
+19
+ns n nh nh v n v n u v wp d v u d m q n wp 
+19
+S-Ns O B-Nh E-Nh O O O O O O O O O O O O O O O 
+19
+2 ATT 3 ATT 4 ATT 5 SBV 10 ATT 7 ATT 8 ATT 5 VOB 5 RAD 13 SBV 10 WP 13 ADV 0 HED 13 RAD 18 ATT 17 ATT 18 ATT 13 VOB 13 WP 

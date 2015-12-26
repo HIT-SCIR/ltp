@@ -1,0 +1,12 @@
+中国民航总局局长陈光毅、国务院外办主任刘华秋、美国驻华大使尚慕杰等参加了会见。
+尚慕杰
+美国
+1
+20
+中国 民航 总局 局长 陈光毅 、 国务院 外办 主任 刘华秋 、 美国 驻华 大使 尚慕杰 等 参加 了 会见 。 
+20
+ns n n n nh wp ni j n nh wp ns v n nh u v u v wp 
+20
+B-Ni I-Ni E-Ni O S-Nh O B-Ni E-Ni O S-Nh O S-Ns O O S-Nh O O O O O 
+20
+3 ATT 3 ATT 4 ATT 5 ATT 17 SBV 10 WP 8 ATT 9 ATT 10 ATT 5 COO 15 WP 14 ATT 14 ATT 15 ATT 5 COO 5 RAD 0 HED 17 RAD 17 VOB 17 WP 

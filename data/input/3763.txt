@@ -1,0 +1,12 @@
+中共中央政治局委员、中宣部部长丁关根委托中宣部副部长白克明，向工作会议的召开表示祝贺。
+白克明
+中共中央政治局
+0
+21
+中共中央 政治局 委员 、 中宣部 部长 丁关根 委托 中宣部 副 部长 白克明 ， 向 工作 会议 的 召开 表示 祝贺 。 
+21
+ni n n wp j n nh v j b n nh wp p v n u v v v wp 
+21
+B-Ni E-Ni O O S-Ni O S-Nh O S-Ni O O S-Nh O O O O O O O O O 
+21
+2 ATT 3 ATT 7 ATT 6 WP 6 ATT 3 COO 8 SBV 0 HED 11 ATT 11 ATT 12 ATT 8 VOB 8 WP 19 ADV 16 ATT 14 POB 16 RAD 14 POB 8 COO 19 VOB 8 WP 

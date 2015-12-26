@@ -1,0 +1,12 @@
+李所长立即调集警力，一面对新立旅社进行严密监视，一面对通往边境的各个道口进行封锁堵截。
+李所长
+新立旅社
+0
+25
+李 所长 立即 调集 警力 ， 一 面对 新立 旅社 进行 严密 监视 ， 一面 对 通往 边境 的 各个 道口 进行 封锁 堵截 。 
+25
+nh n d v n wp m v nz n v a v wp d p v nl u r n v v v wp 
+25
+S-Nh O O O O O O O B-Ni E-Ni O O O O O O O O O O O O O O O 
+25
+2 ATT 4 SBV 4 ADV 0 HED 4 VOB 4 WP 8 ADV 11 ADV 10 ATT 8 VOB 4 COO 13 ADV 11 VOB 4 WP 22 ADV 22 ADV 21 ATT 17 VOB 17 RAD 21 ATT 16 POB 4 COO 22 VOB 23 VOB 4 WP 

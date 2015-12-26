@@ -1,0 +1,12 @@
+浙江据新华社杭州电（记者方益波）新春佳节即将来临，浙江的村村落落又开始出现搭台唱戏的闹腾景象。
+方益波
+新华社
+1
+27
+浙江 据 新华社 杭州 电 （ 记者 方益波 ） 新春 佳节 即将 来临 ， 浙江 的 村村落落 又 开始 出现 搭 台 唱戏 的 闹腾 景象 。 
+27
+ns p ni ns n wp n nh wp nt n d v wp ns u n d v v v n v u v n wp 
+27
+S-Ns O S-Ni S-Ns O O O S-Nh O O O O O O S-Ns O O O O O O O O O O O O 
+27
+13 SBV 13 ADV 5 SBV 5 ATT 2 POB 8 WP 8 ATT 5 CMP 8 WP 11 ATT 13 SBV 13 ADV 0 HED 13 WP 17 ATT 15 RAD 19 SBV 19 ADV 13 COO 19 VOB 25 SBV 21 VOB 21 COO 23 RAD 20 COO 25 VOB 13 WP 

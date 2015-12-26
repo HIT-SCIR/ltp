@@ -1,0 +1,12 @@
+话剧《虎踞钟山》将一代儒将刘伯承元帅的形象成功地演绎给在座的３００余名国防大学的教职员工和学员。
+刘伯承
+国防大学
+0
+30
+话剧 《 虎 踞 钟山 》 将 一 代 儒将 刘伯承 元帅 的 形象 成功 地 演绎 给 在座 的 ３００ 余 名 国防 大学 的 教职员工 和 学员 。 
+30
+n wp n v ns wp p m q n nh n u n a u v v v u m m q n n u j c n wp 
+30
+O O O O S-Ns O O O O O S-Nh O O O O O O O O O O O O B-Ni E-Ni O O O O O 
+30
+4 ATT 4 WP 4 SBV 17 SBV 4 VOB 4 WP 17 ADV 9 ATT 10 ATT 12 ATT 12 ATT 14 ATT 12 RAD 7 POB 17 ADV 15 RAD 0 HED 17 CMP 27 ATT 19 RAD 23 ATT 21 RAD 25 ATT 25 ATT 27 ATT 25 RAD 18 VOB 29 LAD 27 COO 17 WP 

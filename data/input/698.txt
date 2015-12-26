@@ -1,0 +1,12 @@
+１９５３年春，周恩来向淮安县委提出“平掉祖坟，把坟地交集体耕种”的意见，以后又多次叮嘱周家祖坟棺木“采用深葬法了之”。
+周恩来
+淮安县委
+0
+37
+１９５３年 春 ， 周恩来 向 淮安 县委 提出 “ 平 掉 祖坟 ， 把 坟地 交 集体 耕种 ” 的 意见 ， 以后 又 多次 叮嘱 周 家 祖坟 棺木 “ 采用 深葬法 了 之 ” 。 
+37
+nt nt wp nh p ns n v wp v v n wp p n v n v wp u n wp nd d m v nh n n n wp v n v r wp wp 
+37
+O O O S-Nh O B-Ni E-Ni O O O O O O O O O O O O O O O O O O O S-Nh O O O O O O O O O O 
+37
+2 ATT 8 ADV 2 WP 8 SBV 8 ADV 7 ATT 5 POB 0 HED 10 WP 21 ATT 10 CMP 11 VOB 10 WP 16 ADV 14 POB 10 COO 16 VOB 16 COO 10 WP 10 RAD 8 VOB 8 WP 26 ADV 26 ADV 26 ADV 8 COO 28 ATT 30 ATT 30 ATT 32 SBV 32 WP 26 VOB 32 VOB 32 COO 34 VOB 32 WP 8 WP 

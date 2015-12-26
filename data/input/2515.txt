@@ -1,0 +1,12 @@
+国家体委主任伍绍祖指出，社会主义初级阶段的特点之一就是发展不平衡，先富的要帮助后进地区也富起来。
+伍绍祖
+国家体委
+1
+29
+国家 体委 主任 伍绍祖 指出 ， 社会主义 初级 阶段 的 特点 之一 就 是 发展 不 平衡 ， 先 富 的 要 帮助 后进 地区 也 富 起来 。 
+29
+n j n nh v wp n b n u n r d v v d a wp d v u v v b n d a v wp 
+29
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O 
+29
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 9 ATT 9 ATT 11 ATT 9 RAD 12 ATT 14 SBV 14 ADV 5 VOB 17 SBV 17 ADV 14 VOB 14 WP 20 ADV 23 ATT 20 RAD 23 ADV 14 COO 25 ATT 23 DBL 27 ADV 23 VOB 27 CMP 5 WP 

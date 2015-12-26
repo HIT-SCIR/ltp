@@ -1,0 +1,12 @@
+阿尔穆尼亚一行是应中国共产党邀请来访于十一日抵京的。
+阿尔穆尼亚
+中国共产党
+0
+13
+阿尔穆尼亚 一行 是 应 中国 共产党 邀请 来访 于 十一日 抵京 的 。 
+13
+nh n v v ns n v v p nt v u wp 
+13
+S-Nh O O O B-Ni E-Ni O O O O O O O 
+13
+2 ATT 3 SBV 0 HED 3 VOB 6 ATT 7 ATT 4 VOB 7 VOB 11 ADV 9 POB 8 COO 11 RAD 3 WP 

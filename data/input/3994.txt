@@ -1,0 +1,12 @@
+国家旅游局局长何光、江苏省政府领导等以及数千名中外宾朋参加了这一隆重而特别的仪式。
+何光
+国家旅游局
+1
+24
+国家 旅游局 局长 何光 、 江苏省 政府 领导 等 以及 数千 名 中外 宾朋 参加 了 这 一 隆重 而 特别 的 仪式 。 
+24
+n n n nh wp ns n n u c m q j n v u r m a c a u n wp 
+24
+B-Ni E-Ni O S-Nh O B-Ni E-Ni O O O O O O O O O O O O O O O O O 
+24
+2 ATT 3 ATT 4 ATT 15 SBV 8 WP 7 ATT 8 ATT 4 COO 4 RAD 14 LAD 12 ATT 14 ATT 14 ATT 4 COO 0 HED 15 RAD 18 ATT 23 ATT 23 ATT 21 LAD 19 COO 21 RAD 15 VOB 15 WP 

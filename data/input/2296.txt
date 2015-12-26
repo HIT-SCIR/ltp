@@ -1,0 +1,12 @@
+后来，沈某状告４７４次列车的管理经营单位襄樊铁路分局，要求赔偿经济损失。
+沈某
+襄樊铁路分局
+0
+20
+后来 ， 沈某 状告 ４７４ 次 列车 的 管理 经营 单位 襄樊 铁路 分局 ， 要求 赔偿 经济 损失 。 
+20
+nt wp nh v m q n u v v n ns n n wp v v n n wp 
+20
+O O S-Nh O O O O O O O O B-Ni I-Ni E-Ni O O O O O O 
+20
+16 ADV 1 WP 4 SBV 11 ATT 6 ATT 7 ATT 4 VOB 4 RAD 11 ATT 9 COO 14 ATT 14 ATT 14 ATT 16 SBV 14 WP 0 HED 16 VOB 19 ATT 17 VOB 16 WP 

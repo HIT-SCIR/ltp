@@ -1,0 +1,12 @@
+１９９５年，周小燕又创办了“周小燕少年合唱团”。
+周小燕
+周小燕少年合唱团
+0
+12
+１９９５年 ， 周小燕 又 创办 了 “ 周小燕 少年 合唱团 ” 。 
+12
+nt wp nh d v u wp nh n n wp wp 
+12
+O O S-Nh O O O O B-Ni I-Ni E-Ni O O 
+12
+5 ADV 1 WP 5 SBV 5 ADV 0 HED 5 RAD 10 WP 10 ATT 10 ATT 5 VOB 10 WP 5 WP 

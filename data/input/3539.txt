@@ -1,0 +1,12 @@
+该会名誉会长章爱龙在晚会上向中国驻纽约总领事邱胜云转交了支票，邱总领事对此表示感谢。
+邱胜云
+中国
+1
+24
+该会 名誉 会长 章爱龙 在 晚会 上 向 中国 驻 纽约 总领事 邱胜云 转交 了 支票 ， 邱 总领事 对 此 表示 感谢 。 
+24
+r n n nh p n nd p ns v ns n nh v u n wp nh n p r v v wp 
+24
+O O O S-Nh O O O O S-Ns O S-Ns O S-Nh O O O O S-Nh O O O O O O 
+24
+3 ATT 3 ATT 4 ATT 14 SBV 14 ADV 7 ATT 5 POB 14 ADV 10 SBV 12 ATT 10 VOB 13 ATT 8 POB 0 HED 14 RAD 14 VOB 14 WP 19 ATT 22 SBV 22 ADV 20 POB 14 COO 22 VOB 14 WP 

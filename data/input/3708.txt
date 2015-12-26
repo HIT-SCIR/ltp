@@ -1,0 +1,12 @@
+据共同社今晚报道，萨马兰奇最近在国际奥委会总部单独接受该社记者采访时，发表了上述谈话。
+萨马兰奇
+共同社
+0
+23
+据 共同社 今晚 报道 ， 萨马兰奇 最近 在 国际 奥委会 总部 单独 接受 该社 记者 采访 时 ， 发表 了 上述 谈话 。 
+23
+p ni nt v wp nh nt p n j n d v r n v n wp v u b n wp 
+23
+O S-Ni O O O S-Nh O O B-Ni E-Ni O O O O O O O O O O O O O 
+23
+19 ADV 4 SBV 4 ADV 1 POB 1 WP 13 SBV 13 ADV 13 ADV 10 ATT 11 ATT 8 POB 13 ADV 17 ATT 15 ATT 16 SBV 13 VOB 19 ADV 17 WP 0 HED 19 RAD 22 ATT 19 VOB 19 WP 

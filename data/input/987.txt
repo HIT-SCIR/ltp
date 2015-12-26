@@ -1,0 +1,12 @@
+去年夏天的一个晚上，绥北公安边防派出所所长李才接到报告，有一伙人昨晚偷偷摸摸入住个体新立旅社，听说当晚十一时要走，有偷渡嫌疑。
+李才
+新立旅社
+0
+37
+去年 夏天 的 一个 晚上 ， 绥北 公安 边防 派出所 所长 李才 接到 报告 ， 有 一 伙 人 昨晚 偷偷摸摸 入 住 个体 新立 旅社 ， 听说 当晚 十一时 要 走 ， 有 偷渡 嫌疑 。 
+37
+nt nt u m nt wp ns n n n n nh v n wp v m q n nt i v v n nz n wp v nt nt v v wp v v n wp 
+37
+O O O O O O B-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O B-Ni E-Ni O O O O O O O O O O O 
+37
+2 ATT 5 ATT 2 RAD 5 ATT 13 ADV 5 WP 10 ATT 10 ATT 10 ATT 11 ATT 12 ATT 13 SBV 0 HED 13 VOB 13 WP 13 COO 18 ATT 19 ATT 16 DBL 22 ADV 22 ADV 16 VOB 22 CMP 26 ATT 26 ATT 22 VOB 22 WP 22 COO 30 ATT 32 ADV 32 ADV 28 VOB 28 WP 28 COO 36 ATT 34 VOB 13 WP 

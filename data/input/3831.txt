@@ -1,0 +1,12 @@
+（广州开发区报施大鑫）
+施大鑫
+广州开发区报
+1
+6
+（ 广州 开发区 报 施大鑫 ） 
+6
+wp ns n n nh wp 
+6
+O B-Ni E-Ni O S-Nh O 
+6
+5 WP 3 ATT 4 ATT 5 ATT 0 HED 5 WP 

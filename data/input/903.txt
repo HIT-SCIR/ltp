@@ -1,0 +1,12 @@
+伊拉克指责这个核查小组由美国人和英国人垄断，小组领导人美国的里特是为美国政府服务的间谍。
+里特
+美国政府
+1
+26
+伊拉克 指责 这个 核查 小组 由 美国 人 和 英国 人 垄断 ， 小组 领导人 美国 的 里特 是 为 美国 政府 服务 的 间谍 。 
+26
+ns v r v n p ns n c ns n v wp n n ns u nh v p ns n v u n wp 
+26
+S-Ns O O O O O S-Ns O O S-Ns O O O O O S-Ns O S-Nh O O B-Ni E-Ni O O O O 
+26
+2 SBV 0 HED 5 ATT 5 ATT 19 SBV 19 ADV 8 ATT 6 POB 12 LAD 11 ATT 12 SBV 8 COO 6 WP 15 ATT 16 ATT 18 ATT 16 RAD 19 SBV 2 VOB 23 ADV 22 ATT 20 POB 25 ATT 23 RAD 19 VOB 2 WP 

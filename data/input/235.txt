@@ -1,0 +1,12 @@
+河北省高邑县委书记李保中李保中，１９４７年生，１９８９年起，历任河北高邑县委常委、组织部长，县委副书记，县委副书记兼政协主席，１９９６年１月任高邑县委书记。
+李保中
+河北高邑县委
+1
+40
+河北省 高邑 县委 书记 李保中 李保 中 ， １９４７年 生 ， １９８９年 起 ， 历任 河北 高邑 县委 常委 、 组织部长 ， 县委 副 书记 ， 县委 副 书记 兼 政协 主席 ， １９９６年 １月 任 高邑 县委 书记 。 
+40
+ns ns n n nh nh nd wp nt v wp nt nd wp v ns ns n n wp n wp n b n wp n b n v j n wp nt nt v ns n n wp 
+40
+B-Ni I-Ni E-Ni O B-Nh E-Nh O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O O B-Ni E-Ni O O 
+40
+2 ATT 3 ATT 4 ATT 5 ATT 6 ATT 7 ATT 10 ADV 7 WP 10 ADV 0 HED 10 WP 13 ADV 15 ADV 13 WP 10 COO 17 ATT 18 ATT 19 ATT 15 VOB 21 WP 19 COO 10 WP 25 ATT 25 ATT 10 COO 25 WP 29 ATT 29 ATT 32 ATT 32 LAD 32 ATT 36 SBV 32 WP 35 ATT 36 ADV 10 COO 38 ATT 39 ATT 36 VOB 10 WP 

@@ -1,0 +1,12 @@
+贝克特说，英国政府今后将采取积极措施扩大在香港和中国内地的投资和贸易。
+贝克特
+英国政府
+1
+21
+贝克特 说 ， 英国 政府 今后 将 采取 积极 措施 扩大 在 香港 和 中国 内地 的 投资 和 贸易 。 
+21
+nh v wp ns n nt d v a n v p ns c ns nl u v c v wp 
+21
+S-Nh O O B-Ni E-Ni O O O O O O O S-Ns O S-Ns O O O O O O 
+21
+2 SBV 0 HED 2 WP 5 ATT 8 SBV 8 ADV 8 ADV 2 VOB 10 ATT 8 VOB 8 COO 18 ATT 12 POB 16 LAD 16 ATT 13 COO 12 RAD 11 VOB 20 LAD 18 COO 2 WP 

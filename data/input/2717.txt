@@ -1,0 +1,12 @@
+科恩说，他很高兴担任美国国防部长以后首次访华。
+科恩
+美国国防部
+1
+14
+科恩 说 ， 他 很 高兴 担任 美国 国防部长 以后 首 次 访华 。 
+14
+nh v wp r d a v ns n nd m q v wp 
+14
+S-Nh O O O O O O S-Ns O O O O O O 
+14
+2 SBV 0 HED 2 WP 7 SBV 6 ADV 7 ADV 2 VOB 9 ATT 7 VOB 13 ADV 12 ATT 13 ADV 7 VOB 2 WP 

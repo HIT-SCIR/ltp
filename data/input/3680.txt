@@ -1,0 +1,12 @@
+本报记者徐建中１９９５年６月，杨丽华被中国国际航空公司任命为飞行总队副总队长。
+杨丽华
+中国国际航空公司
+1
+19
+本报 记者 徐建中 １９９５年 ６月 ， 杨丽华 被 中国 国际 航空 公司 任命 为 飞行 总队 副 总队长 。 
+19
+r n nh nt nt wp nh p ns n n n v v v n b n wp 
+19
+O O S-Nh O O O S-Nh O B-Ni I-Ni I-Ni E-Ni O O O O O O O 
+19
+2 ATT 3 ATT 5 ATT 5 ATT 13 ADV 5 WP 13 FOB 13 ADV 12 ATT 12 ATT 12 ATT 8 POB 0 HED 13 CMP 16 ATT 18 ATT 18 ATT 14 VOB 13 WP 

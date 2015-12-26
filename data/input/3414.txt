@@ -1,0 +1,12 @@
+国家统计局局长刘洪说，这既是维护党和政府形象的需要，也是提高宏观管理科学性、提高对外开放水平的需要。
+刘洪
+国家统计局
+1
+30
+国家 统计局 局长 刘洪 说 ， 这 既 是 维护 党 和 政府 形象 的 需要 ， 也 是 提高 宏观 管理 科学性 、 提高 对外开放 水平 的 需要 。 
+30
+n n n nh v wp r c v v n c n n u n wp d v v n v n wp v i n u n wp 
+30
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O 
+30
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 9 SBV 9 ADV 5 VOB 16 ATT 14 ATT 13 LAD 11 COO 10 VOB 10 RAD 9 VOB 9 WP 19 ADV 9 COO 29 ATT 22 ADV 23 ATT 20 VOB 25 WP 20 COO 27 ATT 25 VOB 20 RAD 19 VOB 5 WP 

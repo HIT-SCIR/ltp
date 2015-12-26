@@ -1,0 +1,12 @@
+（河北河间采油三厂宣传部宋学功）工地课堂的力量去年年初，我们从江苏新沂市来到北京打工。
+宋学功
+河北河间采油三厂宣传部
+1
+24
+（ 河北 河间 采油 三 厂 宣传部 宋学功 ） 工地 课堂 的 力量 去年 年初 ， 我们 从 江苏 新沂市 来到 北京 打工 。 
+24
+wp ns ns v m n n nh wp n n u n nt nt wp r p ns ns v ns v wp 
+24
+O B-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O B-Ns E-Ns O S-Ns O O 
+24
+8 WP 3 ATT 6 ATT 6 ATT 6 ATT 7 ATT 8 ATT 21 SBV 8 WP 11 ATT 13 ATT 11 RAD 21 SBV 15 ATT 21 ADV 15 WP 21 SBV 21 ADV 20 ATT 18 POB 0 HED 21 VOB 21 COO 21 WP 

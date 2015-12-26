@@ -1,0 +1,12 @@
+四川队此役的进攻战术重点围绕老将白江展开，而浙江队的防守重点也是他，结果白江为四川队投中７个三分球。
+白江
+浙江队
+0
+29
+四川队 此役 的 进攻 战术 重点 围绕 老将 白江 展开 ， 而 浙江队 的 防守 重点 也 是 他 ， 结果 白江 为 四川队 投中 ７ 个 三分球 。 
+29
+n r u v n d v n nh v wp c n u v d d v r wp n nh p n v m q n wp 
+29
+O O O O O O O O S-Nh O O O O O O O O O O O O S-Nh O O O O O O O 
+29
+5 ATT 5 ATT 2 RAD 5 ATT 7 SBV 7 ADV 0 HED 9 ATT 7 VOB 7 VOB 7 WP 18 ADV 15 ATT 13 RAD 18 SBV 18 ADV 18 ADV 7 COO 18 VOB 18 WP 25 ADV 25 SBV 25 ADV 23 POB 18 COO 27 ATT 28 ATT 25 VOB 7 WP 

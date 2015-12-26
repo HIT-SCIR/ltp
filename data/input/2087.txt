@@ -1,0 +1,12 @@
+其次，担任新年音乐会演奏的是世界三大最著名交响乐团之一的维也纳爱乐乐团，指挥又都是世界一流大师，如克劳斯、博斯科夫斯基、马泽尔、卡拉扬、梅塔和穆蒂等。
+克劳斯
+维也纳爱乐乐团
+1
+42
+其次 ， 担任 新年 音乐会 演奏 的 是 世界 三 大 最 著名 交响乐团 之一 的 维也纳 爱乐 乐团 ， 指挥 又 都 是 世界 一流 大师 ， 如 克劳斯 、 博斯科夫斯基 、 马泽尔 、 卡拉扬 、 梅塔 和 穆蒂 等 。 
+42
+c wp v nt n v u v n m a d a n r u ns nz n wp n d d v n b n wp v nh wp nh wp nh wp nh wp nh c nh u wp 
+42
+O O O O O O O O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O O O O S-Nh O S-Nh O S-Nh O S-Nh O S-Nh O S-Nh O O 
+42
+8 ADV 1 WP 8 SBV 5 ATT 3 VOB 3 VOB 6 RAD 0 HED 14 ATT 11 ATT 14 ATT 13 ADV 14 ATT 15 ATT 19 ATT 15 RAD 19 ATT 19 ATT 8 VOB 8 WP 24 SBV 24 ADV 24 ADV 8 COO 27 ATT 27 ATT 24 VOB 8 WP 8 COO 29 VOB 32 WP 30 COO 34 WP 30 COO 36 WP 30 COO 38 WP 30 COO 40 LAD 30 COO 30 RAD 8 WP 

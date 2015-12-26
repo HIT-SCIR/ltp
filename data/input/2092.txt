@@ -1,0 +1,12 @@
+边保国马健环图为：地震后，张北县单晶河邮电支局将通讯设备搬进帐篷，开设了五部免费直拨电话。
+边保国
+张北县单晶河邮电支局
+0
+26
+边保国 马健环 图 为 ： 地震 后 ， 张北县 单晶河 邮电 支局 将 通讯 设备 搬进 帐篷 ， 开设 了 五 部 免费 直拨 电话 。 
+26
+nh nh n v wp n nd wp ns ns n n p n n v n wp v u m q v v n wp 
+26
+O O O O O O O O B-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O O O O 
+26
+2 ATT 3 ATT 4 SBV 0 HED 4 WP 7 ATT 16 ADV 7 WP 10 ATT 12 ATT 12 ATT 16 SBV 16 ADV 15 ATT 13 POB 4 VOB 16 VOB 16 WP 16 COO 19 RAD 22 ATT 24 SBV 24 ADV 19 VOB 24 VOB 4 WP 

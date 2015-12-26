@@ -1,0 +1,12 @@
+罗斯此行是为本月下旬美国总统克林顿与内塔尼亚胡和阿拉法特的会晤作准备，斡旋的失败将对美、以、巴三方会谈带来不利影响。
+罗斯
+美国
+1
+35
+罗斯 此行 是 为 本月 下旬 美国 总统 克林顿 与 内塔尼亚胡 和 阿拉法特 的 会晤 作 准备 ， 斡旋 的 失败 将 对 美 、 以 、 巴 三 方 会谈 带来 不利 影响 。 
+35
+nh r v p nt nt ns n nh p nh c nh u v v v wp v u v d p j wp j wp j m q v v a v wp 
+35
+S-Nh O O O O O S-Ns O S-Nh O S-Nh O S-Nh O O O O O O O O O O S-Ns O S-Ns O S-Ns O O O O O O O 
+35
+2 ATT 3 SBV 0 HED 16 ADV 6 ATT 15 ADV 8 ATT 9 ATT 15 ATT 11 LAD 9 COO 13 LAD 9 COO 9 RAD 4 POB 3 VOB 16 VOB 16 WP 21 ATT 19 RAD 32 SBV 32 ADV 32 ADV 30 ATT 26 WP 24 COO 28 WP 24 COO 30 ATT 23 POB 23 POB 16 COO 34 ATT 32 VOB 3 WP 

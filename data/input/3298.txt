@@ -1,0 +1,12 @@
+李鹏说，西门子公司在华的合作项目有不少成功的范例。
+李鹏
+西门子公司
+0
+16
+李鹏 说 ， 西门子 公司 在 华 的 合作 项目 有 不少 成功 的 范例 。 
+16
+nh v wp nz n p j u v n v m a u n wp 
+16
+S-Nh O O B-Ni E-Ni O O O O O O O O O O O 
+16
+2 SBV 0 HED 2 WP 5 ATT 10 ATT 10 ATT 6 POB 6 RAD 10 ATT 11 SBV 2 VOB 15 ATT 15 ATT 13 RAD 11 VOB 2 WP 

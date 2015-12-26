@@ -1,0 +1,12 @@
+（江苏兴化棉纺织厂办公室唐锦禄）
+唐锦禄
+江苏兴化棉纺织厂办公室
+1
+7
+（ 江苏 兴化 棉纺织厂 办公室 唐锦禄 ） 
+7
+wp ns ns n n nh wp 
+7
+O B-Ni I-Ni E-Ni O S-Nh O 
+7
+6 WP 3 ATT 4 ATT 5 ATT 6 ATT 0 HED 6 WP 

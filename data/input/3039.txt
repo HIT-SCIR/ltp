@@ -1,0 +1,12 @@
+应客人要求，李岚清介绍了中国的经济形势以及中国政府在建设社会主义市场经济体制过程中采取措施健全金融机制、保持经济健康稳定发展及进一步改善投资环境等方面的情况。
+李岚清
+中国政府
+0
+42
+应 客人 要求 ， 李岚清 介绍 了 中国 的 经济 形势 以及 中国 政府 在 建设 社会主义 市场经济 体制 过程 中 采取 措施 健全 金融 机制 、 保持 经济 健康 稳定 发展 及 进一步 改善 投资 环境 等 方面 的 情况 。 
+42
+v n v wp nh v u ns u n n c ns n p v n n n n nd v n v n n wp v n a a v c d v v n u n u n wp 
+42
+O O O O S-Nh O O S-Ns O O O O B-Ni E-Ni O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+42
+3 ADV 3 SBV 0 HED 3 WP 6 SBV 3 VOB 6 RAD 11 ATT 8 RAD 11 ATT 22 SBV 22 ADV 14 ATT 22 SBV 22 ADV 20 ATT 18 ATT 19 ATT 16 VOB 21 ATT 15 POB 6 COO 22 VOB 22 COO 26 ATT 24 VOB 28 WP 22 COO 30 SBV 28 VOB 30 COO 30 COO 35 LAD 35 ADV 32 COO 37 ATT 39 ATT 37 RAD 41 ATT 39 RAD 35 VOB 3 WP 

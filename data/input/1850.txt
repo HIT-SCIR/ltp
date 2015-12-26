@@ -1,0 +1,12 @@
+德梅西纳应中国国家旅游局邀请来华访问的。
+德梅西纳
+中国国家旅游局
+0
+10
+德梅西纳 应 中国 国家 旅游局 邀请 来华 访问 的 。 
+10
+nh v ns n n v v v u wp 
+10
+S-Nh O B-Ni I-Ni E-Ni O O O O O 
+10
+6 SBV 6 ADV 4 ATT 5 ATT 6 SBV 0 HED 6 VOB 7 COO 6 RAD 6 WP 

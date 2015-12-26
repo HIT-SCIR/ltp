@@ -1,0 +1,12 @@
+接到中共中央统战部的通知后，田沛发非常激动。
+田沛发
+中共中央统战部
+0
+11
+接到 中共中央 统战部 的 通知 后 ， 田沛发 非常 激动 。 
+11
+v ni ni u n nd wp nh d a wp 
+11
+O B-Ni E-Ni O O O O S-Nh O O O 
+11
+6 ATT 3 ATT 5 ATT 3 RAD 1 VOB 10 ADV 6 WP 10 SBV 10 ADV 0 HED 10 WP 

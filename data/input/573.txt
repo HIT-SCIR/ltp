@@ -1,0 +1,12 @@
+在这种情况下，议会主席、塞尔维亚民主党成员卡利尼奇于当天午夜宣布休会。
+卡利尼奇
+塞尔维亚民主党
+1
+18
+在 这种 情况 下 ， 议会 主席 、 塞尔维亚 民主党 成员 卡利尼奇 于 当天 午夜 宣布 休会 。 
+18
+p r n nd wp n n wp ns n n nh p nt nt v v wp 
+18
+O O O O O O O O B-Ni E-Ni O S-Nh O O O O O O 
+18
+16 ADV 3 ATT 4 ATT 1 POB 1 WP 7 ATT 12 ATT 11 WP 10 ATT 11 ATT 7 COO 16 SBV 16 ADV 15 ATT 13 POB 0 HED 16 VOB 16 WP 

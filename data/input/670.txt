@@ -1,0 +1,12 @@
+对于北京第二印染厂十分重视并认真做好下岗职工再就业工作的作法，尉健行给予充分的肯定。
+尉健行
+北京第二印染厂
+0
+24
+对于 北京 第二 印染厂 十分 重视 并 认真 做 好 下岗 职工 再 就业 工作 的 作法 ， 尉健行 给予 充分 的 肯定 。 
+24
+p ns m n m v c a v a v n d v v u n wp nh v a u v wp 
+24
+O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O S-Nh O O O O O 
+24
+6 ADV 4 ATT 4 ATT 1 POB 6 ADV 0 HED 9 ADV 9 ADV 6 COO 9 CMP 12 ATT 14 SBV 14 ADV 15 ATT 17 ATT 15 RAD 9 VOB 6 WP 20 SBV 6 COO 23 ATT 21 RAD 20 VOB 6 WP 

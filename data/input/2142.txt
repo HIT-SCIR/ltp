@@ -1,0 +1,12 @@
+樊文立１９９１年１０月２５日，郑州市中原区城乡建设环境保护局批准须水镇农民张某在距３１０国道７．５米处建造营业房４间。
+张某
+郑州市中原区城乡建设环境保护局
+0
+27
+樊文立 １９９１年 １０月 ２５日 ， 郑州市 中原区 城乡 建设 环境 保护局 批准 须水镇 农民 张某 在 距 ３１０ 国道 ７．５ 米 处 建造 营业房 ４ 间 。 
+27
+nh nt nt nt wp ns ns n v n n v ns n nh p v m n m q n v n m q wp 
+27
+S-Nh O O O O B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O S-Ns O S-Nh O O O O O O O O O O O O 
+27
+12 SBV 3 ATT 4 ATT 12 ADV 4 WP 7 ATT 8 ATT 9 SBV 11 ATT 9 VOB 12 SBV 0 HED 14 ATT 15 ATT 23 SBV 23 ADV 22 ATT 19 ATT 17 VOB 21 ATT 22 ATT 16 POB 12 VOB 26 ATT 26 ATT 23 VOB 12 WP 

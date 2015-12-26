@@ -1,0 +1,12 @@
+新华社莫斯科１月６日电（记者张金海）俄罗斯外交部发言人塔拉索夫６日表示，俄罗斯坚决反对以武力解决阿布哈兹冲突。
+塔拉索夫
+俄罗斯外交部
+1
+25
+新华社 莫斯科 １月 ６日 电 （ 记者 张金海 ） 俄罗斯 外交部 发言人 塔拉索夫 ６日 表示 ， 俄罗斯 坚决 反对 以 武力 解决 阿布哈兹 冲突 。 
+25
+ni ns nt nt n wp n nh wp ns n n nh nt v wp ns a v p n v ns v wp 
+25
+S-Ni S-Ns O O O O O S-Nh O B-Ni E-Ni O S-Nh O O O S-Ns O O O O O S-Ns O O 
+25
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 CMP 8 WP 11 ATT 12 ATT 13 ATT 15 SBV 15 ADV 5 VOB 15 WP 19 SBV 19 ADV 15 VOB 22 ADV 20 POB 19 VOB 24 ATT 22 VOB 5 WP 

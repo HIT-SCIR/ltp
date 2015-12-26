@@ -1,0 +1,12 @@
+中国队的陈妍、吴艳艳等新人也跃跃欲试，要向世界顶峰冲击。
+吴艳艳
+中国队
+1
+16
+中国队 的 陈妍 、 吴艳艳 等 新人 也 跃跃欲试 ， 要 向 世界 顶峰 冲击 。 
+16
+ni u nh wp nh u n d i wp v p n n v wp 
+16
+S-Ni O S-Nh O S-Nh O O O O O O O O O O O 
+16
+3 ATT 1 RAD 7 ATT 5 WP 3 COO 3 RAD 9 SBV 9 ADV 0 HED 9 WP 15 ADV 15 ADV 14 ATT 12 POB 9 COO 9 WP 

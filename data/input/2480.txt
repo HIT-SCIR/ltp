@@ -1,0 +1,12 @@
+会议期间，中共中央政治局常委、国务院副总理李岚清致信会议，肯定了海关在党的十四大以来深化业务改革，狠抓队伍建设，认真履行职责，积极促进改革开放和经济建设等各项工作所取得的显著成绩。
+李岚清
+中共中央政治局
+1
+50
+会议 期间 ， 中共中央 政治局 常委 、 国务院 副 总理 李岚清 致信 会议 ， 肯定 了 海关 在 党 的 十四大 以来 深化 业务 改革 ， 狠抓 队伍 建设 ， 认真 履行 职责 ， 积极 促进 改革 开放 和 经济 建设 等 各项 工作 所 取得 的 显著 成绩 。 
+50
+n nd wp ni n n wp ni b n nh v n wp v u n p n u j nd v n v wp v n v wp a v n wp a v v v c n v u r v u v u a n wp 
+50
+O O O B-Ni E-Ni O O S-Ni O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+50
+2 ATT 12 ADV 2 WP 5 ATT 6 ATT 11 ATT 10 WP 10 ATT 10 ATT 6 COO 12 SBV 0 HED 12 VOB 12 WP 12 COO 15 RAD 23 SBV 23 ADV 21 ATT 19 RAD 22 ATT 18 POB 15 VOB 25 FOB 23 VOB 23 WP 23 COO 29 FOB 27 VOB 23 WP 32 ADV 23 COO 32 VOB 23 WP 36 ADV 23 COO 44 ATT 37 COO 41 LAD 41 FOB 37 COO 37 RAD 44 ATT 46 SBV 46 LAD 49 ATT 46 RAD 49 ATT 36 VOB 12 WP 

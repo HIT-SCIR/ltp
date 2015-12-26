@@ -1,0 +1,12 @@
+八一队和浙江中欣队打出了本轮比赛差距最大的比分，１１０∶６３，八一队胜；广东宏远队以８１∶７２战胜四川蓝剑队；少了巴特尔的北京首钢队客场以５６∶６９负于山东宝元队；江苏南钢队客场以８０∶６５击败沈阳军区队。
+巴特尔
+北京首钢队
+1
+50
+八一队 和 浙江 中欣队 打 出 了 本轮 比赛 差距 最 大 的 比分 ， １１０∶６３ ， 八一队 胜 ； 广东 宏远队 以 ８１∶７２ 战胜 四川 蓝剑队 ； 少 了 巴特尔 的 北京 首钢队 客场 以 ５６∶６９ 负于 山东 宝元队 ； 江苏 南钢队 客场 以 ８０∶６５ 击败 沈阳 军区队 。 
+50
+ni c ns ni v v u r v n d a u n wp m wp ni v wp ns ni p m v ns ni wp v u nh u ns ni n p m v ns ni wp ns ni n p m v ns n wp 
+50
+S-Ni O B-Ni E-Ni O O O O O O O O O O O O O S-Ni O O B-Ni E-Ni O O O B-Ni E-Ni O O O S-Nh O B-Ni E-Ni O O O O B-Ni E-Ni O B-Ni E-Ni O O O O B-Ni E-Ni O 
+50
+5 SBV 4 LAD 4 ATT 1 COO 0 HED 5 CMP 5 RAD 9 ATT 10 ATT 12 SBV 12 ADV 14 ATT 12 RAD 5 VOB 5 WP 19 ADV 16 WP 19 SBV 5 COO 5 WP 22 ATT 25 SBV 25 ADV 23 POB 5 COO 27 ATT 25 VOB 25 WP 25 COO 29 RAD 29 VOB 31 RAD 34 ATT 38 SBV 38 SBV 38 ADV 36 POB 29 COO 40 ATT 38 VOB 5 WP 43 ATT 47 SBV 47 ADV 47 ADV 45 POB 5 COO 49 ATT 47 VOB 5 WP 

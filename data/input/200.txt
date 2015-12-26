@@ -1,0 +1,12 @@
+英国农场主协会主席奈什表示，该建议将给陷入困境的英国养牛业带来新的希望。
+奈什
+英国农场主协会
+1
+21
+英国 农场主 协会 主席 奈什 表示 ， 该 建议 将 给 陷入 困境 的 英国 养牛业 带来 新 的 希望 。 
+21
+ns n n n nh v wp r v d p v n u ns n v a u v wp 
+21
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O S-Ns O O O O O O 
+21
+3 ATT 3 ATT 4 ATT 5 ATT 6 SBV 0 HED 6 WP 9 ATT 17 SBV 17 ADV 17 ADV 16 ATT 12 VOB 12 RAD 16 ATT 11 POB 6 VOB 20 ATT 18 RAD 17 VOB 6 WP 

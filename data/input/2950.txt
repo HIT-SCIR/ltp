@@ -1,0 +1,12 @@
+赵国政和吕艺生在舞坛很有名气，一位曾多年担任解放军艺术学院的舞蹈系主任，一位长期奋斗在北京舞蹈学院院长的工作岗位上。
+吕艺生
+解放军艺术学院
+0
+35
+赵国政 和 吕艺生 在 舞坛 很 有 名气 ， 一 位 曾 多年 担任 解放军 艺术 学院 的 舞蹈系 主任 ， 一 位 长期 奋斗 在 北京 舞蹈 学院 院长 的 工作 岗位 上 。 
+35
+nh c nh p n d v n wp m q d m v n n n u n n wp m q d v p ns n n n u v n nd wp 
+35
+S-Nh O S-Nh O O O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O 
+35
+7 SBV 3 LAD 1 COO 7 ADV 4 POB 7 ADV 0 HED 7 VOB 7 WP 11 ATT 14 SBV 13 ATT 14 ADV 7 COO 17 ATT 17 ATT 20 ATT 17 RAD 20 ATT 14 VOB 14 WP 23 ATT 25 SBV 25 ADV 14 COO 25 CMP 29 ATT 29 ATT 30 ATT 32 ATT 30 RAD 33 ATT 34 ATT 26 POB 7 WP 

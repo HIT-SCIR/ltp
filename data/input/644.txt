@@ -1,0 +1,12 @@
+今天，国家体委副主任徐寅生就九运会竞赛规程总则的征求意见稿作了说明。
+徐寅生
+国家体委
+1
+20
+今天 ， 国家 体委 副 主任 徐寅生 就 九运会 竞赛 规程 总则 的 征求 意见 稿 作 了 说明 。 
+20
+nt wp n j b n nh p j v n n u v n n v u v wp 
+20
+O O B-Ni E-Ni O O S-Nh O O O O O O O O O O O O O 
+20
+17 ADV 1 WP 4 ATT 6 ATT 6 ATT 7 ATT 17 SBV 17 ADV 11 ATT 11 ATT 12 ATT 16 ATT 12 RAD 16 ATT 16 ATT 8 POB 0 HED 17 RAD 17 VOB 17 WP 

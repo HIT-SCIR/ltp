@@ -1,0 +1,12 @@
+南非外长恩佐在讲话中首先代表南非政府对中国大使馆正式开馆表示祝贺。
+恩佐
+南非政府
+0
+18
+南非 外长 恩佐 在 讲话 中 首先 代表 南非 政府 对 中国 大使馆 正式 开馆 表示 祝贺 。 
+18
+ns n nh p v nd d v ns n p ns n a v v v wp 
+18
+S-Ns O S-Nh O O O O O B-Ni E-Ni O B-Ni E-Ni O O O O O 
+18
+2 ATT 3 ATT 8 SBV 8 ADV 6 ATT 4 POB 8 ADV 0 HED 10 ATT 16 SBV 16 ADV 13 ATT 11 POB 15 ADV 11 POB 8 VOB 16 VOB 8 WP 

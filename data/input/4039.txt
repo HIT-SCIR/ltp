@@ -1,0 +1,12 @@
+新华社北京１月１３日电（记者谭国器）全国人大常委会委员长乔石今天在人民大会堂会见了以议长托马斯?萨维为团长的爱沙尼亚议会代表团。
+谭国器
+新华社
+1
+32
+新华社 北京 １月 １３日 电 （ 记者 谭国器 ） 全国 人大 常委会 委员长 乔石 今天 在 人民 大会堂 会见 了 以 议长 托马斯 ? 萨维 为 团长 的 爱沙尼亚 议会 代表团 。 
+32
+ni ns nt nt n wp n nh wp n j j n nh nt p n n v u p n nh wp nh v n u ns n n wp 
+32
+S-Ni S-Ns O O O O O S-Nh O B-Ni I-Ni E-Ni O S-Nh O O B-Ns E-Ns O O O O S-Nh O S-Nh O O O B-Ni E-Ni O O 
+32
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 COO 8 WP 11 ATT 12 ATT 13 ATT 14 ATT 19 SBV 19 ADV 19 ADV 18 ATT 16 POB 5 VOB 19 RAD 19 CMP 23 ATT 21 POB 19 WP 26 SBV 31 ATT 26 VOB 26 RAD 30 ATT 31 ATT 19 COO 5 WP 

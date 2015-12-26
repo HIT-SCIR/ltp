@@ -1,0 +1,12 @@
+上海人民美术出版社将这些艺术见解辑成《林风眠画语》一册出版。
+林风眠
+上海人民美术出版社
+0
+17
+上海 人民 美术 出版社 将 这些 艺术 见解 辑成 《 林风眠 画语 》 一 册 出版 。 
+17
+ns n n n p r n n v wp nh n wp m q v wp 
+17
+B-Ni I-Ni I-Ni E-Ni O O O O O O S-Nh O O O O O O 
+17
+4 ATT 3 ATT 4 ATT 9 SBV 9 ADV 8 ATT 8 ATT 5 POB 0 HED 12 WP 12 ATT 16 ATT 12 WP 15 ATT 16 ATT 9 VOB 9 WP 

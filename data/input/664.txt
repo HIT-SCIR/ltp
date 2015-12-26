@@ -1,0 +1,12 @@
+浙江隆中机械制造有限公司党的工作员黄开发，就是台州“党代表”的典型。
+黄开发
+浙江隆中机械制造有限公司
+1
+20
+浙江 隆中 机械 制造 有限公司 党 的 工作员 黄 开发 ， 就 是 台州 “ 党代表 ” 的 典型 。 
+20
+ns ns n v n n u n a v wp d v ns wp n wp u n wp 
+20
+B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O S-Ns O O O O O O 
+20
+2 ATT 5 ATT 4 FOB 5 ATT 6 ATT 8 ATT 6 RAD 10 ATT 10 ATT 13 SBV 10 WP 13 ADV 0 HED 16 ATT 16 WP 19 ATT 16 WP 16 RAD 13 VOB 13 WP 

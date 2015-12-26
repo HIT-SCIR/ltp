@@ -1,0 +1,12 @@
+去年２月，南山区工商分局局长王安全发现分局对面的公园里常有不少打工者业余时间闲逛，有时还滋扰生事。
+王安全
+南山区工商分局
+1
+27
+去年 ２月 ， 南山区 工商 分局 局长 王安全 发现 分局 对面 的 公园 里 常有 不少 打工者 业余 时间 闲逛 ， 有时 还 滋 扰 生事 。 
+27
+nt nt wp ns n n n nh v n nd u n nd d m n b n v wp d d v v v wp 
+27
+O O O B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O 
+27
+2 ATT 9 ADV 2 WP 6 ATT 6 ATT 7 ATT 8 ATT 9 SBV 0 HED 11 ATT 13 ATT 11 RAD 14 ATT 20 ADV 20 ADV 19 ATT 19 ATT 19 ATT 20 ADV 9 VOB 9 WP 26 ADV 26 ADV 26 ADV 24 POB 9 COO 9 WP 

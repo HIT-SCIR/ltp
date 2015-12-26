@@ -1,0 +1,12 @@
+女子３米板双人决赛的金牌被俄罗斯的帕卡琳娜和拉什科夺走，中国队饶琅和李荣娟获亚军，美国佩塞克和邦尼尔名列第三。
+李荣娟
+中国队
+1
+31
+女子 ３ 米 板 双人 决赛 的 金牌 被 俄罗斯 的 帕卡琳娜 和 拉什科 夺 走 ， 中国队 饶琅 和 李荣娟 获 亚军 ， 美国 佩塞克 和 邦尼尔 名列 第三 。 
+31
+n m q n b v u n p ns u nh c nh v v wp ni nh c nh v n wp ns nh c nh v m wp 
+31
+O O O O O O O O O S-Ns O S-Nh O S-Nh O O O S-Ni S-Nh O S-Nh O O O S-Ns S-Nh O S-Nh O O O 
+31
+6 ATT 3 ATT 4 ATT 6 ATT 6 ATT 8 ATT 6 RAD 15 FOB 15 ADV 12 ATT 10 RAD 9 POB 14 LAD 12 COO 0 HED 15 CMP 15 WP 19 ATT 22 SBV 21 LAD 19 COO 15 COO 22 VOB 22 WP 26 ATT 29 SBV 28 LAD 26 COO 15 COO 29 VOB 15 WP 

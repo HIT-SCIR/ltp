@@ -1,0 +1,12 @@
+赴西藏慰问组组长、国家经贸委副主任张志刚作了汇报。
+张志刚
+国家经贸委
+1
+14
+赴 西藏 慰问组 组长 、 国家 经贸委 副 主任 张志刚 作 了 汇报 。 
+14
+v ns n n wp n j b n nh v u v wp 
+14
+O S-Ns O O O B-Ni E-Ni O O S-Nh O O O O 
+14
+10 ATT 3 ATT 4 ATT 10 ATT 9 WP 7 ATT 9 ATT 9 ATT 4 COO 11 SBV 0 HED 11 RAD 11 VOB 11 WP 

@@ -1,0 +1,12 @@
+２００米过后，中国队认为最强劲的对手波尔显得力不从心，远远地被甩在后面，而美国队的贝内特冲在最前面。
+波尔
+中国队
+0
+29
+２００ 米 过后 ， 中国队 认为 最 强劲 的 对手 波尔 显得 力不从心 ， 远远地 被 甩 在 后面 ， 而 美国队 的 贝内特 冲 在 最 前面 。 
+29
+m q nt wp ni v d a u n nh v i wp z p v p nd wp c ni u nh v p d nd wp 
+29
+O O O O S-Ni O O O O O S-Nh O O O O O O O O O O S-Ni O S-Nh O O O O O 
+29
+2 ATT 3 ATT 6 ADV 3 WP 6 SBV 0 HED 8 ADV 10 ATT 8 RAD 11 ATT 12 SBV 6 VOB 12 VOB 12 WP 17 ADV 17 ADV 12 COO 17 CMP 18 POB 17 WP 25 ADV 24 ATT 22 RAD 25 SBV 17 COO 25 CMP 28 ADV 26 POB 6 WP 

@@ -1,0 +1,12 @@
+《费加罗报》社副社长兼副总裁吉马迪先生、总编辑吉斯贝尔先生等在会见和晚宴中，与许中田副社长进行了亲切的交谈。
+吉斯贝尔
+费加罗报
+1
+33
+《 费加罗 报 》 社 副 社长 兼 副 总裁 吉马迪 先生 、 总编辑 吉斯贝尔 先生 等 在 会见 和 晚宴 中 ， 与 许中田 副 社长 进行 了 亲切 的 交谈 。 
+33
+wp ns n wp n b n v b n nh n wp n nh n u p v c n nd wp p nh b n v u a u v wp 
+33
+O S-Ns O O O O O O O O S-Nh O O O S-Nh O O O O O O O O O S-Nh O O O O O O O O 
+33
+3 WP 3 ATT 5 ATT 3 WP 7 ATT 7 ATT 28 SBV 12 LAD 10 ATT 11 ATT 12 ATT 7 COO 12 WP 15 ATT 16 ATT 12 COO 7 RAD 28 ADV 22 ATT 21 LAD 19 COO 18 POB 18 WP 28 ADV 27 ATT 27 ATT 24 POB 0 HED 28 RAD 32 ATT 30 RAD 28 VOB 28 WP 

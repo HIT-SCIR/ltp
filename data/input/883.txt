@@ -1,0 +1,12 @@
+中阳县邢利斌个人兴办的煤化有限公司，过去几年因缺少生产技术骨干，年产值不到１０００万元。
+邢利斌
+煤化有限公司
+1
+23
+中阳县 邢利斌 个人 兴办 的 煤化 有限公司 ， 过去 几 年 因 缺少 生产 技术 骨干 ， 年产值 不 到 １０００万 元 。 
+23
+ns nh n v u nz n wp nt m q p v v n n wp n d v m q wp 
+23
+S-Ns S-Nh O O O B-Ni E-Ni O O O O O O O O O O O O O O O O 
+23
+2 ATT 3 ATT 4 SBV 7 ATT 4 RAD 7 ATT 20 SBV 7 WP 11 ATT 11 ATT 20 ADV 20 ADV 12 POB 15 ATT 16 ATT 13 VOB 12 WP 20 SBV 20 ADV 0 HED 22 ATT 20 VOB 20 WP 

@@ -1,0 +1,12 @@
+据肯尼亚选举委员会昨天正式宣布，在去年１２月２９日至３０日举行的大选中，肯尼亚非洲民族联盟候选人、现任总统丹尼尔?阿拉普?莫伊以较大优势击败了１４名反对党候选人，再次当选为肯尼亚总统，任期５年。
+丹尼尔?阿拉普?莫伊
+肯尼亚非洲民族联盟
+0
+53
+据 肯尼亚 选举 委员会 昨天 正式 宣布 ， 在 去年 １２月 ２９日 至 ３０日 举行 的 大选 中 ， 肯尼亚 非洲 民族 联盟 候选人 、 现任 总统 丹尼尔 ? 阿拉普 ? 莫伊 以 较 大 优势 击败 了 １４ 名 反对党 候选人 ， 再次 当选 为 肯尼亚 总统 ， 任期 ５ 年 。 
+53
+p ns v n nt a v wp p nt nt nt p nt v u v nd wp ns ns n n n wp b n nh wp nh wp nh p d a n v u m q n n wp d v p ns n wp n m q wp 
+53
+O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O B-Ni I-Ni I-Ni E-Ni O O O O S-Nh O S-Nh O S-Nh O O O O O O O O O O O O O O S-Ns O O O O O O 
+53
+24 ADV 4 ATT 4 ATT 7 SBV 7 ADV 7 ADV 1 POB 1 WP 24 ADV 12 ATT 12 ATT 13 ADV 15 ADV 13 POB 17 ATT 15 RAD 18 ATT 9 POB 9 WP 23 ATT 23 ATT 23 ATT 24 ATT 32 ATT 28 WP 27 ATT 28 ATT 24 COO 24 WP 24 COO 24 WP 37 SBV 37 ADV 35 ADV 36 ATT 33 POB 0 HED 37 RAD 40 ATT 42 ATT 42 ATT 37 VOB 37 WP 45 ADV 37 COO 45 CMP 48 ATT 46 POB 37 WP 52 ATT 52 ATT 37 COO 37 WP 

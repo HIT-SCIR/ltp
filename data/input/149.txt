@@ -1,0 +1,12 @@
+美国缴纳联合国会费２５％的比例仍然不变，日、德、法、意等国的比例适当上调，中国的比例将从１９９７年的０．７４％上调到接近１％，俄罗斯从现在的２．８７％逐年下调至２０００年的１．０７％，最不发达国家会费下限从现在的０．０１％下调至０．００１％。
+罗斯
+美国
+1
+63
+美国 缴纳 联合国 会费 ２５％ 的 比例 仍然 不 变 ， 日 、 德 、 法 、 意 等 国 的 比例 适当 上调 ， 中国 的 比例 将 从 １９９７年 的 ０．７４％ 上调 到 接近 １％ ， 俄罗斯 从 现在 的 ２．８７％ 逐年 下调 至 ２０００年 的 １．０７％ ， 最 不 发达国家 会费 下限 从 现在 的 ０．０１％ 下调 至 ０．００１％ 。 
+63
+ns v ni n m u n d d v wp j wp j wp j wp j u n u n a v wp ns u n d p nt u m v v v m wp ns p nt u m d v v nt u m wp d d i n n p nt u m v v m wp 
+63
+S-Ns O S-Ni O O O O O O O O S-Ns O S-Ns O S-Ns O S-Ns O O O O O O O S-Ns O O O O O O O O O O O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O 
+63
+2 SBV 7 ATT 4 ATT 5 ATT 2 VOB 5 RAD 10 SBV 10 ADV 10 ADV 0 HED 10 WP 20 ATT 14 WP 12 COO 16 WP 12 COO 18 WP 12 COO 12 RAD 22 ATT 20 RAD 24 SBV 24 ADV 10 COO 24 WP 28 ATT 26 RAD 34 SBV 34 ADV 34 ADV 33 ATT 31 RAD 30 POB 10 COO 34 CMP 35 POB 36 VOB 34 WP 45 SBV 45 ADV 43 ATT 41 RAD 40 POB 45 ADV 34 COO 45 CMP 46 POB 46 RAD 45 VOB 45 WP 52 ADV 53 ADV 54 ATT 55 ATT 60 SBV 60 ADV 59 ATT 57 RAD 56 POB 45 COO 60 CMP 61 POB 10 WP 

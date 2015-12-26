@@ -1,0 +1,12 @@
+江泽民表示希望伊拉克继续与联合国合作，妥善处理和改善同有关国家的关系，以争取国际社会更多的同情与支持，为最终解除对伊拉克制裁创造有利条件。
+江泽民
+联合国
+0
+40
+江泽民 表示 希望 伊拉克 继续 与 联合国 合作 ， 妥善 处理 和 改善 同 有关 国家 的 关系 ， 以 争取 国际 社会 更 多 的 同情 与 支持 ， 为 最终 解除 对 伊拉克 制裁 创造 有利 条件 。 
+40
+nh v v ns v p ni v wp a v c v p v n u n wp c v n n d a u v c v wp p d v p ns v v a n wp 
+40
+S-Nh O O S-Ns O O S-Ni O O O O O O O O O O O O O O O O O O O O O O O O O O O S-Ns O O O O O 
+40
+2 SBV 0 HED 2 VOB 5 SBV 3 VOB 8 ADV 6 POB 5 COO 5 WP 11 ADV 5 COO 13 LAD 11 COO 18 ATT 18 ATT 15 VOB 15 RAD 11 VOB 5 WP 21 ADV 5 COO 23 ATT 27 ATT 25 ADV 27 ATT 25 RAD 21 VOB 29 LAD 27 COO 21 WP 21 COO 33 ADV 31 POB 37 ADV 34 POB 34 POB 33 VOB 39 ATT 37 VOB 2 WP 

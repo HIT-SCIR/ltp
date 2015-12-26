@@ -1,0 +1,12 @@
+卡尔森是应中国国际贸易促进委员会的邀请于１月１１日抵京访华的。
+卡尔森
+中国国际贸易促进委员会
+0
+17
+卡尔森 是 应 中国 国际 贸易 促进 委员会 的 邀请 于 １月 １１日 抵京 访华 的 。 
+17
+nh v v ns n v v n u v p nt nt v v u wp 
+17
+S-Nh O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O O 
+17
+2 SBV 0 HED 2 VOB 8 ATT 6 ATT 8 ATT 8 ATT 10 ATT 8 RAD 3 VOB 14 ADV 13 ATT 11 POB 10 VOB 14 COO 14 RAD 2 WP 

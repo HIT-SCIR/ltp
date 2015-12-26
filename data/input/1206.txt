@@ -1,0 +1,12 @@
+这时，幸福工程组委会于副秘书长问，假如贷给你钱，你打算做什么？
+于副
+幸福工程组委会
+1
+21
+这时 ， 幸福 工程 组委会 于 副 秘书长 问 ， 假如 贷 给 你 钱 ， 你 打算 做 什么 ？ 
+21
+r wp a n n nh b n v wp c v p r n wp r v v r wp 
+21
+O O O O O S-Nh O O O O O O O O O O O O O O O 
+21
+9 ADV 1 WP 4 ATT 5 ATT 8 ATT 8 ATT 8 ATT 9 SBV 0 HED 9 WP 12 ADV 9 VOB 12 CMP 13 IOB 13 VOB 12 WP 18 SBV 12 COO 18 VOB 19 VOB 9 WP 

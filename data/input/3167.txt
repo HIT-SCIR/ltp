@@ -1,0 +1,12 @@
+新华社北京１月１３日电（记者谭国器）国家主席江泽民今天在中南海会见了以州长阿内?卡尔森率领的美国明尼苏达州代表团。
+谭国器
+新华社
+1
+26
+新华社 北京 １月 １３日 电 （ 记者 谭国器 ） 国家 主席 江泽民 今天 在 中南海 会见 了 以 州长 阿内?卡尔森 率领 的 美国 明尼苏达州 代表团 。 
+26
+ni ns nt nt n wp n nh wp n n nh nt p ns v u p n nh v u ns ns n wp 
+26
+S-Ni S-Ns O O O O O S-Nh O O O S-Nh O O S-Ns O O O O S-Nh O O B-Ns E-Ns O O 
+26
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 CMP 8 WP 11 ATT 12 ATT 16 SBV 16 ADV 16 ADV 14 POB 5 VOB 16 RAD 21 ADV 20 ATT 18 POB 25 ATT 21 RAD 25 ATT 25 ATT 16 VOB 5 WP 

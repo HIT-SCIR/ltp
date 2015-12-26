@@ -1,0 +1,12 @@
+１９９０年７月国务院召开全国大中城市副食品工作会议，江泽民总书记、李鹏总理接见了会议代表。
+李鹏
+国务院
+1
+20
+１９９０年 ７月 国务院 召开 全国 大中城市 副食品 工作 会议 ， 江泽民 总书记 、 李鹏 总理 接见 了 会议 代表 。 
+20
+nt nt ni v n j n v n wp nh n wp nh n v u n n wp 
+20
+O O S-Ni O O O O O O O S-Nh O O S-Nh O O O O O O 
+20
+2 ATT 4 ADV 4 SBV 0 HED 9 ATT 7 ATT 8 ATT 9 ATT 4 VOB 4 WP 12 ATT 16 SBV 15 WP 15 ATT 12 COO 4 COO 16 RAD 19 ATT 16 VOB 4 WP 

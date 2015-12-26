@@ -1,0 +1,12 @@
+小扎耶德的到来，给中国使馆的联欢会带来格外多的笑声。
+扎耶德
+中国使馆
+0
+16
+小 扎耶德 的 到来 ， 给 中国 使馆 的 联欢会 带来 格外 多 的 笑声 。 
+16
+a nh u n wp p ns n u n v d a u n wp 
+16
+O S-Nh O O O O B-Ni E-Ni O O O O O O O O 
+16
+2 ATT 4 ATT 2 RAD 11 SBV 4 WP 11 ADV 8 ATT 10 ATT 8 RAD 6 POB 0 HED 13 ADV 15 ATT 13 RAD 11 VOB 11 WP 

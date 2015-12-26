@@ -1,0 +1,12 @@
+在塞尔维亚民主党和塞尔维亚激进党３９名议员缺席情况下，波黑塞族议会以４２票批准了由多迪克出任政府总理并同意他提出的２０名政府成员名单。
+多迪克
+塞尔维亚民主党
+0
+37
+在 塞尔维亚 民主党 和 塞尔维亚 激进党 ３９ 名 议员 缺席 情况 下 ， 波黑 塞族 议会 以 ４２ 票 批准 了 由 多迪克 出任 政府 总理 并 同意 他 提出 的 ２０ 名 政府 成员 名单 。 
+37
+p ns n c ns n m q n v n nd wp ns nz n p m q v u p nh v n n c v r v u m q n n n wp 
+37
+O B-Ni E-Ni O B-Ni E-Ni O O O O O O O B-Ni I-Ni E-Ni O O O O O O S-Nh O O O O O O O O O O O O O O 
+37
+20 ADV 3 ATT 9 ATT 6 LAD 6 ATT 3 COO 8 ATT 9 ATT 11 ATT 11 ATT 12 ATT 1 POB 1 WP 15 ATT 16 ATT 20 SBV 20 ADV 19 ATT 17 POB 0 HED 20 RAD 24 ADV 22 POB 20 VOB 26 ATT 24 VOB 28 ADV 24 COO 30 SBV 36 ATT 30 RAD 33 ATT 35 ATT 35 ATT 36 ATT 28 VOB 20 WP 

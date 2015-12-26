@@ -1,0 +1,12 @@
+新华社记者王永治牛爱民来自深圳的邱洪标今天早晨６时３０分就赶到了毛主席纪念堂北门，成为第一个在此排队等候的瞻仰者。
+毛主席
+新华社
+0
+31
+新华社 记者 王永治 牛爱民 来自 深圳 的 邱洪标 今天 早晨 ６时 ３０分 就 赶到 了 毛 主席 纪念堂 北 门 ， 成为 第一 个 在 此 排队 等候 的 瞻仰者 。 
+31
+ni n nh nh v ns u nh nt nt nt nt d v u nh n n nd n wp v m q p r v v u n wp 
+31
+S-Ni O B-Nh E-Nh O S-Ns O S-Nh O O O O O O O B-Ni I-Ni E-Ni O O O O O O O O O O O O O 
+31
+2 ATT 3 ATT 4 ATT 5 SBV 8 ATT 5 VOB 5 RAD 14 SBV 10 ATT 12 ATT 12 ATT 14 ADV 14 ADV 0 HED 14 RAD 17 ATT 18 ATT 20 ATT 20 ATT 14 VOB 14 WP 14 COO 24 ATT 30 ATT 27 ADV 25 POB 30 ATT 27 COO 27 RAD 22 VOB 14 WP 

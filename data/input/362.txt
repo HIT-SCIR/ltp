@@ -1,0 +1,12 @@
+（中国人民银行江西金溪县支行周小琴陈广华汤长明）
+周小琴
+中国人民银行江西金溪县支行
+1
+11
+（ 中国 人民 银行 江西 金溪县 支行 周小琴 陈广华 汤长明 ） 
+11
+wp ns n n ns ns n nh nh nh wp 
+11
+O B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni S-Nh O O O 
+11
+10 WP 3 ATT 4 ATT 7 ATT 6 ATT 7 ATT 8 ATT 9 ATT 10 ATT 0 HED 10 WP 

@@ -1,0 +1,12 @@
+李文一行是应中国人民对外友好协会邀请来华访问的。
+李文
+中国人民对外友好协会
+0
+14
+李文 一行 是 应 中国 人民 对外 友好 协会 邀请 来华 访问 的 。 
+14
+nh n v v ns n v a n v v v u wp 
+14
+S-Nh O O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O 
+14
+2 ATT 3 SBV 0 HED 10 ADV 6 ATT 9 ATT 9 ATT 9 ATT 10 SBV 3 VOB 10 VOB 11 COO 10 RAD 3 WP 

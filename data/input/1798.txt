@@ -1,0 +1,12 @@
+虽然瑞典主教练马丽卡在赛前一再强调，本次比赛获胜的唯一希望是争取战胜挪威队，但挪瑞之争却仍呈一边倒之态。
+马丽卡
+挪威队
+0
+32
+虽然 瑞典 主教练 马丽卡 在 赛前 一再 强调 ， 本次 比赛 获胜 的 唯一 希望 是 争取 战胜 挪威队 ， 但 挪 瑞 之 争 却 仍 呈 一边倒 之 态 。 
+32
+c ns n nh p nt d v wp r v v u b v v v v ni wp c j j u v d d v v u n wp 
+32
+O S-Ns O S-Nh O O O O O O O O O O O O O O S-Ni O O O O O O O O O O O O O 
+32
+8 ADV 3 ATT 4 ATT 8 SBV 8 ADV 5 POB 8 ADV 0 HED 8 WP 11 ATT 12 SBV 15 ATT 12 RAD 15 ATT 16 SBV 8 VOB 16 VOB 17 VOB 18 VOB 16 WP 28 ADV 25 ATT 22 COO 22 RAD 28 SBV 28 ADV 28 ADV 16 COO 31 ATT 29 RAD 28 VOB 8 WP 

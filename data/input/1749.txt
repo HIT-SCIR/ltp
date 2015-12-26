@@ -1,0 +1,12 @@
+对此克林顿称，核查小组的组成是联合国特别委员会确定的。
+克林顿
+联合国特别委员会
+0
+16
+对 此 克林顿 称 ， 核查 小组 的 组成 是 联合国 特别 委员会 确定 的 。 
+16
+p r nh v wp v n u v v ni a n v u wp 
+16
+O O S-Nh O O O O O O O B-Ni I-Ni E-Ni O O O 
+16
+4 ADV 3 ATT 1 POB 0 HED 4 WP 7 ATT 9 ATT 7 RAD 10 SBV 4 VOB 13 ATT 13 ATT 14 SBV 10 VOB 14 RAD 4 WP 

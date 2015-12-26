@@ -1,0 +1,12 @@
+去年１２月１３日下午，广东省军区通信站女战士邱玲请假回家探亲。
+邱玲
+广东省军区通信站
+1
+15
+去年 １２月 １３日 下午 ， 广东省 军区 通信站 女 战士 邱玲 请假 回家 探亲 。 
+15
+nt nt nt nt wp ns n n b n nh v v v wp 
+15
+O O O O O B-Ni I-Ni E-Ni O O S-Nh O O O O 
+15
+3 ATT 3 ATT 4 ATT 12 ADV 4 WP 7 ATT 8 ATT 10 ATT 10 ATT 11 ATT 12 SBV 0 HED 12 COO 13 COO 12 WP 

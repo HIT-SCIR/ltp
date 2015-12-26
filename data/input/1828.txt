@@ -1,0 +1,12 @@
+会议通过增选吴寿章为中国奥委会副主席，吸收中国武术协会为中国奥委会成员等事项。
+吴寿章
+中国武术协会
+0
+21
+会议 通过 增选 吴寿章 为 中国 奥委会 副 主席 ， 吸收 中国 武术 协会 为 中国 奥委会 成员 等 事项 。 
+21
+n v v nh v ns j b n wp v ns n n v ns j n u n wp 
+21
+O O O S-Nh O B-Ni E-Ni O O O O B-Ni I-Ni E-Ni O B-Ni E-Ni O O O O 
+21
+2 SBV 0 HED 2 VOB 3 DBL 3 VOB 7 ATT 9 ATT 9 ATT 5 VOB 5 WP 15 SBV 14 ATT 14 ATT 11 VOB 5 COO 17 ATT 18 ATT 20 ATT 18 RAD 15 VOB 2 WP 
