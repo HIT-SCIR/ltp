@@ -52,6 +52,8 @@ public:
     const string input = "data/input.txt";
     const string featureOutput = "svm/data/feature.txt";
     const string rawData = "svm/data/raw_data.txt";
+    const string saveData ="data/save.txt";
+
 
     const bool semantic_tree=true;
 
@@ -66,7 +68,7 @@ public:
             getline(ss, s, '*');
             getline(ss, p, '*');
             getline(ss, i, '*');
-            ss >> l;
+           // ss >> l;
             if(p.size()==0 || i.size()==0 || s.size()==0){
                 return -1;
             }
@@ -120,8 +122,11 @@ public:
 
         vector<string> toWrite;
         toWrite.resize(sentences.size());
+
+
 #pragma omp parallel for
         for(int i=0;i<sentences.size();i++){
+
             cerr<<i<<" start"<<endl;
             string & sentence= sentences[i];
             vector<string> words, post_tags,nes;
@@ -130,6 +135,7 @@ public:
             cerr<<i<<" parse succ"<<endl;
             CHECK_RTN_LOGE_CTN(rtn,"parse error");
             string feature;
+            /*
             rtn = getFeature(sentence, people[i],institute[i],labels[i],words,post_tags,nes,parseTree,feature);
             CHECK_RTN_LOGE_CTN(rtn, "error getting feature");
             cerr<<"succ in get feature: "<<feature<<endl<<endl;
@@ -139,7 +145,9 @@ public:
             }else{
                 tmp ="-1 ";
             }
-            toWrite[i]=tmp + feature;
+             */
+            labelData(words,nes,toWrite[i]);
+            //toWrite[i]=tmp + feature;
         }
 
         for(int i=0;i<toWrite.size();i++){
@@ -151,6 +159,105 @@ public:
         ofs.close();
         return 0;
     }
+
+    int save(const string & sentence, const string &person, const string &institute,
+             const int &label, const vector<string> &words,
+             const vector<string> &post_tags, const vector<string> &nes,
+             const vector<pair<int, string>> &parseTree, string & file){
+        ofstream of(file);
+        of<<sentence<<endl;
+        of<<person<<endl;
+        of<<institute<<endl;
+        of<<label<<endl;
+        of<<words.size()<<endl;
+        for(int i=0;i<words.size();i++){
+            of<<words[i]<<" ";
+        }
+        of<<endl;
+
+        of<<post_tags.size()<<endl;
+        for(int i=0;i<post_tags.size();i++){
+            of<<post_tags[i]<<" ";
+        }
+        of<<endl;
+
+        of<<nes.size()<<endl;
+        for(int i=0;i<nes.size();i++){
+            of<<nes[i]<<" ";
+        }
+        of<<endl;
+
+        of<<parseTree.size()<<endl;
+        for(int i=0;i<parseTree.size();i++){
+            of<<parseTree[i].first<<" "<<parseTree[i].second<<" ";
+        }
+        of<<endl;
+    }
+
+    int load( string & sentence,  string &person,  string &institute,
+              int &label,  vector<string> &words,
+              vector<string> &post_tags,  vector<string> &nes,
+              vector<pair<int, string>> &parseTree , const string & file){
+        ifstream ifs(file);
+        ifs>>sentence;
+        ifs>>person;
+        ifs>>institute;
+        ifs>>label;
+        int tmp;
+        ifs>>tmp;
+        words.resize(tmp);
+        for(int i=0;i<tmp;i++){
+            ifs>>words[i];
+        }
+        ifs>>tmp;
+        words.resize(tmp);
+        for(int i=0;i<tmp;i++){
+            ifs>>words[i];
+        }
+        ifs>>tmp;
+        post_tags.resize(tmp);
+        for(int i=0;i<tmp;i++){
+            ifs>>post_tags[i];
+        }
+        ifs>>tmp;
+        nes.resize(tmp);
+        for(int i=0;i<tmp;i++){
+            ifs>>nes[i];
+        }
+
+        ifs>>tmp;
+        parseTree.resize(tmp);
+        for(int i=0;i<tmp;i++){
+            ifs>>parseTree[i].first>>parseTree[i].second;
+        }
+    }
+
+    int labelData(const vector<string> & words, const vector<string> & nes, string & out){
+        out.clear();
+        unordered_map<string, string> m;
+        m["Nh"]=" /nr";
+        m["Ni"]=" /nt";
+        m["Ns"]=" /ns";
+
+        for(int i=0;i<words.size();i++){
+            if(nes[i]=="S-Ns" || nes[i]=="S-Nh" ||  nes[i]=="S-Ni" || nes[i]=="B-Ns" ||nes[i]=="B-Nh"||nes[i]=="B-Ni" ){
+                string tag = nes[i].substr(2);
+                out.push_back('{');
+               // out.append(words[i]);
+            }
+            //if(nes[i].at(0)=='O' || nes[i].at(0)=='I' || nes[i].at(0)=='E'){
+                out.append(words[i]);
+            //}
+            if(nes[i].at(0)=='S' || nes[i].at(0)=='E'){
+                string tag = nes[i].substr(2);
+                //out.append(words[i]);
+                out.append(m[tag]);
+                out.push_back('}');
+            }
+        }
+        //out.push_back('\n');
+    }
+
 
 
     int getFeature(const string & sentence, const string &person, const string &institute,
