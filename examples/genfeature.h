@@ -23,6 +23,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 
 #include "ltp/ner_dll.h"
 #include "ltp/parser_dll.h"
@@ -51,6 +52,8 @@ public:
     const string input = "data/input.txt";
     const string featureOutput = "svm/data/feature.txt";
     const string rawData = "svm/data/raw_data.txt";
+
+    const bool semantic_tree=true;
 
     int LoadData(vector<string> &sentences, vector<string> &people,
                  vector<string> &institute, vector<int> &label) const {
@@ -142,7 +145,7 @@ public:
         for(int i=0;i<toWrite.size();i++){
             if(toWrite[i].size()>0){
                 ofs<< toWrite[i]<<endl;
-                rawDataWriter<< sentences[i]<<endl;
+                rawDataWriter<< sentences[i]<<"*"<<people[i]<<"*"<<institute[i]<<"*"<<labels[i]<<endl;
             }
         }
         ofs.close();
@@ -157,7 +160,9 @@ public:
     ) const {
         int dePerson=-1,deInstitute=-1;
         int rtn=0;
-        rtn = getDetectedPI(person,institute,words,nes,dePerson,deInstitute);
+
+        set<int> PosP,PosI;
+        rtn = getDetectedPI(person,institute,words,nes,dePerson,deInstitute,PosP,PosI);
         CHECK_RTN_LOGE(rtn,"detect P,i error");
         cerr<<"ins,per: "<<deInstitute<< " "<<dePerson;
         int subRoot=-1;
@@ -170,22 +175,22 @@ public:
         CHECK_RTN_LOGE(rtn, "error in getting children");
         cerr<<" children size:"<<children.size()<<" parseTree"<< parseTree.size()<<endl;
         string fullTree;
-        rtn = getTree(post_tags, parseTree,children,subRoot,fullTree);
+        rtn = getTree(post_tags, parseTree,words,children,subRoot,fullTree);
         CHECK_RTN_LOGE(rtn, "error in getting tree");
         string simpleTree;
-        rtn = getSimpleTreeWrapper(post_tags, parseTree,children,subRoot,simpleTree,dePerson,deInstitute);
+        rtn = getSimpleTreeWrapper(post_tags, parseTree,words,children,subRoot,simpleTree,dePerson,deInstitute);
         CHECK_RTN_LOGE(rtn, "error in getting simple tree");
 
         string tree = "|BT| " +fullTree +" |BT| " + simpleTree +" |ET| ";
 
         string vc;
-        rtn =getFeatureVec(sentence,post_tags,words,vc,dePerson,deInstitute);
+        rtn =getFeatureVec(sentence,post_tags,words,vc,dePerson,deInstitute,PosP,PosI);
         string vec ="|BV|"+vc+"|EV|";
         feature = tree +vec;
         return 0;
     }
 private:
-    int getTree(const vector<string> & post_tags, const vector<pair<int, string>> &parseTree,
+    int getTree(const vector<string> & post_tags, const vector<pair<int, string>> &parseTree, const vector<string> & words,
                 const vector<vector<int>> &children,
                 const int root, string & feature) const {
         feature.clear();
@@ -193,12 +198,17 @@ private:
         //cerr<<"getting root:"<<root<<" :size:"<<children[root].size()<<" @ " <<endl;
         int rtn = 0;
         if(children[root].size()==0) {
-            feature = "("+parseTree[root].second+" "+post_tags[root]+")";
+            if(semantic_tree){
+                feature = "("+parseTree[root].second+" "+words[root]+")";
+            } else {
+                feature = "("+parseTree[root].second+" "+post_tags[root]+")";
+            }
+
             return 0;
         }
         feature="(" +parseTree[root].second;
         for(int i=0;i<children[root].size();i++) {
-            rtn = getTree(post_tags, parseTree, children, children[root][i], subTree);
+            rtn = getTree(post_tags, parseTree,words, children, children[root][i], subTree);
             feature.push_back(' ');
             feature.append(subTree);
         }
@@ -208,23 +218,25 @@ private:
     }
 
     int getSimpleTreeWrapper(const vector<string> & post_tags, const vector<pair<int, string>> &parseTree,
+                             const vector<string> & words,
                              const vector<vector<int>> &children,
                              const int root, string & feature, const int p, const int i) const{
         int rtn =0;
         if(root==p){
-            rtn = getSimplePath(post_tags, parseTree,children,root,i,feature);
+            rtn = getSimplePath(post_tags, parseTree, words,children,root,i,feature);
             CHECK_RTN_LOGE(rtn,"root=p,getSimplePath error");
         }else if(root==i){
-            rtn = getSimplePath(post_tags, parseTree,children,root,p,feature);
+            rtn = getSimplePath(post_tags, parseTree,words,children,root,p,feature);
             CHECK_RTN_LOGE(rtn,"root=i,getSimplePath error");
         }else{
-            rtn =getSimpleTree(post_tags, parseTree,children,root,feature,p,i);
+            rtn =getSimpleTree(post_tags, parseTree,words,children,root,feature,p,i);
             CHECK_RTN_LOGE(rtn,"i,p,getSimpleTree error");
         }
         return 0;
     }
 
     int getSimplePath(const vector<string> & post_tags, const vector<pair<int, string>> &parseTree,
+                      const vector<string> & words,
                       const vector<vector<int>> &children,
                       const int root,  int dest, string & feature) const {
         feature.clear();
@@ -232,13 +244,19 @@ private:
        // cerr<<"getting root:"<<root<<" :size:"<<children[root].size()<<" @ " <<endl;
         int rtn = 0;
 
-        feature = "(" + parseTree[dest].second + " " + post_tags[dest] + ")";
+        if(semantic_tree){
+            feature = "(" + parseTree[dest].second + " " + words[dest] + ")";
+        }else{
+            feature = "(" + parseTree[dest].second + " " + post_tags[dest] + ")";
+        }
+
 
         while(parseTree[dest].first-1>=0){
 
             if(parseTree[dest].first-1==root){
                 break;
             }else{
+                //feature="("+parseTree[dest].second+" "+feature+")";
                 feature="("+parseTree[dest].second+" "+feature+")";
             }
             dest = parseTree[dest].first-1;
@@ -249,6 +267,7 @@ private:
     }
 
     int getSimpleTree(const vector<string> & post_tags, const vector<pair<int, string>> &parseTree,
+                      const vector<string> & words,
                       const vector<vector<int>> &children,
                       const int root, string & feature, const int p, const int i)const{
         feature.clear();
@@ -258,14 +277,18 @@ private:
 
 
         if( root==p || root==i ) {
-            feature = "(" + parseTree[root].second + " " + post_tags[root] + ")";
+            if(!semantic_tree) {
+                feature = "(" + parseTree[root].second + " " + post_tags[root] + ")";
+            }else{
+                feature = "(" + parseTree[root].second + " " + words[root] + ")";
+            }
             return 0;
         }
 
         string leaf ="";
         for(int i=0;i<children[root].size();i++) {
             int subRoot= children[root][i];
-            rtn = getSimpleTree(post_tags, parseTree, children, subRoot, subTree,p,i );
+            rtn = getSimpleTree(post_tags, parseTree,words, children, subRoot, subTree,p,i );
             if(subTree.size()>0) {
                 leaf.append(subTree);
                 leaf.push_back(' ');
@@ -273,6 +296,7 @@ private:
         }
         if(leaf.size()>0){
             feature= "(" +parseTree[root].second + leaf+")";
+            //feature= "(" +words[root] + leaf+")";
         }
 
         //cerr<<"finish get Tree: "<<feature<<endl;
@@ -290,7 +314,7 @@ private:
                 children[parseTree[i].first-1].push_back(i);
             }
         }
-        cerr<<"finish get children"<<endl;
+        //cerr<<"finish get children"<<endl;
         return 0;
     }
 
@@ -326,11 +350,10 @@ private:
 
     int getDetectedPI(const string &person, const string &institute,
                       const vector<string> &words, const vector<string> &nes,
-                      int &dePerson, int &deInstitute) const {
+                      int &dePerson, int &deInstitute, set<int> & PosP, set<int> & PosI ) const {
 
         map<string,int> dPs, dIs;
-        string tP,tI;
-
+        string tI,tP;
         for(int i=0;i<words.size();i++){
             if(nes[i].find("O")!=std::string::npos){
                 if(tI.size()>0){
@@ -377,16 +400,24 @@ private:
         }
 
         for(auto a: dPs){
+            PosP.insert(a.second);
             cerr<<"*"<<a.first<<endl;
             if(a.first.find(person)!=std::string::npos || person.find(a.first)!=std::string::npos){
                 dePerson=a.second;
             }
         }
         for(auto a:dIs){
-
+            PosI.insert(a.second);
+            int m=100;
             cerr<<"*"<<a.first<<endl;
-            if(a.first.find(institute)!=std::string::npos || institute.find(a.first)!=std::string::npos){
+            if(a.first.find(institute)!=std::string::npos ){
                 deInstitute=a.second;
+            }
+            if(institute.find(a.first)!=std::string::npos ){
+                if((int)institute.size()-(int)a.first.size()<m){
+                    deInstitute=a.second;
+                    m=(int)institute.size()-(int)a.first.size();
+                }
             }
         }
         //<<"finish detect PI"<<endl;
@@ -396,16 +427,19 @@ private:
     int getFeatureVec(const string & sentence,
                       const vector<string> & post_tags,
                       const vector<string> & words,
-                      string & feature, const int p, const int i) const {
+                      string & feature, const int p, const int i, const set<int> & PosP,const set<int> & PosI ) const {
         vector<int> fe;
-        fe.resize(3*vec.size());
+        fe.resize(3*vec.size()+30);
         int k=0;
+        /*
         for(int j=0;j<vec.size();j++){
             int idx=k*vec.size()+j;
             fe[idx]=has(sentence,vec[j]);
         }
+         */
         k=1;
         string sen;
+        //cerr<<"from "<< min(p,i)<<" to "<<max(p,i)<<endl;
         for(int j=min(p,i);j<=max(p,i);j++){
             sen.append(words[j]);
         }
@@ -422,6 +456,45 @@ private:
             int idx=k*vec.size()+j;
             fe[idx]=has(sen,vec[j]);
         }
+        int base = 3* vec.size();
+
+        fe[++base]= p>i?1:0; // 7
+
+        int mi=min(p,i);
+        int mx=max(p,i);
+
+        fe[++base]=0; //9
+        for(auto a:PosI){
+            if(a>mi && a< mx){
+                fe[base]=1;
+                break;
+            }
+        }
+
+        fe[++base]=0; //10
+        for(auto a:PosP){
+            if(a>mi && a< mx){
+                fe[base]=1;
+                break;
+            }
+        }
+
+        //fe[++base]=p-i;//11
+
+        map<string, int > mpTag,mpWords;
+        for(int j=min(p,i);j<=max(p,i);j++){
+            mpTag[post_tags[j]]++;
+            mpWords[words[j]]++;
+        }
+        vector<string> testTag; testTag.push_back("v"); //testTag.push_back("wp");
+        vector<string> wordTag; wordTag.push_back("，"); //wordTag.push_back("（");wordTag.push_back("）");
+        for(auto a:testTag){
+            fe[++base]=mpTag.count(a)>0?1:0;
+        }
+        for(auto a:wordTag){
+            fe[++base]=mpWords.count(a)>0?1:0;
+        }
+
         feature.clear();
         feature.reserve(100);
         for(int j=0;j<fe.size();j++){
@@ -437,6 +510,7 @@ private:
     inline int  has(const string & sentence, const unordered_set<string> & st) const {
         for(auto a: st){
             if(sentence.find(a)!=std::string::npos){
+                //cerr<<sentence<< " find :"<<a << endl;
                 return 1;
             }
         }
