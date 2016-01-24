@@ -28,7 +28,7 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
                               includes:
                               - ws: Chinese word segmentation
                               - pos: Part of speech tagging
-                              - ne: Named entity recognization
+                              - ner: Named entity recognization
                               - dp: Dependency parsing
                               - srl: Semantic role labeling (equals to all)
                               - all: The whole pipeline [default]
