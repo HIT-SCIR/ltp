@@ -8,7 +8,7 @@ set (CMAKE_MODULE_PATH      ${PROJECT_SOURCE_DIR}/cmake)
 if (APPLE)
   add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
   set(CMAKE_CXX_FLAGS "-std=c++0x -Wno-c++11-narrowing")
-else()
+elseif(UNIX)
   set(CMAKE_CXX_FLAGS "-std=c++0x")
 endif(APPLE)
 

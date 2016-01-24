@@ -129,7 +129,7 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
   }
 
   std::string line;
-  //TODO 构造函数 LineCountsReader 会计算 interval，此处的计算重复了
+  //TODO 构造函数 LineCountsReader 会计算 interval，此处的计算重复了.
   size_t interval = LineCountsReader(ifs).number_of_lines() / 10;
   if (interval == 0) { interval = 1; }
   size_t nr_lines = 1;
