@@ -4,14 +4,17 @@
 注意
 ----
 
+ltp_server只提供Linux版本
+
 本文档中提到的LTP Server与语言云服务不同。语言云建立在LTP Server之上，并封装了一层REST API接口。语言云API(ltp-cloud-api)的请求方式与LTP Server不同。
+
 
 搭建LTP Server
 ---------------
 
 LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行`./bin/ltp_server`就可以启动LTP Server。::
 
-    ltp_server in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    ltp_server in LTP 3.3.1 - (C) 2012-2015 HIT-SCIR
     The HTTP server frontend for Language Technology Platform.
     
     usage: ./ltp_server <options>

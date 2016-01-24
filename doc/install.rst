@@ -1,28 +1,34 @@
-从源代码安装
-=============
+.. _install-label:
 
-LTP包括两部分，分别是
+LTP 的下载和安装
+================
 
-* 项目文件
-* 编译好的模型文件
+如果你想要使用LTP，必须拥有两部分内容
+
+* LTP项目文件
+* LTP模型文件
 
 你可以从以下链接获得最新的LTP项目源码。
 
 * `Github项目托管 <https://github.com/HIT-SCIR/ltp/releases>`_
 
-同时，你可以从以下一些地方获得LTP的模型。
+如果你是windows用户，你也可以跳过从源代码编译的环节，从以下链接获得编译好的二进制文件
+
+* `Github项目托管 <https://github.com/HIT-SCIR/ltp/releases>`_
+
+你可以从以下链接获得LTP的模型文件
 
 * `百度云 <http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569>`_ 当前模型版本3.3.1
 
-安装CMake
----------
+依赖：CMake
+------------
 
 LTP使用编译工具CMake构建项目。在安装LTP之前，你需要首先安装CMake。CMake可以在 `CMake项目官网 <http://www.cmake.org>`_ 。如果你是Windows用户，请下载CMake的二进制安装包；如果你是Linux，Mac OS或Cygwin的用户，可以通过编译源码的方式安装CMake，当然，你也可以使用Linux的软件源来安装。
 
-Windows(MSVC)编译
------------------
+在 Windows (MSVC) 下编译
+------------------------
 
-第一步：构建VC Project
+第一步：构建 VC Project
 ~~~~~~~~~~~~~~~~~~~~~~
 
 在项目文件夹下新建一个名为 :file:`build` 的目录，打开CMake Gui，在source code中填入项目目录，在binaries中填入 :file:`build` 目录。然后Configure -> Generate。
@@ -39,7 +45,7 @@ Windows(MSVC)编译
 构建后得到ALL_BUILD、RUN_TESTS、ZERO_CHECK三个VC Project。使用VS打开ALL_BUILD项目，选择Release [#f1]_ 方式构建项目。
 
 
-Linux, Mac OSX 和 Cygwin编译
+载Linux, Mac OSX 和 Cygwin 下编译
 ----------------------------
 
 Linux、Mac OSX和Cygwin的用户，可以直接在项目根目录下使用命令进行编译::

@@ -1,4 +1,4 @@
-使用ltp_test以及模型
+使用ltp_test和xxx_cmdline
 =====================
 
 一般来讲，基于统计机器学习方法构建的自然语言处理工具通常包括两部分，即：算法逻辑以及模型。模型从数据中学习而得，通常保存在文件中以持久化；而算法逻辑则与程序对应。
@@ -10,7 +10,7 @@ LTP模型文件
 
 LTP模型文件可以从以下渠道获取:
 
-* `百度云 <http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569>`_ 当前模型版本3.3.0
+* `百度云 <http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569>`_ 当前模型版本3.3.1
 
 LTP提供的模型包括:
 
@@ -35,7 +35,7 @@ ltp_test主程序
 :file:`ltp_test` 是一个整合LTP中各模块的命令行工具。它完成加载模型，依照指定方法执行分析的功能。:file:`ltp_test` 加载的模型通过配置文件指定。编译后运行::
 
     $ ./bin/ltp_test 
-    ltp_test in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    ltp_test in LTP 3.3.1 - (C) 2012-2015 HIT-SCIR
     The console application for Language Technology Platform.
     
     usage: ./ltp_test <options>
