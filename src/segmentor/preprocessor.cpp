@@ -184,9 +184,15 @@ int Preprocessor::preprocess(const std::string& sentence,
         width = 1;
       }
       else if ((sent[i]&0xE0)==0xC0) { width = 2; }
-      else if ((sent[i]&0xF0)==0xE0) { width = 3; }
+      else if ((sent[i]&0xF0)==0xE0) { 
+          width = 3; 
+          if (i + 3 <= len && sent[i] == 0xffffffe3 && sent[i + 1] == 0xffffff80 && sent[i + 2] == 0xffffff80) {
+              is_space = true;
+          }
+      }
       else if ((sent[i]&0xF8)==0xF0) { width = 4; }
       else { return -1; }
+
 
       if (is_space) {
         left_status = HAS_SPACE_ON_LEFT;
