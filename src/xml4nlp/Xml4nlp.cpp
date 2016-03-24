@@ -1146,7 +1146,8 @@ int XML4NLP::BuildDOMFrame() {
   return 0;
 }
 
-#if defined(_WIN32) && !defined(_MSC_VER)
+#if defined(_WIN32) && !defined(_MSC_VER) && defined(__GNUC__) && __GNUC__ < 5
+// to solve strnlen in early version of mingw-gcc. see: https://sourceforge.net/p/mingw/bugs/1912/
 static size_t strnlen(const char *s, size_t max) {
   register const char *p;
   for(p = s; *p && max--; ++p);

@@ -10,6 +10,8 @@ if (APPLE)
   set(CMAKE_CXX_FLAGS "-std=c++0x -Wno-c++11-narrowing")
 elseif(UNIX)
   set(CMAKE_CXX_FLAGS "-std=c++0x")
+elseif(MINGW)
+  set(CMAKE_CXX_FLAGS "-std=c++0x")
 endif(APPLE)
 
 
