@@ -194,9 +194,6 @@ void NeuralNetworkParserFrontend::collect_precomputed_features() {
     states[0].copy(State(&dependency));
     system.transit(states[0], ActionFactory::make_shift(), &states[1]);
     for (size_t step = 1; step < oracle_actions.size(); ++ step) {
-
-      INFO_LOG("action %d:%d",step,oracle_actions[step].name());
-
       const Action& oracle_action = oracle_actions[step];
       std::vector<int> attributes;
       if (use_cluster) {
