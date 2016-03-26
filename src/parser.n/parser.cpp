@@ -18,24 +18,27 @@ void NeuralNetworkParser::predict(const Instance& data, std::vector<int>& heads,
   std::vector<int> cluster, cluster4, cluster6;
   transduce_instance_to_dependency(data, &dependency, false);
   get_cluster_from_dependency(dependency, cluster4, cluster6, cluster);
-
   size_t L = data.forms.size();
-  std::vector<State> states(L*2);
-  states[0].copy(State(&dependency));
-  system.transit(states[0], ActionFactory::make_shift(), &states[1]);
-  for (size_t step = 1; step < L*2-1; ++ step) {
+  std::vector<State> states;
+  State state0,state1;
+  state0.copy(State(&dependency));
+  states.push_back(state0);
+  system.transit(states[0], ActionFactory::make_shift(), &state1);
+  states.push_back(state1);
+  //for (size_t step = 1; step < L*2-1; ++ step) {
+  while(!states.back().is_complete()){
     std::vector<int> attributes;
     if (use_cluster) {
-      get_features(states[step], cluster4, cluster6, cluster, attributes);
+      get_features(states.back(), cluster4, cluster6, cluster, attributes);
     } else {
-      get_features(states[step], attributes);
+      get_features(states.back(), attributes);
     }
 
     std::vector<double> scores(system.number_of_transitions(), 0);
     classifier.score(attributes, scores);
 
     std::vector<Action> possible_actions;
-    system.get_possible_actions(states[step], possible_actions);
+    system.get_possible_actions(states.back(), possible_actions);
 
     size_t best = -1;
     for (size_t j = 0; j < possible_actions.size(); ++ j) {
@@ -44,14 +47,16 @@ void NeuralNetworkParser::predict(const Instance& data, std::vector<int>& heads,
     }
 
     Action act = system.transform(best);
-    system.transit(states[step], act, &states[step+ 1]);
+    State new_state;
+    system.transit(states.back(), act, &new_state);
+    states.push_back(new_state);
   }
 
   heads.resize(L);
   deprels.resize(L);
   for (size_t i = 0; i < L; ++ i) {
-    heads[i] = states[L*2-1].heads[i];
-    deprels[i] = deprels_alphabet.at(states[L*2-1].deprels[i]);
+    heads[i] = states.back().heads[i];
+    deprels[i] = deprels_alphabet.at(states.back().deprels[i]);
   }
 }
 
@@ -60,9 +65,9 @@ void NeuralNetworkParser::get_context(const State& s, Context* ctx) {
   ctx->S0 = (s.stack.size() > 0 ? s.stack[s.stack.size() - 1]: -1);
   ctx->S1 = (s.stack.size() > 1 ? s.stack[s.stack.size() - 2]: -1);
   ctx->S2 = (s.stack.size() > 2 ? s.stack[s.stack.size() - 3]: -1);
-  ctx->N0 = (s.buffer < s.ref->size()    ? s.buffer:    -1);
-  ctx->N1 = (s.buffer+ 1 < s.ref->size() ? s.buffer+ 1: -1);
-  ctx->N2 = (s.buffer+ 2 < s.ref->size() ? s.buffer+ 2: -1);
+  ctx->N0 = (s.buffer.size() > 0 ? s.buffer.back():    -1);
+  ctx->N1 = (s.buffer.size() > 1 ? s.buffer[s.buffer.size()-2]: -1);
+  ctx->N2 = (s.buffer.size() > 2 ? s.buffer[s.buffer.size()-3]: -1);
 
   ctx->S0L  = (ctx->S0 >= 0  ? s.left_most_child[ctx->S0]:  -1);
   ctx->S0R  = (ctx->S0 >= 0  ? s.right_most_child[ctx->S0]: -1);

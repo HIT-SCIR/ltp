@@ -148,7 +148,6 @@ void NeuralNetworkClassifier::compute_ada_gradient_step(
         " with un-initialized classifier.");
     return;
   }
-
   // precomputing
   std::unordered_set<int> precomputed_features;
   get_precomputed_features(begin, end, precomputed_features);
@@ -159,7 +158,6 @@ void NeuralNetworkClassifier::compute_ada_gradient_step(
   grad_saved.setZero();
   compute_gradient(begin, end, end- begin);
   compute_saved_gradient(precomputed_features);
-
   // add regularizer.
   add_l2_regularization();
 }
@@ -246,7 +244,6 @@ void NeuralNetworkClassifier::compute_gradient(
   for (std::vector<Sample>::const_iterator sample = begin; sample != end; ++ sample) {
     const std::vector<int>& attributes = sample->attributes;
     const std::vector<double>& classes = sample->classes;
-
     Eigen::VectorXd Y = Eigen::VectorXd::Map(&classes[0], classes.size());
     Eigen::VectorXd _ = (Eigen::ArrayXd::Random(hidden_layer_size) > mask_prob).select(
         Eigen::VectorXd::Ones(hidden_layer_size),
@@ -276,22 +273,19 @@ void NeuralNetworkClassifier::compute_gradient(
         opt_class = i; }
       if (classes[i] == 1) { correct_class = i; }
     }
-
     /*arma::uvec classes_mask = arma::find(Y >= 0);*/
     Eigen::VectorXd __ = (Y.array() >= 0).select(
-        Eigen::VectorXd::Ones(hidden_layer_size),
-        Eigen::VectorXd::Zero(hidden_layer_size));
+        Eigen::VectorXd::Ones(nr_classes),
+        Eigen::VectorXd::Zero(nr_classes));
     double best = output(opt_class);
     output = __.asDiagonal() * Eigen::VectorXd((output.array() - best).exp());
     double sum1 = output(correct_class);
     double sum2 = output.sum();
-
     loss += (log(sum2) - log(sum1));
     if (classes[opt_class] == 1) { accuracy += 1; }
 
     Eigen::VectorXd delta =
       -(__.asDiagonal()*Y - Eigen::VectorXd(output.array()/sum2)) / batch_size;
-
     grad_W2 += delta * cubic_hidden_layer.transpose();
     Eigen::VectorXd grad_cubic_hidden_layer = _.asDiagonal() * W2.transpose() * delta;
 
@@ -299,7 +293,6 @@ void NeuralNetworkClassifier::compute_gradient(
       3 * grad_cubic_hidden_layer.array() * hidden_layer.array().square();
 
     grad_b1 += grad_hidden_layer;
-
     for (size_t i = 0, off = 0; i < attributes.size(); ++ i, off += embedding_size) {
       int aid = attributes[i];
       int fid = aid * nr_feature_types + i;

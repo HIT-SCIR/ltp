@@ -175,19 +175,18 @@ void NeuralNetworkParserFrontend::build_cluster(void) {
 
 void NeuralNetworkParserFrontend::collect_precomputed_features() {
   std::unordered_map<int, int> features_frequencies;
-
   size_t nr_processed = 0;
   nr_feature_types = 0;
   size_t interval = train_dat.size() / 10; if (interval == 0) { interval = 1; }
   for (size_t d = 0; d < train_dat.size(); ++ d) {
     Instance* inst = train_dat[d];
-    if (!inst->is_tree() || !inst->is_projective()) { continue; }
-
+    //if (!inst->is_tree() || !inst->is_projective()) { continue; }
+    if (!inst->is_tree() ) { continue; }
+    
     Dependency dependency;
     std::vector<int> cluster4, cluster6, cluster;
     transduce_instance_to_dependency((*inst), &dependency, true);
     get_cluster_from_dependency(dependency, cluster4, cluster6, cluster);
-
     std::vector<Action> oracle_actions;
     ActionUtils::get_oracle_actions2(dependency, oracle_actions);
 
@@ -195,6 +194,9 @@ void NeuralNetworkParserFrontend::collect_precomputed_features() {
     states[0].copy(State(&dependency));
     system.transit(states[0], ActionFactory::make_shift(), &states[1]);
     for (size_t step = 1; step < oracle_actions.size(); ++ step) {
+
+      INFO_LOG("action %d:%d",step,oracle_actions[step].name());
+
       const Action& oracle_action = oracle_actions[step];
       std::vector<int> attributes;
       if (use_cluster) {
@@ -345,7 +347,6 @@ void NeuralNetworkParserFrontend::generate_training_samples_one_batch(
 
         std::vector<Action> possible_actions;
         system.get_possible_actions(states[step], possible_actions);
-
         std::vector<double> classes(system.number_of_transitions(), -1.);
         std::vector<int> costs(system.number_of_transitions(), 1024);
 
@@ -443,8 +444,8 @@ void NeuralNetworkParserFrontend::train(void) {
 
     std::vector<Sample>::const_iterator begin;
     std::vector<Sample>::const_iterator end;
-    generate_training_samples_one_batch(begin, end);
 
+    generate_training_samples_one_batch(begin, end);
     classifier.compute_ada_gradient_step(begin, end);
     INFO_LOG("pipe (iter#%d): cost=%lf, accuracy(%)=%lf (%lf)", (iter+1),
        classifier.get_cost(), classifier.get_accuracy(), t.elapsed()); 
