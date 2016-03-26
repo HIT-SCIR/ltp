@@ -188,7 +188,6 @@ int Preprocessor::preprocess(const std::string& sentence,
       else if ((sent[i]&0xF8)==0xF0) { width = 4; }
       else { return -1; }
 
-
       if (is_space) {
         left_status = HAS_SPACE_ON_LEFT;
         if (chartypes.size() > 0) { chartypes.back() |= HAS_SPACE_ON_RIGHT; }
