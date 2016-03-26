@@ -9,7 +9,7 @@ int main(int argc, char * argv[]) {
     return -1;
   }
 
-  void * engine = parser_create_parser(argv[1]);
+  void * engine = ner_create_recognizer(argv[1]);
   if (!engine) {
     std::cerr << "failed to load model" << std::endl;
     return -1;
