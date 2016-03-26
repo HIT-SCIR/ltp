@@ -28,6 +28,10 @@ Action ActionFactory::make_right_arc(const int& rel) {
   return Action(Action::kRightArc, rel);
 }
 
+Action ActionFactory::make_swap() {
+  return Action(Action::kSwap, 0);
+}
+
 std::ostream& operator<<(std::ostream& os, const Action& act) {
   if (act.name() == Action::kShift) {
     os << "SH";
@@ -35,7 +39,9 @@ std::ostream& operator<<(std::ostream& os, const Action& act) {
     os << "LA~" << act.rel();
   } else if (act.name() == Action::kRightArc) {
     os << "RA~" << act.rel();
-  } else if (act.name() == Action::kNone) {
+  } else if (act.name() == Action::kSwap) {
+    os << "SW";
+  }else if (act.name() == Action::kNone) {
     os << "NO";
   } else {
     WARNING_LOG("unknown action");
@@ -57,6 +63,10 @@ bool ActionUtils::is_right_arc(const Action& act, int& deprel) {
   if (act.name() == Action::kRightArc) { deprel = act.rel(); return true; }
   deprel = 0;
   return false;
+}
+
+bool ActionUtils::is_swap(const Action& act) {
+  return (act.name() == Action::kSwap);
 }
 
 void ActionUtils::get_oracle_actions(const std::vector<int>& heads,
@@ -122,24 +132,92 @@ void ActionUtils::get_oracle_actions2(const Dependency& instance,
 void ActionUtils::get_oracle_actions2(const std::vector<int>& heads,
     const std::vector<int>& deprels,
     std::vector<Action>& actions) {
+  //! represent the tree structure for projective order calculation
+  int N = heads.size();
+  int root = -1;
+  tree_t tree(N);
+  for (int i = 0; i < N; ++ i) {
+    int head = heads[i];
+    if (head == -1) {
+      //!this should be if root!=-1
+      if (root != -1)
+        WARNING_LOG("error: there should be only one root.");
+      root = i;
+    } else {
+      tree[head].push_back(i);
+    }
+  }
+  //! calculate the projective order
+  int timestamp = 0;//!count for the order number
+  std::vector<int> orders(N, -1);
+  get_oracle_actions_calculate_orders(root,tree,orders,timestamp);
+  std::vector<int> MPC(N, 0);
+  get_oracle_actions_calculate_mpc(root,tree,MPC);
   actions.clear();
   size_t len = heads.size();
   std::vector<int> sigma;
-  int beta = 0;
-  std::vector<int> output(len, -1);
+  std::vector<int> beta;
+  std::vector<int> heads_rec(N, -1);
+  //std::vector<int> output(len, -1);
 
-  int step = 0;
-  while (!(sigma.size() ==1 && beta == len)) {
-    get_oracle_actions_onestep(heads, deprels, sigma, beta, output, actions);
+  //int step = 0;
+  for (int i = N - 1; i >= 0; -- i) { beta.push_back(i); }
+  while (!(sigma.size() ==1 && beta.empty())) {
+    get_oracle_actions_onestep(heads, deprels, tree, heads_rec, sigma, beta, actions,orders,MPC);
   }
 }
 
 void ActionUtils::get_oracle_actions_onestep(const std::vector<int>& heads,
     const std::vector<int>& deprels,
+    const tree_t& tree,
+    std::vector<int>& heads_rec,
     std::vector<int>& sigma,
-    int& beta,
-    std::vector<int>& output,
-    std::vector<Action>& actions) {
+    std::vector<int>& beta,
+    //std::vector<int>& output,
+    std::vector<Action>& actions,
+    const std::vector<int>& orders,
+    const std::vector<int>& MPC) {
+  //! the head will be saved in heads record after been reduced
+  
+  if (sigma.size() < 2) {
+    actions.push_back(ActionFactory::make_shift());
+    sigma.push_back(beta.back()); beta.pop_back();
+    return;
+  }
+
+  int top0 = sigma.back();
+  int top1 = sigma[sigma.size() - 2];
+
+  //INFO_LOG("step1 %d %d %d",top1,top0,beta.back());
+  if (heads[top1] == top0) {
+    bool all_found = true;
+    for (int c: tree[top1]) { if (heads_rec[c] == -1) { all_found = false; } }
+    if (all_found) {
+      actions.push_back(ActionFactory::make_left_arc(deprels[top1]));
+      sigma.pop_back(); sigma.back() = top0; heads_rec[top1] = top0;
+      return;
+    }
+  }
+  if (heads[top0] == top1) {
+    bool all_found = true;
+    for (int c: tree[top0]) { if (heads_rec[c] == -1) { all_found = false; } }
+    if (all_found) {
+      actions.push_back(ActionFactory::make_right_arc(deprels[top0]));
+      sigma.pop_back(); heads_rec[top0] = top1;
+      return;
+    }
+  }
+  int k = beta.empty() ? -1 : beta.back();
+  if ((orders[top0] < orders[top1]) &&
+      (k == -1 || MPC[top0] != MPC[k])) {
+    actions.push_back(ActionFactory::make_swap());
+    sigma.pop_back(); sigma.back() = top0; beta.push_back(top1);
+  } else {
+    actions.push_back(ActionFactory::make_shift());
+    sigma.push_back(beta.back()); beta.pop_back();
+  }
+
+  /*
   int top0 = (sigma.size() > 0 ? sigma.back(): -1);
   int top1 = (sigma.size() > 1 ? sigma[sigma.size()- 2]: -1);
 
@@ -166,6 +244,76 @@ void ActionUtils::get_oracle_actions_onestep(const std::vector<int>& heads,
     sigma.push_back(beta);
     ++ beta;
   }
+  */
+}
+
+void ActionUtils::get_oracle_actions_calculate_orders(int root,
+    const tree_t& tree,
+    std::vector<int>& orders,
+    int& timestamp) {
+  const std::vector<int>& children = tree[root];
+  if (children.size() == 0) {
+    orders[root] = timestamp;
+    timestamp += 1;
+    return;
+  }
+
+  int i;
+  for (i = 0; i < children.size() && children[i] < root; ++ i) {
+    int child = children[i];
+    get_oracle_actions_calculate_orders(child, tree, orders, timestamp);
+  }
+
+  orders[root] = timestamp;
+  timestamp += 1;
+
+  for (; i < children.size(); ++ i) {
+    int child = children[i];
+    get_oracle_actions_calculate_orders(child, tree, orders, timestamp);
+  }
+}
+
+ActionUtils::mpc_result_t ActionUtils::get_oracle_actions_calculate_mpc(int root,
+    const tree_t& tree,
+    std::vector<int>& MPC) {
+  const std::vector<int>& children = tree[root];
+  if (children.size() == 0) {
+    MPC[root] = root;
+    return std::make_tuple(true, root, root);
+  }
+
+  int left = root, right = root;
+  bool overall = true;
+
+  int pivot = -1;
+  for (pivot = 0; pivot < children.size() && children[pivot] < root; ++ pivot);
+
+  for (int i = pivot - 1; i >= 0; -- i) {
+    int child = children[i];
+    ActionUtils::mpc_result_t result =
+      get_oracle_actions_calculate_mpc(child, tree, MPC);
+    overall = overall && std::get<0>(result);
+    if (std::get<0>(result) == true && std::get<2>(result) + 1 == left) {
+      left = std::get<1>(result);
+    } else {
+      overall = false;
+    }
+  }
+
+  for (int i = pivot; i < children.size(); ++ i) {
+    int child = children[i];
+    mpc_result_t result = get_oracle_actions_calculate_mpc(child, tree, MPC);
+    overall = overall && std::get<0>(result);
+    if (std::get<0>(result) == true && right + 1 == std::get<1>(result)) {
+      right = std::get<2>(result);
+    } else {
+      overall = false;
+    }
+  }
+
+  for (int i = left; i <= right; ++ i) { MPC[i] = root; }
+
+  return std::make_tuple(overall, left, right);
 }
 
 
@@ -173,6 +321,8 @@ State::State(): ref(0) { clear(); }
 State::State(const Dependency* r): ref(r) {
   clear();
   size_t L = r->size();
+  for(int i=L-1;i>=0;i--)
+    buffer.push_back(i);
   heads.resize(L, -1);
   deprels.resize(L, 0);
   nr_left_children.resize(L, 0);
@@ -186,12 +336,14 @@ State::State(const Dependency* r): ref(r) {
 bool State::can_shift() const     { return !buffer_empty(); }
 bool State::can_left_arc() const  { return stack_size() >= 2; }
 bool State::can_right_arc() const { return stack_size() >= 2; }
+bool State::can_swap() const     { return stack_size() > 2; }
+bool State::is_complete() const { return stack.size() == 1 && buffer.empty(); }
 
 void State::copy(const State& source) {
   this->ref = source.ref;
   this->score = source.score;
   this->previous = source.previous;
-  this->buffer = source.buffer;
+  this->buffer= source.buffer;
   this->top0 = source.top0;
   this->top1 = source.top1;
   this->stack = source.stack;
@@ -211,7 +363,7 @@ void State::clear() {
   this->previous = 0;
   this->top0 = -1;
   this->top1 = -1;
-  this->buffer = 0;
+  buffer.clear();
   stack.clear();
   std::fill(heads.begin(), heads.end(), -1);
   std::fill(deprels.begin(), deprels.end(), 0);
@@ -241,9 +393,8 @@ bool State::shift(const State& source) {
   if (!source.can_shift()) { return false; }
 
   this->copy(source);
-  stack.push_back(this->buffer);
+  stack.push_back(buffer.back()); buffer.pop_back();
   refresh_stack_information();
-  ++ this->buffer;
 
   this->last_action = ActionFactory::make_shift();
   this->previous = &source;
@@ -303,6 +454,17 @@ bool State::right_arc(const State& source, int deprel) {
   return true;
 }
 
+bool State::swap(const State& source) {
+  if (!source.can_swap()) { return false; }
+
+  this->copy(source);
+  stack.pop_back(); stack.back() = top0; buffer.push_back(top1);
+  refresh_stack_information();
+  this->last_action = ActionFactory::make_swap();
+  this->previous = &source;
+  return true;
+}
+
 int State::cost(const std::vector<int>& gold_heads,
     const std::vector<int>& gold_deprels) {
   std::vector< std::vector<int> > tree(gold_heads.size());
@@ -317,8 +479,8 @@ int State::cost(const std::vector<int>& gold_heads,
   std::vector<bool> sigma_r_mask(gold_heads.size(), false);
   for (size_t s = 0; s < sigma_l.size(); ++ s) { sigma_l_mask[sigma_l[s]]= true; }
 
-  for (int i = buffer; i < ref->size(); ++ i) {
-    if (gold_heads[i] < buffer) {
+  for (int i = buffer.back(); i < ref->size(); ++ i) {
+    if (gold_heads[i] < buffer.back()) {
       sigma_r.push_back(i);
       sigma_r_mask[i] = true;
       continue;
@@ -390,7 +552,7 @@ int State::cost(const std::vector<int>& gold_heads,
     }
   }
   int penalty = 0;
-  for (int i = 0; i < buffer; ++ i) {
+  for (int i = 0; i < buffer.back(); ++ i) {
     if (heads[i] != -1) {
       if (heads[i] != gold_heads[i]) { penalty += 2; }
       else if (deprels[i] != gold_deprels[i]) { penalty += 1; }
@@ -399,7 +561,7 @@ int State::cost(const std::vector<int>& gold_heads,
   return T[len_l-1][len_r-1][0]+ penalty;
 }
 
-bool State::buffer_empty() const { return (this->buffer == this->ref->size()); }
+bool State::buffer_empty() const { return (this->buffer.size()==0); }
 size_t State::stack_size() const { return (this->stack.size()); }
 
 TransitionSystem::TransitionSystem(): L(0), R(-1), D(-1) {}
@@ -420,7 +582,7 @@ void TransitionSystem::get_possible_actions(const State& source,
     return;
   }
   actions.clear();
-
+ // INFO_LOG("buffer len %d",source.buffer.size());
   if (!source.buffer_empty()) {
     actions.push_back(ActionFactory::make_shift());
   }
@@ -435,6 +597,9 @@ void TransitionSystem::get_possible_actions(const State& source,
       actions.push_back(ActionFactory::make_left_arc(l));
       actions.push_back(ActionFactory::make_right_arc(l));
     }
+    if (source.top1<source.top0){
+      actions.push_back(ActionFactory::make_swap());
+    }
   }
 }
 
@@ -446,6 +611,8 @@ void TransitionSystem::transit(const State& source, const Action& act, State* ta
     target->left_arc(source, deprel);
   } else if (ActionUtils::is_right_arc(act, deprel)) {
     target->right_arc(source, deprel);
+  } else if (ActionUtils::is_swap(act)) {
+    target->swap(source);
   } else {
     WARNING_LOG("unknown transition in transit: %d-%d", act.name(), act.rel());
   }
@@ -470,6 +637,7 @@ int TransitionSystem::transform(const Action& act) {
   if (ActionUtils::is_shift(act)) { return 0; }
   else if (ActionUtils::is_left_arc(act, deprel))  { return 1+ deprel; }
   else if (ActionUtils::is_right_arc(act, deprel)) { return L+ 1+ deprel; }
+  else if (ActionUtils::is_swap(act)) { return 2*L+1; }
   else {
     WARNING_LOG("unknown transition in transform(Action&): %d-%d", act.name(), act.rel()); }
   return -1;
@@ -479,11 +647,12 @@ Action TransitionSystem::transform(int act) {
   if (act == 0) { return ActionFactory::make_shift(); }
   else if (act < 1+L) { return ActionFactory::make_left_arc(act- 1); }
   else if (act < 1+2*L) { return ActionFactory::make_right_arc(act- 1- L); }
+  else if (act == 1+2*L) { return ActionFactory::make_swap(); }
   else { WARNING_LOG("unknown transition in transform(int&): %d", act); }
   return Action();
 }
 
-size_t TransitionSystem::number_of_transitions() const { return L*2+1; }
+size_t TransitionSystem::number_of_transitions() const { return L*2+2; }
 
 
 } //  namespace depparser

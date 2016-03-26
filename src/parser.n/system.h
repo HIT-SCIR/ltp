@@ -38,7 +38,8 @@ public:
     kNone = 0,  //! Placeholder for illegal action.
     kShift,     //! The index of shift action.
     kLeftArc,   //! The index of arc left action.
-    kRightArc   //! The index of arc right action.
+    kRightArc,   //! The index of arc right action.
+    kSwap //! The index of swap action.
   };
 
   Action(): AbstractInexactAction() {}
@@ -82,6 +83,13 @@ public:
    *  @return     Action  The arc right action.
    */
   static Action make_right_arc(const int& rel);
+
+  /**
+   * Make a swap action.
+   *
+   *  @return Action  A swap action.
+   */
+  static Action make_swap();
 };
 
 class ActionUtils {
@@ -136,9 +144,31 @@ public:
    *                      otherwise false.
    */
   static bool is_left_arc(const Action& act, int& deprel);
+
+    /**
+   * Judge if the input action is a swap action.
+   *
+   *  @param[in]  act   The action.
+   *  @return     bool  Return true on the action being a swap action, otherwise
+   *                    false.
+   */
+  static bool is_swap(const Action& act);
+
 private:
   //! The tree type.
   typedef std::vector<std::vector<int> > tree_t;
+  //! The MPC calculate result type
+  typedef std::tuple<bool, int, int> mpc_result_t;
+
+  //calculate the projective order of nodes in the tree
+  static void get_oracle_actions_calculate_orders(int root,
+    const tree_t& tree,
+    std::vector<int>& orders,
+    int& timestamp);
+
+  static mpc_result_t get_oracle_actions_calculate_mpc(int root,
+    const tree_t& tree,
+    std::vector<int>& MPC);
 
   /**
    * Perform the mid-order tree travel to get the correct actions sequence.
@@ -157,10 +187,14 @@ private:
   static void get_oracle_actions_onestep(
       const std::vector<int>& heads,
       const std::vector<int>& deprels,
+      const tree_t& tree,
+      std::vector<int>& heads_rec,
       std::vector<int>& sigma,
-      int& beta,
-      std::vector<int>& output,
-      std::vector<Action>& actions);
+      std::vector<int>& beta,
+      //std::vector<int>& output,
+      std::vector<Action>& actions,
+      const std::vector<int>& orders,
+      const std::vector<int>& MPC);
 };
 
 class State {
@@ -180,6 +214,7 @@ public:
    *  @param[in]  source  The source of state to copy from.
    */
   void copy(const State& source);
+  bool is_complete() const;         //! Return is the complete state.
 
   //! Clear the state.
   void clear();
@@ -207,6 +242,13 @@ public:
    */
   bool right_arc(const State& source, int deprel);
 
+    /**
+   * Perform the shift action from source state.
+   *
+   *  @param[in]  source  The source state.
+   */
+  bool swap(const State& source);
+
   //! Used in dynamic oracle, should only be performed on gold state.
   int cost(const std::vector<int>& heads, const std::vector<int>& deprels);
 
@@ -218,8 +260,9 @@ public:
 
   //! The pointer to the previous state.
   std::vector<int> stack;
+  std::vector<int> buffer;
 
-  int buffer;               //! The front word in the buffer.
+  //int buffer;               //! The front word in the buffer.
   const State* previous;    //! The pointer to the previous state.
   const Dependency* ref;    //! The pointer to the dependency tree.
   double score;             //! The score.
@@ -241,13 +284,14 @@ private:
   bool can_shift() const;             //! Return can perform shift action.
   bool can_left_arc() const;          //! Return can perform left arc action.
   bool can_right_arc() const;         //! Return can perform right arc action.
+  bool can_swap() const;         //! Return can perform swap action.
 };
 
 
 class TransitionSystem {
 private:
-  size_t L;
-  int R;
+  size_t L;//! number of labels
+  int R;//! root relation
   int D;
 public:
   TransitionSystem();  //! Constructor
