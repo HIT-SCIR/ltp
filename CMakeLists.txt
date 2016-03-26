@@ -12,6 +12,8 @@ elseif(UNIX)
   set(CMAKE_CXX_FLAGS "-std=c++0x")
 elseif(MINGW)
   set(CMAKE_CXX_FLAGS "-std=c++0x")
+elseif(MSVC)
+  set(CMAKE_CXX_FLAGS "/EHsc")
 endif(APPLE)
 
 
