@@ -4,9 +4,17 @@ environment:
 # clone directory
 clone_folder: c:\projects\ltp
 
-os: Visual Studio 2013
-platform: x64
-configuration: Release
+os: 
+  - Visual Studio 2013
+  - Visual Studio 2015
+  
+platform:
+  - x86
+  - x64
+  
+configuration: 
+  - Debug
+  - Release
 
 install:
   # by default, all script lines are interpreted as batch
