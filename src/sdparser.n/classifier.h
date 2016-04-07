@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <vector>
-#include "parser.n/options.h"
+#include "sdparser.n/options.h"
 #include "utils/unordered_map.hpp"
 #include "utils/unordered_set.hpp"
 #include "Eigen/Dense"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 struct Sample {
   std::vector<int> attributes;  //! sparse vector of attributes
@@ -165,7 +165,7 @@ public:
   void add_l2_regularization();
 };
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
 
 #endif  //  end for __LTP_PARSERN_CLASSIFIER_H__

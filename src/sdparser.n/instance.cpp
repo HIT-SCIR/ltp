@@ -1,9 +1,9 @@
-#include "parser.n/instance.h"
+#include "sdparser.n/instance.h"
 #include "utils/strutils.hpp"
 #include "utils/codecs.hpp"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 using strutils::codecs::is_unicode_punctuation;
 
@@ -97,5 +97,5 @@ bool Instance::is_projective() const { return is_projective(heads); }
 bool Instance::is_non_projective() const { return is_non_projective(heads); }
 
 size_t Dependency::size() const { return forms.size(); }
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp

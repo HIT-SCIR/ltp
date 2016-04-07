@@ -3,8 +3,8 @@
 #include "config.h"
 #include "utils/logging.hpp"
 #include "boost/program_options.hpp"
-#include "parser.n/options.h"
-#include "parser.n/parser_frontend.h"
+#include "sdparser.n/options.h"
+#include "sdparser.n/parser_frontend.h"
 
 #define DESCRIPTION "Neural Network Parser"
 #define EXECUTABLE "nndepparser"
@@ -14,9 +14,9 @@ using boost::program_options::value;
 using boost::program_options::variables_map;
 using boost::program_options::store;
 using boost::program_options::parse_command_line;
-using ltp::depparser::NeuralNetworkParserFrontend;
-using ltp::depparser::LearnOption;
-using ltp::depparser::TestOption;
+using ltp::sdparser::NeuralNetworkParserFrontend;
+using ltp::sdparser::LearnOption;
+using ltp::sdparser::TestOption;
 
 int test(int argc, char** argv) {
   std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";

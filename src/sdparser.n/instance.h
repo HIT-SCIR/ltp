@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 class Instance {
 private:
@@ -53,7 +53,7 @@ struct Dependency {
   size_t size() const;
 };
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
 
 #endif  //  end for __LTP_PARSERN_INSTANCE_H__

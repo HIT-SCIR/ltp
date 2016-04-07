@@ -1,4 +1,4 @@
-#include "parser.n/classifier.h"
+#include "sdparser.n/classifier.h"
 #include "utils/logging.hpp"
 
 #ifdef max
@@ -10,7 +10,7 @@
 #endif
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 Sample::Sample() {}
 
@@ -368,5 +368,5 @@ void NeuralNetworkClassifier::canonical() {
   embedding_size = E.rows();
 }
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp

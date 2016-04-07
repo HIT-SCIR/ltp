@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 struct SpecialOption {
   static std::string UNKNOWN;
@@ -60,7 +60,7 @@ struct TestOption:
   bool evaluate;
 };
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
 
 #endif  //  end for __LTP_PARSERN_OPTIONS_H__

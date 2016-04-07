@@ -2,7 +2,7 @@
 #define __LTP_PARSERN_CONTEXT_H__
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 struct Context {
   int S0, S1, S2, N0, N1, N2;
@@ -10,7 +10,7 @@ struct Context {
   int S1L, S1R, S1L2, S1R2, S1LL, S1RR;
 };
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
 
 #endif  //  end for __LTP_PARSERN_CONTEXT_H__

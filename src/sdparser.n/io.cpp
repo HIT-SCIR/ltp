@@ -1,11 +1,11 @@
-#include "parser.n/io.h"
+#include "sdparser.n/io.h"
 #include "utils/codecs.hpp"
 #include "utils/sbcdbc.hpp"
 #include "utils/strutils.hpp"
 #include "utils/logging.hpp"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 using strutils::trim;
 using strutils::split;
@@ -98,5 +98,5 @@ void CoNLLWriter::write(const Instance& inst, const std::vector<int>& heads,
 }
 
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp

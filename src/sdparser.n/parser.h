@@ -3,14 +3,14 @@
 
 #include "utils/smartmap.hpp"
 #include "utils/unordered_map.hpp"
-#include "parser.n/system.h"
-#include "parser.n/context.h"
-#include "parser.n/classifier.h"
+#include "sdparser.n/system.h"
+#include "sdparser.n/context.h"
+#include "sdparser.n/classifier.h"
 #include "framework/serializable.h"
 #include "Eigen/Dense"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 class NeuralNetworkParser: public framework::Serializable {
 protected:
@@ -131,7 +131,7 @@ protected:
       Vector& vector);
 };
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
 
 #endif  //  end for __LTP_PARSERN_PARSER_H__

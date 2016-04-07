@@ -1,11 +1,11 @@
-#include "parser.n/options.h"
+#include "sdparser.n/options.h"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 std::string SpecialOption::UNKNOWN = "$unk";
 std::string SpecialOption::NIL = "$nil";
 std::string SpecialOption::ROOT = "$root";
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp

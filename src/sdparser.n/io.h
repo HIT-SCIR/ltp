@@ -4,11 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include "framework/io.h"
-#include "parser.n/instance.h"
-#include "parser.n/options.h"
+#include "sdparser.n/instance.h"
+#include "sdparser.n/options.h"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 class CoNLLReader: public framework::LineCountsReader {
 private:
@@ -30,7 +30,7 @@ private:
   std::ostream& f;
 };  // end for ConnllWriter
 
-}   // end for parser
+}   // end for sdparser
 }   // end for namespace ltp
 
 #endif  // end for __LTP_PARSER_CONLL_READER_H__

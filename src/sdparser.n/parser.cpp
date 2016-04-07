@@ -1,10 +1,10 @@
 #include <fstream>
-#include "parser.n/parser.h"
+#include "sdparser.n/parser.h"
 #include "utils/logging.hpp"
 #include "utils/math/fast_binned.h"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 NeuralNetworkParser::NeuralNetworkParser()
   : classifier(W1, W2, E, b1, saved, precomputation_id_encoder),
@@ -531,5 +531,5 @@ void NeuralNetworkParser::build_feature_space() {
 
 }
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
