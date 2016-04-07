@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include "parser.n/instance.h"
+#include "sdparser.n/instance.h"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 class AbstractInexactAction {
 protected:
@@ -318,7 +318,7 @@ public:
   size_t number_of_transitions() const;
 };
 
-} //  end for namespace depparser
+} //  end for namespace sdparser
 } //  end for namespace ltp
 
 #endif  //  end for __LTP_PARSERN_TRANSITION_SYSTEM_H__

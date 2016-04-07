@@ -19,6 +19,7 @@ const char * const NOTE_WORD    = "word";
 const char * const NOTE_POS     = "pos";
 const char * const NOTE_NE      = "ne";
 const char * const NOTE_PARSER  = "parser";
+const char * const NOTE_SEMANTIC_PARSER = "semparser";
 const char * const NOTE_WSD     = "wsd";
 const char * const NOTE_SRL     = "srl";
 //const char * const NOTE_CLASS = "class";
@@ -40,6 +41,8 @@ const char * const XML4NLP::TAG_POS         = "pos";
 const char * const XML4NLP::TAG_NE          = "ne";
 const char * const XML4NLP::TAG_PSR_PARENT  = "parent";
 const char * const XML4NLP::TAG_PSR_RELATE  = "relate";
+const char * const XML4NLP::TAG_SEMPSR_PARENT  = "semparent";
+const char * const XML4NLP::TAG_SEMPSR_RELATE  = "semrelate";
 const char * const XML4NLP::TAG_WSD         = "wsd";
 const char * const XML4NLP::TAG_WSD_EXP     = "wsdexp";
 const char * const XML4NLP::TAG_SRL_ARG     = "arg";
@@ -338,6 +341,14 @@ int XML4NLP::GetWSD(WSDResult & explanation, int pid, int sid, int wid) const {
 }
 
 int XML4NLP::GetParse(ParseResult & relation, int pid, int sid, int wid) const {
+  if (0 != CheckRange(pid, sid, wid)) return -1;
+  const char * head = document.paragraphs[pid].sentences[sid].words[wid].wordPtr->Attribute(TAG_PSR_PARENT);
+  relation.first  = (head == NULL ? 0 : atoi(head));
+  relation.second = document.paragraphs[pid].sentences[sid].words[wid].wordPtr->Attribute(TAG_PSR_RELATE);
+  return 0;
+}
+
+int XML4NLP::GetSemanticParse(SemanticParseResult & relation, int pid, int sid, int wid) const {
   if (0 != CheckRange(pid, sid, wid)) return -1;
   const char * head = document.paragraphs[pid].sentences[sid].words[wid].wordPtr->Attribute(TAG_PSR_PARENT);
   relation.first  = (head == NULL ? 0 : atoi(head));

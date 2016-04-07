@@ -23,7 +23,7 @@
  *  @param[in] path the path of the model
  *  @return void * the pointer to the segmentor
  */
-PARSER_DLL_API void * parser_create_parser(const char * path);
+PARSER_DLL_API void * sdparser_create_parser(const char * path);
 
 /*
  * release the postagger resources
@@ -31,7 +31,7 @@ PARSER_DLL_API void * parser_create_parser(const char * path);
  *  @param[in]  segmentor   the segmentor
  *  @return     int         i don't know
  */
-PARSER_DLL_API int parser_release_parser(void * parser);
+PARSER_DLL_API int sdparser_release_parser(void * parser);
 
 /*
  * run postag given the postagger on the input words
@@ -41,7 +41,7 @@ PARSER_DLL_API int parser_release_parser(void * parser);
  *  @return     int         the number of word tokens, if input arguments
  *                          are not legal, return 0
  */
-PARSER_DLL_API int parser_parse(void * parser,
+PARSER_DLL_API int sdparser_parse(void * parser,
         const std::vector< std::string > & words,
         const std::vector< std::string > & postags,
         std::vector<int> & heads,

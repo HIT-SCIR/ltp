@@ -1,4 +1,4 @@
-#include "parser.n/system.h"
+#include "sdparser.n/system.h"
 #include "utils/math/mat.h"
 #include "utils/logging.hpp"
 #include <algorithm>
@@ -12,7 +12,7 @@
 #endif
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 using math::Mat3;
 
@@ -654,6 +654,6 @@ Action TransitionSystem::transform(int act) {
 size_t TransitionSystem::number_of_transitions() const { return L*2+2; }
 
 
-} //  namespace depparser
+} //  namespace sdparser
 } //  namespace ltp
 

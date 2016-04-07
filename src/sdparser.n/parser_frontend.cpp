@@ -1,13 +1,13 @@
 #include <fstream>
-#include "parser.n/parser_frontend.h"
-#include "parser.n/io.h"
+#include "sdparser.n/parser_frontend.h"
+#include "sdparser.n/io.h"
 #include "utils/logging.hpp"
 #include "utils/strutils.hpp"
 #include "utils/codecs.hpp"
 #include "utils/time.hpp"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 using framework::LineCountsReader;
 using strutils::trim;
@@ -523,5 +523,5 @@ void NeuralNetworkParserFrontend::test(void) {
   INFO_LOG("elapsed time: %lf", t.elapsed());
 }
 
-}   //  end for namespace depparser
+}   //  end for namespace sdparser
 }   //  end for namespace ltp

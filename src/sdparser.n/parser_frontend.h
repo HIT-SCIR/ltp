@@ -4,13 +4,13 @@
 #include <iostream>
 
 //#include "framework/frontend.h"
-#include "parser.n/options.h"
-#include "parser.n/instance.h"
-#include "parser.n/parser.h"
+#include "sdparser.n/options.h"
+#include "sdparser.n/instance.h"
+#include "sdparser.n/parser.h"
 #include "utils/logging.hpp"
 
 namespace ltp {
-namespace depparser {
+namespace sdparser {
 
 struct PairGreaterBySecond {
   bool operator()(std::pair<int, int> const& l,
@@ -62,7 +62,7 @@ private:
       std::vector<Sample>::const_iterator& end);
 };  //  end for class Parser
 
-}   //  end for namespace depparser
+}   //  end for namespace sdparser
 }   //  end for namespace ltp
 
 #endif  // end for __LTP_PARSERN_PARSER_H__

@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace ltp {
-namespace parser {
+namespace sdparser {
 
 // define constant
 const std::string ROOT_FORM     =   "RT#";
@@ -50,7 +50,7 @@ enum {
   POSB,
 };
 
-}       //  end for namespace parser
+}       //  end for namespace sdparser
 }       //  end for namespace ltp
 #endif  //  end for __LTP_PARSER_SETTINGS_H__
 
