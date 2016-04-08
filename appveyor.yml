@@ -1,0 +1,29 @@
+environment:
+  P: "c:/projects/libs"
+
+# clone directory
+clone_folder: c:\projects\ltp
+
+os: 
+  - Visual Studio 2013
+  - Visual Studio 2015
+  
+platform:
+  - x86
+  - x64
+  
+configuration: 
+  - Debug
+  - Release
+
+install:
+  # by default, all script lines are interpreted as batch
+
+build:
+  project: ALL_BUILD.vcxproj      # path to Visual Studio solution or project
+
+# scripts to run before build
+before_build:
+  - echo Running cmake...
+  - cd c:\projects\ltp
+  - cmake -G "Visual Studio 12 2013 Win64" -DCMAKE_INSTALL_PREFIX=%P%

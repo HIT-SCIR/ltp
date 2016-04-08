@@ -1,6 +1,6 @@
 # LTP: Language Technology Platform
 
-[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.svg?branch=master)](https://travis-ci.org/HIT-SCIR/ltp) [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
+[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.svg?branch=master)](https://travis-ci.org/HIT-SCIR/ltp) [![Build status](https://ci.appveyor.com/api/projects/status/yewlrwa7w85kghwb/branch/master?svg=true)](https://ci.appveyor.com/project/Oneplus/ltp/branch/master) [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
 
 新闻
 ----

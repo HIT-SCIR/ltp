@@ -14,6 +14,7 @@ target_link_libraries (ltp_server
     segmentor_static_lib
     postagger_static_lib
     parser_static_lib
+    sdparser_static_lib
     ner_static_lib
     srl_static_lib
     xml4nlp

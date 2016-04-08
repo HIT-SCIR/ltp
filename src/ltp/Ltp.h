@@ -16,8 +16,9 @@
 
 #define LTP_SERVICE_NAME_SEGMENT  "ws"
 #define LTP_SERVICE_NAME_POSTAG   "pos"
-#define LTP_SERVICE_NAME_NER      "ner"
+#define LTP_SERVICE_NAME_NER      "ne"
 #define LTP_SERVICE_NAME_DEPPARSE "dp"
+#define LTP_SERVICE_NAME_SEMDEPPARSE "sdp"
 #define LTP_SERVICE_NAME_SRL      "srl"
 
 enum ErrorCodes {
@@ -26,6 +27,7 @@ enum ErrorCodes {
   kWordsegError,          /*< Failed to perform wordseg */
   kPostagError,           /*< Failed to perform postag  */
   kParserError,           /*< Failed to perform parsing */
+  kSemanticParserError,   /*< Failed to perform semanticparsing */
   kNERError,              /*< Failed to perform NER     */
   kSRLError,              /*< Failed to perform SRL     */
   kEncodingError,         /*< Sentence encoding not in UTF-8 */
@@ -41,20 +43,23 @@ public:
   static const int kActivePostagger = 1<<2;
   static const int kActiveNER       = 1<<3;
   static const int kActiveParser    = 1<<4;
-  static const int kActiveSRL       = 1<<5;
+  static const int kActiveSemanticParser = 1<<5;
+  static const int kActiveSRL       = 1<<6;
 
 public:
   LTP(const std::string& last_stage,
-      const std::string& segmentor_model_file,
-      const std::string& segmentor_lexicon_file,
-      const std::string& postagger_model_file,
-      const std::string& postagger_lexicon_file,
-      const std::string& ner_model_file,
-      const std::string& parser_model_file,
-      const std::string& srl_model_dir);
+  const std::string& segmentor_model_file,
+  const std::string& segmentor_lexicon_file,
+  const std::string& postagger_model_file,
+  const std::string& postagger_lexicon_file,
+  const std::string& ner_model_file,
+  const std::string& parser_model_file,
+  const std::string& semantic_parser_model_file,
+  const std::string& srl_model_dir);
 
   ~LTP();  //! The deallocator
   bool loaded() const;  //! return true on the resource successful loaded, otherwise false
+
 
   // discard
   // int CreateDOMFromTxt(const char * cszTxtFileName, XML4NLP& m_xml4nlp);
@@ -96,6 +101,14 @@ public:
    *  @return         int   0 on success, otherwise -1
    */
   int parser(XML4NLP & xml);
+  
+  /*
+   * do semantic dependency parsing
+   *
+   *  @param[in/out]  xml   the xml storing ltp result
+   *  @return         int   0 on success, otherwise -1
+   */
+  int semantic_parser(XML4NLP & xml);
 
   /*
    * do semantic role labeling
@@ -107,6 +120,8 @@ public:
 
   int splitSentence_dummy(XML4NLP & xml);
 private:
+
+
   /*
    * parse the config file, and load resource according the config
    *
@@ -114,13 +129,14 @@ private:
    *  @return     int           0 on success, otherwise -1
    */
   bool load(const std::string& last_stage,
-      const std::string& segmentor_model_file,
-      const std::string& segmentor_lexicon_file,
-      const std::string& postagger_model_file,
-      const std::string& postagger_lexicon_file,
-      const std::string& ner_model_file,
-      const std::string& parser_model_file,
-      const std::string& srl_model_dir);
+       const std::string& segmentor_model_file,
+       const std::string& segmentor_lexicon_file,
+       const std::string& postagger_model_file,
+       const std::string& postagger_lexicon_file,
+       const std::string& ner_model_file,
+       const std::string& parser_model_file,
+     const std::string& semantic_parser_model_file,
+       const std::string& srl_model_dir);
 
 private:
   LTPResource _resource;    /*< the ltp resources */
