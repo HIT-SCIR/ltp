@@ -4,6 +4,7 @@
 #include "segmentor/segment_dll.h"
 #include "postagger/postag_dll.h"
 #include "parser.n/parser_dll.h"
+#include "sdparser.n/sdparser_dll.h"
 #include "ner/ner_dll.h"
 #include "srl/SRL_DLL.h"
 #include "utils/logging.hpp"
@@ -13,6 +14,7 @@
 #pragma comment(lib, "segmentor.lib")
 #pragma comment(lib, "postagger.lib")
 #pragma comment(lib, "parser.lib")
+#pragma comment(lib, "sdparser.lib")
 #pragma comment(lib, "ner.lib")
 #pragma comment(lib, "srl.lib")
 #endif
@@ -22,10 +24,12 @@ LTPResource::LTPResource() :
   m_postagger(NULL),
   m_ner(NULL),
   m_parser(NULL),
+  m_semanticparser(NULL),
   m_isSegmentorResourceLoaded(false),
   m_isPostaggerResourceLoaded(false),
   m_isNEResourceLoaded(false),
   m_isParserResourceLoaded(false),
+  m_isSemanticParserResourceLoaded(false),
   m_isSRLResourceLoaded(false) {
 }
 
@@ -35,6 +39,7 @@ LTPResource::~LTPResource() {
   ReleasePostaggerResource();
   ReleaseNEResource();
   ReleaseParserResource();
+  ReleaseSemanticParserResource();
   ReleaseSRLResource();
 }
 
@@ -228,6 +233,50 @@ void * LTPResource::GetParser() {
   return m_parser;
 }
 
+
+/* ====================================================== *
+ * Semantic parser related resource                                *
+ * ====================================================== */
+int LTPResource::LoadSemanticParserResource(const char * model_file) {
+  if (m_isSemanticParserResourceLoaded) {
+    return 0;
+  }
+
+  INFO_LOG("Loading semantic parser resource from \"%s\"", model_file);
+
+  m_semanticparser = sdparser_create_parser(model_file);
+  if (!m_semanticparser) {
+    ERROR_LOG("Failed to create semantic parser");
+    return -1;
+  }
+
+  INFO_LOG("semantic parser is loaded.");
+
+  m_isSemanticParserResourceLoaded = true;
+  return 0;
+}
+
+int LTPResource::LoadSemanticParserResource(const std::string & model_file) {
+  return LoadSemanticParserResource(model_file.c_str());
+}
+
+void LTPResource::ReleaseSemanticParserResource() {
+  if (!m_isSemanticParserResourceLoaded) {
+    return;
+  }
+
+  sdparser_release_parser(m_semanticparser);
+  INFO_LOG("Semantic parser is released");
+
+  m_semanticparser = NULL;
+  m_isSemanticParserResourceLoaded = false;
+}
+
+void * LTPResource::GetSemanticParser() {
+  return m_semanticparser;
+}
+
+
 /* ======================================================== *
  * SRL related resource management                          *
  * ======================================================== */
@@ -267,4 +316,3 @@ void LTPResource::ReleaseSRLResource() {
   m_isSRLResourceLoaded = false;
   return;
 }
-

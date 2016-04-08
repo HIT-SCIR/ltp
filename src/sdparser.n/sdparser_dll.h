@@ -1,20 +1,20 @@
-#ifndef __LTP_PARSER_DLL_H__
-#define __LTP_PARSER_DLL_H__
+#ifndef __LTP_SDPARSER_DLL_H__
+#define __LTP_SDPARSER_DLL_H__
 
 #include <iostream>
 #include <vector>
 
-#define PARSER_DLL_API
-#define PARSER_DLL_API_EXPORT
+#define SDPARSER_DLL_API
+#define SDPARSER_DLL_API_EXPORT
 
 #if defined(_MSC_VER)
-#undef PARSER_DLL_API
-#ifdef PARSER_DLL_API_EXPORT
-    #define PARSER_DLL_API extern "C" _declspec(dllexport)
+#undef SDPARSER_DLL_API
+#ifdef SDPARSER_DLL_API_EXPORT
+    #define SDPARSER_DLL_API extern "C" _declspec(dllexport)
 #else
-    #define PARSER_DLL_API extern "C" _deslspec(dllimport)
-    #pragma comment(lib, "parser.lib")
-#endif // end for PARSER_DLL_API
+    #define SDPARSER_DLL_API extern "C" _deslspec(dllimport)
+    #pragma comment(lib, "sdparser.lib")
+#endif // end for SDPARSER_DLL_API
 #endif // end for _WIN32
 
 /*
@@ -23,7 +23,7 @@
  *  @param[in] path the path of the model
  *  @return void * the pointer to the segmentor
  */
-PARSER_DLL_API void * sdparser_create_parser(const char * path);
+SDPARSER_DLL_API void * sdparser_create_parser(const char * path);
 
 /*
  * release the postagger resources
@@ -31,7 +31,7 @@ PARSER_DLL_API void * sdparser_create_parser(const char * path);
  *  @param[in]  segmentor   the segmentor
  *  @return     int         i don't know
  */
-PARSER_DLL_API int sdparser_release_parser(void * parser);
+SDPARSER_DLL_API int sdparser_release_parser(void * parser);
 
 /*
  * run postag given the postagger on the input words
@@ -41,10 +41,10 @@ PARSER_DLL_API int sdparser_release_parser(void * parser);
  *  @return     int         the number of word tokens, if input arguments
  *                          are not legal, return 0
  */
-PARSER_DLL_API int sdparser_parse(void * parser,
+SDPARSER_DLL_API int sdparser_parse(void * parser,
         const std::vector< std::string > & words,
         const std::vector< std::string > & postags,
         std::vector<int> & heads,
         std::vector<std::string> & deprels);
 
-#endif  //  end for __LTP_PARSER_DLL_H__
+#endif  //  end for __LTP_SDPARSER_DLL_H__

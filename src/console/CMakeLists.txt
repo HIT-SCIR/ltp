@@ -16,6 +16,7 @@ target_link_libraries (ltp_test
     segmentor_static_lib
     postagger_static_lib
     parser_static_lib
+    sdparser_static_lib
     ner_static_lib
     srl_static_lib
     xml4nlp
@@ -44,6 +45,13 @@ target_link_libraries (par_cmdline parser_static_lib
 set_target_properties (par_cmdline PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
 
+add_executable (sdpar_cmdline sdpar_cmdline.cpp
+    ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
+target_link_libraries (sdpar_cmdline sdparser_static_lib
+    boost_program_options_static_lib)
+set_target_properties (sdpar_cmdline PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/examples/)
+
 add_executable (ner_cmdline ner_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 target_link_libraries (ner_cmdline ner_static_lib
@@ -57,6 +65,7 @@ if (NOT MSVC AND NOT MINGW)
   target_link_libraries (cws_cmdline pthread)
   target_link_libraries (pos_cmdline pthread)
   target_link_libraries (par_cmdline pthread)
+  target_link_libraries (sdpar_cmdline pthread)
   target_link_libraries (ner_cmdline pthread)
 endif ()
 

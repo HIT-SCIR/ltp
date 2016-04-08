@@ -8,9 +8,9 @@
  * We Thank to the author of it -- Lee Thomason
  */
 #include "Xml4nlp.h"
-#include <cstring>
 #include "utils/strutils.hpp"
 #include "utils/logging.hpp"
+#include <cstring>
 
 using ltp::strutils::trim;
 
@@ -19,7 +19,7 @@ const char * const NOTE_WORD    = "word";
 const char * const NOTE_POS     = "pos";
 const char * const NOTE_NE      = "ne";
 const char * const NOTE_PARSER  = "parser";
-const char * const NOTE_SEMANTIC_PARSER = "semparser";
+const char * const NOTE_SEMANTIC_PARSER  = "semparser";
 const char * const NOTE_WSD     = "wsd";
 const char * const NOTE_SRL     = "srl";
 //const char * const NOTE_CLASS = "class";
@@ -82,7 +82,7 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
   string line;
   int i = 0;
   while (getline(in, line)) {
-    // clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
+    //clean_str(line); // Zhenghua Li, 2007-8-31, 15:57
     trim(line);
     if (line.empty()) {
       continue;
@@ -99,6 +99,7 @@ int XML4NLP::CreateDOMFromFile(const char* fileName) {
 /////////////////////////////////////////////////////////////////////////////////////
 int XML4NLP::CreateDOMFromString(const string & str) {
   ClearDOM();
+
   if (0 != BuildDOMFrame()) return -1;
 
   string strTmp = str;
@@ -108,9 +109,8 @@ int XML4NLP::CreateDOMFromString(const string & str) {
   istringstream in(strTmp);  // How to use istringstream?
   int i = 0;
   while (getline(in, strTmp)) {
-    // clean_str(strTmp);
+    //clean_str(strTmp);
     trim(strTmp);
-
     if (strTmp.empty()) {
       continue;
     }
@@ -371,6 +371,7 @@ int XML4NLP::GetSemanticParse(SemanticParseResult & relation, int pid, int sid, 
 
 EXTEND_FUNCTION3 (int, XML4NLP::GetWSD,   WSDResult,    -1)
 EXTEND_FUNCTION3 (int, XML4NLP::GetParse, ParseResult,  -1)
+EXTEND_FUNCTION3 (int, XML4NLP::GetSemanticParse, SemanticParseResult,  -1)
 
 int XML4NLP::DecodeGlobalId(int global_sid, int & pid, int & sid) const {
   int startStnsIdxOfPara = 0;
@@ -693,6 +694,167 @@ int XML4NLP::SetParsesToSentence(const std::vector<int> & heads,
 
   if (0 != SetInfoToSentence(d_heads, global_sid, TAG_PSR_PARENT)) return -1;
   if (0 != SetInfoToSentence(deprels, global_sid, TAG_PSR_RELATE)) return -1;
+
+  // std::string buffer;
+  // SaveDOM(buffer);
+  // std::cout << buffer << std::endl;
+  return 0;
+}
+
+int XML4NLP::GetSemanticParsesFromSentence(std::vector< SemanticParseResult > &relation,
+                                   int pid, int sid) const {
+  std::vector<const char *> heads;
+  std::vector<const char *> deprels;
+
+  int nr_words = CountWordInSentence(pid, sid);
+  relation.resize(nr_words);
+
+  if (0 != GetInfoFromSentence(heads, pid, sid, TAG_SEMPSR_PARENT)) {
+    return -1;
+  }
+
+  if (0 != GetInfoFromSentence(deprels, pid, sid, TAG_SEMPSR_RELATE)) {
+    return -1;
+  }
+
+  for (int i = 0; i < nr_words; ++ i) {
+    relation[i].first = atoi( heads[i] );
+    relation[i].second = deprels[i];
+  }
+
+  return 0;
+}
+
+int XML4NLP::GetSemanticParsesFromSentence(std::vector< SemanticParseResult > & relation,
+                                   int global_sid) const {
+  std::vector<const char *> heads;
+  std::vector<const char *> deprels;
+
+  int nr_words = CountWordInSentence(global_sid);
+  relation.resize(nr_words);
+
+  heads.resize(nr_words);
+  deprels.resize(nr_words);
+
+  if (0 != GetInfoFromSentence(heads, global_sid, TAG_SEMPSR_PARENT)) {
+    return -1;
+  }
+
+  if (0 != GetInfoFromSentence(deprels, global_sid, TAG_SEMPSR_RELATE)) {
+    return -1;
+  }
+
+  for (int i = 0; i < nr_words; ++ i) {
+    relation[i].first = atoi( heads[i] );
+    relation[i].second = deprels[i];
+  }
+
+  return 0;
+}
+
+
+int XML4NLP::GetSemanticParsesFromSentence(std::vector< std::pair<int, std::string > > & relation,
+                                   int pid,
+                                   int sid) const {
+  std::vector< SemanticParseResult > semparse;
+  if (0 != GetSemanticParsesFromSentence(semparse, pid, sid)) {
+    return -1;
+  }
+
+  relation.resize( semparse.size() );
+  for (int i = 0; i < semparse.size(); ++ i) {
+    relation[i].first = semparse[i].first;
+    relation[i].second = semparse[i].second;
+  }
+  return 0;
+}
+
+int XML4NLP::GetSemanticParsesFromSentence(std::vector< std::pair<int, std::string> > & relation,
+                                   int global_sid) const {
+  std::vector< SemanticParseResult > semparse;
+  if (0 != GetSemanticParsesFromSentence(semparse, global_sid)) {
+    return -1;
+  }
+
+  relation.resize( semparse.size() );
+  for (int i = 0; i < semparse.size(); ++ i) {
+    relation[i].first  = semparse[i].first;
+    relation[i].second = semparse[i].second;
+  }
+
+  return 0;
+}
+
+int XML4NLP::SetSemanticParsesToSentence(const std::vector< std::pair<int, std::string> > & relation,
+                                 int pid, int sid) {
+  if (0 != CheckRange(pid, sid)) return -1;
+
+  std::vector<Word> & words = document.paragraphs[pid].sentences[sid].words;
+
+  if (words.size() != relation.size()) {
+    std::cerr << "word number does not equal to vecInfo's size in paragraph"
+              << pid
+              << " sentence "
+              << sid << std::endl;
+    return -1;
+  }
+
+  if (words[0].wordPtr->Attribute(TAG_SEMPSR_PARENT) != NULL) {
+    std::cerr << "Attribute \""
+              << TAG_SEMPSR_PARENT
+              << "\" already exists in paragraph"
+              << pid
+              << " sentence "
+              << sid << std::endl;
+    return -1;
+  }
+
+  if (words[0].wordPtr->Attribute(TAG_SEMPSR_RELATE) != NULL) {
+    std::cerr << "Attribute \""
+              << TAG_SEMPSR_RELATE
+              << "\" already exists in paragraph"
+              << pid
+              << " sentence "
+              << sid << endl;
+    return -1;
+  }
+
+  for (int i = 0; i < words.size(); ++ i) {
+    words[i].wordPtr->SetAttribute(TAG_SEMPSR_PARENT, relation[i].first);
+    words[i].wordPtr->SetAttribute(TAG_SEMPSR_RELATE, relation[i].second.c_str());
+  }
+
+  return 0;
+}
+
+int XML4NLP::SetSemanticParsesToSentence(const std::vector< std::pair<int, std::string> > & relation,
+                                 int global_sid) {
+  int pid, sid;
+  if (0 != DecodeGlobalId(global_sid, pid, sid)) return -1;
+  return SetSemanticParsesToSentence(relation, pid, sid);
+}
+
+int XML4NLP::SetSemanticParsesToSentence(const std::vector<int> & heads,
+                                 const std::vector<std::string> & deprels,
+                                 int pid,
+                                 int sid) {
+  if (0 != SetInfoToSentence(heads,   pid, sid, TAG_SEMPSR_PARENT)) return -1;
+  if (0 != SetInfoToSentence(deprels, pid, sid, TAG_SEMPSR_RELATE)) return -1;
+  return 0;
+}
+
+int XML4NLP::SetSemanticParsesToSentence(const std::vector<int> & heads,
+                                 const std::vector<std::string> & deprels,
+                                 int global_sid) {
+  // decreasing vecHead index
+  std::vector<int> d_heads;
+  for (int i = 0; i < heads.size(); ++ i) {
+    d_heads.push_back( heads[i] - 1 );
+    // std::cout << d_heads[i] << " " << deprels[i] << std::endl;
+  }
+
+  if (0 != SetInfoToSentence(d_heads, global_sid, TAG_SEMPSR_PARENT)) return -1;
+  if (0 != SetInfoToSentence(deprels, global_sid, TAG_SEMPSR_RELATE)) return -1;
 
   // std::string buffer;
   // SaveDOM(buffer);
@@ -1157,8 +1319,7 @@ int XML4NLP::BuildDOMFrame() {
   return 0;
 }
 
-#if defined(_WIN32) && !defined(_MSC_VER) && defined(__GNUC__) && __GNUC__ < 5
-// to solve strnlen in early version of mingw-gcc. see: https://sourceforge.net/p/mingw/bugs/1912/
+#if defined(_WIN32) && !defined(_MSC_VER)
 static size_t strnlen(const char *s, size_t max) {
   register const char *p;
   for(p = s; *p && max--; ++p);
@@ -1174,6 +1335,7 @@ bool XML4NLP::LTMLValidation() {
       || !note.nodePtr->Attribute(NOTE_WORD)
       || !note.nodePtr->Attribute(NOTE_POS)
       || !note.nodePtr->Attribute(NOTE_PARSER)
+      || !note.nodePtr->Attribute(NOTE_SEMANTIC_PARSER)
       || !note.nodePtr->Attribute(NOTE_NE)
       || !note.nodePtr->Attribute(NOTE_SRL)) {
     return false;
@@ -1184,18 +1346,19 @@ bool XML4NLP::LTMLValidation() {
   state |= QueryNote(NOTE_SRL);     state <<= 1;
   state |= QueryNote(NOTE_NE);      state <<= 1;
   state |= QueryNote(NOTE_PARSER);  state <<= 1;
+  state |= QueryNote(NOTE_SEMANTIC_PARSER);   state <<= 1;
   state |= QueryNote(NOTE_POS);     state <<= 1;
   state |= QueryNote(NOTE_WORD);    state <<= 1;
   state |= QueryNote(NOTE_SENT);
 
-  if (0 == state ||     //     0
-      0x01 == state ||  //     1
-      0x03 == state ||  //    11
-      0x07 == state ||  //   111
-      0x0f == state ||  //  1111
-      0x17 == state ||  // 10111
-      0x1f == state ||  // 11111
-      0x3f == state) {
+  if (0 == state ||     //     0 no
+      0x01 == state ||  //     1 sent
+      0x03 == state ||  //    11 word
+      0x07 == state ||  //   111 pos
+      0x0f == state ||  //  1111 sdp
+      0x17 == state ||  // 10111 dp
+      0x27 == state ||  //100111 ne
+      0x7f == state) {  //111111 srl
   } else {
     return false;
   }
@@ -1238,23 +1401,31 @@ bool XML4NLP::LTMLValidation() {
 
     const char * buffer = NULL;
     buffer = w.wordPtr->Attribute(TAG_CONT);
-    if ((state & 0x02)
+    if ((state & 0x02) //0010
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
     buffer = w.wordPtr->Attribute(TAG_POS);
-    if ((state & 0x04)
+    if ((state & 0x04) //0100
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
     buffer = w.wordPtr->Attribute(TAG_PSR_PARENT);
-    if ((state & 0x08)
+    if ((state & 0x08) //1000
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
     buffer = w.wordPtr->Attribute(TAG_PSR_RELATE);
     if ((state & 0x08)
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
+  
+  buffer = w.wordPtr->Attribute(TAG_SEMPSR_PARENT);
+    if ((state & 0x10) //00010000  
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
 
-    buffer = w.wordPtr->Attribute(TAG_NE);
+    buffer = w.wordPtr->Attribute(TAG_SEMPSR_RELATE);
     if ((state & 0x10)
+        && (!buffer || !strnlen(buffer, 1024)))  { return false; }
+  
+    buffer = w.wordPtr->Attribute(TAG_NE);
+    if ((state & 0x20) //00100000
         && (!buffer || !strnlen(buffer, 1024)))  { return false; }
   END
 
@@ -1270,6 +1441,7 @@ void XML4NLP::ClearAllNote() {
   ClearNote(NOTE_POS);
   ClearNote(NOTE_NE);
   ClearNote(NOTE_PARSER);
+  ClearNote(NOTE_SEMANTIC_PARSER);
   ClearNote(NOTE_WSD);
   ClearNote(NOTE_SRL);
   //  ClearNote(NOTE_CLASS);

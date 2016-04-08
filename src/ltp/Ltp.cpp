@@ -8,6 +8,7 @@
 #include "segmentor/segment_dll.h"
 #include "postagger/postag_dll.h"
 #include "parser.n/parser_dll.h"
+#include "sdparser.n/sdparser_dll.h"
 #include "ner/ner_dll.h"
 #include "srl/SRL_DLL.h"
 #include "utils/codecs.hpp"
@@ -18,6 +19,7 @@
 #pragma comment(lib, "segmentor.lib")
 #pragma comment(lib, "postagger.lib")
 #pragma comment(lib, "parser.lib")
+#pragma comment(lib, "sdparser.lib")
 #pragma comment(lib, "ner.lib")
 #pragma comment(lib, "srl.lib")
 #endif
@@ -30,6 +32,7 @@ LTP::LTP(const std::string& last_stage,
     const std::string& postagger_lexicon_file,
     const std::string& ner_model_file,
     const std::string& parser_model_file,
+    const std::string& semantic_parser_model_file,
     const std::string& srl_model_dir)
   : _resource(), _loaded(false) {
   _loaded = load(last_stage,
@@ -37,6 +40,7 @@ LTP::LTP(const std::string& last_stage,
       postagger_model_file, postagger_lexicon_file,
       ner_model_file,
       parser_model_file,
+      semantic_parser_model_file,
       srl_model_dir);
 }
 
@@ -47,6 +51,7 @@ bool LTP::load(const std::string& last_stage,
     const std::string& postagger_lexicon_file,
     const std::string& ner_model_file,
     const std::string& parser_model_file,
+    const std::string& semantic_parser_model_file,
     const std::string& srl_model_dir) {
 
   size_t target_mask = 0;
@@ -58,9 +63,12 @@ bool LTP::load(const std::string& last_stage,
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveNER);
   } else if (last_stage == LTP_SERVICE_NAME_DEPPARSE) {
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser);
+  } else if (last_stage == LTP_SERVICE_NAME_SEMDEPPARSE) {
+    target_mask = (kActiveSegmentor|kActivePostagger|kActiveSemanticParser);
   } else if ((last_stage == LTP_SERVICE_NAME_SRL) || (last_stage == "all")) {
     target_mask =
-      (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|kActiveSRL);
+      (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|
+       kActiveSemanticParser|kActiveSRL);
   }
 
   size_t loaded_mask = 0;
@@ -108,7 +116,15 @@ bool LTP::load(const std::string& last_stage,
     }
     loaded_mask |= kActiveParser;
   }
-
+   
+  if (target_mask & kActiveSemanticParser) {
+    if (0 != _resource.LoadSemanticParserResource(semantic_parser_model_file)) {
+      ERROR_LOG("in LTP::semantic_parser, failed to load semantic parser resource");
+      return false;
+    }
+    loaded_mask |= kActiveSemanticParser;
+  }
+  
   if (target_mask & kActiveSRL) {
     if ( 0 != _resource.LoadSRLResource(srl_model_dir)) {
       ERROR_LOG("in LTP::srl, failed to load srl resource");
@@ -405,6 +421,70 @@ int LTP::parser(XML4NLP & xml) {
   return 0;
 }
 
+int LTP::semantic_parser(XML4NLP & xml) {
+  if ( xml.QueryNote(NOTE_SEMANTIC_PARSER) ) return 0;
+
+  int ret = postag(xml);
+  if (0 != ret) {
+    ERROR_LOG("in LTP::semantic_parser, failed to perform postag preprocessing");
+    return ret;
+  }
+
+  void * semparser = _resource.GetSemanticParser();
+
+  if (semparser == NULL) {
+    ERROR_LOG("in LTP::semantic_parser, failed to init a parser");
+    return kParserError;
+  }
+
+  int stnsNum = xml.CountSentenceInDocument();
+  if (stnsNum == 0) {
+    ERROR_LOG("in LTP::semantic_parser, number of sentences equals 0");
+    return kEmptyStringError;
+  }
+
+  for (int i = 0; i < stnsNum; ++i) {
+    std::vector<std::string>  vecWord;
+    std::vector<std::string>  vecPOS;
+    std::vector<int>          vecHead;
+    std::vector<std::string>  vecRel;
+
+    if (xml.GetWordsFromSentence(vecWord, i) != 0) {
+      ERROR_LOG("in LTP::semantic_parser, failed to get words from xml");
+      return kReadXmlError;
+    }
+
+    if (xml.GetPOSsFromSentence(vecPOS, i) != 0) {
+      ERROR_LOG("in LTP::semantic_parser, failed to get postags from xml");
+      return kReadXmlError;
+    }
+
+    if (0 == vecWord.size()) {
+      ERROR_LOG("Input sentence is empty.");
+      return kEmptyStringError;
+    }
+
+    if (vecWord.size() > MAX_WORDS_NUM) {
+      ERROR_LOG("Input sentence is too long.");
+      return kSentenceTooLongError;
+    }
+
+    if (-1 == sdparser_parse(semparser, vecWord, vecPOS, vecHead, vecRel)) {
+      ERROR_LOG("in LTP::semantic_parser, failed to perform semantic parse on sent. #%d", i+1);
+      return kParserError;
+    }
+
+    if (0 != xml.SetSemanticParsesToSentence(vecHead, vecRel, i)) {
+      ERROR_LOG("in LTP::sematnic_parser, failed to write semantic parse result to xml");
+      return kWriteXmlError;
+    }
+  }
+
+  xml.SetNote(NOTE_SEMANTIC_PARSER);
+
+  return 0;
+}
+
 int LTP::srl(XML4NLP & xml) {
   if ( xml.QueryNote(NOTE_SRL) ) return 0;
 
@@ -479,4 +559,3 @@ int LTP::srl(XML4NLP & xml) {
   xml.SetNote(NOTE_SRL);
   return 0;
 }
-
