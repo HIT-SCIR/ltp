@@ -3,11 +3,14 @@
 
 #include <iostream>
 #include <vector>
-#include <cstdint>
+#include "boost/cstdint.hpp"
 #include "utils/smartmap.hpp"
 
 namespace ltp {
 namespace framework {
+
+using boost::uint32_t;
+using boost::int32_t;
 
 class FeatureSpaceIterator {
 public:

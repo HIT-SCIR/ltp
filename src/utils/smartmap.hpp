@@ -5,11 +5,14 @@
 #include <algorithm>
 #include <vector>
 #include <cstring>
-#include <cstdint>
+#include "boost/cstdint.hpp"
 #include "utils/hasher.hpp"
 
 namespace ltp {
 namespace utility {
+
+using boost::uint32_t;
+using boost::int32_t;
 
 struct __SmartMap_Hash_Node {
 public:
