@@ -506,7 +506,9 @@ void NeuralNetworkParserFrontend::test(void) {
   size_t corr_heads = 0, corr_deprels = 0, nr_tokens = 0;
 
   timer t;
-  while (inst = reader.next()) {
+  while (true) {
+    inst = reader.next();
+    if (inst == NULL) { break; }
     predict((*inst), heads, deprels);
     writer.write(*inst, heads, deprels);
 

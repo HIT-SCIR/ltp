@@ -279,8 +279,8 @@ void NeuralNetworkClassifier::compute_gradient(
 
     /*arma::uvec classes_mask = arma::find(Y >= 0);*/
     Eigen::VectorXd __ = (Y.array() >= 0).select(
-        Eigen::VectorXd::Ones(hidden_layer_size),
-        Eigen::VectorXd::Zero(hidden_layer_size));
+        Eigen::VectorXd::Ones(nr_classes),
+        Eigen::VectorXd::Zero(nr_classes));
     double best = output(opt_class);
     output = __.asDiagonal() * Eigen::VectorXd((output.array() - best).exp());
     double sum1 = output(correct_class);
