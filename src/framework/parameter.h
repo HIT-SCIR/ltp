@@ -3,13 +3,15 @@
 
 #include <iostream>
 #include <cstring>
-#include <cstdint>
+#include "boost/cstdint.hpp"
 #include "utils/math/sparsevec.h"
 #include "utils/math/featurevec.h"
 #include "utils/logging.hpp"
 
 namespace ltp {
 namespace framework {
+
+using boost::uint32_t;
 
 class Parameters {
 public:

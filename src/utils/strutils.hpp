@@ -16,7 +16,7 @@ inline void trim(std::string& str) {
   size_t len = str.size();
   if (len == 0) { return; }
 
-  while (len -1 >=0 && (str[len-1] == ' '
+  while (len >= 1 && (str[len-1] == ' '
         || str[len-1]=='\t'
         || str[len-1] == '\r'
         || str[len-1] == '\n')) {

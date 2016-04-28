@@ -5,11 +5,14 @@
 #include <algorithm>
 #include <vector>
 #include <cstring>
-#include <cstdint>
+#include "boost/cstdint.hpp"
 #include "utils/hasher.hpp"
 
 namespace ltp {
 namespace utility {
+
+using boost::uint32_t;
+using boost::int32_t;
 
 struct __SmartMap_Hash_Node {
 public:
@@ -645,7 +648,7 @@ public:
    *  @return   const char *  pointer to the key
    */
   const char* at(const size_t& i) const {
-    if (i >= 0 && i < _num_entries) {
+    if (i < _num_entries) {
       return SmartMap<int32_t>::_key_buffer + entries[i];
     } else {
       return 0;

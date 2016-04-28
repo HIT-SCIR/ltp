@@ -2,10 +2,12 @@
 #define __LTP_FRAMEWORK_SERIALIZABLE_H__
 
 #include <iostream>
-#include <cstdint>
+#include "boost/cstdint.hpp"
 
 namespace ltp {
 namespace framework {
+
+using boost::uint32_t;
 
 class Serializable {
 protected:
