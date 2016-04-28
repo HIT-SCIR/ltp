@@ -5,11 +5,14 @@
 新闻
 ----
 
-语言技术平台3.3.1版 发布
-* [修复] 修复了3.3.0版本模型加载的bug
-* [增加] 提供 Windows 下的`ltp_test`和`xxx_cmdline`二进制下载，无需再手工编译
+语言技术平台 3.3.2 版发布
+* [修复] 修复了 3.3.1 版本的一些 bug
 
-语言技术平台3.3.0版 发布
+语言技术平台 3.3.1 版发布
+* [修复] 修复了 3.3.0 版本模型加载的 bug
+* [增加] 提供 Windows 下的 `ltp_test` 和 `xxx_cmdline` 二进制下载，无需再手工编译
+
+语言技术平台 3.3.0 版发布
 * [增加] 词性标注模型加入微博数据，使得在开放域上的词性标注性能更好(+3.3 precision)
 * [增加] 依存句法分析模型加入微博数据，使得在开放域上的句法分析性能更好(+3 UAS)
 * [增加] 依存句法分析算法切换到transition-based neural network parser，速度从40 tokens/s提升到8000 tokens/s。同时通过加入聚类特征以及优化训练算法，（在新闻领域）准确率也得到小幅提升(+0.2 UAS)
@@ -40,7 +43,7 @@
 ---
 
 * [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
-* 当前模型版本3.3.1
+* 当前模型版本 3.3.1
 
 开源协议
 -------
@@ -49,6 +52,6 @@
 
 2. 除上述机构以外的企事业单位，如申请使用该平台，需付费。
 
-3. 凡涉及付费问题，请发邮件到car@ir.hit.edu.cn洽商。
+3. 凡涉及付费问题，请发邮件到 car@ir.hit.edu.cn 洽商。
 
-4. 如果您在LTP基础上发表论文或取得科研成果，请您在发表论文和申报成果时声明“使用了哈工大社会计算与信息检索研究中心研制的语言技术平台（LTP）”，参考文献中加入以下论文： Wanxiang Che, Zhenghua Li, Ting Liu. LTP: A Chinese Language Technology Platform. In Proceedings of the Coling 2010:Demonstrations. 2010.08, pp13-16, Beijing, China. 同时，发信给car@ir.hit.edu.cn，说明发表论文或申报成果的题目、出处等。
+4. 如果您在 LTP 基础上发表论文或取得科研成果，请您在发表论文和申报成果时声明“使用了哈工大社会计算与信息检索研究中心研制的语言技术平台（LTP）”，参考文献中加入以下论文： Wanxiang Che, Zhenghua Li, Ting Liu. LTP: A Chinese Language Technology Platform. In Proceedings of the Coling 2010:Demonstrations. 2010.08, pp13-16, Beijing, China. 同时，发信给car@ir.hit.edu.cn，说明发表论文或申报成果的题目、出处等。

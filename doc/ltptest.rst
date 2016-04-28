@@ -34,8 +34,8 @@ ltp_test主程序
 
 :file:`ltp_test` 是一个整合LTP中各模块的命令行工具。它完成加载模型，依照指定方法执行分析的功能。:file:`ltp_test` 加载的模型通过配置文件指定。编译后运行::
 
-    $ ./bin/ltp_test 
-    ltp_test in LTP 3.3.1 - (C) 2012-2015 HIT-SCIR
+    $ ./bin/ltp_test
+    ltp_test in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     The console application for Language Technology Platform.
     
     usage: ./ltp_test <options>

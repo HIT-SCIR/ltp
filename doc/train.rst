@@ -11,7 +11,7 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 编译之后，在tools/train下面会产生名为otcws的二进制程序。运行可见::
 
     $ ./tools/train/otcws 
-    otcws in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    otcws in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     Training and testing suite for Chinese word segmentation
 
     usage: ./otcws [learn|customized-learn|test|customized-test|dump] <options>
@@ -24,7 +24,7 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 如果进行模型训练(learn)，::
 
     $ ./tools/train/otcws learn
-    otcws(learn) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    otcws(learn) in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     Training suite for Chinese word segmentation
     
     usage: ./otcws learn <options>
@@ -62,7 +62,7 @@ otcws是ltp分词模型的训练套件，用户可以使用otcws训练获得ltp�
 如果进行模型测试(test)，::
 
     $ ./tools/train/otcws test
-    otcws(test) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    otcws(test) in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     Testing suite for Chinese word segmentation
     
     usage: ./otcws test <options>
@@ -97,7 +97,7 @@ otpos是ltp分词模型的训练套件，用户可以使用otpos训练获得ltp�
 编译之后，在tools/train下面会产生名为otpos的二进制程序。otpos的使用方法与otcws非常相似，同名参数含义也完全相同。其中不同之处在于词性标注模块的外部词典含义与分词的外部词典含义不同。::
 
     $ ./tools/train/otpos test
-    otpos(test) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    otpos(test) in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     Testing suite for Part of Speech Tagging
 
     usage: ./otpos test <options>
@@ -144,7 +144,7 @@ nndepparser是ltp神经网络依存句法分析模型的训练套件，用户可
 运行./nndepparser learn，可见如下参数::
 
     $ ./tools/train/nndepparser learn
-    nndepparser(learn) in ltp 3.3.0 - (c) 2012-2015 hit-scir
+    nndepparser(learn) in ltp 3.3.2 - (c) 2012-2016 hit-scir
     training suite for neural network parser
     usage: ./nndepparser learn <options>
 

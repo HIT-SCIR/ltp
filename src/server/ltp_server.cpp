@@ -35,7 +35,7 @@ static void signal_handler(int sig_num) {
 }
 
 int main(int argc, char *argv[]) {
-  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " <options>\n\n";
   usage += "options";

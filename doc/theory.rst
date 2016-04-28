@@ -105,7 +105,7 @@
 个性化分词模型的训练同样可以通过分词训练套件 :file:`otcws` 来实现。::
 
     $ ./tools/train/otcws customized-learn
-    otcws(customized-learn) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    otcws(customized-learn) in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     Customized training suite for Chinese word segmentation
 
     usage: ./otcws learn <options>
@@ -132,7 +132,7 @@
 个性化分词模型的训练同样可以通过分词训练套件 :file:`otcws` 来实现。::
 
     $ ./tools/train/otcws customized-test
-    otcws(customized-test) in LTP 3.3.0 - (C) 2012-2015 HIT-SCIR
+    otcws(customized-test) in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     Customized testing suite for Chinese word segmentation
 
     usage: ./otcws test <options>

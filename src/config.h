@@ -1,7 +1,8 @@
 #ifndef __LTP_CONFIG_H__
 #define __LTP_CONFIG_H__
 
-#define LTP_VERSION "3.3.1"
+#define LTP_VERSION "3.3.2"
+#define LTP_COPYRIGHT "(C) 2012-2016 HIT-SCIR"
 
 #define BOOST_ALL_NO_LIB
 

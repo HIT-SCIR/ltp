@@ -19,7 +19,7 @@ using ltp::depparser::LearnOption;
 using ltp::depparser::TestOption;
 
 int test(int argc, char** argv) {
-  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += "Testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options:";
@@ -54,7 +54,7 @@ int test(int argc, char** argv) {
 }
 
 int learn(int argc, char** argv) {
-  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += "Training suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options:";
@@ -132,7 +132,7 @@ int learn(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += "Training and testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " [learn|test] <options>";
 

@@ -14,7 +14,7 @@ ltp_server只提供Linux版本
 
 LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源码之后，运行`./bin/ltp_server`就可以启动LTP Server。::
 
-    ltp_server in LTP 3.3.1 - (C) 2012-2015 HIT-SCIR
+    ltp_server in LTP 3.3.2 - (C) 2012-2016 HIT-SCIR
     The HTTP server frontend for Language Technology Platform.
     
     usage: ./ltp_server <options>

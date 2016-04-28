@@ -15,7 +15,8 @@ using boost::program_options::parse_command_line;
 using ltp::ner::NamedEntityRecognizerFrontend;
 
 int learn(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE "(learn) in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
+
   usage += "Training suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " learn <options>\n\n";
   usage += "options";
@@ -83,7 +84,7 @@ int learn(int argc, const char* argv[]) {
 }
 
 int test(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE "(test) in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += "Testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " test <options>\n\n";
   usage += "options";
@@ -139,7 +140,7 @@ int test(int argc, const char* argv[]) {
 }
 
 int dump(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE "(dump) in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE "(dump) in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += "Model visualization suite for " DESCRIPTION "\n";
   usage += "usage: ./" EXECUTABLE " dump <options>\n\n";
   usage += "options";
@@ -173,7 +174,7 @@ int dump(int argc, const char* argv[]) {
 }
 
 int main(int argc, const char* argv[]) {
-  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - (C) 2012-2015 HIT-SCIR\n";
+  std::string usage = EXECUTABLE " in LTP " LTP_VERSION " - " LTP_COPYRIGHT "\n";
   usage += "Training and testing suite for " DESCRIPTION "\n\n";
   usage += "usage: ./" EXECUTABLE " [learn|test|dump] <options>";
 
