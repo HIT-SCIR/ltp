@@ -1,8 +1,9 @@
 # LTP: Language Technology Platform
 
 [![Join the chat at https://gitter.im/HIT-SCIR/ltp](https://badges.gitter.im/HIT-SCIR/ltp.svg)](https://gitter.im/HIT-SCIR/ltp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.svg?branch=master)](https://travis-ci.org/HIT-SCIR/ltp) [![Build status](https://ci.appveyor.com/api/projects/status/yewlrwa7w85kghwb/branch/master?svg=true)](https://ci.appveyor.com/project/Oneplus/ltp/branch/master) [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
+[![Build Status](https://travis-ci.org/HIT-SCIR/ltp.svg?branch=master)](https://travis-ci.org/HIT-SCIR/ltp)
+[![Build status](https://ci.appveyor.com/api/projects/status/yewlrwa7w85kghwb/branch/master?svg=true)](https://ci.appveyor.com/project/Oneplus/ltp/branch/master)
+[![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://readthedocs.org/projects/ltp/?badge=latest)
 
 新闻
 ----
