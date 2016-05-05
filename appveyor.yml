@@ -27,6 +27,7 @@ before_build:
   - cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=%P%
 
 after_build:
+  - cd c:\projects\ltp
   - 7z a ltp-win-$(platform)-$(configuration).zip bin\examples\$(configuration)\*_cmdline bin\$(configuration)\ltp_test lib\$(configuration)\*.dll
 
 artifacts:
