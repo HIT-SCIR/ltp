@@ -4,9 +4,7 @@ environment:
 # clone directory
 clone_folder: c:\projects\ltp
 
-os: 
-  - Visual Studio 2013
-  - Visual Studio 2015
+os: Visual Studio 2015
   
 platform:
   - x86
@@ -26,4 +24,11 @@ build:
 before_build:
   - echo Running cmake...
   - cd c:\projects\ltp
-  - cmake -G "Visual Studio 12 2013 Win64" -DCMAKE_INSTALL_PREFIX=%P%
+  - cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=%P%
+
+after_build:
+  - 7z a ltp-win-$(platform)-$(configuration).zip bin\examples\$(configuration)\*_cmdline bin\$(configuration)\ltp_test lib\$(configuration)\*.dll
+
+artifacts:
+  - path: ltp-win-$(platform)-$(configuration).zip
+  - name: ltp-win-$(platform)-$(configuration)
