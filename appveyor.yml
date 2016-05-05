@@ -30,5 +30,5 @@ after_build:
   - 7z a ltp-win-$(platform)-$(configuration).zip bin\examples\$(configuration)\*_cmdline bin\$(configuration)\ltp_test lib\$(configuration)\*.dll
 
 artifacts:
-  - path: ltp-win64.zip
-  - name: ltp-win64.zip
+  - path: ltp-win-$(platform)-$(configuration).zip 
+    name: ltp-win-$(platform)-$(configuration).zip
