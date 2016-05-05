@@ -28,7 +28,7 @@ before_build:
 
 after_build:
   - cd c:\projects\ltp
-  - 7z a ltp-win-%PLATFORM%-%CONFIGURATION%.zip bin\examples\%CONFIGURATION%\*_cmdline bin\%CONFIGURATION%\ltp_test lib\%CONFIGURATION%\*.dll
+  - 7z a ltp-win-%PLATFORM%-%CONFIGURATION%.zip bin\examples\%CONFIGURATION%\*_cmdline.exe bin\%CONFIGURATION%\ltp_test.exe lib\%CONFIGURATION%\*.dll
 
 artifacts:
   - path: ltp-win-$(platform)-$(configuration).zip 
