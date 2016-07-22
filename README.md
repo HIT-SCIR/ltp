@@ -40,13 +40,20 @@
 文档
 ---
 
-关于LTP的使用，请参考[在线文档](http://ltp.readthedocs.org/zh_CN/latest/)
+关于LTP的使用，请参考[在线文档](http://ltp.readthedocs.io/zh_CN/latest/)
 
 模型
 ---
 
 * [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
 * 当前模型版本 3.3.1
+
+其它语言接口
+------------
+如果您希望在本地使用除C++之外的其他语言调用LTP，我们针对常用语言对LTP进行了封装。
+
+* Python: [pyltp - the python extension for LTP](https://github.com/HIT-SCIR/pyltp)
+* Java: [ltp4j - Language Technology Platform for Java](https://github.com/HIT-SCIR/ltp4j)
 
 开源协议
 -------
