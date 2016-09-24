@@ -444,6 +444,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
   for (size_t i = 0; i < now; i += 2) {
     precomputation_id_encoder[payload[i]] = payload[i+1];
   }
+  delete [] payload;
 
   if (use_cluster) {
     cluster4_types_alphabet.load(ifs);
@@ -456,7 +457,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
     for (size_t i = 0; i < now; i += 2) {
       form_to_cluster4[payload[i]] = payload[i+1];
     }
-    delete payload;
+    delete [] payload;
 
     now= read_uint(ifs);
     payload = new int[now];
@@ -464,7 +465,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
     for (size_t i = 0; i < now; i += 2) {
       form_to_cluster6[payload[i]] = payload[i+1];
     }
-    delete payload;
+    delete [] payload;
 
     now= read_uint(ifs);
     payload = new int[now];
@@ -472,7 +473,7 @@ bool NeuralNetworkParser::load(const std::string& filename) {
     for (size_t i = 0; i < now; i += 2) {
       form_to_cluster[payload[i]] = payload[i+1];
     }
-    delete payload;
+    delete [] payload;
   }
 
   classifier.canonical();
