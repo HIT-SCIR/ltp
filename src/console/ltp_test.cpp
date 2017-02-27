@@ -7,6 +7,7 @@
 #include "ltp/Ltp.h"
 #include "utils/strutils.hpp"
 #include "utils/time.hpp"
+#include "utils/xml4nlp_helper.h"
 #include "console/dispatcher.h"
 #include "boost/program_options.hpp"
 
@@ -21,6 +22,7 @@ using boost::program_options::parse_command_line;
 using ltp::strutils::trim;
 
 std::string type;
+std::string format;
 
 void multithreaded_ltp( void * args) {
   std::string sentence;
@@ -35,9 +37,9 @@ void multithreaded_ltp( void * args) {
     XML4NLP xml4nlp;
     xml4nlp.CreateDOMFromString(sentence);
 
-    if (type == "sp") {
+    /*if (type == LTP_SERVICE_NAME_SPLITSENT) {
       engine->splitSentence_dummy(xml4nlp);
-    } else if(type == LTP_SERVICE_NAME_SEGMENT) {
+    } else*/ if(type == LTP_SERVICE_NAME_SEGMENT) {
       engine->wordseg(xml4nlp);
     } else if(type == LTP_SERVICE_NAME_POSTAG) {
       engine->postag(xml4nlp);
@@ -52,9 +54,13 @@ void multithreaded_ltp( void * args) {
     }
 
     std::string result;
-    xml4nlp.SaveDOM(result);
-    xml4nlp.ClearDOM();
+    if (format == LTP_SERVICE_OUTPUT_FORMAT_JSON) {
+      result = ltp::utility::xml2jsonstr(xml4nlp, type);
+    } else { //xml
+      xml4nlp.SaveDOM(result);
+    }
     dispatcher->output(ret, result);
+    xml4nlp.ClearDOM();
   }
   return;
 }
@@ -77,7 +83,10 @@ int main(int argc, char *argv[]) {
      "- " LTP_SERVICE_NAME_NER ": Named entity recognization\n"
      "- " LTP_SERVICE_NAME_DEPPARSE ": Dependency parsing\n"
      "- " LTP_SERVICE_NAME_SRL ": Semantic role labeling (equals to all)\n"
-     "- all: The whole pipeline [default]")
+     "- " LTP_SERVICE_NAME_ALL ": The whole pipeline [default]")
+    ("format", value<std::string>(), "Ouput format\n"
+     "- " LTP_SERVICE_OUTPUT_FORMAT_XML " [default]\n"
+     "- " LTP_SERVICE_OUTPUT_FORMAT_JSON)
     ("input", value<std::string>(), "The path to the input file.")
     ("segmentor-model", value<std::string>(),
      "The path to the segment model [default=ltp_data/cws.model].")
@@ -118,7 +127,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  std::string last_stage = "all";
+  std::string last_stage = LTP_SERVICE_NAME_DEFAULT;
   if (vm.count("last-stage")) {
     last_stage = vm["last-stage"].as<std::string>();
     if (last_stage != LTP_SERVICE_NAME_SEGMENT
@@ -126,9 +135,19 @@ int main(int argc, char *argv[]) {
         && last_stage != LTP_SERVICE_NAME_NER
         && last_stage != LTP_SERVICE_NAME_DEPPARSE
         && last_stage != LTP_SERVICE_NAME_SRL
-        && last_stage != "all") {
-      std::cerr << "Unknown stage name:" << last_stage << ", reset to 'all'" << std::endl;
-      last_stage = "all";
+        && last_stage != LTP_SERVICE_NAME_ALL) {
+      std::cerr << "Unknown stage name:" << last_stage << ", reset to '" LTP_SERVICE_NAME_DEFAULT "'" << std::endl;
+      last_stage = LTP_SERVICE_NAME_DEFAULT;
+    }
+  }
+
+  format = LTP_SERVICE_OUTPUT_FORMAT_DEFAULT;
+  if (vm.count("format")) {
+    format = vm["format"].as<std::string>();
+    if (format != LTP_SERVICE_OUTPUT_FORMAT_XML
+        && format != LTP_SERVICE_OUTPUT_FORMAT_JSON) {
+      std::cerr << "Unknown format:" << last_stage << ", reset to '" LTP_SERVICE_OUTPUT_FORMAT_DEFAULT "'" << std::endl;
+      format = LTP_SERVICE_OUTPUT_FORMAT_DEFAULT;
     }
   }
 

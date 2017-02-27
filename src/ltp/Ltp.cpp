@@ -58,7 +58,7 @@ bool LTP::load(const std::string& last_stage,
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveNER);
   } else if (last_stage == LTP_SERVICE_NAME_DEPPARSE) {
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser);
-  } else if ((last_stage == LTP_SERVICE_NAME_SRL) || (last_stage == "all")) {
+  } else if ((last_stage == LTP_SERVICE_NAME_SRL) || (last_stage == LTP_SERVICE_NAME_ALL)) {
     target_mask =
       (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|kActiveSRL);
   }
@@ -121,6 +121,8 @@ bool LTP::load(const std::string& last_stage,
     ERROR_LOG("target is config but resource not loaded.");
     return false;
   }
+
+  INFO_LOG("Resources loading finished.");
 
   return true;
 }

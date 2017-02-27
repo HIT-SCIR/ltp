@@ -11,6 +11,8 @@
 #include "utils/strutils.hpp"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
+#include "utils/xml4nlp_helper.h"
+#include "json/json.h"
 
 #define POST_LEN 1024
 #define EXECUTABLE "ltp_server"
@@ -113,9 +115,9 @@ int main(int argc, char *argv[]) {
         && last_stage != LTP_SERVICE_NAME_NER
         && last_stage != LTP_SERVICE_NAME_DEPPARSE
         && last_stage != LTP_SERVICE_NAME_SRL
-        && last_stage != "all") {
+        && last_stage != LTP_SERVICE_NAME_ALL) {
       std::cerr << "Unknown stage name:" << last_stage << ", reset to 'all'" << std::endl;
-      last_stage = "all";
+      last_stage = LTP_SERVICE_NAME_ALL;
     }
   }
 
@@ -191,6 +193,9 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
+  INFO_LOG("Start listening on port [%s]...", port_str.c_str());
+
+
   // getchar();
   while (exit_flag == 0) {
     sleep(100000);
@@ -250,14 +255,17 @@ static void ErrorResponse(struct mg_connection* conn,
   }
 }
 
+
 static int Service(struct mg_connection *conn) {
   char *sentence;
   char type[10];
   char xml[10];
+  char format[10];
 
   std::string str_post_data;
   std::string str_type;
   std::string str_xml;
+  std::string str_format;
 
   const struct mg_request_info *ri = mg_get_request_info(conn);
 
@@ -296,6 +304,12 @@ static int Service(struct mg_connection *conn) {
                xml,
                sizeof(xml) - 1);
 
+    mg_get_var(str_post_data.c_str(),
+               str_post_data.size(),
+               "f",
+               format,
+               sizeof(format) - 1);
+
     string strSentence = sentence;
 
     // validation check
@@ -321,6 +335,12 @@ static int Service(struct mg_connection *conn) {
       str_xml = "";
     } else {
       str_xml = xml;
+    }
+
+    if(strlen(format) == 0) {
+      str_format = "";
+    } else {
+      str_format = format;
     }
 
     delete []sentence;
@@ -363,7 +383,14 @@ static int Service(struct mg_connection *conn) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
         return 0;
       }
-    } else { // srl or all
+    } else if (str_type == LTP_SERVICE_NAME_SRL){
+      int ret = engine->srl(xml4nlp);
+      if (0 != ret) {
+        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
+        return 0;
+      }
+    } else {
+      str_type = LTP_SERVICE_NAME_ALL;
       int ret = engine->srl(xml4nlp);
       if (0 != ret) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
@@ -374,7 +401,12 @@ static int Service(struct mg_connection *conn) {
     TRACE_LOG("Analysis is done.");
 
     std::string strResult;
-    xml4nlp.SaveDOM(strResult);
+    if (str_format == LTP_SERVICE_OUTPUT_FORMAT_JSON) {
+      strResult = ltp::utility::xml2jsonstr(xml4nlp, str_type);
+    } else { //xml
+      xml4nlp.SaveDOM(strResult);
+    }
+
 
     strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;
     mg_printf(conn, "%s", strResult.c_str());
