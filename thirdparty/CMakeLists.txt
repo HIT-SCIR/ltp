@@ -1,6 +1,7 @@
 add_subdirectory (boost)
 add_subdirectory (maxent)
 add_subdirectory (tinyxml)
+add_subdirectory (jsoncpp)
 if (UNIX)
 add_subdirectory (gtest)
 endif()
