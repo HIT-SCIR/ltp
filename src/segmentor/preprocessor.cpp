@@ -39,8 +39,8 @@ void Preprocessor::set_flags(std::vector<int>& flags, const size_t& from,
 void Preprocessor::special_token(const std::string& sentence,
     std::vector<int>& flags) const {
 
-  size_t pos = 0;
   for (size_t i = 0; i < ltp::segmentor::special_tokens_size; ++i){
+    size_t pos = 0;
     const std::string& special_token = ltp::segmentor::special_tokens[i];
     while((pos = sentence.find(special_token, pos)) != std::string::npos){
       size_t pos_end = pos + special_token.length();
