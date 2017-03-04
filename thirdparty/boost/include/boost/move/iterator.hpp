@@ -14,9 +14,18 @@
 #ifndef BOOST_MOVE_ITERATOR_HPP
 #define BOOST_MOVE_ITERATOR_HPP
 
+#ifndef BOOST_CONFIG_HPP
+#  include <boost/config.hpp>
+#endif
+#
+#if defined(BOOST_HAS_PRAGMA_ONCE)
+#  pragma once
+#endif
+
 #include <boost/move/detail/config_begin.hpp>
-#include <boost/move/utility.hpp>
-#include <iterator>  //std::iterator
+#include <boost/move/detail/workaround.hpp>  //forceinline
+#include <boost/move/detail/iterator_traits.hpp>
+#include <boost/move/utility_core.hpp>
 
 namespace boost {
 
@@ -36,7 +45,7 @@ class move_iterator
 {
    public:
    typedef It                                                              iterator_type;
-   typedef typename std::iterator_traits<iterator_type>::value_type        value_type;
+   typedef typename boost::movelib::iterator_traits<iterator_type>::value_type        value_type;
    #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) || defined(BOOST_MOVE_DOXYGEN_INVOKED)
    typedef value_type &&                                                   reference;
    #else
@@ -46,25 +55,23 @@ class move_iterator
       , value_type & >::type                                               reference;
    #endif
    typedef It                                                              pointer;
-   typedef typename std::iterator_traits<iterator_type>::difference_type   difference_type;
-   typedef typename std::iterator_traits<iterator_type>::iterator_category iterator_category;
+   typedef typename boost::movelib::iterator_traits<iterator_type>::difference_type   difference_type;
+   typedef typename boost::movelib::iterator_traits<iterator_type>::iterator_category iterator_category;
 
-   move_iterator()
+   BOOST_MOVE_FORCEINLINE move_iterator()
+      : m_it()
    {}
 
-   explicit move_iterator(It i)
+   BOOST_MOVE_FORCEINLINE explicit move_iterator(const It &i)
       :  m_it(i)
    {}
 
    template <class U>
-   move_iterator(const move_iterator<U>& u)
-      :  m_it(u.base())
+   BOOST_MOVE_FORCEINLINE move_iterator(const move_iterator<U>& u)
+      :  m_it(u.m_it)
    {}
 
-   iterator_type base() const
-   {  return m_it;   }
-
-   reference operator*() const
+   BOOST_MOVE_FORCEINLINE reference operator*() const
    {
       #if defined(BOOST_NO_CXX11_RVALUE_REFERENCES) || defined(BOOST_MOVE_OLD_RVALUE_REF_BINDING_RULES)
       return *m_it;
@@ -73,34 +80,34 @@ class move_iterator
       #endif
    }
 
-   pointer   operator->() const
+   BOOST_MOVE_FORCEINLINE pointer   operator->() const
    {  return m_it;   }
 
-   move_iterator& operator++()
+   BOOST_MOVE_FORCEINLINE move_iterator& operator++()
    {  ++m_it; return *this;   }
 
-   move_iterator<iterator_type>  operator++(int)
+   BOOST_MOVE_FORCEINLINE move_iterator<iterator_type>  operator++(int)
    {  move_iterator<iterator_type> tmp(*this); ++(*this); return tmp;   }
 
-   move_iterator& operator--()
+   BOOST_MOVE_FORCEINLINE move_iterator& operator--()
    {  --m_it; return *this;   }
 
-   move_iterator<iterator_type>  operator--(int)
+   BOOST_MOVE_FORCEINLINE move_iterator<iterator_type>  operator--(int)
    {  move_iterator<iterator_type> tmp(*this); --(*this); return tmp;   }
 
    move_iterator<iterator_type>  operator+ (difference_type n) const
    {  return move_iterator<iterator_type>(m_it + n);  }
 
-   move_iterator& operator+=(difference_type n)
+   BOOST_MOVE_FORCEINLINE move_iterator& operator+=(difference_type n)
    {  m_it += n; return *this;   }
 
-   move_iterator<iterator_type>  operator- (difference_type n) const
+   BOOST_MOVE_FORCEINLINE move_iterator<iterator_type>  operator- (difference_type n) const
    {  return move_iterator<iterator_type>(m_it - n);  }
 
-   move_iterator& operator-=(difference_type n)
+   BOOST_MOVE_FORCEINLINE move_iterator& operator-=(difference_type n)
    {  m_it -= n; return *this;   }
 
-   reference operator[](difference_type n) const
+   BOOST_MOVE_FORCEINLINE reference operator[](difference_type n) const
    {
       #if defined(BOOST_NO_CXX11_RVALUE_REFERENCES) || defined(BOOST_MOVE_OLD_RVALUE_REF_BINDING_RULES)
       return m_it[n];
@@ -109,29 +116,29 @@ class move_iterator
       #endif
    }
 
-   friend bool operator==(const move_iterator& x, const move_iterator& y)
-   {  return x.base() == y.base();  }
+   BOOST_MOVE_FORCEINLINE friend bool operator==(const move_iterator& x, const move_iterator& y)
+   {  return x.m_it == y.m_it;  }
 
-   friend bool operator!=(const move_iterator& x, const move_iterator& y)
-   {  return x.base() != y.base();  }
+   BOOST_MOVE_FORCEINLINE friend bool operator!=(const move_iterator& x, const move_iterator& y)
+   {  return x.m_it != y.m_it;  }
 
-   friend bool operator< (const move_iterator& x, const move_iterator& y)
-   {  return x.base() < y.base();   }
+   BOOST_MOVE_FORCEINLINE friend bool operator< (const move_iterator& x, const move_iterator& y)
+   {  return x.m_it < y.m_it;   }
 
-   friend bool operator<=(const move_iterator& x, const move_iterator& y)
-   {  return x.base() <= y.base();  }
+   BOOST_MOVE_FORCEINLINE friend bool operator<=(const move_iterator& x, const move_iterator& y)
+   {  return x.m_it <= y.m_it;  }
 
-   friend bool operator> (const move_iterator& x, const move_iterator& y)
-   {  return x.base() > y.base();  }
+   BOOST_MOVE_FORCEINLINE friend bool operator> (const move_iterator& x, const move_iterator& y)
+   {  return x.m_it > y.m_it;  }
 
-   friend bool operator>=(const move_iterator& x, const move_iterator& y)
-   {  return x.base() >= y.base();  }
+   BOOST_MOVE_FORCEINLINE friend bool operator>=(const move_iterator& x, const move_iterator& y)
+   {  return x.m_it >= y.m_it;  }
 
-   friend difference_type operator-(const move_iterator& x, const move_iterator& y)
-   {  return x.base() - y.base();   }
+   BOOST_MOVE_FORCEINLINE friend difference_type operator-(const move_iterator& x, const move_iterator& y)
+   {  return x.m_it - y.m_it;   }
 
-   friend move_iterator operator+(difference_type n, const move_iterator& x)
-   {  return move_iterator(x.base() + n);   }
+   BOOST_MOVE_FORCEINLINE friend move_iterator operator+(difference_type n, const move_iterator& x)
+   {  return move_iterator(x.m_it + n);   }
 
    private:
    It m_it;
@@ -142,14 +149,14 @@ namespace move_detail {
 
 template <class I>
 struct is_move_iterator
-   : public ::boost::move_detail::integral_constant<bool, false>
 {
+   static const bool value = false;
 };
 
 template <class I>
 struct is_move_iterator< ::boost::move_iterator<I> >
-   : public ::boost::move_detail::integral_constant<bool, true>
 {
+   static const bool value = true;
 };
 
 }  //namespace move_detail {
@@ -177,14 +184,16 @@ inline move_iterator<It> make_move_iterator(const It &it)
 //! back of a container
 template <typename C> // C models Container
 class back_move_insert_iterator
-   : public std::iterator<std::output_iterator_tag, void, void, void, void>
 {
    C* container_m;
 
    public:
-   typedef C                        container_type;
-   typedef typename C::value_type   value_type;
-   typedef typename C::reference    reference;
+   typedef C                           container_type;
+   typedef typename C::value_type      value_type;
+   typedef typename C::reference       reference;
+   typedef typename C::pointer         pointer;
+   typedef typename C::difference_type difference_type;
+   typedef std::output_iterator_tag    iterator_category;
 
    explicit back_move_insert_iterator(C& x) : container_m(&x) { }
 
@@ -217,14 +226,16 @@ inline back_move_insert_iterator<C> back_move_inserter(C& x)
 //! front of a container
 template <typename C> // C models Container
 class front_move_insert_iterator
-   : public std::iterator<std::output_iterator_tag, void, void, void, void>
 {
    C* container_m;
 
 public:
-   typedef C                        container_type;
-   typedef typename C::value_type   value_type;
-   typedef typename C::reference    reference;
+   typedef C                           container_type;
+   typedef typename C::value_type      value_type;
+   typedef typename C::reference       reference;
+   typedef typename C::pointer         pointer;
+   typedef typename C::difference_type difference_type;
+   typedef std::output_iterator_tag    iterator_category;
 
    explicit front_move_insert_iterator(C& x) : container_m(&x) { }
 
@@ -254,15 +265,17 @@ inline front_move_insert_iterator<C> front_move_inserter(C& x)
 //////////////////////////////////////////////////////////////////////////////
 template <typename C> // C models Container
 class move_insert_iterator
-   : public std::iterator<std::output_iterator_tag, void, void, void, void>
 {
    C* container_m;
    typename C::iterator pos_;
 
    public:
-   typedef C                        container_type;
-   typedef typename C::value_type   value_type;
-   typedef typename C::reference    reference;
+   typedef C                           container_type;
+   typedef typename C::value_type      value_type;
+   typedef typename C::reference       reference;
+   typedef typename C::pointer         pointer;
+   typedef typename C::difference_type difference_type;
+   typedef std::output_iterator_tag    iterator_category;
 
    explicit move_insert_iterator(C& x, typename C::iterator pos)
       : container_m(&x), pos_(pos)

@@ -1,6 +1,6 @@
 include_directories (${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/boost/include
-    ${THIRDPARTY_DIR}/eigen-3.2.4/
+    ${THIRDPARTY_DIR}/eigen-3.2.10/
     )
 
 set (nndepparser_VERSION "0.0.1")
