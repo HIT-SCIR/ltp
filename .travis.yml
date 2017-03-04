@@ -44,6 +44,7 @@ before_install:
   - sudo apt-get install cmake
 
 script:
-  - ./configure
-  - make
-
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
+    - make
