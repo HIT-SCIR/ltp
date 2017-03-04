@@ -71,7 +71,7 @@
 
 假定您下载并将LTP放置于 :file:`/path/to/your/ltp-project` 目录下,那么编译命令例如下::
 
-    g++ -o cws cws.cpp -I /path/to/your/ltp-project/include/ -I /path/to/your/ltp-project/thirdparty/boost/include -WL,-dn -L /path/to/your/ltp-project/lib/ -lsegmentor -lboost_regex -WL,-dy
+    g++ -o cws cws.cpp -I /path/to/your/ltp-project/include/ -I /path/to/your/ltp-project/thirdparty/boost/include -Wl,-dn -L /path/to/your/ltp-project/lib/ -lsegmentor -lboost_regex -Wl,-dy
 
 分词接口
 --------
