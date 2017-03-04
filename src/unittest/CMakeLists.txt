@@ -6,7 +6,7 @@ include_directories (./
     ${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/gtest/include
     ${THIRDPARTY_DIR}/boost/include
-    ${THIRDPARTY_DIR}/eigen-3.2.4/)
+    ${THIRDPARTY_DIR}/eigen-3.2.10/)
 link_directories (${LIBRARY_OUTPUT_PATH})
 
 # add unittest executable
