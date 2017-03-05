@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.0)
+cmake_minimum_required (VERSION 2.8.8)
 project ("LTP - Language Technology Platform")
 
 # project attributes section

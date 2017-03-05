@@ -11,7 +11,7 @@
 # build       #
 ###############
 build
-config.h
+#config.h
 
 ###############
 # config      #

@@ -3,7 +3,8 @@ include_directories (./
     ${THIRDPARTY_DIR}/boost/include/
     ${THIRDPARTY_DIR}/tinythreadpp
     ${THIRDPARTY_DIR}/maxent
-    ${THIRDPARTY_DIR}/tinyxml)
+    ${THIRDPARTY_DIR}/tinyxml
+    ${THIRDPARTY_DIR}/jsoncpp/include)
 
 set (ltp_test_SRC ltp_test.cpp ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)
 
@@ -20,7 +21,8 @@ target_link_libraries (ltp_test
     srl_static_lib
     xml4nlp
     boost_regex_static_lib
-    boost_program_options_static_lib)
+    boost_program_options_static_lib
+    jsoncpp)
 
 add_executable (cws_cmdline cws_cmdline.cpp
     ${THIRDPARTY_DIR}/tinythreadpp/tinythread.cpp)

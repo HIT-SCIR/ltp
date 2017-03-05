@@ -14,11 +14,18 @@
 #define MAX_SENTENCE_LEN 1024
 #define MAX_WORDS_NUM 256
 
-#define LTP_SERVICE_NAME_SEGMENT  "ws"
-#define LTP_SERVICE_NAME_POSTAG   "pos"
-#define LTP_SERVICE_NAME_NER      "ner"
-#define LTP_SERVICE_NAME_DEPPARSE "dp"
-#define LTP_SERVICE_NAME_SRL      "srl"
+#define LTP_SERVICE_NAME_SPLITSENT "sp"
+#define LTP_SERVICE_NAME_SEGMENT   "ws"
+#define LTP_SERVICE_NAME_POSTAG    "pos"
+#define LTP_SERVICE_NAME_NER       "ner"
+#define LTP_SERVICE_NAME_DEPPARSE  "dp"
+#define LTP_SERVICE_NAME_SRL       "srl"
+#define LTP_SERVICE_NAME_ALL       "all"
+#define LTP_SERVICE_NAME_DEFAULT   LTP_SERVICE_NAME_ALL
+
+#define LTP_SERVICE_OUTPUT_FORMAT_XML "xml"
+#define LTP_SERVICE_OUTPUT_FORMAT_JSON "json"
+#define LTP_SERVICE_OUTPUT_FORMAT_DEFAULT LTP_SERVICE_OUTPUT_FORMAT_XML
 
 enum ErrorCodes {
   kEmptyStringError = 1,  /*< The input sentence is empty */

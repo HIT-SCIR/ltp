@@ -60,7 +60,16 @@ namespace detail
 {
 
 #if !defined( BOOST_USE_WINDOWS_H ) && !BOOST_PLAT_WINDOWS_RUNTIME
+#if !BOOST_COMP_CLANG || !defined __MINGW32__
   extern "C" void __stdcall Sleep( unsigned long ms );
+#else
+#include <_mingw.h>
+#if !defined __MINGW64_VERSION_MAJOR
+  extern "C" void __stdcall Sleep( unsigned long ms );
+#else
+  extern "C" __declspec(dllimport) void __stdcall Sleep( unsigned long ms );
+#endif
+#endif
 #endif
 
 inline void yield( unsigned k )
@@ -98,7 +107,13 @@ inline void yield( unsigned k )
 
 #elif defined( BOOST_HAS_PTHREADS )
 
+#ifndef _AIX
 #include <sched.h>
+#else
+   // AIX's sched.h defines ::var which sometimes conflicts with Lambda's var
+       extern "C" int sched_yield(void);
+#endif
+
 #include <time.h>
 
 namespace boost

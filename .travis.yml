@@ -1,13 +1,61 @@
-language:
-    - cpp
+sudo: required
+dist: precise
+language: cpp
 
-compiler:
-    - g++
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports
+          packages:
+            - g++-4.9
+            - cmake
+            - cmake-data
+      env: COMPILER=g++-4.9
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports
+          packages:
+            - g++-5
+            - cmake
+            - cmake-data
+      env: COMPILER=g++-5
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+            - george-edison55-precise-backports
+          packages:
+            - clang-3.6
+            - cmake
+            - cmake-data
+      env: COMPILER=clang++-3.6
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+            - george-edison55-precise-backports
+          packages:
+            - clang-3.7
+            - cmake
+            - cmake-data
+      env: COMPILER=clang++-3.7
 
 before_install:
-    - sudo apt-get install cmake
+  - sudo apt-get update -qq
 
 script:
-    - ./configure
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
     - make
-

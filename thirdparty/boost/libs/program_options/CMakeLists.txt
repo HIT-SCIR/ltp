@@ -1,7 +1,7 @@
 INCLUDE_DIRECTORIES( ./
     ${THIRDPARTY_DIR}/boost/include/ )
 
-set (boost_program_options_VERSION "1.57")
+set (boost_program_options_VERSION "1.61")
 
 set (boost_program_options_SRC
     src/cmdline.cpp
