@@ -21,6 +21,11 @@
 #define LTP_SERVICE_NAME_DEPPARSE "dp"
 #define LTP_SERVICE_NAME_SRL      "srl"
 #define LTP_SERVICE_NAME_ALL      "all"
+#define LTP_SERVICE_NAME_DEFAULT   LTP_SERVICE_NAME_ALL
+
+#define LTP_SERVICE_OUTPUT_FORMAT_XML "xml"
+#define LTP_SERVICE_OUTPUT_FORMAT_JSON "json"
+#define LTP_SERVICE_OUTPUT_FORMAT_DEFAULT LTP_SERVICE_OUTPUT_FORMAT_XML
 
 enum ErrorCodes {
   kEmptyStringError = 1,  /*< The input sentence is empty */

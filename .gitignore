@@ -25,7 +25,7 @@ include/
 lib/
 bin/
 tools/train/lgdpj
-tools/train/lgsrl
+tools/train/srl*
 tools/train/otcws
 tools/train/otpos
 tools/train/otner
