@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <map>
 #include "tinythread.h"
+
+using namespace std;
 
 class Dispatcher {
 public:
@@ -22,6 +25,21 @@ public:
       return -1;
     }
     return _max_idx ++;
+  }
+
+  int next_block(vector<std::string>& block) {
+    block.clear();
+    tthread::lock_guard<tthread::mutex> guard(_mutex);
+    std::string line;
+    while (std::getline(_is, line, '\n')) {
+      if (line != "") {
+        block.push_back(line);
+      } else {
+        return _max_idx ++;
+      }
+    }
+    if (block.size()) return _max_idx++;
+    return -1;
   }
 
   void output(const size_t& idx, const std::string& result) {
