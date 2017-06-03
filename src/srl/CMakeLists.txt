@@ -4,9 +4,10 @@ include_directories (.
         ${THIRDPARTY_DIR}/dynet
         )
 
-link_directories(${THIRDPARTY_DIR}/dynet/build/dynet) # -L
+#link_directories(${THIRDPARTY_DIR}/dynet/build/dynet) # -L
+set(Boost_LIBRARIES boost_program_options_static_lib boost_serialization_static_lib)
 
-set(LIBS ${LIBS} boost_program_options_static_lib boost_serialization_static_lib)
+set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 add_subdirectory(include)
 include_directories(include)
