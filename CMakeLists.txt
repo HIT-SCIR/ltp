@@ -14,6 +14,7 @@ elseif(MINGW)
   set(CMAKE_CXX_FLAGS "-std=c++0x")
 elseif(MSVC)
   add_definitions(-D_WINDOWS)  # make dynet happy at `dynet/mem.cc(7)`
+  add_definitions(-DBOOST_ALL_NO_LIB)  # disable boost auto-linking on windows
   set(CMAKE_CXX_FLAGS "/EHsc")
 endif(APPLE)
 
