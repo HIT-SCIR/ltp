@@ -13,7 +13,7 @@ elseif(UNIX)
 elseif(MINGW)
   set(CMAKE_CXX_FLAGS "-std=c++0x")
 elseif(MSVC)
-  add_definitions(-_WINDOWS=1)  # make dynet happy at `dynet/mem.cc(7)`
+  add_definitions(-D_WINDOWS)  # make dynet happy at `dynet/mem.cc(7)`
   set(CMAKE_CXX_FLAGS "/EHsc")
 endif(APPLE)
 
