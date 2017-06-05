@@ -16,7 +16,7 @@
 #include "dynet/dict.h"
 #include <dynet/expr.h>
 #include <dynet/model.h>
-#include "vector"
+#include <vector>
 
 using namespace dynet;
 using namespace dynet::expr;
@@ -48,7 +48,7 @@ public:
 
   void setOutputDim(unsigned int _outputDim) { outputDim = _outputDim; }
 
-  using ModelBuilder::init;
+  using ModelBuilder<vector<Expression>, vector<Expression>>::init;
   virtual void init(Model &model, bool initBeginEnd = true) {
     dynetRnnBuilder = DynetRnnBuilder(layers, inputDim, outputDim, model);
     if (initBeginEnd) {
