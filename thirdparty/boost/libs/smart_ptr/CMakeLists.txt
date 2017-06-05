@@ -3,10 +3,7 @@ INCLUDE_DIRECTORIES( ./
 
 set (boost_smart_ptr_VERSION "1.61")
 
-set (boost_smart_ptr_SRC
-    src/sp_collector.cpp
-    src/sp_debug_hooks.cpp)
-
+FILE(GLOB boost_smart_ptr_SRC src/*.cpp)
 
 add_library(boost_smart_ptr_static_lib STATIC ${boost_smart_ptr_SRC})
 add_library(boost_smart_ptr_shared_lib SHARED ${boost_smart_ptr_SRC})

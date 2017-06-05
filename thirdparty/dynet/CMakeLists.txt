@@ -120,13 +120,13 @@ set(Boost_LIBRARIES
     )
 message("-- Boost dir is " ${Boost_INCLUDE_DIR})
 include_directories(${Boost_INCLUDE_DIR})
-if(MSVC)
+#if(MSVC)
   # Boost does auto-linking when using a compiler like Microsoft Visual C++, we just need to help it find the libraries
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LIBPATH:${Boost_LIBRARY_DIRS}")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LIBPATH:${Boost_LIBRARY_DIRS}")
-else()
-  set(LIBS ${LIBS} ${Boost_LIBRARIES})
-endif()
+  #  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LIBPATH:${Boost_LIBRARY_DIRS}")
+  #  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LIBPATH:${Boost_LIBRARY_DIRS}")
+  #else()
+set(LIBS ${LIBS} ${Boost_LIBRARIES})
+  #endif()
 # trouble shooting:
 # if boost library cannot be found, in addition to install boost library
 # check if environment variables are set
