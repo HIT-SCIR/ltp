@@ -8,14 +8,14 @@
 #include "srl/SRL_DLL.h"
 #include "utils/logging.hpp"
 
-#if _WIN32
-#pragma warning(disable: 4786 4284)
-#pragma comment(lib, "segmentor.lib")
-#pragma comment(lib, "postagger.lib")
-#pragma comment(lib, "parser.lib")
-#pragma comment(lib, "ner.lib")
-#pragma comment(lib, "srl.lib")
-#endif
+// #if _WIN32
+// #pragma warning(disable: 4786 4284)
+// #pragma comment(lib, "segmentor.lib")
+// #pragma comment(lib, "postagger.lib")
+// #pragma comment(lib, "parser.lib")
+// #pragma comment(lib, "ner.lib")
+// #pragma comment(lib, "srl.lib")
+// #endif
 
 LTPResource::LTPResource() :
   m_segmentor(NULL),

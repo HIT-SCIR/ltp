@@ -18,7 +18,7 @@ using namespace std;
         #define SRL_DLL_API extern "C" _declspec(dllexport)
     #else
         #define SRL_DLL_API extern "C" _declspec(dllimport)
-        #pragma comment(lib, "srl.lib")
+        //#pragma comment(lib, "srl.lib")
     #endif
 #endif
 /**
