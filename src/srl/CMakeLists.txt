@@ -41,7 +41,8 @@ add_library (srl_static_lib STATIC ${srl_SRC})
 target_link_libraries (srl_static_lib dynet ${LIBS})
 
 set_target_properties (srl_static_lib    PROPERTIES
-        OUTPUT_NAME     srl)
+        OUTPUT_NAME     srl
+        PREFIX "lib")
 
 add_library(srl_shared_lib SHARED ${srl_SRC})
 target_link_libraries (srl_shared_lib dynet ${LIBS})
