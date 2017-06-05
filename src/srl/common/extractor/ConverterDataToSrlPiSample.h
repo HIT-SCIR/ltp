@@ -30,7 +30,8 @@ public:
     int index = lexical_cast<int>(line[0]) - 1;
     int parent = lexical_cast<int>(line[8]) - 1;
     vector<string> labels;
-    for (int j = 14 /*14 位置开始论元标号*/; j < line.size(); ++j) {
+    // 14 位置开始论元标号
+    for (int j = 14 ; j < line.size(); ++j) {
       labels.push_back(line[j]);
     }
     Word word(index, line[1], line[4], parent, line[10] ,(index <= parent ? "before" : "after"), line[12], labels);
