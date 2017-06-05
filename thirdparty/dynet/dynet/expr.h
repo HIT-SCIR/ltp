@@ -805,12 +805,8 @@ Expression softsign(const Expression& x);
  * \return An expression where the ith element is equal to x_i^y_i
  */
 Expression pow(const Expression& x, const Expression& y);
-#ifdef min
 #undef min
-#endif
-#ifdef max
 #undef max
-#endif
 /**
  * \ingroup arithmeticoperations
  * \brief Minimum
