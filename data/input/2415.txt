@@ -1,0 +1,12 @@
+全国政协秘书长朱训出席了座谈会。
+朱训
+全国政协
+1
+8
+全国 政协 秘书长 朱训 出席 了 座谈会 。 
+8
+n j n nh v u n wp 
+8
+B-Ni E-Ni O S-Nh O O O O 
+8
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 RAD 5 VOB 5 WP 

@@ -1,0 +1,12 @@
+人事部部长宋德福等参加了会见。
+宋德福
+人事部
+1
+8
+人事部 部长 宋德福 等 参加 了 会见 。 
+8
+ni n nh u v u v wp 
+8
+S-Ni O S-Nh O O O O O 
+8
+2 ATT 3 ATT 5 SBV 3 RAD 0 HED 5 RAD 5 VOB 5 WP 

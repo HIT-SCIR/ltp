@@ -1,0 +1,12 @@
+新华社济南１月１３日电中国科学院院士，山东大学校长，中国共产党党员、全国人大代表，著名数学家、教育家潘承洞同志，因病医治无效，于１９９７年１２月２７日在济南逝世，享年６４岁。
+潘承洞
+全国人大
+0
+45
+新华社 济南 １月 １３日 电 中国 科学院 院士 ， 山东 大学 校长 ， 中国 共产党 党员 、 全国 人大 代表 ， 著名 数学家 、 教育家 潘承洞 同志 ， 因 病 医治 无效 ， 于 １９９７年 １２月 ２７日 在 济南 逝世 ， 享年 ６４ 岁 。 
+45
+ni ns nt nt n ns n n wp ns n n wp ns n n wp n j n wp a n wp n nh n wp p n v v wp p nt nt nt p ns v wp n m q wp 
+45
+S-Ni S-Ns O O O B-Ni E-Ni O O B-Ni E-Ni O O B-Ni E-Ni O O B-Ni E-Ni O O O O O O S-Nh O O O O O O O O O O O O S-Ns O O O O O O 
+45
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 7 ATT 8 ATT 5 VOB 5 WP 11 ATT 12 ATT 31 SBV 12 WP 15 ATT 16 ATT 31 SBV 20 WP 19 ATT 20 ATT 16 COO 16 WP 23 ATT 26 ATT 25 WP 23 COO 27 ATT 16 COO 16 WP 31 ADV 29 POB 5 COO 31 CMP 31 WP 40 ADV 37 ATT 37 ATT 34 POB 40 ADV 38 POB 31 COO 40 WP 44 SBV 44 ATT 40 COO 5 WP 

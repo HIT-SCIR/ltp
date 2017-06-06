@@ -1,0 +1,12 @@
+新华社莫斯科１月１９日电俄罗斯总统叶利钦１９日强调，俄罗斯积极支持建立多极世界的主张。
+叶利钦
+新华社
+0
+20
+新华社 莫斯科 １月 １９日 电 俄罗斯 总统 叶利钦 １９日 强调 ， 俄罗斯 积极 支持 建立 多极 世界 的 主张 。 
+20
+ni ns nt nt n ns n nh nt v wp ns a v v n n u n wp 
+20
+S-Ni S-Ns O O O S-Ns O S-Nh O O O S-Ns O O O O O O O O 
+20
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 7 ATT 8 ATT 10 SBV 10 ADV 5 VOB 10 WP 14 SBV 14 ADV 10 VOB 14 VOB 17 ATT 15 VOB 15 RAD 15 VOB 5 WP 

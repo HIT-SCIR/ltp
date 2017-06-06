@@ -1,0 +1,12 @@
+国家体委主任伍绍祖、中共上海市委副书记龚学平等领导和群众一起参加了登高活动，并为比赛举枪发令。
+伍绍祖
+国家体委
+1
+28
+国家 体委 主任 伍绍祖 、 中共 上海 市委 副 书记 龚学平 等 领导 和 群众 一起 参加 了 登高 活动 ， 并 为 比赛 举 枪 发令 。 
+28
+n j n nh wp j ns n b n nh u n c n d v u v v wp c p v v n v wp 
+28
+B-Ni E-Ni O S-Nh O B-Ni I-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O O 
+28
+2 ATT 3 ATT 4 ATT 13 ATT 11 WP 8 ATT 8 ATT 10 ATT 10 ATT 11 ATT 4 COO 4 RAD 17 SBV 15 LAD 13 COO 17 ADV 0 HED 17 RAD 20 ATT 17 VOB 17 WP 27 ADV 27 ADV 23 POB 23 POB 25 VOB 17 COO 17 WP 

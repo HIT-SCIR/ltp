@@ -1,0 +1,12 @@
+对美国总统克林顿本月即将在华盛顿同巴勒斯坦自治政府主席阿拉法特和以色列总理内塔尼亚胡举行的会谈，穆萨表示欢迎，并称这些会谈是阻止中东和平进程陷入“彻底失败”的唯一机会。
+阿拉法特
+巴勒斯坦自治政府
+1
+44
+对 美国 总统 克林顿 本月 即将 在 华盛顿 同 巴勒斯坦 自治 政府 主席 阿拉法特 和 以色列 总理 内塔尼亚胡 举行 的 会谈 ， 穆萨 表示 欢迎 ， 并 称 这些 会谈 是 阻止 中东 和平 进程 陷入 “ 彻底 失败 ” 的 唯一 机会 。 
+44
+p ns n nh nt d p ns p ns v n n nh c ns n nh v u v wp nh v v wp c v r v v v ns n n v wp a v wp u b n wp 
+44
+O S-Ns O S-Nh O O O S-Ns O S-Ns O O O S-Nh O S-Ns O S-Nh O O O O S-Nh O O O O O O O O O S-Ns O O O O O O O O O O O 
+44
+24 ADV 3 ATT 4 ATT 19 SBV 19 ADV 19 ADV 19 ADV 7 POB 19 ADV 12 ATT 12 ATT 13 ATT 14 ATT 9 POB 18 LAD 17 ATT 18 ATT 14 COO 21 ATT 19 RAD 1 POB 1 WP 24 SBV 0 HED 24 VOB 24 WP 28 ADV 24 COO 30 ATT 31 SBV 28 VOB 31 VOB 34 ATT 35 ATT 36 SBV 43 ATT 39 WP 39 ADV 36 VOB 39 WP 36 RAD 43 ATT 32 VOB 24 WP 

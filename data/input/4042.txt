@@ -1,0 +1,12 @@
+他和周勇及同行的宛城区委司机高道强迅速将伤者抬到自己乘坐的车上，直接送到方城县公安局法医院。
+周勇
+宛城区委
+0
+27
+他 和 周勇 及 同行 的 宛城 区委 司机 高道强 迅速 将 伤者 抬 到 自己 乘坐 的 车上 ， 直接 送 到 方城县 公安局 法医院 。 
+27
+r c nh c n u ns n n nh a p n v v r v u nl wp a v v ns n n wp 
+27
+O O S-Nh O O O B-Ni E-Ni O S-Nh O O O O O O O O O O O O O B-Ni I-Ni E-Ni O 
+27
+14 SBV 3 LAD 1 COO 5 LAD 9 ATT 5 RAD 8 ATT 9 ATT 10 ATT 14 SBV 14 ADV 14 ADV 12 POB 0 HED 14 CMP 17 SBV 19 ATT 17 RAD 15 POB 14 WP 22 ADV 14 COO 22 CMP 25 ATT 26 ATT 23 POB 14 WP 

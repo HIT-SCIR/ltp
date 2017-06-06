@@ -1,0 +1,12 @@
+之后，尉健行、贾庆林等领导又来到已故全国劳动模范、北京市百货大楼优秀售货员张秉贵家中看望。
+张秉贵
+北京市百货大楼
+1
+21
+之后 ， 尉健行 、 贾庆林 等 领导 又 来到 已故 全国 劳动模范 、 北京市 百货大楼 优秀 售货员 张秉贵 家中 看望 。 
+21
+nd wp nh wp nh u n d v v n n wp ns n a n nh nl v wp 
+21
+O O S-Nh O S-Nh O O O O O O O O B-Ns E-Ns O O S-Nh O O O 
+21
+9 ADV 1 WP 7 ATT 5 WP 3 COO 3 RAD 9 SBV 9 ADV 0 HED 17 ATT 12 ATT 17 ATT 15 WP 15 ATT 12 COO 17 ATT 18 ATT 19 ATT 20 ADV 9 COO 9 WP 

@@ -1,0 +1,12 @@
+中国工商银行行长刘廷焕按照新的贷款管理体制，商业银行对资金来源与资金运用实行自求平衡的要求更高了，对按照信贷原则和有关政策自主审查发放贷款的要求更严了。
+刘廷焕
+中国工商银行
+1
+47
+中国 工商 银行 行长 刘廷焕 按照 新 的 贷款 管理 体制 ， 商业 银行 对 资金 来源 与 资金 运用 实行 自 求 平衡 的 要求 更 高 了 ， 对 按照 信贷 原则 和 有关 政策 自主 审查 发放 贷款 的 要求 更 严 了 。 
+47
+ns n n n nh p a u n v n wp n n p n n c n v v d v a u n d a u wp p p n n c v n v v v n u n d a u wp 
+47
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+47
+3 ATT 3 ATT 4 ATT 5 ATT 28 SBV 28 ADV 11 ATT 7 RAD 10 FOB 11 ATT 6 POB 6 WP 14 ATT 28 SBV 28 ADV 17 ATT 15 POB 19 LAD 17 COO 28 SBV 28 SBV 23 ADV 26 ATT 23 VOB 23 RAD 28 SBV 28 ADV 0 HED 28 RAD 28 WP 45 ADV 39 ADV 34 ATT 32 POB 37 LAD 37 ATT 34 COO 39 ADV 43 ATT 39 COO 40 VOB 39 RAD 31 POB 45 ADV 28 COO 45 RAD 28 WP 

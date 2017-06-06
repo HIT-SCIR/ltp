@@ -1,0 +1,12 @@
+胡琳珍听说江苏省仪征市政府表彰的几个养殖示范大户中，有一对下岗夫妇。
+胡琳珍
+江苏省仪征市政府
+0
+20
+胡琳珍 听说 江苏省 仪征市 政府 表彰 的 几 个 养殖 示范 大户 中 ， 有 一 对 下岗 夫妇 。 
+20
+nh v ns ns n v u m q v v n nd wp v m q v n wp 
+20
+S-Nh O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O 
+20
+2 SBV 0 HED 4 ATT 5 ATT 6 SBV 12 ATT 6 RAD 9 ATT 12 ATT 11 ATT 12 ATT 13 ATT 15 ADV 13 WP 2 VOB 17 ATT 19 ATT 19 ATT 15 VOB 2 WP 

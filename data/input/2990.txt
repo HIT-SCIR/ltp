@@ -1,0 +1,12 @@
+１９９７年１２月１８日，一位外地客人乘坐襄樊市志达出租汽车公司共产党员李为昌的出租车到市郊区，客人下车后将一顶新呢帽遗忘在车上。
+李为昌
+襄樊市志达出租汽车公司
+1
+32
+１９９７年 １２月 １８日 ， 一 位 外地 客人 乘坐 襄樊市 志达 出租汽车 公司 共产党员 李为昌 的 出租车 到 市郊区 ， 客人 下车 后 将 一 顶 新 呢帽 遗忘 在 车上 。 
+32
+nt nt nt wp m q nl n v ns nz i n n nh u n v nl wp n v nd p m q a n v p nl wp 
+32
+O O O O O O O O O B-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O 
+32
+3 ATT 3 ATT 9 ADV 3 WP 6 ATT 8 ATT 8 ATT 9 SBV 0 HED 13 ATT 13 ATT 13 ATT 14 ATT 15 ATT 17 ATT 15 RAD 9 VOB 9 CMP 18 POB 9 WP 22 SBV 23 ATT 29 ADV 29 ADV 26 ATT 28 ATT 28 ATT 24 POB 9 COO 29 CMP 30 POB 9 WP 

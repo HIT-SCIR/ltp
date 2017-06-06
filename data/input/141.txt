@@ -1,0 +1,12 @@
+新华社北京１月１９日电国家主席江泽民今天下午在中南海会见了美国时代华纳公司董事长李文一行。
+江泽民
+美国时代华纳公司
+0
+22
+新华社 北京 １月 １９日 电 国家 主席 江泽民 今天 下午 在 中南海 会见 了 美国 时代 华纳 公司 董事长 李文 一行 。 
+22
+ni ns nt nt n n n nh nt nt p ns v u ns n nz n n nh n wp 
+22
+S-Ni S-Ns O O O O O S-Nh O O O S-Ns O O B-Ni I-Ni I-Ni E-Ni O S-Nh O O 
+22
+13 SBV 13 SBV 4 ATT 13 ADV 13 SBV 7 ATT 8 ATT 13 SBV 10 ATT 13 ADV 13 ADV 11 POB 0 HED 13 RAD 16 ATT 18 ATT 18 ATT 19 ATT 20 ATT 21 ATT 13 VOB 13 WP 

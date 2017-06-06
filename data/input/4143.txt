@@ -1,0 +1,12 @@
+泽鲁阿勒就日前中国张家口地区发生地震请钱其琛向中国政府和人民转达他的慰问。
+泽鲁阿勒
+中国政府
+0
+20
+泽鲁阿勒 就 日前 中国 张家口 地区 发生 地震 请 钱其琛 向 中国 政府 和 人民 转达 他 的 慰问 。 
+20
+nh p nt ns ns n v n v nh p ns n c n v r u v wp 
+20
+S-Nh O O B-Ns I-Ns E-Ns O O O S-Nh O B-Ni E-Ni O O O O O O O 
+20
+7 SBV 7 ADV 7 ADV 5 ATT 6 ATT 7 SBV 0 HED 7 VOB 7 COO 9 DBL 16 ADV 13 ATT 11 POB 15 LAD 13 COO 9 VOB 19 ATT 17 RAD 16 VOB 7 WP 

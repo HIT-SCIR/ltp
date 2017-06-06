@@ -1,0 +1,12 @@
+在今天召开的中国科学院１９９８年度工作会议上，路甬祥院长对此作出了明确的回答。
+路甬祥
+中国科学院
+1
+22
+在 今天 召开 的 中国 科学院 １９９８ 年度 工作 会议 上 ， 路甬祥 院长 对 此 作出 了 明确 的 回答 。 
+22
+p nt v u ns n m n v n nd wp nh n p r v u a u v wp 
+22
+O O O O B-Ni I-Ni I-Ni E-Ni O O O O S-Nh O O O O O O O O O 
+22
+17 ADV 3 ADV 10 ATT 3 RAD 6 ATT 10 ATT 8 ATT 10 ATT 10 ATT 11 ATT 1 POB 1 WP 14 ATT 17 SBV 17 ADV 15 POB 0 HED 17 RAD 21 ATT 19 RAD 17 VOB 17 WP 

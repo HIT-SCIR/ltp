@@ -1,0 +1,12 @@
+团中央负责同志表示，江泽民总书记为青年志愿者行动题词，对各级共青团组织和全国青年是一个巨大鼓舞，必将有力推动青年志愿者行动的全面深化和发展。
+江泽民
+团中央
+0
+37
+团中央 负责 同志 表示 ， 江泽民 总书记 为 青年 志愿者 行动 题词 ， 对 各级 共青团 组织 和 全国 青年 是 一个 巨大 鼓舞 ， 必将 有力 推动 青年 志愿者 行动 的 全面 深化 和 发展 。 
+37
+ni v n v wp nh n p n n v v wp p r n n c n n v m a v wp d a v n n v u a v c v wp 
+37
+S-Ni O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+37
+3 ATT 3 ATT 4 SBV 0 HED 4 WP 7 ATT 11 SBV 11 ADV 10 ATT 8 POB 21 SBV 11 COO 11 WP 21 ADV 17 ATT 17 ATT 14 POB 20 LAD 20 ATT 17 COO 4 VOB 24 ATT 24 ATT 21 VOB 21 WP 28 ADV 28 ADV 21 COO 30 ATT 31 ATT 34 ATT 31 RAD 34 ADV 28 VOB 36 LAD 34 COO 4 WP 

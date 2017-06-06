@@ -1,0 +1,12 @@
+新中国成立伊始，著名军事家刘伯承怀着为新中国培养军事人才、推进军队正规化、现代化建设的宏伟志向来到南京钟山脚下，创办了新中国的第一所军事院校???南京军事学院，剧情便由此而展开。
+刘伯承
+南京军事学院
+0
+52
+新 中国 成立 伊始 ， 著名 军事家 刘伯承 怀着 为 新 中国 培养 军事 人才 、 推进 军队 正规化 、 现代化 建设 的 宏伟 志向 来到 南京 钟山 脚下 ， 创办 了 新 中国 的 第一 所 军事 院校 ? ? ? 南京 军事 学院 ， 剧情 便 由此 而 展开 。 
+52
+a ns v v wp a n nh v p a ns v n n wp v n v wp v v u a n v ns ns nd wp v u a ns u m q n n wp wp wp ns n n wp n d d c v wp 
+52
+O S-Ns O O O O O S-Nh O O O S-Ns O O O O O O O O O O O O O O B-Ns E-Ns O O O O O S-Ns O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O 
+52
+2 ATT 3 SBV 0 HED 3 CMP 3 WP 7 ATT 8 ATT 9 SBV 3 COO 26 ADV 12 ATT 10 POB 25 ATT 15 ATT 13 VOB 17 WP 13 COO 19 ATT 17 VOB 21 WP 22 ATT 19 COO 22 RAD 25 ATT 10 POB 9 VOB 28 ATT 29 ATT 26 VOB 26 WP 26 COO 31 RAD 34 ATT 39 ATT 34 RAD 37 ATT 39 ATT 39 ATT 31 VOB 9 WP 3 WP 3 WP 45 ATT 45 ATT 51 SBV 45 WP 51 FOB 51 ADV 51 ADV 51 ADV 3 COO 3 WP 

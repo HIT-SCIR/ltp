@@ -1,0 +1,12 @@
+他先后与以色列总理内塔尼亚胡和巴勒斯坦自治政府主席阿拉法特就巴以安全合作、定居点、撤军等问题举行了数次会晤，但最终并未说服以方拿出从约旦河西岸第二阶段撤军的具体方案。
+阿拉法特
+巴勒斯坦自治政府
+1
+45
+他 先后 与 以色列 总理 内塔尼亚胡 和 巴勒斯坦 自治 政府 主席 阿拉法特 就 巴 以 安全 合作 、 定居点 、 撤军 等 问题 举行 了 数次 会晤 ， 但 最终 并未 说服 以方 拿 出 从 约旦河 西岸 第二 阶段 撤军 的 具体 方案 。 
+45
+r d p ns n nh c ns v n n nh p j j a v wp n wp v u n v u m v wp c d d v n v v p ns nl m n v u a n wp 
+45
+O O O S-Ns O S-Nh O S-Ns O O O S-Nh O S-Ns S-Ns O O O O O O O O O O O O O O O O O O O O O S-Ns O O O O O O O O 
+45
+24 SBV 24 ADV 24 ADV 5 ATT 6 ATT 3 POB 12 LAD 10 ATT 10 ATT 11 ATT 12 ATT 6 COO 24 ADV 23 ATT 14 COO 17 ATT 23 ATT 19 WP 17 COO 21 WP 17 COO 17 RAD 13 POB 0 HED 24 RAD 27 ATT 24 VOB 24 WP 32 ADV 32 ADV 32 ADV 24 COO 32 DBL 32 VOB 34 CMP 41 ADV 38 ATT 40 ATT 40 ATT 36 POB 44 ATT 41 RAD 44 ATT 34 VOB 24 WP 

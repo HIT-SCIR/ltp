@@ -1,0 +1,12 @@
+新华社北京１月１６日电（记者谭国器）国家主席江泽民今天在中南海会见了美国联邦快递公司董事长弗雷德里克?史密斯及由他率领的该公司董事会代表团。
+谭国器
+新华社
+1
+35
+新华社 北京 １月 １６日 电 （ 记者 谭国器 ） 国家 主席 江泽民 今天 在 中南海 会见 了 美国 联邦 快递 公司 董事长 弗雷德里克 ? 史密斯 及 由 他 率领 的 该 公司 董事会 代表团 。 
+35
+ni ns nt nt n wp n nh wp n n nh nt p ns v u ns n v n n nh wp nh c p r v u r n n n wp 
+35
+S-Ni S-Ns O O O O O S-Nh O O O S-Nh O O S-Ns O O B-Ni I-Ni I-Ni E-Ni O S-Nh O S-Nh O O O O O O O O O O 
+35
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 CMP 8 WP 11 ATT 12 ATT 16 SBV 16 ADV 16 ADV 14 POB 5 VOB 16 RAD 19 ATT 21 ATT 21 ATT 22 ATT 23 ATT 16 VOB 16 WP 16 COO 34 LAD 29 ADV 27 POB 34 ATT 29 RAD 32 ATT 33 ATT 34 ATT 25 COO 5 WP 

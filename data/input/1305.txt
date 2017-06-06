@@ -1,0 +1,12 @@
+玉荣现任内蒙古自治区残疾人联合会副理事长，丈夫朝克在自治区广播电台工作。
+朝克
+内蒙古自治区残疾人联合会
+0
+17
+玉荣 现任 内蒙古 自治区 残疾人 联合会 副 理事长 ， 丈夫 朝克 在 自治区 广播 电台 工作 。 
+17
+nh v ns n n n b n wp n nh p n v n v wp 
+17
+S-Nh O B-Ni I-Ni I-Ni E-Ni O O O O S-Nh O O O O O O 
+17
+2 SBV 0 HED 4 ATT 6 ATT 6 ATT 8 ATT 8 ATT 2 VOB 2 WP 11 ATT 16 SBV 16 ADV 15 ATT 15 ATT 12 POB 2 COO 2 WP 

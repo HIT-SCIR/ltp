@@ -1,0 +1,12 @@
+面对这始料未及的紧急局面，河北省邮电管理局立即成立了以局长戴爽为首的全省邮电抗震指挥部，他们针对往张家口方向话务量繁忙的情况，利用全省乃至全国现代化通信大网的优势，开始了一次网络大调度。
+戴爽
+河北省邮电管理局
+1
+51
+面对 这 始料未及 的 紧急 局面 ， 河北省 邮电 管理局 立即 成立 了 以 局长 戴爽 为首 的 全省 邮电 抗震 指挥部 ， 他们 针对 往 张家口 方向 话务量 繁忙 的 情况 ， 利用 全省 乃至 全国 现代化 通信 大网 的 优势 ， 开始 了 一 次 网络 大 调度 。 
+51
+v r i u a n wp ns n n d v u p n nh v u n n v n wp r v p ns n n a u n wp v n c n v v n u n wp v u m q n a n wp 
+51
+O O O O O O O B-Ni I-Ni E-Ni O O O O O S-Nh O O O O O O O O O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O 
+51
+12 ADV 3 ATT 6 ATT 3 RAD 6 ATT 1 VOB 1 WP 10 ATT 10 ATT 12 SBV 12 ADV 0 HED 12 RAD 17 ADV 16 ATT 14 POB 22 ATT 17 RAD 22 ATT 22 ATT 22 ATT 12 VOB 12 WP 25 SBV 12 COO 32 ATT 28 ATT 29 ATT 30 SBV 32 ATT 30 RAD 25 VOB 25 WP 25 COO 40 ATT 40 ATT 40 ATT 40 ATT 40 ATT 42 ATT 40 RAD 34 VOB 25 WP 25 COO 44 RAD 47 ATT 50 ATT 50 ATT 50 ATT 44 VOB 12 WP 

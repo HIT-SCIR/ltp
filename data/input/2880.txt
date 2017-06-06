@@ -1,0 +1,12 @@
+４年前，图雷斯基应澳大利亚游泳协会之邀出任澳大利亚体育技术学院游泳队主教练，波波夫随教练一同前往。
+图雷斯基
+澳大利亚体育技术学院游泳队
+1
+25
+４ 年 前 ， 图雷斯基 应 澳大利亚 游泳 协会 之 邀 出任 澳大利亚 体育 技术 学院 游泳队 主教练 ， 波波夫 随 教练 一同 前往 。 
+25
+m q nd wp ns v ns v n u v v ns n n n n n wp nh p n d v wp 
+25
+O O O O S-Ns O B-Ni I-Ni E-Ni O O O B-Ni I-Ni I-Ni I-Ni E-Ni O O S-Nh O O O O O 
+25
+2 ATT 3 ATT 12 ADV 3 WP 12 SBV 12 ADV 9 ATT 9 ATT 11 ATT 9 RAD 12 ADV 0 HED 16 ATT 16 ATT 16 ATT 17 ATT 18 ATT 12 VOB 12 WP 24 SBV 24 ADV 21 POB 24 ADV 12 COO 12 WP 

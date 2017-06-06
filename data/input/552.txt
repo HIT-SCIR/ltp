@@ -1,0 +1,12 @@
+（清华大学人文社会科学院教授刘建明）
+刘建明
+清华大学人文社会科学院
+1
+8
+（ 清华大学 人文 社会 科学院 教授 刘建明 ） 
+8
+wp ni n n n n nh wp 
+8
+O B-Ni I-Ni I-Ni E-Ni O S-Nh O 
+8
+7 WP 5 ATT 4 ATT 5 ATT 6 ATT 7 ATT 0 HED 7 WP 

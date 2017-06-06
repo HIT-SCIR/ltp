@@ -1,0 +1,12 @@
+当被问及是否会因此事而处罚整个中国游泳队时，韦尔纳说，国际泳联没有理由处罚其他中国游泳选手。
+韦尔纳
+国际泳联
+1
+27
+当 被 问及 是否 会 因 此事 而 处罚 整个 中国 游泳队 时 ， 韦尔纳 说 ， 国际 泳联 没有 理由 处罚 其他 中国 游泳 选手 。 
+27
+v p v v v p r c v b ns n n wp nh v wp n j v n v r ns v n wp 
+27
+O O O O O O O O O O B-Ni E-Ni O O S-Nh O O B-Ni E-Ni O O O O S-Ns O O O 
+27
+16 ADV 13 ATT 13 ATT 9 ADV 9 ADV 9 ADV 6 POB 9 ADV 13 ATT 12 ATT 12 ATT 9 VOB 1 POB 1 WP 16 SBV 0 HED 16 WP 19 ATT 20 SBV 16 VOB 20 VOB 20 COO 26 ATT 26 ATT 26 ATT 22 VOB 16 WP 

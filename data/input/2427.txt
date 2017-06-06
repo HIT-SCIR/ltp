@@ -1,0 +1,12 @@
+１月１２日上午，中共中央政治局候补委员、中直机关工委书记曾庆红，中共中央政治局委员、中央国家机关工委书记罗干，分别向中直机关和中央国家机关工委通报灾情，要求中直机关和中央国家机关各部门广泛发动、开展向雪灾、地震灾区捐款、捐赠衣被活动。
+罗干
+中央国家机关工委
+1
+55
+１月 １２日 上午 ， 中共中央 政治局 候补委员 、 中直机关 工委 书记 曾庆红 ， 中共中央 政治局 委员 、 中央 国家机关 工委 书记 罗干 ， 分别 向 中直机关 和 中央 国家机关 工委 通报 灾情 ， 要求 中直机关 和 中央 国家机关 各 部门 广泛 发动 、 开展 向 雪灾 、 地震 灾区 捐款 、 捐赠 衣被 活动 。 
+55
+nt nt nt wp ni n i wp j j n nh wp ni n n wp n i j n nh wp v p j c nd i j v n wp v j c nd i r n a v wp v p n wp n n v wp v n v wp 
+55
+O O O O B-Ni E-Ni O O B-Ni E-Ni O S-Nh O B-Ni E-Ni O O B-Ni I-Ni E-Ni O S-Nh O O O O O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O O O O O O O O O 
+55
+2 ATT 3 ATT 31 ADV 3 WP 6 ATT 12 ATT 12 ATT 11 WP 10 ATT 11 ATT 7 COO 22 ATT 12 WP 15 ATT 16 ATT 22 ATT 21 WP 21 ATT 21 ATT 21 ATT 16 COO 31 SBV 22 WP 31 ADV 31 ADV 25 POB 30 LAD 29 ATT 30 ATT 26 COO 0 HED 31 VOB 31 WP 31 COO 40 ATT 38 LAD 38 ATT 35 COO 40 ATT 42 SBV 42 ADV 34 VOB 44 WP 42 COO 54 ADV 45 POB 50 WP 49 ATT 50 SBV 46 COO 52 WP 46 COO 52 VOB 44 VOB 31 WP 

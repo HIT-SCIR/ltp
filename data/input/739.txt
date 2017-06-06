@@ -1,0 +1,12 @@
+（贵州玉屏县委办公室伍洪伦）
+伍洪伦
+贵州玉屏县委办公室
+1
+7
+（ 贵州 玉屏 县委 办公室 伍洪伦 ） 
+7
+wp ns ns n n nh wp 
+7
+O B-Ni I-Ni E-Ni O S-Nh O 
+7
+6 WP 3 ATT 4 ATT 5 ATT 6 ATT 0 HED 6 WP 

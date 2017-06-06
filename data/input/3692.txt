@@ -1,0 +1,12 @@
+与此同时，有专家预言，俄罗斯的帕卡琳娜将是中国队最强劲的对手。
+帕卡琳娜
+中国队
+0
+17
+与此同时 ， 有 专家 预言 ， 俄罗斯 的 帕卡琳娜 将 是 中国队 最 强劲 的 对手 。 
+17
+c wp v n n wp ns u nh d v ni d a u n wp 
+17
+O O O O O O S-Ns O S-Nh O O S-Ni O O O O O 
+17
+3 ADV 1 WP 0 HED 5 SBV 3 VOB 3 WP 9 ATT 7 RAD 11 SBV 11 ADV 3 COO 14 SBV 14 ADV 16 ATT 14 RAD 11 VOB 3 WP 

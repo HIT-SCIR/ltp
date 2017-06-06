@@ -1,0 +1,12 @@
+为了支农，王纲敏建起了北丰复合肥厂，生产出多元素复合肥，畅销十多个省的农村，深受农民青睐。
+王纲敏
+北丰复合肥厂
+1
+29
+为了 支农 ， 王纲敏 建 起 了 北丰 复合肥 厂 ， 生产 出 多 元素 复合肥 ， 畅销 十 多 个 省 的 农村 ， 深受 农民 青睐 。 
+29
+p v wp nh v v u nz n n wp v v a n n wp v m m q n u n wp v n n wp 
+29
+O O O S-Nh O O O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O O O 
+29
+5 ADV 1 POB 1 WP 5 SBV 0 HED 5 CMP 5 RAD 10 ATT 10 ATT 5 VOB 5 WP 5 COO 12 CMP 15 ATT 16 ATT 12 VOB 5 WP 24 ATT 21 ATT 19 RAD 22 ATT 18 VOB 22 RAD 26 SBV 24 WP 5 COO 28 ATT 26 VOB 5 WP 

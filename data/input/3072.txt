@@ -1,0 +1,12 @@
+中国戏曲学院艺研所所长刘坚事业的核心是人才。
+刘坚
+中国戏曲学院艺研所
+1
+12
+中国 戏曲 学院 艺研所 所长 刘坚 事业 的 核心 是 人才 。 
+12
+ns n n j n nh n u n v n wp 
+12
+B-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O 
+12
+3 ATT 3 ATT 5 ATT 5 ATT 6 ATT 7 ATT 9 ATT 7 RAD 10 SBV 0 HED 10 VOB 10 WP 

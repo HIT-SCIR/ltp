@@ -1,0 +1,12 @@
+电子工业部部长胡启立在会上提出，１９９８年电子信息产业将继续保持２０％左右的发展速度，为电子信息产业跨世纪发展打下良好的基础。
+胡启立
+电子工业部
+1
+33
+电子 工业部 部长 胡启立 在 会上 提出 ， １９９８年 电子 信息 产业 将 继续 保持 ２０％ 左右 的 发展 速度 ， 为 电子 信息 产业 跨 世纪 发展 打下 良好 的 基础 。 
+33
+n n n nh p nt v wp nt n n n d v v m m u v n wp p n n n v n v v a u n wp 
+33
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+33
+2 ATT 3 ATT 4 ATT 7 SBV 7 ADV 5 POB 0 HED 7 WP 12 ATT 11 ATT 12 ATT 14 SBV 14 ADV 7 VOB 14 COO 19 ATT 16 RAD 16 RAD 15 VOB 19 VOB 15 WP 29 ADV 24 ATT 25 ATT 22 POB 22 POB 26 VOB 26 COO 15 COO 32 ATT 30 RAD 29 VOB 7 WP 

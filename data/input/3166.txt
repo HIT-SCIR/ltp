@@ -1,0 +1,12 @@
+国际泳联秘书长韦尔纳当晚举行新闻发布会说，国际泳联决定成立一个小组对此事进行调查。
+韦尔纳
+国际泳联
+1
+21
+国际 泳联 秘书长 韦尔纳 当晚 举行 新闻 发布会 说 ， 国际 泳联 决定 成立 一个 小组 对 此事 进行 调查 。 
+21
+n j n nh nt v n n v wp n j v v m n p r v v wp 
+21
+B-Ni E-Ni O S-Nh O O O O O O B-Ni E-Ni O O O O O O O O O 
+21
+2 ATT 3 ATT 4 ATT 6 SBV 6 ADV 0 HED 8 ATT 6 VOB 6 COO 9 WP 12 ATT 13 SBV 9 VOB 13 VOB 16 ATT 19 SBV 19 ADV 17 POB 14 VOB 19 VOB 6 WP 

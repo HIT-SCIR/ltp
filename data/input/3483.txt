@@ -1,0 +1,12 @@
+秦华孙说，中国始终认为，伊拉克应全面履行联合国安理会的有关决议，充分与负责销毁伊拉克大规模杀伤性武器的联合国特别委员会合作，使其能尽早完成安理会的有关授权。
+秦华孙
+联合国特别委员会
+0
+41
+秦华孙 说 ， 中国 始终 认为 ， 伊拉克 应 全面 履行 联合国 安理会 的 有关 决议 ， 充分 与 负责 销毁 伊拉克 大规模 杀伤性 武器 的 联合国 特别 委员会 合作 ， 使 其 能 尽早 完成 安理会 的 有关 授权 。 
+41
+nh v wp ns d v wp ns v a v ni j u v n wp a p v v ns b n n u ni a n v wp v r v d v j u v n wp 
+41
+S-Nh O O S-Ns O O O S-Ns O O O B-Ni E-Ni O O O O O O O O S-Ns O O O O B-Ni I-Ni E-Ni O O O O O O O O O O O O 
+41
+2 SBV 0 HED 2 WP 6 SBV 6 ADV 2 VOB 6 WP 11 SBV 11 ADV 11 ADV 6 VOB 13 ATT 16 ATT 13 RAD 16 ATT 11 VOB 11 WP 30 ADV 30 ADV 30 ATT 20 VOB 25 ATT 25 ATT 25 ATT 21 VOB 20 RAD 29 ATT 29 ATT 30 SBV 11 COO 11 WP 11 COO 32 DBL 36 ADV 36 ADV 32 VOB 39 ATT 37 RAD 36 VOB 39 VOB 2 WP 

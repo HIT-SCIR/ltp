@@ -1,0 +1,12 @@
+（湖北麻城市交通局熊承元毕宗锐）栀子丰收栀农犯愁素称“金栀之乡”的湖北长阳土家族自治县都镇湾镇去年栀子喜获丰收。
+熊承元
+湖北麻城市交通局
+1
+31
+（ 湖北 麻城市 交通局 熊承元 毕宗锐 ） 栀子 丰收 栀 农 犯愁 素 称 “ 金栀 之 乡 ” 的 湖北 长阳 土家族 自治县 都镇湾镇 去年 栀子 喜 获 丰收 。 
+31
+wp ns ns n nh nh wp n v n n v a v wp n u n wp u ns ns nz n ns nt n v v v wp 
+31
+O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O B-Ns I-Ns I-Ns E-Ns S-Ns O O O O O O 
+31
+6 WP 3 ATT 4 ATT 5 ATT 6 ATT 12 SBV 6 WP 9 SBV 12 SBV 11 ATT 9 VOB 0 HED 14 ADV 25 ATT 18 WP 18 ATT 16 RAD 14 VOB 18 WP 14 RAD 22 ATT 24 ATT 24 ATT 25 ATT 27 ATT 27 ATT 29 SBV 29 ADV 12 COO 29 VOB 12 WP 

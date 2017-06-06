@@ -1,0 +1,12 @@
+钟英此事发生在中国银行总行营业部，下面是自称某“支行营业员”与柜台人员的一段对话：“你好，我是‘支行的营业员’，我行代一客户托收一笔汇票，因为金额为６０多万美元，请总行核一下印鉴，对外办理托收。”
+钟英
+中国银行总行营业部
+0
+63
+钟英 此事 发生 在 中国银行 总行 营业部 ， 下面 是 自称 某 “ 支行 营业员 ” 与 柜台 人员 的 一 段 对话 ： “ 你好 ， 我 是 ‘ 支行 的 营业员 ’ ， 我行 代 一 客户 托收 一 笔 汇票 ， 因为 金额 为 ６０ 多 万 美元 ， 请 总行 核 一下 印鉴 ， 对外 办理 托收 。 ” 
+63
+nh r v p ni n n wp nd v v r wp n n wp p n n u m q v wp wp i wp r v wp n u n wp wp n v m n v m q n wp c n v m m m q wp v n v m n wp v v v wp wp 
+63
+S-Nh O O O S-Ni O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+63
+2 ATT 3 SBV 0 HED 3 CMP 6 ATT 7 ATT 4 POB 3 WP 10 SBV 3 COO 10 VOB 15 ATT 15 WP 15 ATT 23 SBV 15 WP 19 LAD 19 ATT 15 COO 19 RAD 22 ATT 23 ATT 11 VOB 23 WP 26 WP 23 VOB 26 WP 29 SBV 26 COO 33 WP 33 ATT 31 RAD 29 VOB 33 WP 29 WP 37 SBV 29 COO 39 ATT 37 VOB 37 COO 42 ATT 43 ATT 40 VOB 37 WP 47 ADV 47 SBV 37 COO 50 ATT 48 RAD 51 ATT 47 VOB 47 WP 47 COO 53 DBL 53 VOB 55 CMP 55 VOB 53 WP 60 ADV 53 COO 60 VOB 29 WP 26 WP 

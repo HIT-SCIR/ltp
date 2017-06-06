@@ -1,0 +1,12 @@
+１９４７年，周小燕回到上海国立音专任教，并在各地举行独唱音乐会。
+周小燕
+上海国立音专
+0
+16
+１９４７年 ， 周小燕 回到 上海 国立 音专 任教 ， 并 在 各地 举行 独唱 音乐会 。 
+16
+nt wp nh v ns b j v wp c p r v v n wp 
+16
+O O S-Nh O B-Ni I-Ni E-Ni O O O O O O O O O 
+16
+4 ADV 1 WP 4 SBV 0 HED 7 ATT 7 ATT 8 SBV 4 VOB 4 WP 13 ADV 13 ADV 11 POB 4 COO 15 ATT 13 VOB 4 WP 

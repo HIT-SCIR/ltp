@@ -1,0 +1,113 @@
+1 	|BT| (NP (NP (DT The)(NNP U.S.))(SBAR (S (VP (VP (VBG finalizing)))))) |ET| 4:1 4328:1 12486:1 12494:1 14235:1 15794:1 21478:1 
+1 	|BT| (SBAR (WHNP (WDT which))(S (VP (VP (VBG finalizing))))) |ET| 12326:1 12486:1 12507:1 14250:1 15794:1 21478:1 
+-1 	|BT| (VP (VBG finalizing)(NP (PRP$ its)(JJ steel)(NNS quotas))) |ET| 10:1 10133:1 12487:1 12494:1 14339:1 15794:1 21478:1 
+1 	|BT| (S (NP (NP (DT The)(NNP U.S.))(, ,)(SBAR (WHNP (WDT which))(S (NP (-NONE- *T*))(VP (VBZ is)(VP (VBG finalizing)(NP (PRP$ its)(JJ steel)(NNS quotas))))))(, ,))(VP (VP (VBG allocating)))) |ET| 4:1 4328:1 12486:1 12494:1 14268:1 15274:1 17220:1 21478:1 
+-1 	|BT| (VP (VBG allocating)(NP (NP (DT a)(JJR larger)(NN share))(PP (IN of)(NP (PRP$ its)(NN steel)(NN market))))) |ET| 10:1 10890:1 12487:1 12494:1 14339:1 15274:1 17220:1 21478:1 
+1 	|BT| (S (NP (DT the)(NNP U.S.))(VP (VP (VP (VBN negotiated))))) |ET| 4:1 4328:1 12486:1 12494:1 14750:1 16088:1 19595:1 21478:1 
+-1 	|BT| (VP (VBN negotiated)(NP (NP (DT a)(JJ significant)(NN cut))(PP (IN in)(NP (NP (NNP Japan)(POS 's))(NN steel)(NN quota))))) |ET| 10:1 6406:1 12487:1 12494:1 14819:1 16088:1 19595:1 21478:1 
+1 	|BT| (S (NP (NP (NNP Brazil))(, ,)(ADJP (JJ similar)(PP (TO to)(NP (NP (NNP Mexico))(CC and)(NP (NNP South)(NNP Korea)))))(, ,))(VP (VP (S (VP (VP (VB negotiate))))))) |ET| 4:1 938:1 12486:1 12494:1 13155:1 16088:1 19594:1 21478:1 
+-1 	|BT| (VP (VB negotiate)(NP (NP (DT a)(ADJP (RB somewhat)(JJR bigger))(NN share))(PP (IN of)(NP (DT the)(NNP U.S.)(NN market)))(SBAR (IN than)(S (NP (PRP it))(VP (VBD had)(NP (-NONE- *))(PP (IN under)(NP (NP (DT the)(JJ previous)(JJ five)(NN steel)(NNS quotas))(, ,)(SBAR (WHNP (WDT which))(S (NP (-NONE- *T*))(VP (VBD expired)(NP (NNP Sept.)(CD 30)))))))))))) |ET| 10:1 10890:1 12487:1 12494:1 13367:1 16088:1 19594:1 21478:1 
+-1 	|BT| (NP (NP (DT the)(JJ previous)(JJ five)(NN steel)(NNS quotas))(SBAR (S (VP (VBD expired))))) |ET| 10:1 11304:1 12486:1 12494:1 13516:1 15764:1 18651:1 21478:1 
+-1 	|BT| (SBAR (WHNP (WDT which))(S (VP (VBD expired)))) |ET| 12326:1 12486:1 12507:1 13549:1 15764:1 18651:1 21478:1 
+1 	|BT| (S (NP (NNP Brazil)(CC and)(NNP Venezuela))(VP (NP (SBAR (S (VP (VP (VBN completed)))))))) |ET| 4:1 4411:1 12486:1 12494:1 15476:1 17803:1 21478:1 
+-1 	|BT| (VP (VBN completed)) |ET| 6040:1 12487:1 12505:1 15476:1 17803:1 21478:1 
+-1 	|BT| (VP (VBN completed)(NP (NP (NN steel)(NNS talks))(PP (IN with)(NP (DT the)(NNP U.S.)))(PP (IN for)(NP (NP (DT the)(NN year))(VP (VBG ending)(NP (NNP Oct.)(CD 1)(, ,)(CD 1990))))))) |ET| 10:1 11304:1 12487:1 12494:1 14819:1 15476:1 17803:1 21478:1 
+1 	|BT| (S (NP (DT the)(NN steel)(NNS negotiations))(VP (VBP allocate))) |ET| 4:1 12486:1 12494:1 14943:1 15274:1 17218:1 21478:1 
+-1 	|BT| (VP (VBP allocate)(NP (NP (QP (RB about)(CD 15))(NN %))(PP (-NONE- *T*)))) |ET| 10:1 14:1 12487:1 12494:1 15002:1 15274:1 17218:1 21478:1 
+1 	|BT| (S (NP (PRP it))(VP (VP (VB extend)))) |ET| 4:1 8356:1 12486:1 12494:1 13198:1 15772:1 18677:1 21478:1 
+-1 	|BT| (VP (VB extend)(NP (NP (NN steel)(NNS quotas))(, ,)(VP (VBN known)(NP (-NONE- *))(PP (IN as)(NP (JJ voluntary)(NN restraint)(NNS agreements))))(, ,))) |ET| 10:1 11304:1 12487:1 12494:1 13367:1 15772:1 18677:1 21478:1 
+1 	|BT| (VP (NP (DT that)(ADJP (JJ two)(NN year))(NN period))(S (VP (VP (PP (NP (PP (S (VP (VBG freeing)))))))))) |ET| 10:1 9589:1 12486:1 12494:1 15834:1 18866:1 21478:1 
+-1 	|BT| (VP (VBG freeing)(NP (NP (DT the)(JJ international)(NN steel)(NN trade))(, ,)(SBAR (WHNP (WDT which))(S (NP (-NONE- *T*))(VP (VBZ has)(VP (VBN been)(VP (ADVP (RB notoriously))(VBN managed)(, ,)(VBN subsidized)(CC and)(VBN protected)(NP (-NONE- *))(PP (IN by)(NP (NNS governments)))))))))) |ET| 10:1 11831:1 12487:1 12494:1 14339:1 15834:1 18866:1 21478:1 
+-1 	|BT| (NP (NP (DT the)(JJ international)(NN steel)(NN trade))(SBAR (S (VP (VP (VP (VBN protected))))))) |ET| 10:1 11831:1 12486:1 12494:1 14705:1 16239:1 20017:1 21478:1 
+-1 	|BT| (SBAR (WHNP (WDT which))(S (VP (VP (VP (VBN protected)))))) |ET| 12326:1 12486:1 12507:1 14717:1 16239:1 20017:1 21478:1 
+1 	|BT| (VP (VBN protected)(PP (NP (NNS governments)))) |ET| 10:1 7736:1 12487:1 12494:1 14829:1 16239:1 20017:1 21478:1 
+1 	|BT| (NP (NP (DT the)(JJ first)(NNS countries))(SBAR (S (VP (VP (VB conclude)))))) |ET| 10:1 6290:1 12486:1 12494:1 12924:1 15487:1 17839:1 21478:1 
+-1 	|BT| (VP (VB conclude)(NP (NP (PRP$ its)(NN steel)(NNS talks))(PP (IN with)(NP (DT the)(NNP U.S.))))) |ET| 10:1 11304:1 12487:1 12494:1 13367:1 15487:1 17839:1 21478:1 
+1 	|BT| (S (NP (NP (NNP Mexico))(, ,)(SBAR (WHNP (WDT which))(S (NP (-NONE- *T*))(VP (VBD was)(NP (NP (CD one))(PP (IN of)(NP (NP (DT the)(JJ first)(NNS countries))(SBAR (WHNP (-NONE- 0))(S (NP (-NONE- *T*))(VP (TO to)(VP (VB conclude)(NP (NP (PRP$ its)(NN steel)(NNS talks))(PP (IN with)(NP (DT the)(NNP U.S.))))))))))))))(, ,))(VP (VBD doubled))) |ET| 4:1 2925:1 12486:1 12494:1 13560:1 15671:1 18367:1 21478:1 
+-1 	|BT| (VP (VBD doubled)(NP (PRP$ its)(NN quota))) |ET| 10:1 12487:1 12494:1 13661:1 15671:1 18367:1 21478:1 
+1 	|BT| (S (NP (NP (NP (DT The)(NNP EC))(CC and)(NP (NNP Japan)))(: --)(NP (NP (DT the)(NNP U.S.)(POS 's))(JJS largest)(NN steel)(NNS suppliers))(: --))(VP (VP (VP (VBG filling))))) |ET| 4:1 1591:1 12486:1 12494:1 14301:1 15793:1 18747:1 21478:1 
+-1 	|BT| (VP (VBG filling)(NP (PRP$ their)(NNS quotas))) |ET| 10:1 10133:1 12487:1 12494:1 14339:1 15793:1 18747:1 21478:1 
+-1 	|BT| (NP (NP (NN steel))(SBAR (S (VP (VP (VB total)))))) |ET| 10:1 11304:1 12486:1 12494:1 12924:1 16667:1 21156:1 21478:1 
+-1 	|BT| (NP (NP (DT the)(NN steel))(VP (VBN imported))) |ET| 10:1 11304:1 12486:1 12494:1 14481:1 15920:1 19100:1 21478:1 
+1 	|BT| (S (NP (NP (NNS Negotiators))(PP (IN from)(NP (DT the)(NNP White)(NNP House)(NN trade)(NN office))))(VP (VP (VB repeat)))) |ET| 4:1 12486:1 12494:1 13198:1 16353:1 20330:1 21478:1 
+-1 	|BT| (VP (VB repeat)(NP (DT these)(NN quota)(NNS negotiations))) |ET| 10:1 12487:1 12494:1 13367:1 16353:1 20330:1 21478:1 
+1 	|BT| (S (NP (PRP they))(VP (VP (NP (SBAR (S (VP (VP (VB allocate))))))))) |ET| 4:1 11712:1 12486:1 12494:1 12919:1 15274:1 17218:1 21478:1 
+-1 	|BT| (NP (NP (DT another)(CD 1)(NN %))(SBAR (S (VP (VP (VB allocate)))))) |ET| 10:1 14:1 12486:1 12494:1 12924:1 15274:1 17218:1 21478:1 
+1 	|BT| (S (NP (PRP them))(VP (VP (VB withdraw)))) |ET| 4:1 11694:1 12486:1 12494:1 13198:1 16770:1 21422:1 21478:1 
+-1 	|BT| (VP (VB withdraw)(NP (NNS subsidies)(CC and)(NN protectionism))) |ET| 10:1 10037:1 12487:1 12494:1 13367:1 16770:1 21422:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel)(NNP Inc.))(VP (VP (VBZ expects)))) |ET| 4:1 2303:1 12486:1 12494:1 15172:1 15761:1 18643:1 21478:1 
+-1 	|BT| (VP (VBZ expects)(S (NP (JJ fiscal)(JJ second)(NNS earnings))(VP (TO to)(VP (VB trail)(NP (CD 1988)(NNS results)))))) |ET| 11784:1 12487:1 12499:1 15213:1 15761:1 18643:1 21478:1 
+1 	|BT| (S (NP (JJ fiscal)(JJ second)(NNS earnings))(VP (VP (VB trail)))) |ET| 4:1 6923:1 12486:1 12494:1 13198:1 16675:1 21179:1 21478:1 
+-1 	|BT| (VP (VB trail)(NP (CD 1988)(NNS results))) |ET| 10:1 10519:1 12487:1 12494:1 13367:1 16675:1 21179:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel)(NNP Inc.))(VP (VP (VBZ anticipates)))) |ET| 4:1 2303:1 12486:1 12494:1 15172:1 15286:1 17254:1 21478:1 
+-1 	|BT| (VP (VBZ anticipates)(SBAR (S (NP (JJ several)(JJ new)(NNS products))(VP (MD will)(VP (VB lead)(PP (TO to)(NP (NP (DT a)(`` ``)(ADJP (RB much)(JJR stronger))('' '')(NN performance))(PP (IN in)(NP (PRP$ its)(JJ second)(NN half)))))))))) |ET| 12358:1 12487:1 12499:1 15223:1 15286:1 17254:1 21478:1 
+-1 	|BT| (S (NP (JJ several)(JJ new)(NNS products))(VP (VP (VB lead)))) |ET| 4:1 9964:1 12486:1 12494:1 13198:1 15994:1 19323:1 21478:1 
+-1 	|BT| (NP (NP (PRP$ its)(JJ year)(NN second)(NN quarter))(VP (VBN ended))) |ET| 10:1 10118:1 12486:1 12494:1 14481:1 15715:1 18502:1 21478:1 
+-1 	|BT| (S (NP (NN Revenue))(VP (VBD totaled))) |ET| 4:1 3626:1 12486:1 12494:1 13560:1 16667:1 21157:1 21478:1 
+1 	|BT| (S (NP (NP (NNP George)(NNP Pierce))(, ,)(NP (NP (NN chairman))(CC and)(NP (JJ chief)(JJ executive)(NN officer)))(, ,))(VP (VBD said))) |ET| 4:1 12486:1 12494:1 13560:1 16433:1 20537:1 21478:1 
+-1 	|BT| (VP (VBD said)(SBAR (S (NP (NP (NNS earnings))(PP (IN in)(NP (DT the)(ADJP (RBS most)(JJ recent))(NN quarter))))(VP (MD will)(VP (VB be)(NP (NP (NP (QP (RB about)(CD two))(NNS cents))(NP (DT a)(NN share)))(PP (IN on)(NP (NP (NN revenue))(PP (IN of)(NP (QP (RB just)(IN under)($ $)(CD 4)(CD million))(-NONE- *U*))))))))))) |ET| 12358:1 12487:1 12499:1 13711:1 16433:1 20537:1 21478:1 
+-1 	|BT| (S (NP (DT The)(JJR lower)(NNS results))(PRN (S (VP (VBD said))))) |ET| 4:1 10519:1 12486:1 12494:1 13461:1 16433:1 20537:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Pierce))(VP (VBD said))) |ET| 4:1 12486:1 12494:1 13560:1 16433:1 20537:1 21478:1 
+-1 	|BT| (S (PRN (S (VP (VBD said))))(VP (VBP reflect)(NP (NP (DT a)(JJ 12)(NN decline))(PP (IN in)(NP (NP (NN industry)(NNS sales))(PP (IN of)(NP (NP (ADJP (RB privately)(VBN owned))(NN pay)(NNS telephones))(, ,)(NP (NP (NNP Elcotel)(POS 's))(JJ primary)(NN business))))))))) |ET| 10303:1 12487:1 12505:1 13466:1 16433:1 20537:1 21478:1 
+-1 	|BT| (VP (VBP reflect)(NP (NP (DT a)(JJ 12)(NN decline))(PP (IN in)(NP (NP (NN industry)(NNS sales))(PP (IN of)(NP (NP (ADJP (RB privately)(VBN owned))(NN pay)(NNS telephones))(, ,)(NP (NP (NNP Elcotel)(POS 's))(JJ primary)(NN business)))))))) |ET| 10:1 6482:1 12487:1 12494:1 15002:1 16317:1 20228:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Pierce))(VP (VBZ expects))) |ET| 4:1 12486:1 12494:1 15130:1 15761:1 18643:1 21478:1 
+-1 	|BT| (VP (VBZ expects)(S (NP (NP (IN that)(NN line))(PP (IN of)(NP (NN business))))(VP (TO to)(VP (VB strengthen)(PP (IN in)(NP (DT the)(JJ next)(NN year))))))) |ET| 11784:1 12487:1 12499:1 15213:1 15761:1 18643:1 21478:1 
+-1 	|BT| (S (NP (NP (IN that)(NN line))(PP (IN of)(NP (NN business))))(VP (VP (VB strengthen)))) |ET| 4:1 8626:1 12486:1 12494:1 13198:1 16582:1 20931:1 21478:1 
+1 	|BT| (S (NP (PRP he))(VP (VBD said))) |ET| 4:1 7873:1 12486:1 12494:1 13560:1 16433:1 20537:1 21478:1 
+-1 	|BT| (VP (VBD said)(SBAR (S (NP (NNP Elcotel))(VP (MD will)(ADVP (RB also))(VP (VB benefit)(PP (IN from)(S (NP (-NONE- *))(VP (VBG moving)(PP (IN into)(NP (JJ other)(NNS areas))))))))))) |ET| 12358:1 12487:1 12499:1 13711:1 16433:1 20537:1 21478:1 
+-1 	|BT| (S (NP (NNP Elcotel))(VP (VP (VB benefit)))) |ET| 4:1 12486:1 12494:1 13198:1 15350:1 17450:1 21478:1 
+1 	|BT| (VP (VB benefit)(PP (S (NP (-NONE- *))(VP (VBG moving)(PP (IN into)(NP (JJ other)(NNS areas))))))) |ET| 9071:1 12487:1 12499:1 13390:1 15350:1 17450:1 21478:1 
+-1 	|BT| (S (NP (NNP Elcotel))(VP (VP (PP (S (VP (VBG moving))))))) |ET| 4:1 12486:1 12494:1 14030:1 16077:1 19572:1 21478:1 
+-1 	|BT| (S (SINV (ADJP (RB Foremost))(PP (IN among)(NP (DT those)))(VP (VBZ is)(ADJP (-NONE- *T*)))(NP (NP (NP (DT the)(NN company)(POS 's))(NN entrance))(PP (IN into)(NP (DT the)(JJ public)(NN facsimile)(NN business)))))(VP (VBD said))) |ET| 8347:1 12486:1 12502:1 13572:1 16433:1 20537:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Pierce))(VP (VBD said))) |ET| 4:1 12486:1 12494:1 13560:1 16433:1 20537:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel))(VP (VBZ expects))) |ET| 4:1 12486:1 12494:1 15130:1 15761:1 18643:1 21478:1 
+-1 	|BT| (VP (VBZ expects)(S (NP (-NONE- *))(VP (TO to)(VP (VB place)(NP (NP (CD 10,000)(NN fax)(NNS machines))(, ,)(VP (VBN made)(NP (-NONE- *))(PP (IN by)(NP (NNP Minolta)))(PP (IN in)(NP (NNP Japan))))(, ,))(PP (IN in)(NP (NP (NNS hotels))(, ,)(NP (JJ municipal)(NNS buildings))(, ,)(NP (NNS drugstores))(CC and)(NP (NP (JJ other)(JJ public)(NNS settings))(PP (IN around)(NP (DT the)(NN country)))))))))) |ET| 11784:1 12487:1 12499:1 15213:1 15761:1 18643:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel))(VP (S (VP (VP (VB place)))))) |ET| 4:1 12486:1 12494:1 13096:1 16179:1 19830:1 21478:1 
+-1 	|BT| (VP (VB place)(NP (NP (CD 10,000)(NN fax)(NNS machines))(, ,)(VP (VBN made)(NP (-NONE- *))(PP (IN by)(NP (NNP Minolta)))(PP (IN in)(NP (NNP Japan))))(, ,))) |ET| 10:1 12487:1 12494:1 13367:1 16179:1 19830:1 21478:1 
+-1 	|BT| (NP (NP (CD 10,000)(NN fax)(NNS machines))(VP (VBN made))) |ET| 10:1 12486:1 12494:1 14481:1 16032:1 19441:1 21478:1 
+1 	|BT| (VP (VBN made)(PP (NP (NNP Minolta)))) |ET| 10:1 12487:1 12494:1 14829:1 16032:1 19441:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel))(VP (VP (VB provide)))) |ET| 4:1 12486:1 12494:1 13198:1 16241:1 20024:1 21478:1 
+-1 	|BT| (VP (VB provide)(NP (NP (DT a)(NN credit)(NN reader))(SBAR (WHADVP (-NONE- 0))(IN for)(S (NP (DT the)(NNS machines))(VP (TO to)(VP (VB collect)(, ,)(VB store)(CC and)(VB forward)(NP (NN billing)(NNS data))(ADVP (-NONE- *T*)))))))) |ET| 10:1 10206:1 12487:1 12494:1 13367:1 16241:1 20024:1 21478:1 
+1 	|BT| (S (NP (DT the)(NNS machines))(VP (VP (VB collect)))) |ET| 4:1 8731:1 12486:1 12494:1 13198:1 15458:1 17752:1 21478:1 
+-1 	|BT| (VP (VB collect)(NP (NN billing)(NNS data))) |ET| 10:1 5361:1 12487:1 12494:1 13367:1 15458:1 17752:1 21478:1 
+1 	|BT| (S (NP (DT the)(NNS machines))(VP (VP (VB store)))) |ET| 4:1 8731:1 12486:1 12494:1 13198:1 16578:1 20923:1 21478:1 
+-1 	|BT| (VP (VB store)(NP (NN billing)(NNS data))) |ET| 10:1 5361:1 12487:1 12494:1 13367:1 16578:1 20923:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Pierce))(VP (VBD said))) |ET| 4:1 12486:1 12494:1 13560:1 16433:1 20537:1 21478:1 
+-1 	|BT| (VP (VBD said)(SBAR (S (NP (NNP Elcotel))(VP (MD should)(VP (VB realize)(NP (NP (DT a)(NN minimum))(PP (IN of)(NP (NP ($ $)(CD 10)(-NONE- *U*))(PP (IN of)(NP (VBG recurring)(JJ net)(NNS earnings))))))(PP (IN for)(NP (DT each)(NN machine)))(NP (DT each)(NN month))))))) |ET| 10948:1 12487:1 12499:1 13711:1 16433:1 20537:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel))(VP (VP (VB realize)))) |ET| 4:1 12486:1 12494:1 13198:1 16282:1 20137:1 21478:1 
+-1 	|BT| (VP (VB realize)(NP (NP (DT a)(NN minimum))(PP (IN of)(NP (NP ($ $)(CD 10)(-NONE- *U*))(PP (IN of)(NP (VBG recurring)(JJ net)(NNS earnings))))))) |ET| 10:1 8959:1 12487:1 12494:1 13367:1 16282:1 20137:1 21478:1 
+1 	|BT| (S (NP (NNP Elcotel))(VP (VP (VBN developed)))) |ET| 4:1 12486:1 12494:1 14658:1 15612:1 18206:1 21478:1 
+-1 	|BT| (VP (VBN developed)(NP (NP (DT an)(JJ automatic)(NN call)(NN processor))(SBAR (WHNP (WDT that))(S (NP (-NONE- *T*))(VP (MD will)(VP (VB make)(NP (JJ further)(NN use))(PP (IN of)(NP (NP (NP (DT the)(NN company)(POS 's))(NN system))(PP (IN for)(S (NP (-NONE- *))(VP (VBG automating)(CC and)(VBG handling)(NP (NP (NN credit)(NNS calls))(CC and)(NP (JJ collect)(NNS calls)))))))))))))) |ET| 10:1 9951:1 12487:1 12494:1 14819:1 15612:1 18206:1 21478:1 
+1 	|BT| (NP (NP (DT an)(JJ automatic)(NN call)(NN processor))(SBAR (S (VP (VP (VB make)))))) |ET| 10:1 9951:1 12486:1 12494:1 12924:1 16032:1 19450:1 21478:1 
+1 	|BT| (SBAR (WHNP (WDT that))(S (VP (VP (VB make))))) |ET| 11688:1 12486:1 12507:1 13002:1 16032:1 19450:1 21478:1 
+-1 	|BT| (VP (VB make)(NP (JJ further)(NN use))) |ET| 10:1 12084:1 12487:1 12494:1 13367:1 16032:1 19450:1 21478:1 
+1 	|BT| (NP (NP (NP (DT the)(NN company)(POS 's)))(PP (S (VP (VBG handling))))) |ET| 10:1 21:1 12486:1 12494:1 13942:1 15878:1 18985:1 21478:1 
+-1 	|BT| (VP (VBG handling)(NP (NP (NN credit)(NNS calls))(CC and)(NP (JJ collect)(NNS calls)))) |ET| 10:1 12487:1 12494:1 14339:1 15878:1 18985:1 21478:1 
+1 	|BT| (S (NP (JJ Automatic)(NN call)(NNS processors))(VP (VP (VB provide)))) |ET| 4:1 5638:1 12486:1 12494:1 13198:1 16241:1 20024:1 21478:1 
+-1 	|BT| (VP (VB provide)(NP (DT that)(NN system))) |ET| 10:1 11564:1 12487:1 12494:1 13367:1 16241:1 20024:1 21478:1 
+-1 	|BT| (S (NP (JJ Automatic)(NN call)(NNS processors))(VP (VP (PP (NP (PRN (S (VP (VBD said))))))))) |ET| 4:1 5638:1 12486:1 12494:1 16433:1 20537:1 21478:1 
+-1 	|BT| (VP (MD will)(VP (PP (NP (PRN (S (VP (VBD said)))))))) |ET| 12358:1 12486:1 12505:1 16433:1 20537:1 21478:1 
+-1 	|BT| (VP (NP (DT that)(NN system))(PP (NP (PRN (S (VP (VBD said))))))) |ET| 10:1 11564:1 12486:1 12494:1 16433:1 20537:1 21478:1 
+-1 	|BT| (NP (NP (ADJP (RB virtually)(DT any))(NN telephone))(PRN (S (VP (VBD said))))) |ET| 10:1 11636:1 12486:1 12494:1 16433:1 20537:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Pierce))(VP (VBD said))) |ET| 4:1 12486:1 12494:1 13560:1 16433:1 20537:1 21478:1 
+-1 	|BT| (NP (PRN (S (VP (VBD said))))(NP (NP (RB not)(RB just)(VBZ phones))(VP (VBN produced)(NP (-NONE- *))(PP (IN by)(NP (NNP Elcotel)))))) |ET| 10:1 8416:1 12487:1 12494:1 16433:1 20537:1 21478:1 
+-1 	|BT| (NP (NP (RB not)(RB just)(VBZ phones))(VP (VBN produced))) |ET| 10:1 8416:1 12486:1 12494:1 14481:1 16226:1 19975:1 21478:1 
+1 	|BT| (VP (VBN produced)(PP (NP (NNP Elcotel)))) |ET| 10:1 12487:1 12494:1 14829:1 16226:1 19975:1 21478:1 
+1 	|BT| (S (NP (DT The)(NN company))(VP (VP (VP (VBG producing))))) |ET| 4:1 6016:1 12486:1 12494:1 14301:1 16226:1 19977:1 21478:1 
+-1 	|BT| (VP (VBG producing)(NP (NP (DT a)(JJ new)(NN line))(PP (IN of)(NP (NP (NN convenience)(NNS telephones))(, ,)(SBAR (WHNP (WDT which))(S (NP (-NONE- *T*))(VP (VBP do)(RB n't)(VP (VB accept)(NP (NNS coins))))))(, ,)))(PP (IN for)(NP (NP (NN use))(PP (IN in)(NP (NP (NN hotel)(NNS lobbies))(, ,)(NP (NN office)(NNS lobbies))(, ,)(NP (NN hospitality)(NNS lounges))(CC and)(NP (JJ similar)(NNS settings)))))))) |ET| 10:1 8626:1 12487:1 12494:1 14339:1 16226:1 19977:1 21478:1 
+1 	|BT| (NP (NP (NN convenience)(NNS telephones))(SBAR (S (VP (VP (VB accept)))))) |ET| 10:1 6213:1 12486:1 12494:1 12924:1 15237:1 17099:1 21478:1 
+1 	|BT| (SBAR (WHNP (WDT which))(S (VP (VP (VB accept))))) |ET| 12326:1 12486:1 12507:1 13002:1 15237:1 17099:1 21478:1 
+-1 	|BT| (VP (VB accept)(NP (NNS coins))) |ET| 10:1 5938:1 12487:1 12494:1 13367:1 15237:1 17099:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Pierce))(VP (VBD estimated))) |ET| 4:1 12486:1 12494:1 13560:1 15744:1 18585:1 21478:1 
+1 	|BT| (S (NP (DT the)(NX (NX (NNS processors))(CC and)(NX (NN convenience)(NNS phones))))(VP (VP (VB produce)))) |ET| 4:1 9952:1 12486:1 12494:1 13198:1 16226:1 19974:1 21478:1 
+1 	|BT| (S (NP (PRP it))(VP (VBD adopted))) |ET| 4:1 8356:1 12486:1 12494:1 13560:1 15256:1 17164:1 21479:1 
+1 	|BT| (VP (VBN replaced)(PP (NP (NNS tablespoons)))) |ET| 10:1 12487:1 12494:1 14829:1 16355:1 20336:1 21478:1 
+1 	|BT| (S (NP (PRP It))(VP (VBZ marks))) |ET| 4:1 2381:1 12486:1 12494:1 15130:1 16039:1 19480:1 21478:1 
+1 	|BT| (S (NP (NNP Kao))(VP (VBD introduced))) |ET| 4:1 12486:1 12494:1 13560:1 15958:1 19211:1 21478:1 
+1 	|BT| (S (NP (DT A)(NNP P&G)(NN spokeswoman))(VP (VBD confirmed))) |ET| 4:1 11215:1 12486:1 12494:1 13560:1 15493:1 17858:1 21478:1 
+1 	|BT| (S (NP (DT the)(NN company))(VP (VP (VB study)))) |ET| 4:1 6016:1 12486:1 12494:1 13198:1 16591:1 20956:1 21478:1 
+1 	|BT| (S (NP (DT The)(NN company))(VP (VBD introduced))) |ET| 4:1 6016:1 12486:1 12494:1 13560:1 15958:1 19211:1 21478:1 
+1 	|BT| (S (NP (DT The)(NN company))(VP (PP (S (VP (VBG watching)))))) |ET| 4:1 6016:1 12486:1 12494:1 13998:1 16754:1 21378:1 21478:1 
+1 	|BT| (S (NP (DT the)(NNPS Japanese))(VP (VP (VBN embraced)))) |ET| 4:1 2401:1 12486:1 12494:1 14658:1 15705:1 18469:1 21478:1 
+1 	|BT| (S (NP (DT The)(NN company))(VP (VP (VP (VBN chosen))))) |ET| 4:1 6016:1 12486:1 12494:1 14750:1 15436:1 17697:1 21478:1 
+1 	|BT| (S (NP (DT The)(NN company))(VP (VP (VP (S (VP (VP (VB market)))))))) |ET| 4:1 6016:1 12486:1 12494:1 13175:1 16040:1 19475:1 21478:1 

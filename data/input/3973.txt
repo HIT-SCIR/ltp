@@ -1,0 +1,12 @@
+当日下午三时多，张家口市邮电局局长任春贵也火速赶到张北，并带来了三十多人的线路抢修队。
+任春贵
+张家口市邮电局
+1
+24
+当日 下午 三时 多 ， 张家口市 邮电局 局长 任春贵 也 火速 赶到 张北 ， 并 带来 了 三十 多 人 的 线路 抢修队 。 
+24
+nt nt nt m wp ns n n nh d d v ns wp c v u m m n u n n wp 
+24
+O O O O O B-Ni E-Ni O S-Nh O O O S-Ns O O O O O O O O O O O 
+24
+2 ATT 3 ATT 12 ADV 3 RAD 3 WP 7 ATT 8 ATT 9 ATT 12 SBV 12 ADV 12 ADV 0 HED 12 VOB 12 WP 16 ADV 12 COO 16 RAD 20 ATT 18 RAD 23 ATT 20 RAD 23 ATT 16 VOB 12 WP 

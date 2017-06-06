@@ -1,0 +1,12 @@
+在普拉夫希奇总统和波黑和平协议执行理事会高级代表韦斯滕多普斡旋下，议会中的４２名议员于１８日凌晨继续开会。
+韦斯滕多普
+波黑和平协议执行理事会
+1
+27
+在 普拉夫希奇 总统 和 波黑 和平 协议 执行 理事会 高级 代表 韦斯滕多普 斡旋 下 ， 议会 中 的 ４２ 名 议员 于 １８日 凌晨 继续 开会 。 
+27
+p nh n c ns n n v n a n nh v nd wp n nd u m q n p nt nt v v wp 
+27
+O S-Nh O O B-Ni I-Ni I-Ni I-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O 
+27
+25 ADV 3 ATT 12 ATT 7 LAD 6 ATT 7 ATT 3 COO 12 ATT 11 ATT 11 ATT 12 ATT 13 SBV 14 ATT 1 POB 1 WP 17 ATT 21 ATT 17 RAD 20 ATT 21 ATT 25 SBV 25 ADV 24 ATT 22 POB 0 HED 25 VOB 25 WP 

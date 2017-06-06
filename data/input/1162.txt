@@ -1,0 +1,12 @@
+今天，广东省军区召开邱玲英雄事迹表彰会，给她记一等功。
+邱玲
+广东省军区
+0
+15
+今天 ， 广东省 军区 召开 邱玲 英雄 事迹 表彰会 ， 给 她 记 一等功 。 
+15
+nt wp ns n v nh n n n wp p r v n wp 
+15
+O O B-Ni E-Ni O S-Nh O O O O O O O O O 
+15
+5 ADV 1 WP 4 ATT 5 SBV 0 HED 7 ATT 8 ATT 9 ATT 5 VOB 5 WP 13 ADV 11 POB 5 COO 13 VOB 5 WP 

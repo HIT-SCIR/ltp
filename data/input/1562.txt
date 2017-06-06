@@ -1,0 +1,12 @@
+库克说，英国认为，中国的经济已经发生巨大变化，英国支持中国成为世界贸易组织正式成员。
+库克
+世界贸易组织
+0
+24
+库克 说 ， 英国 认为 ， 中国 的 经济 已经 发生 巨大 变化 ， 英国 支持 中国 成为 世界 贸易 组织 正式 成员 。 
+24
+nh v wp ns v wp ns u n d v a v wp ns v ns v n v n a n wp 
+24
+S-Nh O O S-Ns O O S-Ns O O O O O O O S-Ns O S-Ns O B-Ni I-Ni E-Ni O O O 
+24
+2 SBV 0 HED 2 WP 5 SBV 2 VOB 5 WP 9 ATT 7 RAD 11 SBV 11 ADV 5 VOB 13 ATT 11 VOB 11 WP 16 SBV 11 COO 16 DBL 16 VOB 21 ATT 21 ATT 23 ATT 23 ATT 18 VOB 2 WP 

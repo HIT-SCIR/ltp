@@ -1,0 +1,12 @@
+大连艺术研究所研究员马明捷京剧要振兴、要发展，就必须改革，这是从事京剧的和爱好京剧的早已取得的共识。
+马明捷
+大连艺术研究所
+1
+30
+大连 艺术 研究所 研究员 马明捷 京剧 要 振兴 、 要 发展 ， 就 必须 改革 ， 这 是 从事 京剧 的 和 爱好 京剧 的 早已 取得 的 共识 。 
+30
+ns n n n nh n v v wp v v wp d d v wp r v v n u c v n u d v u n wp 
+30
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O 
+30
+3 ATT 3 ATT 4 ATT 5 ATT 6 ATT 8 SBV 8 ADV 18 SBV 11 WP 11 ADV 8 COO 8 WP 15 ADV 15 ADV 8 COO 8 WP 18 SBV 0 HED 29 ATT 19 VOB 19 RAD 23 LAD 19 COO 23 VOB 19 RAD 27 ADV 29 ATT 27 RAD 18 VOB 18 WP 

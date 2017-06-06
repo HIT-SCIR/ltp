@@ -1,0 +1,12 @@
+中国航空工业总公司总经理朱育理今天在会上传达了李鹏总理的批示内容。
+李鹏
+中国航空工业总公司
+0
+17
+中国 航空 工业 总公司 总经理 朱育理 今天 在 会上 传达 了 李鹏 总理 的 批示 内容 。 
+17
+ns n n n n nh nt p nt v u nh n u n n wp 
+17
+B-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O S-Nh O O O O O 
+17
+4 ATT 3 ATT 4 ATT 5 ATT 6 ATT 10 SBV 10 ADV 10 ADV 8 POB 0 HED 10 RAD 13 ATT 16 ATT 13 RAD 16 ATT 10 VOB 10 WP 

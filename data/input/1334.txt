@@ -1,0 +1,12 @@
+美国队的戴肯和汤普森、澳大利亚队的莱莉和布朗、俄罗斯队的波波夫和潘克拉托夫、德国队的阿尔姆西克等泳坛巨星们正磨刀霍霍，力争捍卫荣誉。
+阿尔姆西克
+美国队
+0
+32
+美国队 的 戴肯 和 汤普森 、 澳大利亚队 的 莱莉 和 布朗 、 俄罗斯队 的 波波夫 和 潘克拉托夫 、 德国队 的 阿尔姆西克 等 泳坛 巨星 们 正 磨刀霍霍 ， 力争 捍卫 荣誉 。 
+32
+n u nh c nh wp ni u nh c nh wp ni u nh c nh wp ni u nh u n n k d i wp v v n wp 
+32
+O O S-Nh O S-Nh O S-Ni O S-Nh O S-Nh O S-Ni O S-Nh O S-Nh O S-Ni O S-Nh O O O O O O O O O O O 
+32
+3 ATT 1 RAD 15 ATT 5 LAD 3 COO 5 WP 3 COO 7 RAD 3 COO 11 LAD 3 COO 13 WP 3 COO 3 RAD 24 ATT 17 LAD 15 COO 17 WP 21 ATT 19 RAD 15 COO 15 RAD 24 ATT 27 SBV 24 RAD 27 ADV 0 HED 27 WP 27 COO 29 VOB 30 VOB 27 WP 

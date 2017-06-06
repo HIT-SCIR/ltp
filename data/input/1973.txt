@@ -1,0 +1,12 @@
+全国统计工作会议一月七日至九日在北京召开，国家统计局局长刘洪要求各级统计机构认真学习贯彻党的十五大和中央经济工作会议精神，加快改革国家统计制度，切实提高统计数据质量。
+刘洪
+国家统计局
+1
+45
+全国 统计 工作 会议 一月 七日 至 九日 在 北京 召开 ， 国家 统计局 局长 刘洪 要求 各级 统计 机构 认真 学习 贯彻 党 的 十五大 和 中央 经济 工作 会议 精神 ， 加快 改革 国家 统计 制度 ， 切实 提高 统计 数据 质量 。 
+45
+n v v n nt nt p nt p ns v wp n n n nh v r v n a v v n u j c n n v n n wp v v n v n wp a v v n n wp 
+45
+O O O O O O O O O S-Ns O O B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+45
+4 ATT 3 ATT 4 ATT 11 SBV 6 ATT 7 ADV 11 ADV 7 POB 11 ADV 9 POB 0 HED 11 WP 14 ATT 15 ATT 16 ATT 17 SBV 11 COO 20 ATT 20 ATT 22 SBV 22 ADV 17 VOB 22 COO 26 ATT 24 RAD 31 ATT 29 LAD 29 ATT 26 COO 31 ATT 32 ATT 23 VOB 22 WP 22 COO 34 VOB 38 ATT 38 ATT 35 VOB 22 WP 41 ADV 22 COO 43 ATT 44 ATT 41 VOB 11 WP 

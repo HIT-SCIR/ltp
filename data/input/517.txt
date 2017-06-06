@@ -1,0 +1,12 @@
+中联部部长戴秉国等参加了会见。
+戴秉国
+中联部
+1
+8
+中联部 部长 戴秉国 等 参加 了 会见 。 
+8
+j n nh u v u v wp 
+8
+O O S-Nh O O O O O 
+8
+2 ATT 3 ATT 5 SBV 3 RAD 0 HED 5 RAD 5 VOB 5 WP 

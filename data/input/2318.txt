@@ -1,0 +1,12 @@
+中国民航总局航班时刻处处长包方田介绍，因旅客原因造成航班延误，除了以爆炸物威胁外，还有其它一些情况。
+包方田
+中国民航总局航班时刻处
+1
+27
+中国 民航 总局 航班 时刻处 处长 包方田 介绍 ， 因 旅客 原因 造成 航班 延误 ， 除了 以 爆炸物 威胁 外 ， 还有 其它 一些 情况 。 
+27
+ns n n n n n nh v wp p n n v n v wp p p n v nd wp v r m n wp 
+27
+B-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O 
+27
+3 ATT 3 ATT 4 ATT 5 ATT 6 ATT 7 ATT 8 SBV 0 HED 8 WP 13 ADV 12 ATT 10 POB 8 VOB 15 SBV 13 VOB 13 WP 23 ADV 20 ADV 18 POB 21 ATT 17 POB 17 WP 13 COO 26 ATT 26 ATT 23 VOB 8 WP 

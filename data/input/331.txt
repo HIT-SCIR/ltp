@@ -1,0 +1,12 @@
+中共中央政治局委员李铁映给会议写来贺信，对该院坚持以中国特色社会主义为研究对象，取得一批高质量的研究成果，给予充分肯定。
+李铁映
+中共中央政治局
+1
+34
+中共中央 政治局 委员 李铁映 给 会议 写 来 贺信 ， 对 该院 坚持 以 中国 特色 社会主义 为 研究 对象 ， 取得 一 批 高 质量 的 研究 成果 ， 给予 充分 肯定 。 
+34
+ni n n nh p n v v n wp p r v p ns n n v v n wp v m q a n u v n wp v a v wp 
+34
+B-Ni E-Ni O S-Nh O O O O O O O O O O S-Ns O O O O O O O O O O O O O O O O O O O 
+34
+2 ATT 3 ATT 4 ATT 7 SBV 7 ADV 5 POB 0 HED 7 CMP 7 VOB 7 WP 13 ADV 11 POB 7 COO 18 ADV 16 ATT 17 ATT 14 POB 13 VOB 20 ATT 18 VOB 18 WP 18 COO 24 ATT 29 ATT 26 ATT 29 ATT 26 RAD 29 ATT 22 VOB 18 WP 18 COO 33 ADV 31 VOB 7 WP 

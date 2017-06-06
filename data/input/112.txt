@@ -1,0 +1,12 @@
+哈马迪说，伊拉克议会和中国全国人大之间的友谊也有着悠久历史，双方要通过各种方式进行合作。
+哈马迪
+伊拉克议会
+0
+25
+哈马迪 说 ， 伊拉克 议会 和 中国 全国 人大 之间 的 友谊 也 有着 悠久 历史 ， 双方 要 通过 各种 方式 进行 合作 。 
+25
+nh v wp ns n c ns n j nd u n d v a n wp n v p r n v v wp 
+25
+S-Nh O O B-Ni E-Ni O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O 
+25
+2 SBV 0 HED 2 WP 5 ATT 12 ATT 9 LAD 9 ATT 9 ATT 5 COO 12 ATT 10 RAD 14 SBV 14 ADV 2 VOB 16 ATT 14 VOB 14 WP 23 SBV 23 ADV 23 ADV 22 ATT 20 POB 14 COO 23 VOB 2 WP 

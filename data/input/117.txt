@@ -1,0 +1,12 @@
+据美国《科学》杂志报道，美国国立卫生研究所和沃尔特?里德陆军研究所的研究人员使用正电子释放断层扫描术对正在熟睡中的１０名男性进行测量，以便精确地确定大脑的哪一部分在晚间熟睡后还处于活跃状态。
+沃尔特?里德陆军研究所
+美国国立卫生研究所
+1
+53
+据 美国 《 科学 》 杂志 报道 ， 美国 国立 卫生 研究所 和 沃尔特 ?里德 陆军 研究所 的 研究 人员 使用 正电子 释放 断层 扫描术 对 正在 熟睡 中 的 １０ 名 男性 进行 测量 ， 以便 精确 地 确定 大脑 的 哪 一部分 在 晚间 熟睡 后 还 处于 活跃 状态 。 
+53
+p ns wp n wp n v wp ns b a n c nh nh n n u v n v n v n n p d v nd u m q n v v wp d a u v n u r m p nt v nd d v v n wp 
+53
+O S-Ns O O O O O O B-Ni I-Ni I-Ni E-Ni O B-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+53
+21 ADV 6 ATT 4 WP 6 ATT 4 WP 7 SBV 1 POB 1 WP 12 ATT 12 ATT 12 ATT 17 ATT 14 LAD 12 COO 17 ATT 17 ATT 20 ATT 17 RAD 20 ATT 21 SBV 0 HED 21 VOB 21 COO 25 ATT 23 VOB 34 ADV 28 ADV 29 ATT 33 ATT 29 RAD 32 ATT 33 ATT 26 POB 23 COO 34 VOB 34 WP 40 ADV 40 ADV 38 RAD 50 SBV 40 VOB 40 RAD 44 ATT 50 SBV 50 ADV 45 POB 48 ATT 45 POB 50 ADV 34 COO 52 ATT 50 VOB 21 WP 

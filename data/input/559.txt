@@ -1,0 +1,12 @@
+审判结束后，伊格尔森被押入市中心的当河监狱服刑。
+伊格尔森
+当河监狱
+0
+14
+审判 结束 后 ， 伊格尔森 被 押 入 市中心 的 当河 监狱 服刑 。 
+14
+v v nd wp nh p v v nl u nz n v wp 
+14
+O O O O S-Nh O O O O O B-Ni E-Ni O O 
+14
+2 SBV 3 ATT 7 ADV 3 WP 7 FOB 7 ADV 0 HED 7 CMP 12 ATT 9 RAD 12 ATT 8 POB 7 COO 7 WP 

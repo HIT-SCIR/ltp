@@ -1,0 +1,12 @@
+永晴隆冬的一个周末，清华大学留学生楼餐厅。
+永晴
+清华大学
+0
+11
+永晴 隆冬 的 一个 周末 ， 清华大学 留学生 楼 餐厅 。 
+11
+nh nt u m nt wp ni n n n wp 
+11
+S-Nh O O O O O S-Ni O O O O 
+11
+5 ATT 5 ATT 2 RAD 5 ATT 0 HED 5 WP 10 ATT 9 ATT 10 ATT 5 COO 5 WP 

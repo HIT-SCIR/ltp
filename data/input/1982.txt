@@ -1,0 +1,12 @@
+政府官员闵耀良（农业部市场信息司司长）：组织实施新一轮“菜篮子工程”，必须始终坚持以市场需求为导向，着眼于大生产、大流通、大市场。
+闵耀良
+农业部市场信息司
+1
+40
+政府 官员 闵耀良 （ 农业部 市场 信息司 司长 ） ： 组织 实施 新 一 轮 “ 菜篮子 工程 ” ， 必须 始终 坚持 以 市场 需求 为 导向 ， 着眼 于 大 生产 、 大 流通 、 大 市场 。 
+40
+n n nh wp ni n n n wp wp v v a m q wp n n wp wp d d v p n n v n wp v p a v wp a v wp a n wp 
+40
+O O S-Nh O B-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+40
+2 ATT 3 ATT 11 SBV 8 WP 8 ATT 7 ATT 8 ATT 11 SBV 8 WP 8 WP 0 HED 11 COO 15 ATT 15 ATT 18 ATT 18 WP 18 ATT 12 VOB 18 WP 11 WP 23 ADV 23 ADV 11 COO 27 ADV 26 ATT 24 POB 23 VOB 27 VOB 27 WP 27 COO 30 CMP 33 ADV 31 POB 36 WP 36 ATT 33 COO 39 WP 39 ATT 33 COO 11 WP 

@@ -1,0 +1,12 @@
+１９９４年，黄赛红考取了浙江省政法管理干部学院，通过三年的自费脱产学习，于１９９６年７月毕业。
+黄赛红
+浙江省政法管理干部学院
+0
+24
+１９９４年 ， 黄赛红 考取 了 浙江省 政法 管理 干部 学院 ， 通过 三 年 的 自费 脱产 学习 ， 于 １９９６年 ７月 毕业 。 
+24
+nt wp nh v u ns j v n n wp p m q u d v v wp p nt nt v wp 
+24
+O O S-Nh O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O O O O 
+24
+4 ADV 1 WP 4 SBV 0 HED 4 RAD 10 ATT 10 ATT 10 ATT 10 ATT 4 VOB 4 WP 23 ADV 14 ATT 12 POB 14 RAD 17 ADV 12 POB 17 COO 12 WP 23 ADV 22 ATT 20 POB 4 COO 4 WP 

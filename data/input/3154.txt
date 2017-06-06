@@ -1,0 +1,12 @@
+地震后一个半小时，国家地震局副局长葛治洲带领地震现场工作队开赴灾区，并于当晚赶到现场。
+葛治洲
+国家地震局
+1
+23
+地震 后 一个半 小时 ， 国家 地震局 副 局长 葛治洲 带领 地震 现场 工作队 开赴 灾区 ， 并 于 当晚 赶到 现场 。 
+23
+n nd m n wp n n b n nh v n nl n v n wp c p nt v nl wp 
+23
+O O O O O B-Ni E-Ni O O S-Nh O O O O O O O O O O O O O 
+23
+2 ATT 4 ATT 4 ATT 11 ADV 4 WP 7 ATT 9 ATT 9 ATT 10 ATT 11 SBV 0 HED 13 ATT 14 ATT 11 DBL 11 VOB 15 VOB 11 WP 21 ADV 21 ADV 19 POB 11 COO 21 VOB 11 WP 

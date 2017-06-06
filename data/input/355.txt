@@ -1,0 +1,12 @@
+鲁宾还说，美国将在联合国特委会主席巴特勒２３日向安理会汇报他在巴格达同伊拉克官员会谈的情况之后，再考虑采取何种行动。
+巴特勒
+联合国特委会
+0
+32
+鲁宾 还 说 ， 美国 将 在 联合国 特委会 主席 巴特勒 ２３日 向 安理会 汇报 他 在 巴格达 同 伊拉克 官员 会谈 的 情况 之后 ， 再 考虑 采取 何种 行动 。 
+32
+nh d v wp ns d p ni j n nh nt p j v r p ns p ns n v u n nd wp d v v r v wp 
+32
+S-Nh O O O S-Ns O O B-Ni E-Ni O S-Nh O O O O O O S-Ns O S-Ns O O O O O O O O O O O O 
+32
+3 SBV 3 ADV 0 HED 3 WP 28 SBV 28 ADV 28 ADV 9 ATT 10 ATT 11 ATT 15 SBV 15 ADV 15 ADV 13 POB 25 ATT 22 SBV 22 ADV 17 POB 22 ADV 21 ATT 19 POB 24 ATT 22 RAD 15 VOB 7 POB 7 WP 28 ADV 3 VOB 28 VOB 31 ATT 29 VOB 3 WP 

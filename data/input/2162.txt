@@ -1,0 +1,12 @@
+吴明四川新兴集团公司是四川省的重点乡镇企业，先后荣获省级先进企业、全国先进施工企业、全国最佳经济效益乡镇企业等称号。
+吴明
+四川新兴集团公司
+0
+28
+吴明 四川 新兴 集团公司 是 四川省 的 重点 乡镇企业 ， 先后 荣获 省级 先进 企业 、 全国 先进 施工 企业 、 全国 最佳 经济效益 乡镇企业 等 称号 。 
+28
+nh ns ns n v ns u n n wp d v b a n wp n a v n wp n z n n u n wp 
+28
+S-Nh B-Ni I-Ni E-Ni O S-Ns O O O O O O O O O O O O O O O O O O O O O O 
+28
+4 ATT 4 ATT 4 ATT 5 SBV 0 HED 9 ATT 6 RAD 9 ATT 5 VOB 5 WP 12 ADV 5 COO 15 ATT 15 ATT 27 ATT 20 WP 20 ATT 20 ATT 20 ATT 15 COO 22 WP 25 ATT 25 ATT 25 ATT 15 COO 15 RAD 12 VOB 5 WP 

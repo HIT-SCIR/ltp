@@ -1,0 +1,12 @@
+此后中国队主教练马元安也不断换上年轻球员，以锻炼阵容，比分最后定格在４∶０。
+马元安
+中国队
+1
+20
+此后 中国队 主教练 马元安 也 不断 换上 年轻 球员 ， 以 锻炼 阵容 ， 比分 最后 定格 在 ４∶０ 。 
+20
+nt ni n nh d d v a n wp c v n wp n nd v p m wp 
+20
+O S-Ni O S-Nh O O O O O O O O O O O O O O O O 
+20
+7 ADV 3 ATT 4 ATT 7 SBV 7 ADV 7 ADV 0 HED 9 ATT 7 VOB 7 WP 12 ADV 7 COO 12 VOB 7 WP 17 SBV 17 ADV 7 COO 17 CMP 18 POB 7 WP 

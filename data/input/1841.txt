@@ -1,0 +1,12 @@
+北京黄帝医学康复研究所有位５０多岁的王堇屹大夫，他平生的最大愿望便是祛除痹症对人类的困扰。
+王堇屹
+北京黄帝医学康复研究所
+1
+29
+北京 黄帝 医学 康复 研究所 有 位 ５０ 多 岁 的 王堇屹 大夫 ， 他 平生 的 最 大 愿望 便 是 祛除 痹症 对 人类 的 困扰 。 
+29
+ns nh n v n v q m m q u nh n wp r n u d a n d v v n p n u v wp 
+29
+B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O S-Nh O O O O O O O O O O O O O O O O O 
+29
+5 ATT 3 ATT 5 ATT 5 ATT 6 SBV 0 HED 13 ATT 10 ATT 8 RAD 13 ATT 10 RAD 13 ATT 6 VOB 6 WP 16 ATT 20 ATT 16 RAD 19 ADV 20 ATT 22 SBV 22 ADV 6 COO 22 VOB 28 ATT 28 ATT 25 POB 25 RAD 23 VOB 6 WP 

@@ -1,0 +1,12 @@
+中国海峡两岸关系协会会长汪道涵在会上发表题为《面向２１世纪的中美日关系》演讲，指出中美日三国之间确立稳定、良好的关系，不仅对亚太地区，而且对世界的和平与繁荣具有重大作用。
+汪道涵
+中国海峡两岸关系协会
+1
+53
+中国 海峡 两岸 关系 协会 会长 汪道涵 在 会上 发表 题 为 《 面向 ２１ 世纪 的 中 美 日 关系 》 演讲 ， 指出 中 美 日 三 国 之间 确立 稳定 、 良好 的 关系 ， 不仅 对 亚太地区 ， 而且 对 世界 的 和平 与 繁荣 具有 重大 作用 。 
+53
+ns n n n n n nh p nt v n v wp v m n u j j j n wp v wp v j j j m n nd v a wp a u n wp c p j wp c p n u n c a v a n wp 
+53
+B-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O S-Ns S-Ns S-Ns O O O O O S-Ns S-Ns S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O 
+53
+5 ATT 3 ATT 4 ATT 5 ATT 6 ATT 7 ATT 10 SBV 10 ADV 8 POB 0 HED 12 SBV 10 COO 21 WP 21 ATT 16 ATT 14 VOB 14 RAD 21 ATT 18 COO 18 COO 12 VOB 21 WP 12 VOB 10 WP 10 COO 30 ATT 26 COO 26 COO 30 ATT 31 ATT 32 SBV 25 VOB 37 ATT 35 WP 33 COO 33 RAD 32 VOB 32 WP 50 ADV 50 ADV 40 POB 40 WP 50 ADV 50 ADV 47 ATT 45 RAD 44 POB 49 LAD 47 COO 32 COO 52 ATT 50 VOB 10 WP 

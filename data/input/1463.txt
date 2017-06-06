@@ -1,0 +1,12 @@
+（陕西省农村社会经济调查队宗合）
+宗合
+陕西省农村社会经济调查队
+1
+8
+（ 陕西省 农村 社会 经济 调查队 宗合 ） 
+8
+wp ns n n n n nh wp 
+8
+O S-Ns O O O O S-Nh O 
+8
+7 WP 5 ATT 5 ATT 5 ATT 6 ATT 7 ATT 0 HED 7 WP 

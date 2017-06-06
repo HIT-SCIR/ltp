@@ -1,0 +1,12 @@
+李吉在湖南省长沙市五一路芙蓉宾馆西侧，有一溜美容美发店。
+李吉
+湖南省长沙市五一路芙蓉宾馆
+0
+14
+李吉 在 湖南省 长沙市 五一路 芙蓉 宾馆 西侧 ， 有 一 溜 美容美发店 。 
+14
+nh p ns ns ns n n nd wp v m q n wp 
+14
+S-Nh O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O 
+14
+10 SBV 10 ADV 4 ATT 5 ATT 7 ATT 7 ATT 8 ATT 2 POB 2 WP 0 HED 12 ATT 13 ATT 10 VOB 10 WP 

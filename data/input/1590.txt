@@ -1,0 +1,12 @@
+国家环保局局长解振华庄重宣布：在淮河流域１５６２家污染企业中，已有１１３９家完成治理任务，２１５家正在施工停产治理，１９０家由于其他原因停产、破产、转产，１８家因治理无望被责令关停。
+解振华
+国家环保局
+1
+51
+国家 环保局 局长 解振华 庄重 宣布 ： 在 淮河 流域 １５６２ 家 污染 企业 中 ， 已 有 １１３９ 家 完成 治理 任务 ， ２１５ 家 正在 施工 停产 治理 ， １９０ 家 由于 其他 原因 停产 、 破产 、 转产 ， １８ 家 因 治理 无望 被 责令 关停 。 
+51
+n n n nh a v wp p ns n m q v n nd wp d v m q v v n wp m q d v v v wp m q p r n v wp v wp v wp m q p v v p v v wp 
+51
+B-Ni E-Ni O S-Nh O O O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+51
+2 ATT 3 ATT 4 ATT 6 SBV 6 ADV 0 HED 6 WP 18 ADV 10 ATT 14 ATT 12 ATT 14 ATT 14 ATT 15 ATT 8 POB 8 WP 18 ADV 6 VOB 20 ATT 18 DBL 18 VOB 23 ATT 21 VOB 21 WP 26 ATT 28 SBV 28 ADV 21 COO 28 COO 29 COO 28 WP 33 ATT 49 SBV 49 ADV 36 ATT 37 SBV 34 POB 39 WP 37 COO 41 WP 37 COO 34 WP 44 ATT 49 FOB 49 ADV 47 ATT 45 POB 49 ADV 28 COO 49 VOB 6 WP 

@@ -1,0 +1,12 @@
+比如天津市装饰布总厂原团委书记崔木岚由于企业不景气而成为厂里第一个被裁减的中层干部。
+崔木岚
+天津市装饰布总厂
+0
+23
+比如 天津市 装饰布 总厂 原 团委 书记 崔木岚 由于 企业 不景气 而 成为 厂 里 第一 个 被 裁减 的 中层 干部 。 
+23
+v ns n n b n n nh p n a c v n nd m q p v u nd n wp 
+23
+O B-Ni I-Ni E-Ni O O O S-Nh O O O O O O O O O O O O O O O 
+23
+13 ADV 4 ATT 4 ATT 6 ATT 6 ATT 7 ATT 8 ATT 13 SBV 13 ADV 11 SBV 9 POB 13 ADV 0 HED 15 ATT 22 ATT 17 ATT 22 ATT 19 ADV 22 ATT 19 RAD 22 ATT 13 VOB 13 WP 

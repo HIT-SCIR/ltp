@@ -1,0 +1,12 @@
+湖南省少儿图书馆将８０００册图书分别送到望城县退休教师胡应龙创办的应龙图书馆以及双峰县图书馆、炎陵县图书馆。
+胡应龙
+双峰县图书馆
+0
+25
+湖南省 少儿 图书馆 将 ８０００ 册 图书 分别 送 到 望城县 退休 教师 胡应龙 创办 的 应龙 图书馆 以及 双峰县 图书馆 、 炎陵县 图书馆 。 
+25
+ns n n p m q n d v v ns v n nh v u nh n c ns n wp ns n wp 
+25
+B-Ni I-Ni E-Ni O O O O O O O S-Ns O O S-Nh O O B-Ni E-Ni O B-Ni E-Ni O B-Ni E-Ni O 
+25
+3 ATT 3 ATT 9 SBV 9 ADV 6 ATT 7 ATT 4 POB 9 ADV 0 HED 9 CMP 10 POB 13 ATT 14 ATT 15 SBV 18 ATT 15 RAD 18 ATT 9 VOB 21 LAD 21 ATT 18 COO 24 WP 24 ATT 21 COO 9 WP 

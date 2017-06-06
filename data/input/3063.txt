@@ -1,0 +1,12 @@
+１９９６年的一天，黄斌从报纸上了解到天津铁路分局职工李永健的家庭不幸：年仅８岁的儿子小万帅患脑瘫、癫痫，自己患有白血病，母亲患严重心脏病，妻子不堪忍受家庭的重压离他而去。
+万帅
+天津铁路分局
+0
+54
+１９９６年 的 一 天 ， 黄斌 从 报纸 上 了解 到 天津 铁路 分局 职工 李永健 的 家庭 不幸 ： 年 仅 ８ 岁 的 儿子 小 万帅 患 脑瘫 、 癫痫 ， 自己 患 有 白血病 ， 母亲 患 严重 心脏病 ， 妻子 不堪 忍受 家庭 的 重压 离 他 而 去 。 
+54
+nt u m q wp nh p n nd v v ns n n n nh u n a wp n d m q u n a nh v n wp n wp r v v n wp n v a n wp n v v n u n v r c v wp 
+54
+O O O O O S-Nh O O O O O B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O 
+54
+4 ATT 1 RAD 4 ATT 10 ADV 4 WP 10 SBV 10 ADV 9 ATT 7 POB 0 HED 10 CMP 14 ATT 14 ATT 15 ATT 16 ATT 18 ATT 16 RAD 19 SBV 29 ADV 19 WP 24 SBV 24 ADV 24 ATT 26 ATT 24 RAD 28 ATT 28 ATT 29 SBV 10 VOB 29 VOB 32 WP 30 COO 29 WP 35 SBV 29 COO 35 VOB 36 VOB 35 WP 40 SBV 35 COO 42 ATT 40 VOB 40 WP 46 SBV 46 ADV 35 COO 49 ATT 47 RAD 46 VOB 53 ADV 50 POB 53 ADV 46 COO 10 WP 

@@ -1,0 +1,12 @@
+中国队优势明显，越战越勇，９号孙雯与１３号刘英于６６分钟和６８分钟又连下两城。
+刘英
+中国队
+1
+28
+中国队 优势 明显 ， 越 战 越 勇 ， ９ 号 孙雯 与 １３ 号 刘英 于 ６６ 分钟 和 ６８ 分钟 又 连 下 两 城 。 
+28
+ni n a wp d v d a wp m q nh c m q nh p m q c m q d d v m n wp 
+28
+S-Ni O O O O O O O O O O S-Nh O O O S-Nh O O O O O O O O O O O O 
+28
+2 ATT 3 SBV 0 HED 3 WP 6 ADV 3 COO 8 ADV 6 CMP 3 WP 11 ATT 12 ATT 25 SBV 15 LAD 15 ATT 16 ATT 12 COO 25 ADV 19 ATT 17 POB 22 LAD 22 ATT 19 COO 25 ADV 25 ADV 3 COO 27 ATT 25 VOB 3 WP 

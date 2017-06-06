@@ -1,0 +1,12 @@
+战士田建斌的父母在山西铝厂上班，由于厂里经济效益不好，每月只能领部分生活费。
+田建斌
+山西铝厂
+0
+22
+战士 田建斌 的 父母 在 山西 铝厂 上班 ， 由于 厂 里 经济效益 不好 ， 每月 只 能 领 部分 生活费 。 
+22
+n nh u n p ns n v wp p n nd n a wp r d v v n n wp 
+22
+O S-Nh O O O B-Ni E-Ni O O O O O O O O O O O O O O O 
+22
+2 ATT 4 ATT 2 RAD 8 SBV 8 ADV 7 ATT 5 POB 0 HED 8 WP 19 ADV 12 ATT 13 ATT 14 SBV 10 POB 10 WP 19 SBV 18 ADV 19 ADV 8 COO 21 ATT 19 VOB 8 WP 

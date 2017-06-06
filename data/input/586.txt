@@ -1,0 +1,12 @@
+（北京城建集团二公司一分公司通产工地鲍善昌）
+鲍善昌
+北京城建集团二公司
+1
+12
+（ 北京 城建 集团 二 公司 一 分公司 通产 工地 鲍善昌 ） 
+12
+wp ns j n m n m n nz n nh wp 
+12
+O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O S-Nh O 
+12
+11 WP 4 ATT 4 ATT 6 ATT 6 ATT 8 ATT 8 ATT 10 ATT 10 ATT 11 ATT 0 HED 11 WP 

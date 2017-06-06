@@ -1,0 +1,6 @@
+Reading model...OK. (1368 support vectors read)
+Classifying test examples..100..200..300..400..500..done
+Runtime (without IO) in cpu-seconds: 1.03
+Accuracy on test set: 86.60% (433 correct, 67 incorrect, 500 total)
+Precision/recall on test set: 88.07%/82.40%
+./svm-light-TK-1.2.1/svm_classify ./data/test.txt ./svm_model/1.model ./output/test.txt_13_50_17_26_Dec.result

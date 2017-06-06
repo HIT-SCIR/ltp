@@ -1,0 +1,12 @@
+当年，英国巴林银行职员里森的越权交易和内部控制失效，导致一家显赫百年的老牌银行的破产就是一个实例。
+里森
+英国巴林银行
+1
+30
+当年 ， 英国 巴林 银行 职员 里森 的 越权 交易 和 内部 控制 失效 ， 导致 一 家 显赫 百年 的 老牌 银行 的 破产 就 是 一个 实例 。 
+30
+nt wp ns ns n n nh u v n c nd v v wp v m q a m u b n u v d v m n wp 
+30
+O O B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O 
+30
+9 ADV 1 WP 5 ATT 5 ATT 6 ATT 7 ATT 9 SBV 7 RAD 0 HED 9 VOB 13 LAD 13 ADV 10 COO 13 VOB 9 WP 27 SBV 18 ATT 23 ATT 20 ATT 23 ATT 20 RAD 23 ATT 25 ATT 23 RAD 16 VOB 27 ADV 9 COO 29 ATT 27 VOB 9 WP 

@@ -1,0 +1,12 @@
+李文介绍了时代华纳公司的情况，并表示公司将致力于增进美国公众对中国的了解。
+李文
+时代华纳公司
+0
+23
+李文 介绍 了 时代 华纳 公司 的 情况 ， 并 表示 公司 将 致力 于 增进 美国 公众 对 中国 的 了解 。 
+23
+nh v u n nz n u n wp c v n d v p v ns n p ns u v wp 
+23
+S-Nh O O B-Ni I-Ni E-Ni O O O O O O O O O O S-Ns O O S-Ns O O O 
+23
+2 SBV 0 HED 2 RAD 6 ATT 6 ATT 8 ATT 6 RAD 2 VOB 2 WP 11 ADV 2 COO 14 SBV 14 ADV 11 VOB 14 CMP 15 POB 18 ATT 22 ATT 22 ATT 19 POB 19 RAD 16 VOB 2 WP 

@@ -1,0 +1,12 @@
+北京市变压器厂司机杨军说：“现在交警纠正违章，语言简练、正规又令人信服，司机违章了都能依法接受处罚。”
+杨军
+北京市变压器厂
+1
+29
+北京市 变压器厂 司机 杨军 说 ： “ 现在 交警 纠正 违章 ， 语言 简练 、 正规 又 令人信服 ， 司机 违章 了 都 能 依法 接受 处罚 。 ” 
+29
+ns n n nh v wp wp nt j v v wp n a wp a c i wp n v u d v d v v wp wp 
+29
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O 
+29
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 10 WP 10 ADV 10 SBV 5 VOB 10 VOB 10 WP 14 SBV 10 COO 16 WP 14 COO 18 ADV 14 COO 10 WP 21 SBV 10 COO 21 RAD 24 ADV 26 ADV 26 ADV 21 COO 26 VOB 10 WP 10 WP 

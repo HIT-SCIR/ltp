@@ -1,0 +1,12 @@
+乌鲁木齐石油化工总厂邓本金
+邓本金
+乌鲁木齐石油化工总厂
+1
+5
+乌鲁木齐 石油 化工 总厂 邓本金 
+5
+ns n n n nh 
+5
+B-Ni I-Ni I-Ni E-Ni S-Nh 
+5
+4 ATT 4 ATT 4 ATT 5 ATT 0 HED 

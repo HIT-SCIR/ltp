@@ -1,0 +1,12 @@
+去年暑假刚开学的一天，当她正拿着一只鸡蛋换回一个作业本时，正巧被下乡了解民情的原五里桥乡党委书记张业忠看到，于是小樊玲的上学、生活问题便有了着落。
+张业忠
+五里桥乡党委
+1
+48
+去年 暑假 刚 开学 的 一 天 ， 当 她 正 拿 着 一 只 鸡蛋 换 回 一个 作业本 时 ， 正巧 被 下乡 了解 民情 的 原 五里桥乡 党委 书记 张业忠 看到 ， 于是 小 樊玲 的 上学 、 生活 问题 便 有 了 着落 。 
+48
+nt nt d v u m q wp p r d v u m q n v v m n n wp d p v v n u b ns n n nh v wp c a nh u v wp v n d v u v wp 
+48
+O O O O O O O O O O O O O O O O O O O O O O O O O O O O O B-Ni E-Ni O S-Nh O O O O S-Nh O O O O O O O O O O 
+48
+2 ATT 4 ADV 4 ADV 7 ATT 4 RAD 7 ATT 34 ADV 7 WP 34 ADV 12 SBV 12 ADV 21 ATT 12 RAD 15 ATT 16 ATT 12 VOB 12 COO 17 CMP 20 ATT 18 VOB 9 POB 9 WP 25 ADV 25 ADV 32 ATT 25 COO 26 VOB 25 RAD 30 ATT 31 ATT 32 ATT 33 ATT 34 SBV 0 HED 34 WP 45 ADV 38 ATT 43 ATT 38 RAD 43 ATT 40 WP 40 COO 45 SBV 45 ADV 34 COO 45 RAD 45 VOB 34 WP 

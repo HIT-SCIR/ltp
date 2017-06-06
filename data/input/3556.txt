@@ -1,0 +1,12 @@
+黄赛红也以优异的成绩被县司法局录用，下派到陈屿基层司法所，成了一名司法员。
+黄赛红
+陈屿基层司法所
+1
+24
+黄赛红 也 以 优异 的 成绩 被 县 司法局 录用 ， 下 派 到 陈屿 基层 司法所 ， 成 了 一 名 司法员 。 
+24
+nh d p a u n p n n v wp v v v ns n n wp v u m q n wp 
+24
+S-Nh O O O O O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O 
+24
+10 SBV 10 ADV 10 ADV 6 ATT 4 RAD 3 POB 10 ADV 9 ATT 7 POB 0 HED 10 WP 10 COO 12 VOB 12 CMP 16 ATT 17 ATT 14 POB 12 WP 12 COO 19 RAD 22 ATT 23 ATT 19 VOB 10 WP 

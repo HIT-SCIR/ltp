@@ -1,0 +1,12 @@
+日本排协经过查实，已经取消了张翔参加的两场比赛的成绩。
+张翔
+日本排协
+0
+17
+日本 排协 经过 查实 ， 已经 取消 了 张翔 参加 的 两 场 比赛 的 成绩 。 
+17
+ns j v v wp d v u nh v u m q v u n wp 
+17
+B-Ni E-Ni O O O O O O S-Nh O O O O O O O O 
+17
+2 ATT 3 SBV 0 HED 3 VOB 3 WP 7 ADV 3 COO 7 RAD 10 SBV 14 ATT 10 RAD 13 ATT 14 ATT 16 ATT 14 RAD 7 VOB 3 WP 

@@ -1,0 +1,12 @@
+史密斯说，联邦快递公司这次来北京举行董事会，旨在加强与中方的合作。
+史密斯
+联邦快递公司
+0
+19
+史密斯 说 ， 联邦 快递 公司 这次 来 北京 举行 董事会 ， 旨在 加强 与 中方 的 合作 。 
+19
+nh v wp n v n r v ns v n wp v v p n u v wp 
+19
+S-Nh O O B-Ni I-Ni E-Ni O O S-Ns O O O O O O O O O O 
+19
+2 SBV 0 HED 2 WP 6 ATT 6 ATT 8 SBV 8 ADV 2 VOB 8 VOB 8 COO 10 VOB 8 WP 8 COO 13 VOB 18 ATT 15 POB 15 RAD 14 VOB 2 WP 

@@ -1,0 +1,12 @@
+上海证券交易所总经理屠光绍目前，上海证券市场已经发展成为全国规模最大、功能最齐全、市场结构最完善、市场辐射能力最强的证券市场。
+屠光绍
+上海证券交易所
+1
+36
+上海 证券 交易所 总经理 屠光绍 目前 ， 上海 证券 市场 已经 发展 成为 全国 规模 最 大 、 功能 最 齐全 、 市场 结构 最 完善 、 市场 辐射 能力 最 强 的 证券 市场 。 
+36
+ns n n n nh nt wp ns n n d v v n n d a wp n d a wp n n d a wp n n n d a u n n wp 
+36
+B-Ni I-Ni E-Ni O S-Nh O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+36
+3 ATT 3 ATT 4 ATT 5 ATT 12 SBV 12 ADV 6 WP 10 ATT 10 ATT 12 SBV 12 ADV 0 HED 12 COO 15 ATT 17 SBV 17 ADV 35 ATT 21 WP 21 SBV 21 ADV 17 COO 26 WP 24 ATT 26 SBV 26 ADV 17 COO 32 WP 29 SBV 30 ATT 32 SBV 32 ADV 17 COO 17 RAD 35 ATT 13 VOB 12 WP 

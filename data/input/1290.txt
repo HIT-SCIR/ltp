@@ -1,0 +1,12 @@
+水利部部长钮茂生１９９７年，水利改革与建设取得重大进展。
+钮茂生
+水利部
+1
+13
+水利部 部长 钮茂生 １９９７年 ， 水利 改革 与 建设 取得 重大 进展 。 
+13
+ni n nh nt wp n v c v v a v wp 
+13
+S-Ni O S-Nh O O O O O O O O O O 
+13
+2 ATT 3 ATT 10 SBV 10 ADV 4 WP 7 FOB 10 SBV 9 LAD 7 COO 0 HED 12 ATT 10 VOB 10 WP 

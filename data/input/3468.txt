@@ -1,0 +1,12 @@
+国务院总理李鹏为会议题了词，吴邦国副总理发来贺信。
+吴邦国
+国务院
+1
+16
+国务院 总理 李鹏 为 会议 题 了 词 ， 吴邦国 副 总理 发 来 贺信 。 
+16
+ni n nh p n v u n wp nh b n v v n wp 
+16
+S-Ni O S-Nh O O O O O O S-Nh O O O O O O 
+16
+2 ATT 3 ATT 6 SBV 6 ADV 4 POB 0 HED 6 RAD 6 VOB 6 WP 12 ATT 12 ATT 13 SBV 6 COO 13 CMP 13 VOB 6 WP 

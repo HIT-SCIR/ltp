@@ -1,0 +1,12 @@
+克林顿说：“萨达姆无权决定谁来担任这项工作，决定权在联合国手里。”
+克林顿
+联合国
+0
+19
+克林顿 说 ： “ 萨达姆 无权 决定 谁 来 担任 这项 工作 ， 决定权 在 联合国 手里 。 ” 
+19
+nh v wp wp nh v v r v v r v wp n p ni nl wp wp 
+19
+S-Nh O O O S-Nh O O O O O O O O O O S-Ni O O O 
+19
+2 SBV 0 HED 2 WP 7 WP 7 SBV 7 ADV 2 VOB 10 SBV 10 ADV 7 VOB 12 ATT 10 VOB 7 WP 15 SBV 7 COO 17 ATT 15 POB 7 WP 7 WP 

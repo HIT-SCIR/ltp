@@ -1,0 +1,12 @@
+在今天国家民委与彭楚政先进事迹报告团成员召开的座谈会上，国家民委领导宣读了授予彭楚政这一荣誉称号的决定，向彭楚政颁发了荣誉证书。
+彭楚政
+国家民委
+0
+36
+在 今天 国家 民委 与 彭楚政 先进 事迹 报告团 成员 召开 的 座谈会 上 ， 国家 民委 领导 宣读 了 授予 彭楚政 这 一 荣誉 称号 的 决定 ， 向 彭楚政 颁发 了 荣誉 证书 。 
+36
+p nt n j p nh a n n n v u n nd wp n j n v u v nh r m n n u n wp p nh v u n n wp 
+36
+O O B-Ni E-Ni O S-Nh O O O O O O O O O B-Ni E-Ni O O O O S-Nh O O O O O O O O S-Nh O O O O O 
+36
+19 ADV 11 ADV 4 ATT 11 SBV 10 LAD 8 ATT 8 ATT 9 ATT 10 ATT 4 COO 13 ATT 11 RAD 14 ATT 1 POB 1 WP 17 ATT 18 ATT 19 SBV 0 HED 19 RAD 28 ATT 26 ATT 24 ATT 26 ATT 26 ATT 21 VOB 21 RAD 19 VOB 19 WP 32 ADV 30 POB 19 COO 32 RAD 35 ATT 32 VOB 19 WP 

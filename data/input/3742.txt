@@ -1,0 +1,12 @@
+国家信息中心毛明轩秋冬季一到，北京街头的“冰糖葫芦”便红红火火地畅销起来。
+毛明轩
+国家信息中心
+1
+21
+国家 信息 中心 毛明轩 秋 冬季 一 到 ， 北京 街头 的 “ 冰糖葫芦 ” 便 红红火火 地 畅销 起来 。 
+21
+n n n nh nt nt d v wp ns nl u wp n wp d z u v v wp 
+21
+B-Ni E-Ni O S-Nh O O O O O S-Ns O O O O O O O O O O O 
+21
+2 ATT 3 ATT 4 ATT 8 SBV 6 ATT 8 ADV 8 ADV 0 HED 8 WP 11 ATT 14 ATT 11 RAD 14 WP 19 SBV 14 WP 19 ADV 19 ADV 17 RAD 8 COO 19 CMP 8 WP 

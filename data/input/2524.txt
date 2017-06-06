@@ -1,0 +1,12 @@
+在悉尼机场海关接受例行检查时，在原媛所携带的行李中查出当地海关不允许携带入境的物品，后经检测是违禁药物。
+原媛
+悉尼机场海关
+0
+33
+在 悉尼 机场 海关 接受 例行 检查 时 ， 在 原媛 所 携带 的 行李 中 查出 当地 海关 不 允许 携带 入境 的 物品 ， 后 经 检测 是 违禁 药物 。 
+33
+p ns n n v v v n wp p nh u v u n nd v nl n d v v v u n wp nd v v v b n wp 
+33
+O B-Ni I-Ni E-Ni O O O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O 
+33
+5 ADV 3 ATT 4 ATT 1 POB 8 ATT 7 ADV 5 VOB 17 ADV 8 WP 17 ADV 10 POB 13 LAD 15 ATT 13 RAD 16 ATT 10 POB 0 HED 19 ATT 21 SBV 21 ADV 17 VOB 21 VOB 25 ATT 23 RAD 22 VOB 17 WP 28 ADV 30 SBV 28 VOB 17 COO 32 ATT 30 VOB 17 WP 

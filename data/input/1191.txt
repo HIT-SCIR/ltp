@@ -1,0 +1,12 @@
+威尔一行是应财政部的邀请于昨日抵京访问的。
+威尔
+财政部
+0
+13
+威尔 一行 是 应 财政部 的 邀请 于 昨日 抵京 访问 的 。 
+13
+nh n v v ni u v p nt v v u wp 
+13
+S-Nh O O O S-Ni O O O O O O O O 
+13
+2 ATT 3 SBV 0 HED 3 VOB 7 ATT 5 RAD 4 VOB 10 ADV 8 POB 7 VOB 10 COO 10 RAD 3 WP 

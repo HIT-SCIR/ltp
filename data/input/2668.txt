@@ -1,0 +1,12 @@
+图片：１月４日，肯尼亚选举委员会宣布现任总统莫伊在１９９７年底举行的大选中获胜，连任下届总统。
+莫伊
+肯尼亚选举委员会
+0
+25
+图片 ： １月 ４日 ， 肯尼亚 选举 委员会 宣布 现任 总统 莫伊 在 １９９７年 底 举行 的 大选 中 获胜 ， 连任 下届 总统 。 
+25
+n wp nt nt wp ns v n v b n nh p nt nd v u v nd v wp v b n wp 
+25
+O O O O O B-Ni I-Ni E-Ni O O O S-Nh O O O O O O O O O O O O O 
+25
+9 SBV 1 WP 4 ATT 9 ADV 4 WP 8 ATT 8 ATT 9 SBV 0 HED 11 ATT 12 ATT 20 SBV 20 ADV 15 ATT 13 POB 18 ATT 16 RAD 19 ATT 13 POB 9 VOB 20 WP 20 COO 24 ATT 22 VOB 9 WP 

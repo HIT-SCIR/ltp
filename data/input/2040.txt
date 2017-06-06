@@ -1,0 +1,12 @@
+“三大战役”胜利后，曾辛元被解放过来分配到山东省日照市交通局工作，并认识了山东妹子叶莲美，于１９５６年两人结了婚，开始过着美满生活。
+曾辛元
+山东省日照市交通局
+0
+38
+“ 三大战役 ” 胜利 后 ， 曾辛元 被 解放 过来 分配 到 山东省 日照市 交通局 工作 ， 并 认识 了 山东 妹子 叶莲美 ， 于 １９５６年 两 人 结 了 婚 ， 开始 过 着 美满 生活 。 
+38
+wp nz wp v nd wp nh p v v v v ns ns n v wp c v u ns n nh wp p nt m n v u n wp v v u a v wp 
+38
+O O O O O O S-Nh O O O O O B-Ni I-Ni E-Ni O O O O O S-Ns O S-Nh O O O O O O O O O O O O O O O 
+38
+2 WP 4 SBV 2 WP 5 ATT 9 ADV 5 WP 9 FOB 9 ADV 0 HED 9 CMP 16 ATT 11 CMP 14 ATT 15 ATT 12 POB 9 VOB 9 WP 19 ADV 9 COO 19 RAD 22 ATT 23 ATT 19 VOB 9 WP 29 ADV 28 ATT 28 ATT 25 POB 9 COO 29 RAD 29 VOB 9 WP 34 ADV 9 COO 34 RAD 37 ATT 34 VOB 9 WP 

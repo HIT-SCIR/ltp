@@ -1,0 +1,12 @@
+（江西新干县纪委跃华黎明贱秀）
+跃华
+江西新干县纪委
+1
+7
+（ 江西 新干县 纪委 跃华黎明 贱秀 ） 
+7
+wp ns ns j nh nh wp 
+7
+O B-Ni I-Ni E-Ni O O O 
+7
+6 WP 3 ATT 4 ATT 5 ATT 6 ATT 0 HED 6 WP 

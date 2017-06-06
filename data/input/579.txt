@@ -1,0 +1,12 @@
+去年，中国与沙特比赛足球，小扎耶德手拿中国国旗为中国队加油，令四座宾朋惊喜。
+扎耶德
+中国队
+0
+22
+去年 ， 中国 与 沙特 比赛 足球 ， 小 扎耶德 手 拿 中国 国旗 为 中国队 加油 ， 令 四座宾朋 惊喜 。 
+22
+nt wp ns p ns v n wp a nh n v ns n p ni v wp v i a wp 
+22
+O O S-Ns O S-Ns O O O O S-Nh O O S-Ns O O S-Ni O O O O O O 
+22
+12 ADV 1 WP 7 ATT 5 LAD 3 COO 7 ATT 12 SBV 7 WP 10 ATT 11 ATT 12 SBV 0 HED 14 ATT 12 VOB 17 ADV 15 POB 12 COO 12 WP 12 COO 21 ADV 19 VOB 12 WP 

@@ -1,0 +1,12 @@
+８日在多伦多法庭上的审讯，是伊格尔森从天堂跌入地狱的转折点。
+伊格尔森
+多伦多法庭
+0
+18
+８日 在 多伦多 法庭 上 的 审讯 ， 是 伊格尔森 从 天堂 跌 入 地狱 的 转折点 。 
+18
+nt p ns n nd u v wp v nh p n v v n u n wp 
+18
+O O B-Ni E-Ni O O O O O S-Nh O O O O O O O O 
+18
+7 ADV 7 ATT 4 ATT 5 ATT 2 POB 2 RAD 9 SBV 7 WP 0 HED 13 SBV 13 ADV 11 POB 17 ATT 13 CMP 14 VOB 14 RAD 9 VOB 9 WP 

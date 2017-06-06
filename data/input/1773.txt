@@ -1,0 +1,12 @@
+１９９４年底，北京海关查获一寄件人向英国寄出的古生物化石６６块，其中一块完整的“胡氏贵州龙”化石，属我国特有的极为珍贵的恐龙化石，该化石的查获填补了我国恐龙化石的一项空白。
+胡氏
+北京海关
+0
+53
+１９９４年 底 ， 北京 海关 查获 一 寄件人 向 英国 寄出 的 古生物 化石 ６６ 块 ， 其中 一 块 完整 的 “ 胡氏 贵州 龙 ” 化石 ， 属 我国 特有 的 极为 珍贵 的 恐龙 化石 ， 该 化石 的 查获 填补 了 我国 恐龙 化石 的 一 项 空白 。 
+53
+nt nd wp ns n v m n p ns v u n n m q wp r m q a u wp n ns n wp n wp v n b u d a u n n wp r n u v v u n n n u m q n wp 
+53
+O O O B-Ni E-Ni O O O O S-Ns O O O O O O O O O O O O O O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+53
+2 ATT 6 ADV 2 WP 5 ATT 6 SBV 0 HED 8 ATT 6 VOB 11 ADV 9 POB 14 ATT 11 RAD 14 ATT 16 ATT 16 ATT 6 VOB 6 WP 28 ATT 20 ATT 28 ATT 28 ATT 21 RAD 26 WP 26 ATT 26 ATT 28 ATT 26 WP 30 SBV 28 WP 6 COO 38 ATT 38 ATT 32 RAD 35 ADV 38 ATT 35 RAD 38 ATT 30 VOB 30 WP 41 ATT 43 ATT 41 RAD 44 SBV 30 COO 44 RAD 48 ATT 48 ATT 52 ATT 48 RAD 51 ATT 52 ATT 44 VOB 6 WP 

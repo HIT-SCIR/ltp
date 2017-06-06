@@ -1,0 +1,12 @@
+许汉胜多次与拍卖行交涉赔偿无果，遂将一纸诉状递进开元区人民法院。
+许汉胜
+开元区人民法院
+0
+18
+许汉胜 多次 与 拍卖行 交涉 赔偿 无 果 ， 遂 将 一 纸 诉状 递进 开元区 人民法院 。 
+18
+nh m p n v v v n wp d p m q n v ns i wp 
+18
+S-Nh O O O O O O O O O O O O O O B-Ni E-Ni O 
+18
+5 SBV 5 ADV 5 ADV 3 POB 0 HED 5 COO 6 COO 7 VOB 5 WP 15 ADV 15 ADV 13 ATT 14 ATT 11 POB 5 COO 17 ATT 15 VOB 5 WP 

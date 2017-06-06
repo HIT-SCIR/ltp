@@ -1,0 +1,12 @@
+随后，吉马迪先生与吉斯贝尔先生陪同中国客人参观了位于戴高乐机场附近的《费加罗报》印刷厂。
+吉斯贝尔
+费加罗报
+1
+23
+随后 ， 吉马迪 先生 与 吉斯贝尔 先生 陪同 中国 客人 参观 了 位于 戴高乐 机场 附近 的 《 费加罗 报 》 印刷厂 。 
+23
+d wp nh n p nh n v ns n v u v nh n nd u wp ns n wp n wp 
+23
+O O S-Nh O O S-Nh O O S-Ns O O O O S-Nh O O O O S-Ns O O O O 
+23
+8 ADV 1 WP 4 ATT 8 SBV 8 ADV 7 ATT 5 POB 0 HED 10 ATT 8 VOB 8 COO 11 RAD 11 VOB 15 ATT 16 ATT 22 ATT 16 RAD 20 WP 20 ATT 22 ATT 20 WP 13 VOB 8 WP 

@@ -1,0 +1,12 @@
+我国古生物学家、西北大学早期生命研究所所长舒德干教授，与国内外同行合作，对距今５．３亿年前动物化石“华夏鳗”潜心研究，发现华夏鳗是地球上已知的最古老的原始脊索动物，是脊椎动物的早期祖先。
+舒德干
+西北大学早期生命研究所
+1
+51
+我国 古生物学家 、 西北 大学 早期 生命 研究所 所长 舒德干 教授 ， 与 国内外 同行 合作 ， 对 距 今 ５．３亿 年 前 动物 化石 “ 华夏鳗 ” 潜心 研究 ， 发现 华夏鳗 是 地球 上 已 知 的 最 古老 的 原始 脊索动物 ， 是 脊椎动物 的 早期 祖先 。 
+51
+n n wp nl n nd n n n nh n wp p nl n v wp p p nt m q nd n n wp n wp d v wp v n v n nd d v u d a u a i wp v i u nd n wp 
+51
+O O O B-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+51
+2 ATT 11 ATT 9 WP 5 ATT 8 ATT 8 ATT 8 ATT 9 ATT 10 ATT 11 ATT 16 SBV 11 WP 16 ADV 15 ATT 13 POB 0 HED 16 WP 30 ADV 25 ATT 21 ATT 22 ATT 23 ATT 24 ATT 25 ATT 27 ATT 27 WP 18 POB 27 WP 30 ADV 16 COO 30 WP 30 COO 34 SBV 32 VOB 36 ATT 38 ADV 38 ADV 44 ATT 38 RAD 41 ADV 44 ATT 41 RAD 44 ATT 34 VOB 34 WP 34 COO 50 ATT 47 RAD 50 ATT 46 VOB 16 WP 

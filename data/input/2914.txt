@@ -1,0 +1,12 @@
+１９９７年８月１８日，袁庄村民李某酒后滋事，砸坏了苏里粮站的汽车玻璃和办公室玻璃。
+李某
+苏里粮站
+0
+22
+１９９７年 ８月 １８日 ， 袁庄 村民 李某 酒后 滋事 ， 砸 坏 了 苏里 粮站 的 汽车 玻璃 和 办公室 玻璃 。 
+22
+nt nt nt wp ns n nh nt v wp v a u nz n u n n c n n wp 
+22
+O O O O S-Ns O S-Nh O O O O O O B-Ni E-Ni O O O O O O O 
+22
+3 ATT 3 ATT 9 ADV 3 WP 6 ATT 7 ATT 9 SBV 9 ADV 0 HED 9 WP 9 COO 11 CMP 11 RAD 15 ATT 18 ATT 15 RAD 18 ATT 11 VOB 21 LAD 21 ATT 18 COO 9 WP 

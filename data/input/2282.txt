@@ -1,0 +1,12 @@
+蒙特利尔银行总裁巴瑞特表示：“我们不愿像街角的小五金店，坐等美国大五金行入侵，然后倒闭。”
+巴瑞特
+蒙特利尔银行
+1
+26
+蒙特利尔 银行 总裁 巴瑞特 表示 ： “ 我们 不 愿 像 街 角 的 小五金店 ， 坐等 美国 大五金 行 入侵 ， 然后 倒闭 。 ” 
+26
+ns n n nh v wp wp r d v v n n u n wp v ns n n v wp c v wp wp 
+26
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O S-Ns O O O O O O O O 
+26
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 10 WP 10 SBV 10 ADV 5 VOB 17 ADV 13 ATT 15 ATT 13 RAD 11 POB 11 WP 10 VOB 19 ATT 20 ATT 21 SBV 17 VOB 17 WP 24 ADV 17 COO 10 WP 10 WP 

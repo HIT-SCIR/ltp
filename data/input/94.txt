@@ -1,0 +1,12 @@
+基于这种现实，北京师范大学教育系主任赵忠心教授指出：“家长的观念要来个大转变。
+赵忠心
+北京师范大学教育系
+1
+22
+基于 这种 现实 ， 北京 师范大学 教育系 主任 赵忠心 教授 指出 ： “ 家长 的 观念 要 来 个 大 转变 。 
+22
+p r n wp ns n n n nh n v wp wp n u n v v q a v wp 
+22
+O O O O B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O O O O 
+22
+11 ADV 3 ATT 1 POB 1 WP 6 ATT 7 ATT 8 ATT 9 ATT 10 ATT 11 SBV 0 HED 11 WP 21 WP 16 ATT 14 RAD 21 SBV 21 ADV 21 ADV 21 ATT 21 ATT 11 VOB 21 WP 

@@ -1,0 +1,12 @@
+国家主席江泽民在贺词中说：欣闻中央民族乐团１９９８年春节之际出访奥地利，在著名的维也纳金色大厅举行中国新春音乐会专场演出，这是中奥两国文化交流的一件盛事。
+江泽民
+中央民族乐团
+0
+44
+国家 主席 江泽民 在 贺词 中 说 ： 欣闻 中央 民族 乐团 １９９８年 春节 之际 出访 奥地利 ， 在 著名 的 维也纳 金色 大厅 举行 中国 新春 音乐会 专场 演出 ， 这 是 中 奥 两 国 文化 交流 的 一 件 盛事 。 
+44
+n n nh p n nd v wp v n n n nt nt nd v ns wp p a u ns n n v ns nt n n v wp r v j j m n n v u m q n wp 
+44
+O O S-Nh O O O O O O B-Ni I-Ni E-Ni O O O O S-Ns O O O O S-Ns O O O S-Ns O O O O O O O S-Ns S-Ns O O O O O O O O O 
+44
+2 ATT 3 ATT 7 SBV 7 ADV 6 ATT 4 POB 0 HED 7 WP 7 VOB 12 ATT 12 ATT 16 SBV 14 ATT 15 ATT 16 ADV 9 VOB 16 VOB 16 WP 25 ADV 24 ATT 20 RAD 24 ATT 24 ATT 19 POB 16 COO 28 ATT 28 ATT 29 ATT 30 ATT 25 VOB 16 WP 33 SBV 16 COO 37 ATT 34 COO 37 ATT 38 ATT 39 SBV 43 ATT 39 RAD 42 ATT 43 ATT 33 VOB 7 WP 

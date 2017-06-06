@@ -1,0 +1,12 @@
+当初退伍，山东石油公司邹城分公司领导，从一大堆档案中发现了宁洪虎这棵好苗子，决定让他干经营科长。
+宁洪虎
+山东石油公司邹城分公司
+0
+31
+当初 退伍 ， 山东 石油 公司 邹城 分公司 领导 ， 从 一 大 堆 档案 中 发现 了 宁洪虎 这 棵 好 苗子 ， 决定 让 他 干 经营 科长 。 
+31
+nt v wp ns n n ns n n wp p m a q n nd v u nh r q a n wp v v r v v n wp 
+31
+O O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O O O S-Nh O O O O O O O O O O O O 
+31
+2 ADV 0 HED 2 WP 6 ATT 6 ATT 8 ATT 8 ATT 9 ATT 17 SBV 9 WP 17 ADV 14 ATT 14 ATT 15 ATT 16 ATT 11 POB 2 COO 17 RAD 23 ATT 21 ATT 23 ATT 23 ATT 17 VOB 17 WP 17 COO 25 VOB 26 DBL 26 VOB 30 ATT 28 VOB 2 WP 

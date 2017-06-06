@@ -1,0 +1,12 @@
+中央实验话剧院导演查明哲江泽民总书记不久前谈到话剧时用了四个字“不可替代”。
+江泽民
+中央实验话剧院
+0
+22
+中央 实验 话剧院 导演 查明哲 江泽民 总书记 不久前 谈 到 话剧 时 用 了 四 个 字 “ 不可 替代 ” 。 
+22
+n n n v nh nh n nt v v n n v u m q n wp v v wp wp 
+22
+B-Ni I-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O 
+22
+2 ATT 3 ATT 4 ATT 5 ATT 6 ATT 7 ATT 9 SBV 9 ADV 12 ATT 9 CMP 9 VOB 13 ADV 0 HED 13 RAD 16 ATT 17 ATT 13 VOB 20 WP 20 ADV 17 COO 20 WP 13 WP 

@@ -1,0 +1,12 @@
+上海京剧院艺术总监黎中城开拓与培育新市场，是京剧在激烈的生存竞争中必须解决的根本问题。
+黎中城
+上海京剧院
+1
+25
+上海 京剧院 艺术 总监 黎中城 开拓 与 培育 新 市场 ， 是 京剧 在 激烈 的 生存 竞争 中 必须 解决 的 根本 问题 。 
+25
+ns n n n nh v c v a n wp v n p a u v v nd d v u a n wp 
+25
+B-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O O O O O 
+25
+2 ATT 3 ATT 4 ATT 5 ATT 6 SBV 12 SBV 8 LAD 6 COO 10 ATT 6 VOB 6 WP 0 HED 21 SBV 21 ADV 18 ATT 15 RAD 18 ATT 19 ATT 14 POB 21 ADV 24 ATT 21 RAD 24 ATT 12 VOB 12 WP 

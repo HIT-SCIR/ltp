@@ -1,0 +1,12 @@
+中国足协官员杨一民说，从今天现场的观察来看，中国球员的整体实力有所提高。
+杨一民
+中国足协
+1
+22
+中国 足协 官员 杨一民 说 ， 从 今天 现场 的 观察 来 看 ， 中国 球员 的 整体 实力 有所 提高 。 
+22
+ns j n nh v wp p nt nl u v v v wp ns n u n n v v wp 
+22
+B-Ni E-Ni O S-Nh O O O O O O O O O O S-Ns O O O O O O O 
+22
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 21 ADV 11 ADV 11 ATT 9 RAD 7 POB 11 CMP 11 COO 7 WP 16 ATT 19 ATT 16 RAD 19 ATT 21 SBV 21 ADV 5 VOB 5 WP 

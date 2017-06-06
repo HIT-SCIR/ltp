@@ -1,0 +1,12 @@
+中国人民在以江泽民为核心的中共中央领导下，高举邓小平理论伟大旗帜，把建设有中国特色的社会主义事业全面推向２１世纪。
+江泽民
+中共中央
+1
+30
+中国 人民 在 以 江泽民 为 核心 的 中共中央 领导 下 ， 高举 邓小平理论 伟大 旗帜 ， 把 建设 有 中国 特色 的 社会主义 事业 全面 推向 ２１ 世纪 。 
+30
+ns n p p nh v n u ni v nd wp v n a n wp p v v ns n u n n a v m n wp 
+30
+S-Ns O O O S-Nh O O O S-Ni O O O O O O O O O O O S-Ns O O O O O O O O O 
+30
+2 ATT 13 SBV 13 ADV 6 ADV 4 POB 10 ATT 6 VOB 6 RAD 10 ATT 11 ATT 3 POB 3 WP 0 HED 16 ATT 16 ATT 13 VOB 13 WP 27 ADV 25 ATT 24 ATT 22 ATT 20 VOB 20 RAD 25 ATT 18 POB 27 ADV 13 COO 29 ATT 27 VOB 13 WP 

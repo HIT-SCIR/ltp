@@ -1,0 +1,12 @@
+参加这项研究的美国聋人和其他疾病研究所的阿伦?布朗说，他们的这一发现有助于阐明梦中的一些情景为什么会稀奇古怪。
+阿伦?布朗
+美国聋人和其他疾病研究所
+1
+33
+参加 这项 研究 的 美国 聋人 和 其他 疾病 研究所 的 阿伦 ? 布朗 说 ， 他们 的 这 一 发现 有助于 阐明 梦 中 的 一些 情景 为什么 会 稀奇 古怪 。 
+33
+v r v u ns n c r n n u nh wp nh v wp r u r m v v v n nd u m n r v a a wp 
+33
+O O O O B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O S-Nh O O O O O O O O O O O O O O O O O O O 
+33
+12 ATT 3 ATT 1 VOB 3 RAD 6 ATT 1 VOB 10 LAD 10 ATT 10 ATT 6 COO 1 RAD 14 ATT 12 WP 15 SBV 0 HED 15 WP 21 ATT 17 RAD 20 ATT 21 ADV 15 VOB 21 VOB 31 SBV 25 ATT 28 ATT 25 RAD 28 ATT 23 VOB 31 ADV 31 ADV 22 VOB 31 COO 15 WP 

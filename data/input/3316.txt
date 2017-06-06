@@ -1,0 +1,12 @@
+如今，贝尔曼先生经北京市对外文化交流公司的精心筹划、安排，将于本月底再次来中国访问演出。
+贝尔曼
+北京市对外文化交流公司
+0
+25
+如今 ， 贝尔曼 先生 经 北京市 对外 文化 交流 公司 的 精心 筹划 、 安排 ， 将 于 本月底 再次 来 中国 访问 演出 。 
+25
+nt wp nh n p ns v n v n u a v wp v wp d p nt d v ns v v wp 
+25
+O O S-Nh O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O S-Ns O O O 
+25
+21 ADV 1 WP 4 ATT 21 SBV 21 ADV 10 ATT 10 ATT 10 ATT 10 ATT 13 ATT 10 RAD 13 ADV 5 POB 15 WP 13 COO 5 WP 21 ADV 21 ADV 18 POB 21 ADV 0 HED 21 VOB 21 COO 23 COO 21 WP 

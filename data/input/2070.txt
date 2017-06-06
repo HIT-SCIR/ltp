@@ -1,0 +1,12 @@
+南京军区前线话剧团演出的《虎踞钟山》已是第二次进京，描写了刘伯承在建国初期创办军校的故事，人物形象鲜活，戏剧冲突也漂亮。
+刘伯承
+南京军区前线话剧团
+0
+37
+南京 军区 前线 话剧团 演出 的 《 虎踞 钟山 》 已 是 第二 次 进 京 ， 描写 了 刘伯承 在 建国 初期 创办 军校 的 故事 ， 人物 形象 鲜活 ， 戏剧 冲突 也 漂亮 。 
+37
+ns n nz n v u wp v ns wp d v m q v j wp v u nh p v nd v n u n wp n n a wp n v d a wp 
+37
+B-Ni I-Ni I-Ni E-Ni O O O O S-Ns O O O O O O S-Ns O O O S-Nh O O O O O O O O O O O O O O O O O 
+37
+2 ATT 4 ATT 4 ATT 5 SBV 9 ATT 5 RAD 9 WP 9 ATT 12 SBV 9 WP 12 ADV 0 HED 14 ATT 15 ADV 12 VOB 15 VOB 15 WP 15 COO 18 RAD 24 SBV 24 ADV 23 ATT 21 POB 27 ATT 24 VOB 24 RAD 18 VOB 15 WP 30 ATT 31 SBV 15 COO 31 WP 34 ATT 36 SBV 36 ADV 31 COO 12 WP 

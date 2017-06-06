@@ -1,0 +1,12 @@
+李鹏对希腊政府坚持『一个中国』的立场表示赞赏，并感谢希腊政府在一些国际问题上对中国的支持。
+李鹏
+希腊政府
+0
+28
+李鹏 对 希腊 政府 坚持 『 一个 中国 』 的 立场 表示 赞赏 ， 并 感谢 希腊 政府 在 一些 国际 问题 上 对 中国 的 支持 。 
+28
+nh p ns n v wp m ns wp u n v v wp c v ns n p m n n nd p ns u v wp 
+28
+S-Nh O B-Ni E-Ni O O O S-Ns O O O O O O O O B-Ni E-Ni O O O O O O S-Ns O O O 
+28
+12 SBV 12 ADV 4 ATT 5 SBV 11 ATT 8 WP 8 ATT 5 VOB 8 WP 5 RAD 2 POB 0 HED 12 VOB 12 WP 16 ADV 12 COO 18 ATT 27 SBV 27 ADV 22 ATT 22 ATT 23 ATT 19 POB 27 ATT 24 POB 24 RAD 16 VOB 12 WP 

@@ -1,0 +1,12 @@
+城关派出所干警将此信告知叶莲美。
+叶莲美
+城关派出所
+0
+8
+城关 派出所 干警 将 此信 告知 叶莲美 。 
+8
+ns n n p r v nh wp 
+8
+B-Ni E-Ni O O O O S-Nh O 
+8
+2 ATT 3 ATT 6 SBV 6 ADV 4 POB 0 HED 6 VOB 6 WP 

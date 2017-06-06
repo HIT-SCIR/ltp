@@ -1,0 +1,12 @@
+新华社德黑兰１月１５日电（记者荣松）伊朗各地连日来普降大雪，引发雪崩等事故，至少造成４７人死亡。
+荣松
+新华社
+1
+26
+新华社 德黑兰 １月 １５日 电 （ 记者 荣松 ） 伊朗 各地 连日来 普降 大雪 ， 引发 雪崩 等 事故 ， 至少 造成 ４７ 人 死亡 。 
+26
+ni ns nt nt n wp n nh wp ns r i v n wp v n u n wp d v m n v wp 
+26
+S-Ni S-Ns O O O O O S-Nh O S-Ns O O O O O O O O O O O O O O O O 
+26
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 CMP 8 WP 11 ATT 13 SBV 13 ADV 5 VOB 13 VOB 13 WP 13 COO 19 ATT 17 RAD 16 VOB 13 WP 22 ADV 13 COO 24 ATT 25 SBV 22 VOB 5 WP 

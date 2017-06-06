@@ -1,0 +1,12 @@
+地震发生后，张北县邮电局的局长秦满江马上就对保证通信畅通做了全面部署，确保抗震救灾『神经线』的畅通。
+秦满江
+张北县邮电局
+1
+28
+地震 发生 后 ， 张北县 邮电局 的 局长 秦满江 马上 就 对 保证 通信 畅通 做 了 全面 部署 ， 确保 抗震救灾 『 神经线 』 的 畅通 。 
+28
+n v nd wp ns n u n nh d d p v v a v u a v wp v i wp n wp u a wp 
+28
+O O O O B-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O O O O 
+28
+2 SBV 3 ATT 16 ADV 3 WP 6 ATT 8 ATT 6 RAD 9 ATT 16 SBV 16 ADV 16 ADV 16 ADV 12 POB 15 ATT 13 VOB 0 HED 16 RAD 19 ADV 16 VOB 16 WP 16 COO 27 ATT 24 WP 22 COO 24 WP 22 RAD 21 VOB 16 WP 

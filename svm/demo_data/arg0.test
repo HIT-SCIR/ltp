@@ -1,0 +1,112 @@
+-1 	|BT| (S (NP (NP (NP (DT the)(NN role))(PP (IN of)(NP (NNP Celimene))))(, ,)(VP (VBN played)(NP (-NONE- *))(PP (IN by)(NP (NNP Kim)(NNP Cattrall))))(, ,))(VP (VP (VBN attributed)))) |ET| 4:1 10622:1 12486:1 12494:1 14658:1 15316:1 17357:1 21478:1 
+1 	|BT| (S (NP (PRP it))(VP (VBZ expects))) |ET| 4:1 8356:1 12486:1 12494:1 15130:1 15761:1 18643:1 21478:1 
+-1 	|BT| (VP (VBZ expects)(S (NP (PRP$ its)(NNP U.S.)(NNS sales))(VP (TO to)(VP (VB remain)(ADJP (JJ steady))(PP (IN at)(NP (QP (IN about)(CD 1,200))(NNS cars)))(PP (IN in)(NP (CD 1990))))))) |ET| 11784:1 12487:1 12499:1 15213:1 15761:1 18643:1 21478:1 
+1 	|BT| (S (NP (PRP he))(VP (VBZ anticipates))) |ET| 4:1 7873:1 12486:1 12494:1 15130:1 15286:1 17254:1 21478:1 
+-1 	|BT| (VP (VBZ anticipates)(NP (NP (NN growth))(PP (IN for)(NP (DT the)(NN luxury)(NN auto)(NN maker)))(PP (PP (IN in)(NP (NNP Britain)(CC and)(NNP Europe)))(, ,)(CC and)(PP (IN in)(NP (ADJP (JJ Far)(JJ Eastern))(NNS markets)))))) |ET| 10:1 7781:1 12487:1 12494:1 15192:1 15286:1 17254:1 21478:1 
+1 	|BT| (S (NP (NP (NNP Bell))(, ,)(VP (VBN based)(NP (-NONE- *))(PP (IN in)(NP (NNP Los)(NNP Angeles))))(, ,))(VP (VBZ distributes))) |ET| 4:1 836:1 12486:1 12494:1 15130:1 15658:1 18327:1 21478:1 
+-1 	|BT| (VP (VBZ distributes)(NP (UCP (JJ electronic)(, ,)(NN computer)(CC and)(NN building))(NNS products))) |ET| 10:1 9964:1 12487:1 12494:1 15192:1 15658:1 18327:1 21478:1 
+1 	|BT| (S (NP (NNS Investors))(VP (VP (VBG appealing)))) |ET| 4:1 2363:1 12486:1 12494:1 14268:1 15287:1 17258:1 21478:1 
+-1 	|BT| (VP (VBG appealing)(PP (NP (DT the)(NNPS Securities)(CC and)(NNP Exchange)(NNP Commission)))) |ET| 10:1 1249:1 12487:1 12494:1 14350:1 15287:1 17258:1 21478:1 
+1 	|BT| (VP (PP (NP (DT the)(NNPS Securities)(CC and)(NNP Exchange)(NNP Commission)))(S (VP (VP (VB limit))))) |ET| 10:1 1249:1 12486:1 12494:1 13190:1 16010:1 19374:1 21478:1 
+-1 	|BT| (VP (VB limit)(NP (NP (PRP$ their)(NN access))(PP (TO to)(NP (NP (NN information))(PP (IN about)(NP (NP (NN stock)(NNS purchases)(CC and)(NNS sales))(PP (IN by)(NP (JJ corporate)(NNS insiders))))))))) |ET| 10:1 4676:1 12487:1 12494:1 13367:1 16010:1 19374:1 21478:1 
+-1 	|BT| (VP (VB ease)(NP (NP (NN reporting)(NNS requirements))(PP (IN for)(NP (DT some)(NN company)(NNS executives))))) |ET| 10:1 10424:1 12487:1 12494:1 13367:1 15692:1 18435:1 21478:1 
+-1 	|BT| (S (S (NP (DT A)(NNP SEC)(NN proposal)(S (NP (-NONE- *))(VP (TO to)(VP (VB ease)(NP (NP (NN reporting)(NNS requirements))(PP (IN for)(NP (DT some)(NN company)(NNS executives))))))))(VP (MD would)(VP (VB undermine)(NP (NP (DT the)(NN usefulness))(PP (IN of)(NP (NP (NN information))(PP (IN on)(NP (NN insider)(NNS trades)))))(PP (IN as)(NP (DT a)(JJ stock)(NN tool)))))))(VP (VBP contend))) |ET| 12440:1 12486:1 12499:1 14949:1 15512:1 17913:1 21478:1 
+1 	|BT| (S (NP (NP (JJ individual)(NNS investors))(CC and)(NP (JJ professional)(NN money)(NNS managers)))(VP (VBP contend))) |ET| 4:1 8335:1 12486:1 12494:1 14943:1 15512:1 17913:1 21478:1 
+1 	|BT| (S (NP (NP (JJ Many))(PP (IN of)(NP (DT the)(NNS letters))))(VP (VBP maintain))) |ET| 4:1 2793:1 12486:1 12494:1 14943:1 16031:1 19446:1 21478:1 
+-1 	|BT| (VP (VBP maintain)(SBAR (S (S (NP (NN investor)(NN confidence))(VP (VBZ has)(VP (VBN been)(VP (ADVP (RB so))(VBN shaken)(PP (IN by)(NP (DT the)(CD 1987)(NN stock)(NN market)(NN crash)))(SBAR (-NONE- *RNR*))))))(: --)(CC and)(S (NP (DT the)(NNS markets))(ADVP (RB already))(VP (ADVP (RB so))(VBN stacked)(NP (-NONE- *))(PP (IN against)(NP (DT the)(JJ little)(NN guy)))(SBAR (-NONE- *RNR*))))(: --)(SBAR (IN that)(S (NP (NP (DT any)(NN decrease))(PP (IN in)(NP (NP (NN information))(PP (IN on)(NP (NN insider)(NNS patterns))))))(VP (MD might)(VP (VB prompt)(S (NP (NNS individuals))(VP (TO to)(VP (VB get)(ADVP (RB out)(PP (IN of)(NP (NNS stocks))))(ADVP (RB altogether)))))))))))) |ET| 7855:1 12487:1 12499:1 15029:1 16031:1 19446:1 21478:1 
+-1 	|BT| (S (NP (NN investor)(NN confidence))(VP (VP (VP (VBN shaken))))) |ET| 4:1 6089:1 12486:1 12494:1 14750:1 16468:1 20640:1 21478:1 
+1 	|BT| (VP (VBN shaken)(PP (NP (DT the)(CD 1987)(NN stock)(NN market)(NN crash)))) |ET| 10:1 6330:1 12487:1 12494:1 14829:1 16468:1 20640:1 21478:1 
+-1 	|BT| (S (NP (DT the)(NNS markets))(VP (VBN stacked))) |ET| 4:1 8813:1 12486:1 12494:1 14559:1 16550:1 20862:1 21478:1 
+1 	|BT| (S (NP (NP (DT any)(NN decrease))(PP (IN in)(NP (NP (NN information))(PP (IN on)(NP (NN insider)(NNS patterns))))))(VP (VP (VB prompt)))) |ET| 4:1 6490:1 12486:1 12494:1 13198:1 16234:1 20001:1 21478:1 
+-1 	|BT| (VP (VB prompt)(S (NP (NNS individuals)))) |ET| 4:1 8176:1 12487:1 12494:1 13402:1 16234:1 20001:1 21478:1 
+1 	|BT| (S (NP (NP (QP (IN about)(CD 25))(NN %))(PP (IN of)(NP (DT the)(NNS insiders))))(VP (VBP file))) |ET| 4:1 14:1 12486:1 12494:1 14943:1 15792:1 18741:1 21478:1 
+-1 	|BT| (VP (VBP file)(NP (PRP$ their)(NNS reports))) |ET| 10:1 10425:1 12487:1 12494:1 15002:1 15792:1 18741:1 21478:1 
+1 	|BT| (S (NP (DT The)(NNS changes))(VP (VP (PP (NP (S (VP (VP (VP (VB streamline)))))))))) |ET| 4:1 5779:1 12486:1 12494:1 13234:1 16581:1 20929:1 21478:1 
+-1 	|BT| (VP (VB streamline)(NP (JJ federal)(NN bureaucracy))) |ET| 10:1 5590:1 12487:1 12494:1 13367:1 16581:1 20929:1 21478:1 
+1 	|BT| (NP (NP (DT the)(NNS executives))(SBAR (S (VP (VP (VBG calling)))))) |ET| 10:1 7173:1 12486:1 12494:1 14235:1 15404:1 17596:1 21478:1 
+1 	|BT| (SBAR (WHNP (WP who))(S (VP (VP (VBG calling))))) |ET| 12337:1 12486:1 12507:1 14250:1 15404:1 17596:1 21478:1 
+-1 	|BT| (VP (VBG calling)(NP (DT the)(NNS shots))) |ET| 10:1 10947:1 12487:1 12494:1 14339:1 15404:1 17596:1 21478:1 
+1 	|BT| (S (NP (DT the)(NN issue))(VP (VP (VBN produced)))) |ET| 4:1 8351:1 12486:1 12494:1 14658:1 16226:1 19975:1 21478:1 
+-1 	|BT| (VP (VBN produced)(NP (NP (JJR more)(NN mail))(PP (IN than)(NP (NP (ADJP (RB almost)(DT any))(JJ other)(NN issue))(PP (IN in)(NP (NN memory))))))) |ET| 10:1 8747:1 12487:1 12494:1 14819:1 16226:1 19975:1 21478:1 
+1 	|BT| (S (NP (DT The)(NNP SEC))(VP (VP (VB vote)))) |ET| 4:1 3733:1 12486:1 12494:1 13198:1 16736:1 21326:1 21478:1 
+-1 	|BT| (VP (VB vote)(PP (NP (DT the)(NN proposal)))) |ET| 10:1 10015:1 12487:1 12494:1 13382:1 16736:1 21326:1 21478:1 
+1 	|BT| (S (NP (NP (RB Not)(PDT all)(DT those))(SBAR (WHNP (WP who))(S (NP (-NONE- *T*))(VP (VBD wrote)))))(VP (VBP oppose))) |ET| 4:1 3139:1 12486:1 12494:1 14943:1 16115:1 19661:1 21478:1 
+-1 	|BT| (VP (VBP oppose)(NP (DT the)(NNS changes))) |ET| 10:1 5779:1 12487:1 12494:1 15002:1 16115:1 19661:1 21478:1 
+1 	|BT| (S (NP (NP (DT The)(NNP Committee))(PP (IN on)(NP (NP (NNP Federal)(NNP Regulation))(PP (IN of)(NP (NNPS Securities)))))(PP (IN for)(NP (DT the)(NNP American)(NNP Bar)(NNP Association))))(VP (VBZ argues))) |ET| 4:1 1251:1 12486:1 12494:1 15130:1 15295:1 17285:1 21478:1 
+-1 	|BT| (VP (VBZ argues)(SBAR (S (NP (DT the)(VBN proposed)(NNS changes))(`` ``)(VP (MD would)(VP (ADVP (RB substantially))(VB improve)(NP (DT the)(PRN (-LRB- -LCB-)(NN law)(-RRB- -RCB-)))(PP (IN by)(S (NP (-NONE- *))(VP (VBG conforming)(NP (PRP it))(ADVP (RBR more)(RB closely))(PP (TO to)(NP (JJ contemporary)(NN business)(NNS realities))))))))))) |ET| 12440:1 12487:1 12499:1 15223:1 15295:1 17285:1 21478:1 
+1 	|BT| (S (NP (DT the)(VBN proposed)(NNS changes))(VP (VP (PP (S (VP (VBG conforming))))))) |ET| 4:1 5779:1 12486:1 12494:1 14030:1 15495:1 17865:1 21478:1 
+-1 	|BT| (VP (VBG conforming)(NP (PRP it))) |ET| 10:1 8356:1 12487:1 12494:1 14339:1 15495:1 17865:1 21478:1 
+1 	|BT| (NP (NP (DT the)(NNS investors))(SBAR (S (VP (VBP oppose))))) |ET| 4:1 8335:1 12486:1 12494:1 14923:1 16115:1 19661:1 21478:1 
+1 	|BT| (SBAR (WHNP (WP who))(S (VP (VBP oppose)))) |ET| 12337:1 12486:1 12507:1 14936:1 16115:1 19661:1 21478:1 
+-1 	|BT| (VP (VBP oppose)(NP (DT the)(VBN proposed)(NNS changes))) |ET| 10:1 5779:1 12487:1 12494:1 15002:1 16115:1 19661:1 21478:1 
+-1 	|BT| (SBAR (WHNP (WP What))(S (VP (VBP object)))) |ET| 4525:1 12486:1 12507:1 14936:1 16101:1 19620:1 21478:1 
+1 	|BT| (S (NP (NP (DT the)(NNS investors))(SBAR (WHNP (WP who))(S (NP (-NONE- *T*))(VP (VBP oppose)(NP (DT the)(VBN proposed)(NNS changes))))))(VP (VBP object))) |ET| 4:1 8335:1 12486:1 12494:1 14943:1 16101:1 19620:1 21478:1 
+-1 	|BT| (S (SBAR (S (VP (VBP object))))(VP (NP (NP (DT the)(NN effect))(SBAR (WHNP (-NONE- 0))(S (NP (PRP they))(VP (VBP say)(SBAR (-NONE- 0)(S (NP (DT the)(NN proposal))(VP (MD would)(VP (VB have)(NP (-NONE- *T*))(PP (IN on)(NP (PRP$ their)(NN ability)(S (NP (-NONE- *))(VP (TO to)(VP (VB spot)(NP (NP (NP (JJ telltale)(`` ``)(NNS clusters)('' ''))(PP (IN of)(NP (NN trading)(NN activity))))(: --)(NP (NP (NN buying)(CC or)(NN selling))(PP (IN by)(NP (QP (JJR more)(IN than)(CD one))(NN officer)(CC or)(NN director)))(PP (IN within)(NP (NP (DT a)(JJ short)(NN period))(PP (IN of)(NP (NN time)))))))))))))))))))))) |ET| 10:1 6954:1 12487:1 12494:1 14931:1 16101:1 19620:1 21478:1 
+-1 	|BT| (VP (VB spot)(NP (NP (NP (JJ telltale)(`` ``)(NNS clusters)('' ''))(PP (IN of)(NP (NN trading)(NN activity))))(: --)(NP (NP (NN buying)(CC or)(NN selling))(PP (IN by)(NP (QP (JJR more)(IN than)(CD one))(NN officer)(CC or)(NN director)))(PP (IN within)(NP (NP (DT a)(JJ short)(NN period))(PP (IN of)(NP (NN time)))))))) |ET| 10:1 5920:1 12487:1 12494:1 13367:1 16538:1 20828:1 21478:1 
+1 	|BT| (S (NP (NP (DT The)(NNP SEC)(POS 's))(NNP Mr.)(NNP Lane))(VP (VBD disputed))) |ET| 4:1 2593:1 12486:1 12494:1 13560:1 15652:1 18310:1 21478:1 
+1 	|BT| (S (NP (DT The)(NNS rules))(VP (VP (VB eliminate)))) |ET| 4:1 10654:1 12486:1 12494:1 13198:1 15701:1 18460:1 21478:1 
+-1 	|BT| (VP (VB eliminate)(NP (NP (NNS filings)(VBG policy)(NNS divisions))(, ,)(PP (JJ such)(IN as)(NP (NP (NNS sales))(, ,)(NP (NN marketing))(, ,)(NP (NN finance))(CC and)(NP (NN research)(CC and)(NN development)))))) |ET| 10:1 6783:1 12487:1 12494:1 13367:1 15701:1 18460:1 21478:1 
+1 	|BT| (NP (NP (DT the)(NNS insiders))(VP (S (VP (VP (VB file)))))) |ET| 10:1 8239:1 12486:1 12494:1 13030:1 15792:1 18741:1 21478:1 
+-1 	|BT| (VP (VB file)(NP (NNS reports))) |ET| 10:1 10425:1 12487:1 12494:1 13367:1 15792:1 18741:1 21478:1 
+-1 	|BT| (S (NP (NNS Companies))(VP (VP (VP (VBN compelled))))) |ET| 4:1 1258:1 12486:1 12494:1 14750:1 15470:1 17784:1 21478:1 
+1 	|BT| (S (NP (NNS Companies))(VP (VP (VP (S (VP (VP (VB publish)))))))) |ET| 4:1 1258:1 12486:1 12494:1 13175:1 16242:1 20029:1 21478:1 
+-1 	|BT| (VP (VB publish)(NP (NP (DT the)(NNS names))(PP (IN of)(NP (NP (NNS insiders))(SBAR (WHNP (WP who))(S (NP (-NONE- *T*))(VP (VBP fail)(S (NP (-NONE- *))(VP (TO to)(VP (VB file)(NP (NNS reports))(PP (IN on)(NP (NN time))))))))))))) |ET| 10:1 9104:1 12487:1 12494:1 13367:1 16242:1 20029:1 21478:1 
+1 	|BT| (NP (NP (NNS insiders))(SBAR (S (VP (S (VP (VP (VB file)))))))) |ET| 10:1 8239:1 12486:1 12494:1 13070:1 15792:1 18741:1 21478:1 
+1 	|BT| (SBAR (WHNP (WP who))(S (VP (S (VP (VP (VB file))))))) |ET| 12337:1 12486:1 12507:1 13086:1 15792:1 18741:1 21478:1 
+-1 	|BT| (VP (VB file)(NP (NNS reports))) |ET| 10:1 10425:1 12487:1 12494:1 13367:1 15792:1 18741:1 21478:1 
+-1 	|BT| (S (S (VP (VBN Considered)))(NP (NP (DT the)(NNS filings))(VP (VBN required)(NP (-NONE- *))(PP (IN under)(NP (DT the)(VBN proposed)(NNS rules)))))) |ET| 4:1 7393:1 12487:1 12494:1 14509:1 15498:1 16847:1 21478:1 
+1 	|BT| (NP (NP (NNS investors))(VP (VBG following))) |ET| 10:1 8335:1 12486:1 12494:1 13779:1 15820:1 18820:1 21478:1 
+-1 	|BT| (VP (VBG following)(NP (NNS transactions))) |ET| 10:1 11856:1 12487:1 12494:1 14339:1 15820:1 18820:1 21478:1 
+1 	|BT| (S (NP (JJ key)(NNS officials))(VP (VP (S (VP (VP (VB file))))))) |ET| 4:1 9295:1 12486:1 12494:1 13155:1 15792:1 18741:1 21478:1 
+-1 	|BT| (VP (VB file)(NP (DT the)(NNS reports))) |ET| 10:1 10425:1 12487:1 12494:1 13367:1 15792:1 18741:1 21478:1 
+1 	|BT| (SBAR (WHNP (WP who))(S (VP (VBZ files)))) |ET| 12337:1 12486:1 12507:1 15118:1 15792:1 18743:1 21478:1 
+1 	|BT| (S (NP (NNS insiders))(VP (VP (VB file)))) |ET| 4:1 8239:1 12486:1 12494:1 13198:1 15792:1 18741:1 21478:1 
+-1 	|BT| (VP (VB file)(NP (NNS transactions))) |ET| 10:1 11856:1 12487:1 12494:1 13367:1 15792:1 18741:1 21478:1 
+1 	|BT| (NP (NP (NP (DT The)(NN nation)(POS 's))(JJS largest)(NN pension)(NN fund))(SBAR (S (VP (VBZ oversees))))) |ET| 4:1 7615:1 12486:1 12494:1 15092:1 16135:1 19718:1 21478:1 
+1 	|BT| (SBAR (WHNP (WDT which))(S (VP (VBZ oversees)))) |ET| 12326:1 12486:1 12507:1 15118:1 16135:1 19718:1 21478:1 
+-1 	|BT| (VP (VBZ oversees)(NP (QP ($ $)(CD 80)(CD billion))(-NONE- *U*))) |ET| 10:1 13:1 12487:1 12494:1 15192:1 16135:1 19718:1 21478:1 
+1 	|BT| (S (NP (NP (NP (DT The)(NN nation)(POS 's))(JJS largest)(NN pension)(NN fund))(, ,)(SBAR (WHNP (WDT which))(S (NP (-NONE- *T*))(VP (VBZ oversees)(NP (QP ($ $)(CD 80)(CD billion))(-NONE- *U*))(PP (IN for)(NP (NN college)(NNS employees))))))(, ,))(VP (S (VP (VP (VB offer)))))) |ET| 4:1 7615:1 12486:1 12494:1 13096:1 16110:1 19644:1 21478:1 
+-1 	|BT| (VP (VB offer)(NP (CD two)(JJ new)(NN investment)(NNS options))) |ET| 10:1 8332:1 12487:1 12494:1 13367:1 16110:1 19644:1 21478:1 
+1 	|BT| (S (NP (PRP it))(VP (VP (VB introduce)))) |ET| 4:1 8356:1 12486:1 12494:1 13198:1 15958:1 19210:1 21478:1 
+-1 	|BT| (VP (VB introduce)(NP (NP (NP (DT a)(NN stock)(CC and)(NN bond)(NN fund))(SBAR (WHNP (WDT that))(S (NP (-NONE- *T*))(VP (MD will)(VP (VB invest)(PP (IN in)(NP (`` ``)(ADJP (RB socially)(JJ responsible))('' '')(NNS companies))))))))(, ,)(CC and)(NP (DT a)(NN bond)(NN fund)))) |ET| 10:1 7615:1 12487:1 12494:1 13367:1 15958:1 19210:1 21478:1 
+1 	|BT| (NP (NP (DT a)(NN stock)(CC and)(NN bond)(NN fund))(SBAR (S (VP (VP (VB invest)))))) |ET| 10:1 7615:1 12486:1 12494:1 12924:1 15960:1 19217:1 21478:1 
+1 	|BT| (SBAR (WHNP (WDT that))(S (VP (VP (VB invest))))) |ET| 11688:1 12486:1 12507:1 13002:1 15960:1 19217:1 21478:1 
+-1 	|BT| (S (NP (DT Both)(NNS funds))(VP (VP (VBN expected)))) |ET| 4:1 7620:1 12486:1 12494:1 14658:1 15761:1 18641:1 21478:1 
+-1 	|BT| (VP (VBN expected)(S (NP (-NONE- *))(VP (TO to)(VP (VB begin)(NP (NN operation))(PP (IN around)(NP (NNP March)(CD 1)))(, ,)(ADJP (JJ subject)(PP (TO to)(NP (NNPS Securities)(CC and)(NNP Exchange)(NNP Commission)(NN approval)))))))) |ET| 11784:1 12487:1 12499:1 14845:1 15761:1 18641:1 21478:1 
+1 	|BT| (S (NP (DT Both)(NNS funds))(VP (VP (S (VP (VP (VB begin))))))) |ET| 4:1 7620:1 12486:1 12494:1 13155:1 15345:1 17432:1 21478:1 
+-1 	|BT| (VP (VB begin)(NP (NN operation))) |ET| 10:1 9323:1 12487:1 12494:1 13367:1 15345:1 17432:1 21478:1 
+-1 	|BT| (S (NP (PRP$ its)(NNS employees))(VP (VP (VB sign)))) |ET| 4:1 7013:1 12486:1 12494:1 13198:1 16488:1 20693:1 21478:1 
+1 	|BT| (S (NP (DT The)(JJ new)(NNS options))(VP (VBP carry))) |ET| 4:1 9345:1 12486:1 12494:1 14943:1 15410:1 17616:1 21478:1 
+-1 	|BT| (VP (VBP carry)(NP (NP (NN part))(PP (IN of)(NP (NP (DT an)(NN agreement))(SBAR (WHNP (IN that))(S (NP (DT the)(NN pension)(NN fund))(, ,)(S (NP (-NONE- *))(PP (IN under)(NP (NN pressure)(S (NP (-NONE- *))(VP (VP (TO to)(VP (VB relax)(NP (PRP$ its)(JJ strict)(NN participation)(NNS rules))))(CC and)(VP (TO to)(VP (VB provide)(NP (JJR more)(NN investment)(NNS options)))))))))(, ,)(VP (VBN reached)(NP (-NONE- *T*))(PP (IN with)(NP (DT the)(NNP SEC)))(PP (IN in)(NP (NNP December)))))))))) |ET| 10:1 9495:1 12487:1 12494:1 15002:1 15410:1 17616:1 21478:1 
+1 	|BT| (S (NP (DT the)(NN pension)(NN fund))(S (PP (NP (S (VP (VP (VP (VB relax))))))))) |ET| 4:1 7615:1 12486:1 12494:1 13229:1 16334:1 20278:1 21478:1 
+-1 	|BT| (VP (VB relax)(NP (PRP$ its)(JJ strict)(NN participation)(NNS rules))) |ET| 10:1 9500:1 12487:1 12494:1 13367:1 16334:1 20278:1 21478:1 
+1 	|BT| (S (NP (DT The)(JJ new)(`` ``)(JJ social)(NN choice)('' '')(NN fund))(VP (VP (VB shun)))) |ET| 4:1 7615:1 12486:1 12494:1 13198:1 16484:1 20684:1 21478:1 
+-1 	|BT| (VP (VB shun)(NP (NP (NNS securities))(PP (IN of)(NP (NP (NNS companies))(VP (VBN linked)(NP (-NONE- *))(PP (TO to)(NP (NP (NNP South)(NNP Africa))(, ,)(NP (JJ nuclear)(NN power))(CC and)(PP (IN in)(NP (DT some)(NNS cases)))(, ,)(NP (NNP Northern)(NNP Ireland))))))))) |ET| 10:1 10791:1 12487:1 12494:1 13367:1 16484:1 20684:1 21478:1 
+-1 	|BT| (NP (NP (NNS companies))(VP (VBN linked))) |ET| 10:1 6014:1 12486:1 12494:1 14481:1 16012:1 19382:1 21478:1 
+-1 	|BT| (VP (VBN linked)(PP (NP (NP (NNP South)(NNP Africa))(, ,)(NP (JJ nuclear)(NN power))(CC and)(PP (IN in)(NP (DT some)(NNS cases)))(, ,)(NP (NNP Northern)(NNP Ireland))))) |ET| 10:1 534:1 12487:1 12494:1 14829:1 16012:1 19382:1 21478:1 
+-1 	|BT| (SINV (VP (VBN excluded))(NP (NP (NNS investments))(PP (IN in)(NP (NP (NNS companies))(PP (IN with)(NP (NP (`` ``)(JJ significant)('' '')(NN business))(VP (VBG stemming)(PP (IN from)(NP (NP (NNS weapons)(NN manufacture))(, ,)(NP (JJ alcoholic)(NNS beverages))(CC or)(NP (NN tobacco))))))))))) |ET| 7:1 8333:1 12487:1 12494:1 14567:1 15753:1 18615:1 21478:1 
+-1 	|BT| (S (NP (NP (CD Sixty)(NN percent))(PP (IN of)(NP (DT the)(NN fund))))(VP (VP (VP (VBN invested))))) |ET| 4:1 9570:1 12486:1 12494:1 14750:1 15960:1 19218:1 21478:1 
+1 	|BT| (S (NP (DT The)(NN bond)(NN fund))(VP (VP (VB invest)))) |ET| 4:1 7615:1 12486:1 12494:1 13198:1 15960:1 19217:1 21478:1 
+-1 	|BT| (PP (VBG including)(NP (NP (QP (JJ as)(RB much)(IN as)(CD 15))(NN %))(PP (IN in)(NP (JJ foreign)(NNS securities))))) |ET| 10:1 14:1 12487:1 12494:1 13769:1 15925:1 19119:1 21478:1 
+-1 	|BT| (S (NP (PRP$ their)(NNS jobs))(VP (VP (VBN terminated)))) |ET| 4:1 8385:1 12486:1 12494:1 14658:1 16650:1 21107:1 21478:1 
+-1 	|BT| (S (NP (NP (DT The)(NN investment)(NNS choices))(VP (VBN offered)(NP (-NONE- *))(PP (IN by)(NP (DT the)(NN pension)(NN fund)))))(VP (VP (VBN limited)))) |ET| 4:1 8332:1 12486:1 12494:1 14658:1 16010:1 19375:1 21478:1 
+1 	|BT| (S (NP (PRP it))(VP (VBD adopted))) |ET| 4:1 8356:1 12486:1 12494:1 13560:1 15256:1 17164:1 21478:1 
+-1 	|BT| (VP (VBD adopted)(NP (NP (DT an)(JJ anti)(NN plan))(VP (VBG giving)(NP (NNS shareholders))(NP (DT the)(NN right)(S (NP (-NONE- *))(VP (TO to)(VP (VB purchase)(NP (NNS shares))(PP (IN at)(NP (JJ half)(NN price)))(PP (IN under)(NP (JJ certain)(NNS conditions)))))))))) |ET| 10:1 9701:1 12487:1 12494:1 13661:1 15256:1 17164:1 21478:1 
+1 	|BT| (NP (NP (DT an)(JJ anti)(NN plan))(VP (NP (S (VP (VP (VB purchase))))))) |ET| 10:1 9701:1 12486:1 12494:1 12766:1 16247:1 20045:1 21478:1 
+-1 	|BT| (VP (VB purchase)(NP (NNS shares))) |ET| 10:1 10894:1 12487:1 12494:1 13367:1 16247:1 20045:1 21478:1 
+-1 	|BT| (VP (VB protect)(NP (NNS shareholders))) |ET| 10:1 10892:1 12487:1 12494:1 13367:1 16239:1 20016:1 21478:1 
+1 	|BT| (S (NP (PRP they))(VP (S (VP (VP (VB work)))))) |ET| 4:1 11712:1 12486:1 12494:1 13096:1 16774:1 21438:1 21478:1 
+1 	|BT| (S (NP (PRP He))(VP (VP (VP (VBZ interprets))))) |ET| 4:1 2151:1 12486:1 12494:1 15176:1 15955:1 19204:1 21478:1 
+-1 	|BT| (VP (VP (VBZ interprets))(NP (JJ fearsome)(JJ contemporary)(NNS scores))) |ET| 10:1 10750:1 12487:1 12494:1 15179:1 15955:1 19204:1 21478:1 
+1 	|BT| (S (NP (NP (DT a)(NN touch))(PP (IN of)(NP (DT the)(JJ old)(NNP Tashi))))(VP (VBZ survives))) |ET| 4:1 11812:1 12486:1 12494:1 15130:1 16616:1 21021:1 21478:1 
+-1 	|BT| (NP (NP (DT a)(NN repertoire))(SBAR (S (VP (VBZ ranges))))) |ET| 10:1 10415:1 12486:1 12494:1 15092:1 16271:1 20108:1 21478:1 
+-1 	|BT| (SBAR (WHNP (WDT that))(S (VP (VBZ ranges)))) |ET| 11688:1 12486:1 12507:1 15118:1 16271:1 20108:1 21478:1 
+1 	|BT| (S (NP (PRP you))(VP (VP (VB dismiss)))) |ET| 4:1 12473:1 12486:1 12494:1 13198:1 15645:1 18287:1 21478:1 
+1 	|BT| (S (NP (PRP It))(VP (VBD felt))) |ET| 4:1 2381:1 12486:1 12494:1 13560:1 15786:1 18723:1 21478:1 
+1 	|BT| (S (NP (PRP He))(VP (VBD launched))) |ET| 4:1 2151:1 12486:1 12494:1 13560:1 15991:1 19315:1 21478:1 
+1 	|BT| (NP (NP (NN none))(SBAR (S (VP (VP (VB challenge)))))) |ET| 9:1 9201:1 12486:1 12494:1 12924:1 15424:1 17658:1 21478:1 
+1 	|BT| (SBAR (WHNP (WDT that))(S (VP (VP (VB challenge))))) |ET| 11688:1 12486:1 12507:1 13002:1 15424:1 17658:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Stoltzman))(VP (VBD introduced))) |ET| 4:1 4054:1 12486:1 12494:1 13560:1 15958:1 19211:1 21478:1 
+1 	|BT| (S (NP (NP (NNP Bach)(POS 's))(`` ``)(NX (NN Air))('' ''))(VP (VBD followed))) |ET| 4:1 550:1 12486:1 12494:1 13560:1 15820:1 18819:1 21478:1 
+1 	|BT| (S (NP (NNP Mr.)(NNP Stoltzman))(VP (VP (PP (S (VP (VBG joining))))))) |ET| 4:1 4054:1 12486:1 12494:1 14030:1 15969:1 19249:1 21478:1 
+1 	|BT| (VP (VBN arranged)(PP (NP (NNP Mr.)(NNP Douglas)))) |ET| 10:1 1563:1 12487:1 12494:1 14829:1 15297:1 17292:1 21478:1 

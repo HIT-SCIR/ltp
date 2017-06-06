@@ -1,0 +1,12 @@
+科尔一行应中国共产党邀请，于去年１２月２９日抵京对中国进行访问。
+科尔
+中国共产党
+0
+17
+科尔 一行 应 中国 共产党 邀请 ， 于 去年 １２月 ２９日 抵京 对 中国 进行 访问 。 
+17
+nh n v ns n v wp p nt nt nt v p ns v v wp 
+17
+S-Nh O O B-Ni E-Ni O O O O O O O O S-Ns O O O 
+17
+2 ATT 3 SBV 0 HED 5 ATT 6 ATT 3 VOB 3 WP 12 ADV 11 ATT 11 ATT 8 POB 3 COO 15 ADV 13 POB 12 COO 15 VOB 3 WP 

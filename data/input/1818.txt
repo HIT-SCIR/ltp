@@ -1,0 +1,12 @@
+１９９３年，盛国兰从青海到石河子总场４分场６连打工，３位兄长不放心，相邀前来探望，也落地扎根。
+盛国兰
+石河子总场４分场６连
+1
+29
+１９９３年 ， 盛国兰 从 青海 到 石河子 总场 ４ 分场 ６ 连 打工 ， ３ 位 兄长 不 放心 ， 相 邀 前来 探望 ， 也 落地 扎根 。 
+29
+nt wp nh p ns v ns n m n m u v wp m q n d v wp d v v v wp d v v wp 
+29
+O O S-Nh O S-Ns O B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O O O O O O O O O O O O O O O O O 
+29
+13 ADV 1 WP 13 SBV 13 ADV 4 POB 13 ADV 8 ATT 10 ATT 10 ATT 13 SBV 13 ADV 13 ADV 0 HED 13 WP 16 ATT 17 ATT 19 SBV 19 ADV 13 COO 19 WP 22 ADV 19 COO 22 VOB 23 COO 19 WP 27 ADV 19 COO 27 COO 13 WP 

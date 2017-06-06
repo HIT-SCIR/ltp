@@ -1,0 +1,12 @@
+北京艺术研究所所长周传家振兴京剧是一个系统工程，需要进行综合治理。
+周传家
+北京艺术研究所
+1
+15
+北京 艺术 研究所 所长 周传家 振兴 京剧 是 一个 系统工程 ， 需要 进行 综合治理 。 
+15
+ns n n n nh v n v m i wp v v i wp 
+15
+B-Ni I-Ni E-Ni O S-Nh O O O O O O O O O O 
+15
+3 ATT 3 ATT 4 ATT 5 ATT 6 SBV 8 SBV 6 VOB 0 HED 10 ATT 8 VOB 8 WP 8 COO 12 VOB 13 VOB 8 WP 

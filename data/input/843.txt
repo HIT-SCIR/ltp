@@ -1,0 +1,12 @@
+鉴于褚时健贪污受贿数额特别巨大，经济犯罪问题极为严重，经中央纪委批准，云南省委决定，开除褚时健党籍。
+褚时健
+中央纪委
+0
+27
+鉴于 褚时健 贪污 受贿 数额 特别 巨大 ， 经济 犯罪 问题 极为 严重 ， 经 中央 纪委 批准 ， 云南 省委 决定 ， 开除 褚时健 党籍 。 
+27
+p nh v v n d a wp n v n d a wp p n j v wp ns n v wp v nh n wp 
+27
+O S-Nh O O O O O O O O O O O O O B-Ni E-Ni O O B-Ni E-Ni O O O S-Nh O O 
+27
+13 ADV 3 SBV 5 ATT 3 COO 7 SBV 7 ADV 1 POB 1 WP 10 SBV 11 ATT 13 SBV 13 ADV 0 HED 13 WP 22 ADV 17 ATT 18 SBV 15 POB 15 WP 21 ATT 22 SBV 13 COO 22 WP 22 COO 26 ATT 24 VOB 13 WP 

@@ -1,0 +1,12 @@
+嘉华银行不仅捐出１００万元人民币，还决定由董事长郭炎亲自带队赴灾区慰问。
+郭炎
+嘉华银行
+1
+20
+嘉华 银行 不仅 捐 出 １００万 元 人民币 ， 还 决定 由 董事长 郭炎 亲自 带队 赴 灾区 慰问 。 
+20
+nz n c v v m q n wp d v p n nh d v v n v wp 
+20
+B-Ni E-Ni O O O O O O O O O O O S-Nh O O O O O O 
+20
+2 ATT 4 SBV 4 ADV 0 HED 4 CMP 7 ATT 8 ATT 4 VOB 4 WP 11 ADV 4 COO 16 ADV 14 ATT 12 POB 16 ADV 11 VOB 16 COO 17 VOB 16 COO 4 WP 

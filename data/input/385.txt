@@ -1,0 +1,12 @@
+中联部部长戴秉国和西班牙驻华大使莱尼亚等参加了会见。
+戴秉国
+中联部
+1
+13
+中联部 部长 戴秉国 和 西班牙 驻华 大使 莱尼亚 等 参加 了 会见 。 
+13
+j n nh c ns v n nh u v u v wp 
+13
+O O S-Nh O S-Ns O O S-Nh O O O O O 
+13
+2 ATT 3 ATT 10 SBV 8 LAD 7 ATT 7 ATT 8 ATT 3 COO 3 RAD 0 HED 10 RAD 10 VOB 10 WP 

@@ -1,0 +1,12 @@
+马戏团此行正逢中澳建交２５周年喜庆，联邦总理霍华德专门发来贺词说：中国大马戏团在澳中建交２５周年时来访是两国人民友谊的象征，我相信它会在全澳受到热情的欢迎，并将为促进澳大利亚人民对中国文化的兴趣和加深对中国的文化的理解作出自己的贡献。
+霍华德
+中国大马戏团
+0
+74
+马戏团 此行 正逢 中 澳 建交 ２５ 周年 喜庆 ， 联邦 总理 霍华德 专门 发 来 贺词 说 ： 中国 大 马戏团 在 澳 中 建交 ２５ 周年 时 来访 是 两 国 人民 友谊 的 象征 ， 我 相信 它 会 在 全 澳 受到 热情 的 欢迎 ， 并 将 为 促进 澳大利亚 人民 对 中国 文化 的 兴趣 和 加深 对 中国 的 文化 的 理解 作出 自己 的 贡献 。 
+74
+n r v j j v m q v wp n n nh d v v n v wp ns a n p j j v m q n v v m n n n u n wp r v r v p a j v a u v wp c d p v ns n p ns n u n c v p ns u n u v v r u n wp 
+74
+O O O S-Ns S-Ns O O O O O O O S-Nh O O O O O O B-Ni I-Ni E-Ni O S-Ns S-Ns O O O O O O O O O O O O O O O O O O O S-Ns O O O O O O O O O S-Ns O O S-Ns O O O O O O S-Ns O O O O O O O O O 
+74
+2 ATT 6 SBV 6 ADV 6 SBV 4 COO 0 HED 8 ATT 6 CMP 6 COO 9 WP 12 ATT 13 ATT 15 SBV 15 ADV 9 COO 15 CMP 15 VOB 15 COO 18 WP 22 ATT 22 ATT 31 SBV 29 ATT 23 POB 24 COO 29 ATT 28 ATT 26 CMP 30 ADV 31 SBV 18 VOB 33 ATT 34 ATT 35 ATT 37 ATT 35 RAD 31 VOB 31 WP 40 SBV 31 COO 46 SBV 46 ADV 46 ADV 45 ATT 43 POB 40 VOB 49 ATT 47 RAD 46 VOB 46 WP 70 ADV 70 ADV 70 ADV 53 POB 56 ATT 61 ATT 61 ATT 59 ATT 57 POB 57 RAD 54 VOB 63 LAD 54 COO 69 ATT 67 ATT 65 RAD 64 POB 64 RAD 63 VOB 46 COO 73 ATT 71 RAD 70 VOB 6 WP 

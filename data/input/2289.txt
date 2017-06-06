@@ -1,0 +1,12 @@
+乌鲁木齐石油化工总厂警卫中队队长、共产党员张鹏，以身作则，克己奉公，受到厂内外广泛好评。
+张鹏
+乌鲁木齐石油化工总厂警卫中队
+1
+21
+乌鲁木齐 石油 化工 总厂 警卫 中队 队长 、 共产党员 张鹏 ， 以身作则 ， 克己奉公 ， 受到 厂 内外 广泛 好评 。 
+21
+ns n n n n n n wp n nh wp i wp i wp v n nd a n wp 
+21
+B-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O O O S-Nh O O O O O O O O O O O 
+21
+7 ATT 4 ATT 4 ATT 6 ATT 6 ATT 7 ATT 10 ATT 9 WP 7 COO 12 SBV 10 WP 0 HED 12 WP 12 COO 12 WP 12 COO 18 ATT 20 ATT 20 ATT 16 VOB 12 WP 

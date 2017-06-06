@@ -1,0 +1,12 @@
+患者郑铮，是南京中华中学的一名女学生，今年１４岁。
+郑铮
+南京中华中学
+0
+17
+患者 郑铮 ， 是 南京 中华 中学 的 一 名 女 学生 ， 今年 １４ 岁 。 
+17
+n nh wp v ns nz n u m q b n wp nt m q wp 
+17
+O S-Nh O O B-Ni I-Ni E-Ni O O O O O O O O O O 
+17
+2 ATT 4 SBV 2 WP 0 HED 7 ATT 7 ATT 12 ATT 7 RAD 10 ATT 12 ATT 12 ATT 4 VOB 4 WP 16 ATT 16 ATT 4 COO 4 WP 

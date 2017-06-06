@@ -1,0 +1,12 @@
+正在南非访问的中国国务院副总理兼外交部长钱其琛参加了这一联欢晚会。
+钱其琛
+国务院
+1
+19
+正 在 南非 访问 的 中国 国务院 副 总理 兼 外交部长 钱其琛 参加 了 这 一 联欢 晚会 。 
+19
+d p ns v u ns ni b n v n nh v u r m v n wp 
+19
+O O S-Ns O O B-Ni E-Ni O O O O S-Nh O O O O O O O 
+19
+4 ADV 4 ADV 2 POB 9 ATT 4 RAD 7 ATT 9 ATT 9 ATT 12 ATT 11 LAD 9 COO 13 SBV 0 HED 13 RAD 16 ATT 18 ATT 18 ATT 13 VOB 13 WP 

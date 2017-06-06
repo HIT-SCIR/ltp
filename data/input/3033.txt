@@ -1,0 +1,12 @@
+１９７９年早春，华水发从永隆综合厂退休回到小（石示）村。
+华水发
+永隆综合厂
+0
+13
+１９７９年 早春 ， 华水发 从 永隆 综合厂 退休 回到 小（石示 ） 村 。 
+13
+nt nt wp nh p ns n v v nh wp n wp 
+13
+O O O S-Nh O B-Ni E-Ni O O S-Nh O O O 
+13
+2 ATT 0 HED 2 WP 8 SBV 8 ADV 7 ATT 5 POB 12 ATT 8 COO 9 VOB 9 WP 2 COO 2 WP 

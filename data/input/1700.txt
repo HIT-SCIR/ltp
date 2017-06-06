@@ -1,0 +1,12 @@
+据中国排协秘书长高沈阳透露，郎平目前的身体状况非常差。
+郎平
+中国排协
+0
+15
+据 中国 排协 秘书长 高沈阳 透露 ， 郎平 目前 的 身体 状况 非常 差 。 
+15
+p ns j n nh v wp nh nt u n n d a wp 
+15
+O B-Ni E-Ni O S-Nh O O S-Nh O O O O O O O 
+15
+14 ADV 3 ATT 4 ATT 5 ATT 6 SBV 1 POB 1 WP 12 ATT 12 ATT 9 RAD 12 ATT 14 SBV 14 ADV 0 HED 14 WP 

@@ -1,0 +1,12 @@
+天津市艺术研究所副所长刘琦到了二十一世纪，随着我国人民物质生活和精神生活水平的进一步提高，人们对京剧演出的期望值也一定变得更高、更严格。
+刘琦
+天津市艺术研究所
+1
+40
+天津市 艺术 研究所 副 所长 刘琦 到 了 二十一 世纪 ， 随着 我国 人民 物质 生活 和 精神 生活 水平 的 进一步 提高 ， 人们 对 京剧 演出 的 期望值 也 一定 变 得 更 高 、 更 严格 。 
+40
+ns n n b n nh v u m n wp p n n n v c n v n u d v wp n p n v u n d d v u d a wp d a wp 
+40
+B-Ni I-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+40
+3 ATT 3 ATT 5 ATT 5 ATT 6 ATT 7 SBV 0 HED 7 RAD 10 ATT 7 VOB 7 WP 33 ADV 14 ATT 15 ATT 16 ATT 23 ATT 20 LAD 19 ATT 20 ATT 16 COO 16 RAD 23 ADV 12 POB 12 WP 28 SBV 28 ADV 26 POB 30 ATT 28 RAD 33 SBV 33 ADV 33 ADV 7 COO 33 RAD 36 ADV 33 CMP 36 WP 39 ADV 36 COO 7 WP 

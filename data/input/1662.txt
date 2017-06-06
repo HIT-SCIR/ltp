@@ -1,0 +1,12 @@
+国家科技领导小组副组长温家宝、宋健和国家科技领导小组其他成员出席了会议。
+宋健
+国家科技领导小组
+1
+20
+国家 科技 领导 小组 副 组长 温家宝 、 宋健 和 国家 科技 领导 小组 其他 成员 出席 了 会议 。 
+20
+n n v n b n nh wp nh c n n v n r n v u n wp 
+20
+B-Ni I-Ni I-Ni E-Ni O O S-Nh O S-Nh O B-Ni I-Ni I-Ni E-Ni O O O O O O 
+20
+2 ATT 4 ATT 4 ATT 6 ATT 6 ATT 7 ATT 17 SBV 9 WP 7 COO 16 LAD 12 ATT 13 ATT 14 ATT 16 ATT 16 ATT 7 COO 0 HED 17 RAD 17 VOB 17 WP 

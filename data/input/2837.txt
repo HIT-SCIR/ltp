@@ -1,0 +1,12 @@
+皇家银行总裁克莱格霍恩认为：“这次合并是加拿大金融界对贸易国际化的反应。”
+克莱格霍恩
+皇家银行
+1
+19
+皇家 银行 总裁 克莱格霍恩 认为 ： “ 这次 合并 是 加拿大 金融界 对 贸易 国际化 的 反应 。 ” 
+19
+n n n nh v wp wp r v v ns n p v v u v wp wp 
+19
+B-Ni E-Ni O S-Nh O O O O O O S-Ns O O O O O O O O 
+19
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 10 WP 9 ATT 10 SBV 5 VOB 12 ATT 17 ATT 17 ATT 15 ATT 13 POB 15 RAD 10 VOB 10 WP 10 WP 

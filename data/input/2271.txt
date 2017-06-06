@@ -1,0 +1,12 @@
+（赵劲）图片：图为中国队９号孙雯带球突破瑞典队门将的防守，为中国队攻入一球。
+孙雯
+瑞典队
+0
+26
+（ 赵劲 ） 图片 ： 图 为 中国队 ９ 号 孙雯 带 球 突破 瑞典队 门将 的 防守 ， 为 中国队 攻 入 一 球 。 
+26
+wp nh wp n wp n v ni m q nh v n v ni n u v wp p ni v v m n wp 
+26
+O S-Nh O O O O O S-Ni O O S-Nh O O O S-Ni O O O O O S-Ni O O O O O 
+26
+2 WP 7 SBV 2 WP 7 SBV 4 WP 7 SBV 0 HED 11 ATT 10 ATT 11 ATT 12 SBV 7 VOB 12 VOB 12 COO 16 ATT 18 ATT 16 RAD 14 VOB 12 WP 22 ADV 20 POB 12 COO 22 CMP 25 ATT 23 VOB 7 WP 

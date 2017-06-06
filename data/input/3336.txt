@@ -1,0 +1,12 @@
+全国记协主席邵华泽首先向大家致以节日的问候。
+邵华泽
+全国记协
+1
+12
+全国 记协 主席 邵华泽 首先 向 大家 致以 节日 的 问候 。 
+12
+n j n nh d p r v n u v wp 
+12
+B-Ni E-Ni O S-Nh O O O O O O O O 
+12
+2 ATT 3 ATT 4 ATT 8 SBV 8 ADV 8 ADV 6 POB 0 HED 8 VOB 8 RAD 8 VOB 8 WP 

@@ -1,0 +1,12 @@
+张攀自己就是湖北来的打工者，听说南山区工商分局办免费阅览室，便主动应聘来服务。
+张攀
+南山区工商分局
+0
+23
+张攀 自己 就 是 湖北 来 的 打工者 ， 听说 南山区 工商 分局 办 免费 阅览室 ， 便 主动 应聘 来 服务 。 
+23
+nh r d v ns v u n wp v ns n n v v n wp d a v v v wp 
+23
+S-Nh O O O S-Ns O O O O O B-Ni I-Ni E-Ni O O O O O O O O O O 
+23
+4 SBV 1 COO 4 ADV 0 HED 6 SBV 8 ATT 6 RAD 4 VOB 4 WP 4 COO 13 ATT 13 ATT 14 SBV 10 VOB 16 ATT 14 VOB 10 WP 20 ADV 20 ADV 10 COO 20 CMP 20 COO 4 WP 

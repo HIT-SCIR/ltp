@@ -1,0 +1,12 @@
+据报道，由于温和派代表利维的辞职，极右势力在以政府中占了上风，并对内塔尼亚胡施加了极大压力。
+利维
+以政府
+0
+28
+据 报道 ， 由于 温和派 代表 利维 的 辞职 ， 极右 势力 在 以 政府 中 占 了 上风 ， 并 对 内塔尼亚胡 施加 了 极大 压力 。 
+28
+p v wp p n n nh u v wp j n p p n nd v u n wp c p nh v u a n wp 
+28
+O O O O O O S-Nh O O O O O O B-Ni E-Ni O O O O O O O S-Ns O O O O O 
+28
+17 ADV 1 POB 1 WP 17 ADV 6 ATT 7 ATT 9 ATT 7 RAD 4 POB 4 WP 12 ATT 17 SBV 17 ADV 17 ADV 16 ATT 14 POB 0 HED 17 RAD 17 VOB 17 WP 24 ADV 24 ADV 22 POB 17 COO 24 RAD 27 ATT 24 VOB 17 WP 

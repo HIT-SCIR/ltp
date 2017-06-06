@@ -1,0 +1,12 @@
+民政部部长多吉才让在走访慰问中说，过去的一年是我国军民团结奋进的一年。
+多吉才让
+民政部
+1
+22
+民政部 部长 多吉才让 在 走访 慰问 中 说 ， 过去 的 一 年 是 我国 军民 团结 奋进 的 一 年 。 
+22
+ni n nh p v v nd v wp nt u m q v n n a v u m q wp 
+22
+S-Ni O S-Nh O O O O O O O O O O O O O O O O O O O 
+22
+2 ATT 3 ATT 8 SBV 8 ADV 7 ATT 5 COO 4 POB 0 HED 8 WP 13 ATT 10 RAD 13 ATT 14 SBV 8 VOB 16 ATT 17 SBV 21 ATT 17 COO 17 RAD 21 ATT 14 VOB 8 WP 

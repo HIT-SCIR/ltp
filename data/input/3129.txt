@@ -1,0 +1,12 @@
+（天津警备区某部张海军）
+张海军
+天津警备区
+1
+6
+（ 天津 警备区 某部 张海军 ） 
+6
+wp ns n r nh wp 
+6
+O S-Ns O O S-Nh O 
+6
+5 WP 3 ATT 5 ATT 5 ATT 0 HED 5 WP 

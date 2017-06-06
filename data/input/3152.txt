@@ -1,0 +1,12 @@
+他介绍说，当年刘伯承创建的南京军事学院已于１９８５年迁到北京，这所学校为我们国家培养了大量军事人才。
+刘伯承
+南京军事学院
+0
+30
+他 介绍 说 ， 当年 刘伯承 创建 的 南京 军事 学院 已 于 １９８５年 迁 到 北京 ， 这 所 学校 为 我们 国家 培养 了 大量 军事 人才 。 
+30
+r v v wp nt nh v u ns n n d p nt v v ns wp r q n p r n v u m n n wp 
+30
+O O O O O S-Nh O O B-Ni I-Ni E-Ni O O O O O S-Ns O O O O O O O O O O O O O 
+30
+2 SBV 0 HED 2 COO 2 WP 7 ADV 7 SBV 11 ATT 7 RAD 11 ATT 11 ATT 15 SBV 15 ADV 15 ADV 13 POB 2 VOB 15 CMP 16 POB 15 WP 20 ATT 21 ATT 25 SBV 25 ADV 24 ATT 22 POB 15 COO 25 RAD 29 ATT 29 ATT 25 VOB 2 WP 

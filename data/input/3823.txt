@@ -1,0 +1,12 @@
+江泽民对联邦快递公司来北京举行董事会表示欢迎，希望董事会成员通过访问更好地了解中国，并与中国有关公司共同探讨合作。
+江泽民
+联邦快递公司
+0
+32
+江泽民 对 联邦 快递 公司 来 北京 举行 董事会 表示 欢迎 ， 希望 董事会 成员 通过 访问 更 好 地 了解 中国 ， 并 与 中国 有关 公司 共同 探讨 合作 。 
+32
+nh p n v n v ns v n v v wp v n n p v d a u v ns wp c p ns v n d v v wp 
+32
+S-Nh O B-Ni I-Ni E-Ni O S-Ns O O O O O O O O O O O O O O S-Ns O O O S-Ns O O O O O O 
+32
+10 SBV 10 ADV 5 ATT 5 ATT 2 POB 2 POB 6 VOB 6 COO 8 VOB 0 HED 10 VOB 10 WP 10 COO 15 ATT 21 SBV 21 ADV 16 POB 19 ADV 21 ADV 19 RAD 13 VOB 21 VOB 21 WP 30 ADV 30 ADV 25 POB 28 ATT 25 POB 30 ADV 21 COO 30 VOB 10 WP 

@@ -1,0 +1,12 @@
+年富力强的刘志军，是铁道部分管客货运输工作的副部长。
+刘志军
+铁道部
+1
+13
+年富力强 的 刘志军 ， 是 铁道部 分管 客货运输 工作 的 副 部长 。 
+13
+i u nh wp v ni v j v u b n wp 
+13
+O O S-Nh O O S-Ni O O O O O O O 
+13
+3 ATT 1 RAD 5 SBV 3 WP 0 HED 9 ATT 9 ATT 9 ATT 12 ATT 9 RAD 12 ATT 5 VOB 5 WP 

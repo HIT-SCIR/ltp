@@ -1,0 +1,12 @@
+中央军委委员、解放军总政治部主任于永波等参加座谈，向民政部表示感谢，并就双拥、优抚和军休干部安置等问题和民政部负责人交换了意见。
+于永波
+民政部
+0
+34
+中央军委 委员 、 解放军 总政治部 主任 于永波 等 参加 座谈 ， 向 民政部 表示 感谢 ， 并 就 双拥 、 优抚 和 军休 干部 安置 等 问题 和 民政部 负责人 交换 了 意见 。 
+34
+ni n wp n n n nh u v v wp p ni v v wp c p j wp v c j n v u n c ni n v u n wp 
+34
+S-Ni O O B-Ni E-Ni O S-Nh O O O O O S-Ni O O O O O O O O O O O O O O O S-Ni O O O O O 
+34
+2 ATT 7 ATT 6 WP 5 ATT 6 ATT 2 COO 9 SBV 7 RAD 0 HED 9 VOB 9 WP 14 ADV 12 POB 9 COO 14 VOB 14 WP 31 ADV 31 ADV 27 ATT 21 WP 19 COO 24 LAD 24 ATT 19 COO 19 COO 19 RAD 18 POB 30 LAD 30 ATT 27 COO 14 COO 31 RAD 31 VOB 9 WP 

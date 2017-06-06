@@ -1,0 +1,12 @@
+曾是中国选手杀手锏的“压水花”也不再为中国队独有，萨乌丁的压水花甚至更为漂亮。
+萨乌丁
+中国队
+0
+24
+曾 是 中国 选手 杀手锏 的 “ 压 水花 ” 也 不再 为 中国队 独有 ， 萨乌丁 的 压 水花 甚至 更为 漂亮 。 
+24
+d v ns n n u wp v n wp d d p ni v wp nh u v n d d a wp 
+24
+O O S-Ns O O O O O O O O O O S-Ni O O S-Nh O O O O O O O 
+24
+2 ADV 0 HED 4 ATT 5 ATT 8 ATT 5 RAD 8 WP 15 SBV 8 VOB 8 WP 15 ADV 15 ADV 15 ADV 13 POB 2 VOB 15 WP 19 ATT 17 RAD 23 SBV 19 VOB 23 ADV 23 ADV 15 COO 2 WP 

@@ -1,0 +1,12 @@
+中国铁路文工团总导演陈薪伊由不同的戏剧家、不同的创作个性所表现出来的不同的戏剧风格，构成了丰富多彩的演出艺术风貌，这是话剧经历了九十个春秋所形成的可喜局面，标志着我国话剧艺术已走向繁荣的创作时期。
+陈薪伊
+中国铁路文工团
+1
+58
+中国 铁路 文工团 总 导演 陈薪伊 由 不同 的 戏剧家 、 不同 的 创作 个性 所 表现 出来 的 不同 的 戏剧 风格 ， 构成 了 丰富多彩 的 演出 艺术 风貌 ， 这 是 话剧 经历 了 九十 个 春秋 所 形成 的 可喜 局面 ， 标志 着 我国 话剧 艺术 已 走向 繁荣 的 创作 时期 。 
+58
+ns n n b n nh p a u n wp a u v n u v v u a u n n wp v u i u v n n wp r v n v u m q n u v u a n wp v u n n n d v a u v n wp 
+58
+B-Ni I-Ni E-Ni O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+58
+2 ATT 3 ATT 5 ATT 5 ATT 6 ATT 17 SBV 17 ADV 10 ATT 8 RAD 7 POB 12 WP 15 ATT 12 RAD 15 ATT 10 COO 17 LAD 23 ATT 17 CMP 17 RAD 23 ATT 20 RAD 23 ATT 25 SBV 23 WP 0 HED 25 RAD 29 ATT 27 RAD 25 VOB 31 ATT 29 VOB 25 WP 34 SBV 25 COO 36 SBV 34 VOB 36 RAD 39 ATT 40 ATT 42 SBV 42 LAD 45 ATT 42 RAD 45 ATT 36 VOB 34 WP 34 COO 47 RAD 51 ATT 51 ATT 53 SBV 53 ADV 57 ATT 53 VOB 53 RAD 57 ATT 47 VOB 25 WP 

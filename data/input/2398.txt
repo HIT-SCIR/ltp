@@ -1,0 +1,12 @@
+林业部部长陈耀邦１９９７年我国造林绿化继续保持快速发展的好势头。
+陈耀邦
+林业部
+1
+15
+林业部 部长 陈耀邦 １９９７年 我国 造林 绿化 继续 保持 快速 发展 的 好 势头 。 
+15
+ni n nh nt n v v v v d v u a n wp 
+15
+S-Ni O S-Nh O O O O O O O O O O O O 
+15
+2 ATT 3 ATT 6 SBV 6 ADV 6 SBV 0 HED 6 COO 6 COO 8 COO 11 ADV 14 ATT 11 RAD 14 ATT 9 VOB 6 WP 

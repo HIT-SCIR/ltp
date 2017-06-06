@@ -8,6 +8,23 @@
 *.libs
 
 ###############
+# binary      #
+###############
+example/genfeature
+example/ner
+example/par
+example/pos
+example/srl
+example/cws
+
+###############
+# result      #
+###############
+*.result
+*.result-fn
+*.result-fp
+
+###############
 # build       #
 ###############
 build
@@ -17,6 +34,22 @@ config.h
 # config      #
 ###############
 *.cnf
+
+###############
+# tmp         #
+###############
+*~
+
+###############
+# svm         #
+###############
+svm/ouput/
+svm/svm_model/
+svm/data/
+svm/svm-light-TK-1.2.1/svm_classify
+svm/svm-light-TK-1.2.1/svm_learn
+
+
 
 ###############
 # output      #

@@ -1,0 +1,12 @@
+国务院总理李鹏向会议发来贺信。
+李鹏
+国务院
+1
+9
+国务院 总理 李鹏 向 会议 发 来 贺信 。 
+9
+ni n nh p n v v n wp 
+9
+S-Ni O S-Nh O O O O O O 
+9
+2 ATT 3 ATT 6 SBV 6 ADV 4 POB 0 HED 6 CMP 6 VOB 6 WP 

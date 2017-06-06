@@ -1,0 +1,12 @@
+在阿全国人民议会举行的全体会议上，乌叶海亚强烈谴责恐怖主义团伙的卑劣罪行。
+乌叶海亚
+阿全国人民议会
+0
+20
+在 阿 全国 人民 议会 举行 的 全体 会议 上 ， 乌叶海亚 强烈 谴责 恐怖主义 团伙 的 卑劣 罪行 。 
+20
+p j n n n v u n n nd wp nh a v n n u a n wp 
+20
+O B-Ni I-Ni I-Ni E-Ni O O O O O O S-Nh O O O O O O O O 
+20
+14 ADV 5 ATT 4 ATT 5 ATT 6 SBV 9 ATT 6 RAD 9 ATT 10 ATT 1 POB 1 WP 14 SBV 14 ADV 0 HED 16 ATT 19 ATT 16 RAD 19 ATT 14 VOB 14 WP 

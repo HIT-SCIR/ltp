@@ -1,0 +1,12 @@
+２３岁的保博是布加勒斯特理工大学三年级的学生，他有自己的汽车，为一家公司当兼职推销员。
+保博
+布加勒斯特理工大学
+0
+26
+２３ 岁 的 保博 是 布加勒斯特 理工大学 三 年级 的 学生 ， 他 有 自己 的 汽车 ， 为 一 家 公司 当 兼职 推销员 。 
+26
+m q u nh v ns n m n u n wp r v r u n wp p m q n v v n wp 
+26
+O O O S-Nh O B-Ni E-Ni O O O O O O O O O O O O O O O O O O O 
+26
+2 ATT 4 ATT 2 RAD 5 SBV 0 HED 7 ATT 9 ATT 9 ATT 11 ATT 9 RAD 5 VOB 5 WP 14 SBV 5 COO 17 ATT 15 RAD 14 VOB 14 WP 23 ADV 21 ATT 22 ATT 19 POB 14 COO 25 ATT 23 VOB 5 WP 

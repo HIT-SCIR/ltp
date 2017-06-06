@@ -1,0 +1,12 @@
+在永兴岛上第一个开垦菜地并获得种菜成功的人叫梁坤奠，他是海军的劳动模范标兵，大家都称他是珊瑚滩上『种菜王』。
+梁坤奠
+海军
+1
+35
+在 永兴岛 上 第一 个 开垦 菜地 并 获得 种菜 成功 的 人 叫 梁坤奠 ， 他 是 海军 的 劳动模范 标兵 ， 大家 都 称 他 是 珊瑚滩 上 『 种菜 王 』 。 
+35
+p ns nd m q v n c v v a u n v nh wp r v n u n n wp r d v r v n nd wp v n wp wp 
+35
+O S-Ns O O O O O O O O O O O O S-Nh O O O O O O O O O O O O O O O O O O O O 
+35
+6 ADV 3 ATT 1 POB 5 ATT 6 ADV 0 HED 6 VOB 9 ADV 6 COO 13 ATT 10 CMP 10 RAD 14 SBV 9 VOB 14 VOB 14 WP 18 SBV 14 COO 22 ATT 19 RAD 22 ATT 18 VOB 18 WP 26 SBV 26 ADV 18 COO 28 SBV 26 VOB 30 ATT 32 ADV 32 WP 28 VOB 32 VOB 32 WP 6 WP 

@@ -1,0 +1,12 @@
+国家建材局局长张人为指出，短缺经济基本结束后产业结构和消费结构升级缓慢，以及企业在体制、机制和产品开发等方面不能适应社会主义市场经济的要求，是建材行业国有大中型企业陷入困境的宏观和微观原因。
+张人为
+国家建材局
+1
+52
+国家 建材局 局长 张人为 指出 ， 短缺 经济 基本 结束 后 产业 结构 和 消费 结构 升级 缓慢 ， 以及 企业 在 体制 、 机制 和 产品 开发 等 方面 不 能 适应 社会主义 市场经济 的 要求 ， 是 建材 行业 国有 大中型 企业 陷入 困境 的 宏观 和 微观 原因 。 
+52
+n n n nh v wp v n a v nd n n c v n v a wp c n p n wp n c n v u n d v v n n u n wp v n n v b n v n u n c n n wp 
+52
+B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+52
+2 ATT 3 ATT 4 ATT 5 SBV 0 HED 5 WP 8 ATT 10 SBV 10 ADV 11 ATT 17 ADV 13 ATT 17 SBV 16 LAD 16 ATT 13 COO 5 VOB 17 CMP 17 WP 33 LAD 33 SBV 33 ADV 30 ATT 25 WP 23 COO 28 LAD 28 FOB 23 COO 23 RAD 22 POB 32 ADV 33 ADV 17 COO 35 ATT 37 ATT 35 RAD 33 VOB 17 WP 17 COO 41 ATT 44 ATT 44 ATT 44 ATT 45 SBV 51 ATT 45 VOB 45 RAD 51 ATT 50 LAD 48 COO 39 VOB 5 WP 

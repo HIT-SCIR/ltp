@@ -1,0 +1,12 @@
+来自普林斯顿第二小组的天文学家内塔?巴卡尔在会上说，她对宇宙中最大的结构，即含有数百亿个致密的星系团（每个星系团拥有数十亿个恒星）进行的研究表明，宇宙太轻，永远不可能“坍塌”。
+内塔?巴卡尔
+普林斯顿第二小组
+1
+53
+来自 普林斯顿 第二 小组 的 天文学家 内塔 ? 巴卡尔 在 会上 说 ， 她 对 宇宙 中 最 大 的 结构 ， 即 含有 数百亿 个 致密 的 星系团 （ 每个 星系团 拥有 数十亿 个 恒星 ） 进行 的 研究 表明 ， 宇宙 太 轻 ， 永远 不 可能 “ 坍塌 ” 。 
+53
+v ns m n u n n wp nh p nt v wp r p n nd d a u n wp v v m q a u n wp r n v m q n wp v u v v wp n d a wp d d v wp v wp wp 
+53
+O S-Ns O O O O O O S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+53
+7 ATT 4 ATT 4 ATT 1 VOB 1 RAD 7 ATT 12 SBV 7 WP 12 SBV 12 ADV 10 POB 0 HED 12 WP 23 SBV 23 ADV 17 ATT 21 ATT 19 ADV 21 ATT 19 RAD 15 POB 15 WP 12 VOB 23 VOB 26 ATT 29 ATT 29 ATT 27 RAD 24 VOB 33 WP 32 ATT 33 SBV 41 SBV 35 ATT 36 ATT 33 VOB 33 WP 40 ATT 38 RAD 41 SBV 24 COO 41 WP 45 SBV 45 ADV 41 VOB 45 WP 49 ADV 49 ADV 45 COO 51 WP 49 VOB 51 WP 12 WP 

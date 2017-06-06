@@ -1,0 +1,12 @@
+（内蒙古自治区残疾人联合会巴图）
+巴图
+内蒙古自治区残疾人联合会
+0
+7
+（ 内蒙古 自治区 残疾人 联合会 巴图 ） 
+7
+wp ns n n n nh wp 
+7
+O B-Ni I-Ni E-Ni O S-Nh O 
+7
+6 WP 3 ATT 5 ATT 5 ATT 6 ATT 0 HED 6 WP 

@@ -1,0 +1,12 @@
+秦华孙是在安理会听取联合国特委会主席巴特勒关于他的伊拉克之行汇报后作上述表示的。
+巴特勒
+联合国特委会
+1
+22
+秦华孙 是 在 安理会 听取 联合国 特委会 主席 巴特勒 关于 他 的 伊拉克 之 行 汇报 后 作 上述 表示 的 。 
+22
+nh v p j v ni j n nh p r u ns u n v nd v b v u wp 
+22
+S-Nh O O O O B-Ni E-Ni O S-Nh O O O S-Ns O O O O O O O O O 
+22
+2 SBV 0 HED 5 ADV 3 POB 2 VOB 7 ATT 8 ATT 9 ATT 18 SBV 18 ADV 15 ATT 11 RAD 15 ATT 13 RAD 16 SBV 17 ATT 10 POB 5 VOB 20 ATT 18 VOB 20 RAD 2 WP 

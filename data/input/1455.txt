@@ -1,0 +1,12 @@
+被美国警方没收的两幅油画是奥地利２０世纪初著名画家埃贡?席勒的作品，由维也纳利奥波德基金会收藏。
+埃贡?席勒
+维也纳利奥波德基金会
+0
+25
+被 美国 警方 没收 的 两 幅 油画 是 奥地利 ２０ 世纪 初 著名 画家 埃贡?席勒 的 作品 ， 由 维也纳 利奥波德 基金会 收藏 。 
+25
+p ns n v u m q n v ns m n nd a n nh u n wp p ns nz n v wp 
+25
+O S-Ns O O O O O O O S-Ns O O O O O S-Nh O O O O B-Ni I-Ni E-Ni O O 
+25
+4 ADV 3 ATT 1 POB 8 ATT 4 RAD 7 ATT 8 ATT 9 SBV 0 HED 12 ATT 12 ATT 13 ATT 18 ATT 15 ATT 16 ATT 18 ATT 16 RAD 9 VOB 9 WP 24 ADV 23 ATT 23 ATT 20 POB 9 COO 9 WP 

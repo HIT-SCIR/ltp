@@ -1,0 +1,12 @@
+谈起这些，中国人民银行行长戴相龙满怀信心地表示，这是中国经济发展的新希望。
+戴相龙
+中国人民银行
+1
+22
+谈 起 这些 ， 中国 人民 银行 行长 戴相龙 满怀信心 地 表示 ， 这 是 中国 经济 发展 的 新 希望 。 
+22
+v v r wp ns n n n nh i u v wp r v ns n v u a n wp 
+22
+O O O O B-Ni I-Ni E-Ni O S-Nh O O O O O O S-Ns O O O O O O 
+22
+0 HED 1 CMP 1 VOB 1 WP 6 ATT 7 ATT 8 ATT 9 ATT 12 SBV 12 ADV 10 RAD 1 COO 12 WP 15 SBV 12 VOB 17 ATT 18 SBV 21 ATT 18 RAD 21 ATT 15 VOB 1 WP 

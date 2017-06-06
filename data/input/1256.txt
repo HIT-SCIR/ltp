@@ -1,0 +1,12 @@
+樱内一行是应中国贸促会邀请于１８日来华访问的。
+樱内
+中国贸促会
+0
+13
+樱内 一行 是 应 中国 贸促会 邀请 于 １８日 来华 访问 的 。 
+13
+nh n v v ns j v p nt v v u wp 
+13
+S-Nh O O O B-Ni E-Ni O O O O O O O 
+13
+2 ATT 3 SBV 0 HED 3 VOB 6 ATT 7 ATT 4 VOB 10 ADV 8 POB 4 COO 10 COO 10 RAD 3 WP 

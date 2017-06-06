@@ -1,0 +1,12 @@
+新华社北京１月１３日电（记者张荣典）国务院总理李鹏今天下午在中南海分别会见了六国离到任驻华大使。
+李鹏
+国务院
+1
+25
+新华社 北京 １月 １３日 电 （ 记者 张荣典 ） 国务院 总理 李鹏 今天 下午 在 中南海 分别 会见 了 六 国 离到任 驻华 大使 。 
+25
+ni ns nt nt n wp n nh wp ni n nh nt nt p ns d v u m n j v n wp 
+25
+S-Ni S-Ns O O O O O S-Nh O S-Ni O S-Nh O O O S-Ns O O O O O O O O O 
+25
+5 SBV 5 ADV 4 ATT 5 ADV 0 HED 8 WP 8 ATT 5 CMP 8 WP 11 ATT 12 ATT 18 SBV 14 ATT 18 ADV 18 ADV 15 POB 18 ADV 5 VOB 18 RAD 21 ATT 22 ATT 24 ATT 24 ATT 18 VOB 5 WP 

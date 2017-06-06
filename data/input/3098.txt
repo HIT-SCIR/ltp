@@ -1,0 +1,12 @@
+当天上午，河北省委书记程维高，带领省委、省人大、省政府、省政协和省军区的领导同志，到张北县大河乡的一些重灾户家中嘘寒问暖，问策求计。
+程维高
+河北省委
+1
+34
+当天 上午 ， 河北 省委 书记 程维高 ， 带领 省委 、 省人大 、 省政府 、 省政协 和 省军区 的 领导 同志 ， 到 张北县 大河乡 的 一些 重灾户 家中 嘘寒问暖 ， 问 策求计 。 
+34
+nt nt wp ns n n nh wp v n wp j wp n wp j c n u n n wp v ns ns u m n nl i wp v n wp 
+34
+O O O B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O O O B-Ns E-Ns O O O O O O O O O 
+34
+2 ATT 9 ADV 2 WP 5 ATT 6 ATT 7 ATT 9 SBV 7 WP 0 HED 21 ATT 12 WP 10 COO 14 WP 10 COO 16 WP 10 COO 18 LAD 10 COO 10 RAD 21 ATT 9 VOB 9 WP 29 ATT 25 ATT 23 POB 23 RAD 28 ATT 29 ATT 30 SBV 9 COO 30 WP 30 COO 32 VOB 9 WP 

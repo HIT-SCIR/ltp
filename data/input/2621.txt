@@ -1,0 +1,12 @@
+元月６日下午，记者约请合肥晚报总编仇旭东，一起坐车从长江路东头的九狮苑到大西门，沿途徐行，细细查看，只见３３００盏大红灯笼无一损失，一个个迎风舞动，分外鲜艳，与道路两侧各式各样的灯饰广告交相辉映，令人留连忘返。
+仇旭东
+合肥晚报
+1
+57
+元月 ６日 下午 ， 记者 约请 合肥 晚报 总编 仇旭东 ， 一起 坐 车 从 长江路 东头 的 九狮苑 到 大西门 ， 沿途 徐行 ， 细细 查看 ， 只见 ３３００ 盏 大红 灯笼 无 一 损失 ， 一个个 迎风 舞动 ， 分外 鲜艳 ， 与 道路 两侧 各式各样 的 灯饰 广告 交相辉映 ， 令 人 留连忘返 。 
+57
+nt nt nt wp n v ns n n nh wp d v n p ns nd u ns v ns wp d v wp d v wp v m q b n v m v wp m v v wp d a wp p n nd i u n n i wp v n i wp 
+57
+O O O O O O S-Ns O O S-Nh O O O O O S-Ns O O S-Ns O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+57
+2 ATT 3 ATT 6 ADV 3 WP 6 SBV 0 HED 8 ATT 9 ATT 10 ATT 6 VOB 6 WP 13 ADV 6 COO 13 VOB 20 ADV 17 ATT 19 ATT 17 RAD 15 POB 24 ADV 20 POB 20 WP 24 ADV 13 COO 24 WP 27 ADV 13 COO 27 WP 13 COO 31 ATT 33 ATT 33 ATT 34 SBV 29 VOB 36 ATT 34 VOB 34 WP 39 ATT 34 COO 39 COO 39 WP 43 ADV 39 COO 43 WP 52 ADV 47 ATT 51 ATT 51 ATT 48 RAD 51 ATT 45 POB 43 COO 39 WP 39 COO 54 DBL 54 VOB 6 WP 

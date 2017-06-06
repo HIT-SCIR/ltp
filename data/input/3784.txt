@@ -1,0 +1,12 @@
+１９９７年８月，叶莲美的一位亲戚，抱着试试看的心理，向永兴县城关派出所打了个电话，问县城是否有叶莲美、曾辛元这样的人。
+叶莲美
+永兴县城关派出所
+0
+36
+１９９７年 ８月 ， 叶莲美 的 一 位 亲戚 ， 抱 着 试试 看 的 心理 ， 向 永兴县 城关 派出所 打 了 个 电话 ， 问 县城 是否 有 叶莲美 、 曾辛元 这样 的 人 。 
+36
+nt nt wp nh u m q n wp v u v v u n wp p ns ns n v u q n wp v n v v nh wp nh r u n wp 
+36
+O O O S-Nh O O O O O O O O O O O O O B-Ni I-Ni E-Ni O O O O O O O O O S-Nh O S-Nh O O O O 
+36
+2 ATT 10 ADV 2 WP 8 ATT 4 RAD 7 ATT 8 ATT 10 SBV 8 WP 0 HED 10 RAD 10 COO 15 ATT 13 RAD 12 VOB 10 WP 21 ADV 20 ATT 20 ATT 17 POB 10 COO 21 RAD 24 ATT 21 VOB 21 WP 21 COO 29 SBV 29 ADV 26 VOB 35 ATT 32 WP 30 COO 35 ATT 33 RAD 29 VOB 10 WP 

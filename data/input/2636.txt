@@ -1,0 +1,12 @@
+沙赫特说，他对朗讯科技公司开展与中国的合作充满信心。
+沙赫特
+朗讯科技公司
+0
+16
+沙赫特 说 ， 他 对 朗讯 科技 公司 开展 与 中国 的 合作 充满 信心 。 
+16
+nh v wp r p nz n n v p ns u v v n wp 
+16
+S-Nh O O O O B-Ni I-Ni E-Ni O O S-Ns O O O O O 
+16
+2 SBV 0 HED 2 WP 14 SBV 14 ADV 8 ATT 8 ATT 5 POB 5 POB 13 ATT 10 POB 10 RAD 9 VOB 2 VOB 14 VOB 2 WP 

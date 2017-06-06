@@ -1,0 +1,12 @@
+海鲁拉耶夫说，在访华期间，他同中国国防部长迟浩田进行了很好的会谈，并亲眼看到了中国的发展情况，访问是非常成功的。
+迟浩田
+国防部
+1
+34
+海鲁拉耶夫 说 ， 在 访华 期间 ， 他 同 中国 国防部长 迟浩田 进行 了 很 好 的 会谈 ， 并 亲眼 看到 了 中国 的 发展 情况 ， 访问 是 非常 成功 的 。 
+34
+nh v wp p v nd wp r p ns n nh v u d a u v wp c d v u ns u v n wp v v d a u wp 
+34
+S-Nh O O O O O O O O S-Ns O S-Nh O O O O O O O O O O O S-Ns O O O O O O O O O O 
+34
+2 SBV 0 HED 2 WP 13 ADV 6 ATT 4 POB 4 WP 13 SBV 13 ADV 11 ATT 12 ATT 9 POB 2 VOB 13 RAD 16 ADV 18 ATT 16 RAD 13 VOB 13 WP 22 ADV 22 ADV 13 COO 22 RAD 27 ATT 24 RAD 27 ATT 22 VOB 22 WP 30 SBV 22 COO 32 ADV 30 VOB 32 RAD 2 WP 

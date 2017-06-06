@@ -1,0 +1,12 @@
+郑州友谊商业（集团）总公司总裁刘继臣认为，不见硝烟的商战说明了郑州商场群落的发展步入了成熟期。
+刘继臣
+郑州友谊商业（集团）总公司
+1
+26
+郑州 友谊 商业 （ 集团 ） 总公司 总裁 刘继臣 认为 ， 不见 硝烟 的 商战 说明 了 郑州 商场 群落 的 发展 步入 了 成熟期 。 
+26
+ns n n wp n wp n n nh v wp v n u n v u ns n n u v v u nt wp 
+26
+B-Ni I-Ni I-Ni I-Ni I-Ni I-Ni E-Ni O S-Nh O O O O O O O O S-Ns O O O O O O O O 
+26
+3 ATT 3 ATT 9 ATT 5 WP 9 ATT 5 WP 8 ATT 9 ATT 10 SBV 0 HED 10 WP 15 ATT 12 VOB 12 RAD 16 SBV 10 VOB 16 RAD 19 ATT 20 ATT 22 ATT 20 RAD 23 SBV 16 VOB 23 RAD 23 VOB 10 WP 

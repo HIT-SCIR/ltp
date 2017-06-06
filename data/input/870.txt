@@ -1,0 +1,12 @@
+中国艺术研究院研究员沈达人新中国建立以后，京剧研究???包括对京剧历史、京剧理论、京剧美学的研究，以及对京剧现状的研究和批评，都取得了很大成绩。
+沈达人
+中国艺术研究院
+1
+44
+中国 艺术 研究院 研究员 沈达人 新 中国 建立 以后 ， 京剧 研究 ? ? ? 包括 对 京剧 历史 、 京剧 理论 、 京剧 美学 的 研究 ， 以及 对 京剧 现状 的 研究 和 批评 ， 都 取得 了 很 大 成绩 。 
+44
+ns n n n nh a ns v nd wp n v wp wp wp v p n n wp n n wp n n u v wp c p n n u v c v wp d v u d a n wp 
+44
+B-Ni I-Ni E-Ni O S-Nh O S-Ns O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+44
+3 ATT 3 ATT 4 ATT 5 ATT 12 SBV 7 ATT 8 SBV 9 ATT 12 ADV 9 WP 12 FOB 0 HED 12 WP 12 WP 12 WP 12 COO 27 ATT 19 ATT 17 POB 22 WP 22 ATT 19 COO 25 WP 25 ATT 19 COO 17 RAD 16 VOB 16 WP 34 LAD 34 ATT 32 ATT 30 POB 30 RAD 16 COO 36 LAD 34 COO 34 WP 39 ADV 16 COO 39 RAD 42 ADV 43 ATT 39 VOB 12 WP 

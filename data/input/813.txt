@@ -1,0 +1,12 @@
+瑞典队只是在全场比赛还剩２分钟时，方由替补上场的１４号阿尔博格扳回１分。
+阿尔博格
+瑞典队
+1
+23
+瑞典队 只是 在 全场 比赛 还 剩 ２ 分钟 时 ， 方 由 替补 上场 的 １４ 号 阿尔博格 扳回 １ 分 。 
+23
+ni d p n v d v m q n wp d p v v u m q nh v m q wp 
+23
+S-Ni O O O O O O O O O O O O O O O O O S-Nh O O O O 
+23
+20 SBV 20 ADV 20 ADV 5 ATT 3 POB 7 ADV 10 ATT 9 ATT 7 VOB 3 POB 3 WP 18 ATT 15 ADV 13 POB 18 ATT 15 RAD 18 ATT 19 ATT 20 SBV 0 HED 22 ATT 20 VOB 20 WP 

@@ -1,0 +1,12 @@
+他分别同俄联邦车臣共和国总统马斯哈多夫和副总理巴萨耶夫讨论了联邦政府与车臣当局协调行动、稳定车臣社会经济形势以及为车臣重建筹措资金的问题。
+马斯哈多夫
+俄联邦车臣共和国
+1
+36
+他 分别 同 俄 联邦 车臣共和国 总统 马斯哈多夫 和 副 总理 巴萨耶夫 讨论 了 联邦 政府 与 车臣 当局 协调 行动 、 稳定 车臣 社会 经济 形势 以及 为 车臣 重建 筹措 资金 的 问题 。 
+36
+r d p j n ns n nh c b n nh v u n n p ns n v v wp v ns n n n c p ns v v n u n wp 
+36
+O O O B-Ni I-Ni E-Ni O S-Nh O O O S-Nh O O O O O S-Ns O O O O O S-Ns O O O O O S-Ns O O O O O O 
+36
+13 SBV 13 ADV 13 ADV 5 ATT 6 ATT 7 ATT 8 ATT 3 POB 11 LAD 11 ATT 8 COO 8 COO 0 HED 13 RAD 16 ATT 27 ATT 27 ATT 19 ATT 17 POB 27 ATT 20 COO 23 WP 21 COO 25 ATT 26 ATT 27 ATT 13 VOB 35 LAD 31 ADV 29 POB 35 ATT 31 COO 32 VOB 31 RAD 27 COO 13 WP 

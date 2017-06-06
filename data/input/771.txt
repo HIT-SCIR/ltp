@@ -1,0 +1,12 @@
+中共中央政治局委员、国务院副总理姜春云对大会作重要指示。
+姜春云
+中共中央政治局
+1
+14
+中共中央 政治局 委员 、 国务院 副 总理 姜春云 对 大会 作 重要 指示 。 
+14
+ni n n wp ni b n nh p n v a n wp 
+14
+B-Ni E-Ni O O S-Ni O O S-Nh O O O O O O 
+14
+2 ATT 3 ATT 8 ATT 7 WP 7 ATT 7 ATT 3 COO 11 SBV 11 ADV 9 POB 0 HED 13 ATT 11 VOB 11 WP 

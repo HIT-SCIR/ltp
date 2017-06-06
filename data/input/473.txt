@@ -1,0 +1,12 @@
+韦德里纳表示，他愿再次重申，法国政府将在希拉克总统与江泽民主席决定建立的法中全面伙伴关系框架内积极推动两国关系的进一步发展。
+希拉克
+法国政府
+0
+36
+韦德里纳 表示 ， 他 愿 再次 重申 ， 法国 政府 将 在 希拉克 总统 与 江泽民 主席 决定 建立 的 法 中 全面 伙伴 关系 框架 内 积极 推动 两 国 关系 的 进一步 发展 。 
+36
+nh v wp r v d v wp ns n d p nh n c nh n v v u j j a n n n nd a v m n n u d v wp 
+36
+S-Nh O O O O O O O B-Ni E-Ni O O S-Nh O O S-Nh O O O O S-Ns S-Ns O O O O O O O O O O O O O O 
+36
+2 SBV 0 HED 2 WP 5 SBV 2 VOB 7 ADV 5 VOB 7 WP 10 ATT 29 SBV 29 ADV 29 ADV 14 ATT 18 SBV 17 LAD 17 ATT 14 COO 27 ATT 18 VOB 18 RAD 25 ATT 21 COO 25 ATT 25 ATT 26 ATT 27 ATT 12 POB 29 ADV 7 VOB 31 ATT 32 ATT 35 ATT 32 RAD 35 ADV 29 VOB 2 WP 

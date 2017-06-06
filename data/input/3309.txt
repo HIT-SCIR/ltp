@@ -1,0 +1,12 @@
+佩里一行是应中国国际战略研究基金会邀请来华访问的。
+佩里
+中国国际战略研究基金会
+0
+14
+佩里 一行 是 应 中国 国际 战略 研究 基金会 邀请 来华 访问 的 。 
+14
+nh n v v ns n n v n v v v u wp 
+14
+S-Nh O O O B-Ni I-Ni I-Ni I-Ni E-Ni O O O O O 
+14
+2 ATT 3 SBV 0 HED 10 ADV 9 ATT 7 ATT 8 FOB 9 ATT 10 SBV 3 VOB 10 VOB 11 COO 10 RAD 3 WP 

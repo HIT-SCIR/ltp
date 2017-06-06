@@ -1,0 +1,12 @@
+广东省、广州市妇联宣布授予邱玲“三八红旗手”的荣誉称号。
+邱玲
+广州市妇联
+0
+15
+广东省 、 广州市 妇联 宣布 授予 邱玲 “ 三八 红旗手 ” 的 荣誉 称号 。 
+15
+ns wp ns j v v nh wp nt n wp u n n wp 
+15
+S-Ns O B-Ni E-Ni O O S-Nh O O O O O O O O 
+15
+4 ATT 3 WP 4 ATT 5 SBV 0 HED 14 ATT 6 IOB 10 WP 10 ATT 6 VOB 10 WP 6 RAD 14 ATT 5 VOB 5 WP 

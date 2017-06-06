@@ -1,0 +1,12 @@
+据新华社北京１月６日电（记者孙杰）据邮电部最新统计，１９９７年我国新增邮路３３万公里，从而使我国拥有的邮路总长达２４５万公里。
+孙杰
+邮电部
+0
+33
+据 新华社 北京 １月 ６日 电 （ 记者 孙杰 ） 据 邮电部 最新 统计 ， １９９７年 我国 新增 邮路 ３３万 公里 ， 从而 使 我国 拥有 的 邮路 总长 达 ２４５万 公里 。 
+33
+p ni ns nt nt n wp n nh wp p ni a v wp nt n v n m q wp c v n v u n n v m q wp 
+33
+O S-Ni S-Ns O O O O O S-Nh O O S-Ni O O O O O O O O O O O O O O O O O O O O O 
+33
+18 ADV 6 SBV 6 ADV 5 ATT 6 ADV 1 POB 9 WP 9 ATT 6 CMP 9 WP 18 ADV 14 SBV 14 ATT 11 POB 11 WP 18 ADV 18 SBV 24 SBV 21 SBV 21 ATT 18 VOB 18 WP 24 ADV 0 HED 24 DBL 29 ATT 26 RAD 29 ATT 24 DBL 24 VOB 32 ATT 30 VOB 24 WP 

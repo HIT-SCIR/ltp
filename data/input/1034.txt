@@ -1,0 +1,12 @@
+１９９５年，法庭裁决洛里拉德公司付给７０岁的哈罗维兹１３０万美元赔偿费和７０万美元损失费。
+哈罗维兹
+洛里拉德公司
+0
+19
+１９９５年 ， 法庭 裁决 洛里拉德 公司 付给 ７０ 岁 的 哈罗维兹 １３０万 美元 赔偿费 和 ７０万 美元 损失费 。 
+19
+nt wp n v nz n v m q u nh m q n c m q n wp 
+19
+O O O O B-Ni E-Ni O O O O S-Nh O O O O O O O O 
+19
+7 ADV 1 WP 6 ATT 6 ATT 6 ATT 7 SBV 0 HED 9 ATT 11 ATT 9 RAD 14 ATT 13 ATT 14 ATT 7 VOB 18 LAD 17 ATT 18 ATT 14 COO 7 WP 

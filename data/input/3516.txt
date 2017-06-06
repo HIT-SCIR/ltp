@@ -1,0 +1,12 @@
+眼下澳大利亚游泳协会正施加压力让波波夫代表澳大利亚参加２０００年奥运会，但他没有妥协。
+波波夫
+澳大利亚游泳协会
+0
+20
+眼下 澳大利亚 游泳 协会 正 施加 压力 让 波波夫 代表 澳大利亚 参加 ２０００年 奥运会 ， 但 他 没有 妥协 。 
+20
+nt ns v n d v n v nh v ns v nt j wp c r v v wp 
+20
+O B-Ni I-Ni E-Ni O O O O S-Nh O S-Ns O O O O O O O O O 
+20
+6 ADV 4 ATT 4 ATT 6 SBV 6 ADV 0 HED 6 VOB 6 COO 8 DBL 8 DBL 10 VOB 8 VOB 14 ATT 12 VOB 6 WP 18 ADV 18 SBV 6 COO 18 VOB 6 WP 

@@ -1,0 +1,12 @@
+邯郸市第二教育学院崔河近些年来，为了适应现代化的需要，我国的教育结构适当向应用科学和成人教育进行倾斜，但目前在成人教育中存在着一些不容忽视的问题。
+崔河
+邯郸市第二教育学院
+1
+40
+邯郸市 第二 教育 学院 崔河 近些年 来 ， 为了 适应 现代化 的 需要 ， 我国 的 教育 结构 适当 向 应用科学 和 成人 教育 进行 倾斜 ， 但 目前 在 成人 教育 中 存在 着 一些 不容忽视 的 问题 。 
+40
+ns m v n nh nt nd wp p v v u n wp n u v n a p i c n v v v wp c nt p n v nd v u m i u n wp 
+40
+B-Ni I-Ni I-Ni E-Ni S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+40
+4 ATT 4 ATT 4 ATT 5 ATT 25 SBV 25 ADV 6 RAD 6 WP 25 ADV 9 POB 13 ATT 11 RAD 10 VOB 9 WP 18 ATT 15 RAD 18 ATT 25 SBV 25 ADV 25 ADV 20 POB 24 LAD 24 ATT 21 COO 0 HED 25 VOB 25 WP 34 ADV 34 ADV 34 ADV 32 ATT 33 ATT 30 POB 25 COO 34 RAD 39 ATT 39 ATT 37 RAD 34 VOB 25 WP 

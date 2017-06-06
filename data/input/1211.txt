@@ -1,0 +1,12 @@
+日前，永胜县人民检察院作出书面决定：向被错误逮捕关押８６天的季正清支付赔偿金１２９６元人民币，并赔礼道歉。
+季正清
+永胜县人民检察院
+0
+27
+日前 ， 永胜县 人民 检察院 作出 书面 决定 ： 向 被 错误 逮捕 关押 ８６ 天 的 季正清 支付 赔偿金 １２９６ 元 人民币 ， 并 赔礼道歉 。 
+27
+nt wp ns n n v b n wp p p a v v m q u nh v n m q n wp c i wp 
+27
+O O B-Ni I-Ni E-Ni O O O O O O O O O O O O S-Nh O O O O O O O O O 
+27
+6 ADV 1 WP 5 ATT 5 ATT 6 SBV 0 HED 8 ATT 6 VOB 6 WP 19 ADV 13 ADV 11 POB 18 ATT 13 COO 16 ATT 14 CMP 14 RAD 10 POB 6 COO 23 ATT 22 ATT 23 ATT 19 VOB 19 WP 26 ADV 19 COO 6 WP 

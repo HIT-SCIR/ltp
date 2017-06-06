@@ -1,0 +1,12 @@
+今天，中国工程院院长朱光亚宣布了由近５００位两院院士评选出的“１９９７年中国、世界十大科技进展”。
+朱光亚
+中国工程院
+1
+29
+今天 ， 中国 工程院 院长 朱光亚 宣布 了 由 近 ５００ 位 两 院 院士 评选 出 的 “ １９９７年 中国 、 世界 十 大 科技 进展 ” 。 
+29
+nt wp ns n n nh v u p a m q m n n v v u wp nt ns wp n m a n v wp wp 
+29
+O O B-Ni E-Ni O S-Nh O O O O O O O O O O O O O O S-Ns O O O O O O O O 
+29
+7 ADV 1 WP 4 ATT 5 ATT 6 ATT 7 SBV 0 HED 7 RAD 16 ADV 11 ATT 12 ATT 15 ATT 14 ATT 15 ATT 9 POB 27 ATT 16 CMP 16 RAD 27 WP 27 ADV 26 ATT 23 WP 21 COO 25 ATT 26 ATT 27 SBV 7 VOB 27 WP 7 WP 

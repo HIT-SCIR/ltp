@@ -1,0 +1,12 @@
+船舶总公司徐鹏航总经理在工作报告中明确了落实措施：大力开拓国内外市场，努力提高市场占有率；继续调整优化产业、产品结构，着力培育新的增长点；实施科技兴船战略，以市场为导向，以优化产品结构和提高生产效率为重点，加强技术进步，促进科技与经济的有机结合，全面推进科技进步；坚持全方位、多层次、宽领域对外开放的方针，扩大对外开放，全面发展船舶工业外向型经济；按照十五大精神，加大资本运营力度，探索公有制多种实现形式，对企业实施战略性改组；强化管理，降低成本，增强竞争能力。
+徐鹏航
+船舶总公司
+1
+128
+船舶 总公司 徐鹏航 总经理 在 工作 报告 中 明确 了 落实 措施 ： 大力 开拓 国内外 市场 ， 努力 提高 市场占有率 ； 继续 调整 优化 产业 、 产品 结构 ， 着力 培育 新 的 增长点 ； 实施 科技 兴 船 战略 ， 以 市场 为 导向 ， 以 优化 产品 结构 和 提高 生产 效率 为 重点 ， 加强 技术 进步 ， 促进 科技 与 经济 的 有机 结合 ， 全面 推进 科技 进步 ； 坚持 全方位 、 多 层次 、 宽 领域 对外开放 的 方针 ， 扩大 对外开放 ， 全面 发展 船舶 工业 外向型 经济 ； 按照 十五大 精神 ， 加大 资本 运营 力度 ， 探索 公有制 多种 实现 形式 ， 对 企业 实施 战略性 改组 ； 强化 管理 ， 降低 成本 ， 增强 竞争 能力 。 
+128
+n n nh n p v n nd v u v n wp d v nl n wp a v n wp v v v n wp n n wp v v a u n wp v n v n n wp p n v n wp p v n n c v v n v n wp v n v wp v n c n u b v wp a v n v wp v n wp a n wp a n i u n wp v i wp a v n n b n wp p j n wp v n v n wp v n m v n wp p n v n v wp v v wp v n wp v v n wp 
+128
+B-Ni E-Ni S-Nh O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O 
+128
+2 ATT 3 ATT 4 ATT 9 SBV 9 ADV 7 ATT 8 ATT 5 POB 0 HED 9 RAD 9 COO 11 VOB 11 WP 15 ADV 11 COO 17 ATT 15 VOB 15 WP 20 ADV 9 COO 20 VOB 9 WP 9 COO 23 VOB 24 COO 29 ATT 28 WP 26 COO 25 VOB 23 WP 32 ADV 23 COO 35 ATT 33 RAD 32 VOB 9 WP 9 COO 39 SBV 41 ATT 39 VOB 37 VOB 37 WP 45 ADV 43 POB 37 COO 45 VOB 45 WP 56 ADV 48 POB 51 ATT 49 VOB 53 LAD 49 COO 55 ATT 53 VOB 45 COO 56 VOB 56 WP 56 COO 61 SBV 59 VOB 56 WP 56 COO 69 ATT 66 LAD 64 COO 64 RAD 69 ADV 63 VOB 56 WP 72 ADV 56 COO 74 SBV 72 VOB 9 WP 9 COO 83 ATT 80 WP 80 ATT 77 COO 82 WP 77 COO 84 SBV 86 ATT 84 RAD 76 VOB 76 WP 76 COO 88 VOB 88 WP 92 ADV 88 COO 94 ATT 96 ATT 96 ATT 92 VOB 9 WP 102 ADV 100 ATT 98 POB 98 WP 9 COO 104 ATT 105 ATT 102 VOB 102 WP 102 COO 110 SBV 110 ADV 107 VOB 110 VOB 110 WP 115 ADV 113 POB 110 COO 117 FOB 115 VOB 9 WP 9 COO 119 VOB 119 WP 119 COO 122 VOB 119 WP 119 COO 127 ATT 125 VOB 9 WP 

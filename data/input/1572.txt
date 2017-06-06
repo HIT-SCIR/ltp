@@ -1,0 +1,12 @@
+字字血泪震撼了赵地的心，她当即要求全国妇联协调河南省妇联配合有关部门调查，密切关注此案。
+赵地
+全国妇联
+0
+25
+字字 血泪 震撼 了 赵地 的 心 ， 她 当即 要求 全国 妇联 协调 河南省 妇联 配合 有关 部门 调查 ， 密切 关注 此案 。 
+25
+n n v u nh u n wp r d v n j v ns j v v n v wp a v r wp 
+25
+O O O O S-Nh O O O O O O B-Ni E-Ni O B-Ni E-Ni O O O O O O O O O 
+25
+2 ATT 3 SBV 0 HED 3 RAD 7 ATT 5 RAD 3 VOB 3 WP 11 SBV 11 ADV 3 COO 13 ATT 11 DBL 11 VOB 16 ATT 17 SBV 14 VOB 19 ATT 20 SBV 17 VOB 11 WP 23 ADV 11 COO 23 VOB 3 WP 
