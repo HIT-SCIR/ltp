@@ -10,7 +10,7 @@
     #define SPLIT_SENTENCE_DLL_API extern "C" _declspec(dllexport)
 #else
     #define SPLIT_SENTENCE_DLL_API extern "C" _deslspec(dllimport)
-    #pragma comment(lib, "splitsnt.lib")
+    //#pragma comment(lib, "splitsnt.lib")
 #endif // end for SPLIT_SENTENCE_DLL_API
 #endif // end for _WIN32
 

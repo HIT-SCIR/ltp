@@ -13,7 +13,7 @@
     #define PARSER_DLL_API extern "C" _declspec(dllexport)
 #else
     #define PARSER_DLL_API extern "C" _deslspec(dllimport)
-    #pragma comment(lib, "parser.lib")
+    //#pragma comment(lib, "parser.lib")
 #endif // end for PARSER_DLL_API
 #endif // end for _WIN32
 

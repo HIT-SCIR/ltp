@@ -13,7 +13,7 @@
     #define NER_DLL_API extern "C" _declspec(dllexport)
 #else
     #define NER_DLL_API extern "C" _deslspec(dllimport)
-    #pragma comment(lib, "ner.lib")
+    //#pragma comment(lib, "ner.lib")
 #endif      //  end for NER_DLL_API_EXPORT
 #endif      //  end for _WIN32
 

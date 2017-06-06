@@ -18,7 +18,8 @@ add_library (postagger_static_lib
     postag_dll.cpp
     ${postagger_SRC})
 set_target_properties (postagger_static_lib PROPERTIES
-    OUTPUT_NAME postagger)
+    OUTPUT_NAME postagger
+    PREFIX "lib")
 
 # -----------------------------------------------
 # SHARED LIBRARY

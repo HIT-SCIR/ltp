@@ -21,11 +21,11 @@ build
 ###############
 # output      #
 ###############
-#include/
+include/
 lib/
 bin/
 tools/train/lgdpj
-tools/train/lgsrl
+tools/train/srl*
 tools/train/otcws
 tools/train/otpos
 tools/train/otner
@@ -39,6 +39,7 @@ tools/train/Debug/
 ###############
 new_ltp_data/
 ltp_data/
+ltp_data
 
 ##################
 # running folder #

@@ -18,7 +18,7 @@
   #define SEGMENTOR_DLL_API extern "C" _declspec(dllexport)
 #else
   #define SEGMENTOR_DLL_API extern "C" _deslspec(dllimport)
-  #pragma comment(lib, "segmentor.lib")
+  //#pragma comment(lib, "segmentor.lib")
 #endif    //  end for SEGMENTOR_DLL_API_EXPORT
 #endif    //  end for _WIN32
 

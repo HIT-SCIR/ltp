@@ -4,7 +4,6 @@
 #define LTP_VERSION "3.3.2"
 #define LTP_COPYRIGHT "(C) 2012-2016 HIT-SCIR"
 
-#define BOOST_ALL_NO_LIB
 
 namespace ltp {
 

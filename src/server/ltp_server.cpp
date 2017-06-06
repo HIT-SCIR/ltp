@@ -11,7 +11,6 @@
 #include "utils/strutils.hpp"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
-#include "utils/xml4nlp_helper.h"
 #include "json/json.h"
 
 #define POST_LEN 1024
@@ -54,7 +53,7 @@ int main(int argc, char *argv[]) {
      "- " LTP_SERVICE_NAME_POSTAG ": Part of speech tagging\n"
      "- " LTP_SERVICE_NAME_NER ": Named entity recognization\n"
      "- " LTP_SERVICE_NAME_DEPPARSE ": Dependency parsing\n"
-     "- " LTP_SERVICE_NAME_SRL ": Semantic role labeling (equals to all)\n"
+     "- " LTP_SERVICE_NAME_SRL ": Semantic role labeling\n"
      "- all: The whole pipeline [default]")
     ("segmentor-model", value<std::string>(),
      "The path to the segment model [default=ltp_data/cws.model].")
@@ -68,8 +67,8 @@ int main(int argc, char *argv[]) {
      "The path to the NER model [default=ltp_data/ner.model].")
     ("parser-model", value<std::string>(),
      "The path to the parser model [default=ltp_data/parser.model].")
-    ("srl-data", value<std::string>(),
-     "The path to the SRL model directory [default=ltp_data/srl_data/].")
+    ("srl-model", value<std::string>(),
+     "The path to the srl model [default=ltp_data/pisrl.model].")
     ("log-level", value<int>(), "The log level:\n"
      "- 0: TRACE level\n"
      "- 1: DEBUG level\n"
@@ -115,9 +114,9 @@ int main(int argc, char *argv[]) {
         && last_stage != LTP_SERVICE_NAME_NER
         && last_stage != LTP_SERVICE_NAME_DEPPARSE
         && last_stage != LTP_SERVICE_NAME_SRL
-        && last_stage != LTP_SERVICE_NAME_ALL) {
+        && last_stage != "all") {
       std::cerr << "Unknown stage name:" << last_stage << ", reset to 'all'" << std::endl;
-      last_stage = LTP_SERVICE_NAME_ALL;
+      last_stage = "all";
     }
   }
 
@@ -150,10 +149,10 @@ int main(int argc, char *argv[]) {
   if (vm.count("parser-model")) {
     parser_model= vm["parser-model"].as<std::string>();
   }
-
-  std::string srl_data= "ltp_data/srl/";
-  if (vm.count("srl-data")) {
-    srl_data = vm["srl-data"].as<std::string>();
+  INFO_LOG("parser model after vm :\"%s\"", parser_model.c_str());
+  std::string srl_model= "ltp_data/pisrl.model";
+  if (vm.count("srl-model")) {
+    srl_model = vm["srl-model"].as<std::string>();
   }
 
   int log_level = LTP_LOG_INFO;
@@ -167,7 +166,7 @@ int main(int argc, char *argv[]) {
   }
 
   engine = new LTP(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
-      postagger_lexcion, ner_model, parser_model, srl_data);
+      postagger_lexcion, ner_model, parser_model, srl_model);
 
   if (!engine->loaded()) {
     ERROR_LOG("Failed to setup LTP engine.");
@@ -255,6 +254,119 @@ static void ErrorResponse(struct mg_connection* conn,
   }
 }
 
+static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
+  Json::Value root;
+
+  int paragraphNum = xml.CountParagraphInDocument();
+
+  for (int pid = 0; pid < paragraphNum; ++ pid) {
+    Json::Value paragraph;
+
+    int stnsNum = xml.CountSentenceInParagraph(pid);
+    for (int sid = 0; sid < stnsNum; ++sid) {
+      Json::Value sentence;
+
+      std::vector<std::string> vecWord;
+      std::vector<std::string> vecPOS;
+      std::vector<std::string> vecNETag;
+      std::vector<std::pair<int, std::string>> vecParse;
+      //std::vector<std::vector<std::string>> vecSemResult;
+      std::vector<std::vector<std::pair<int, std::string>>> vecSemResult;
+      std::vector<std::pair<int, std::vector<std::pair<const char *, std::pair< int, int > > > > > vecSRLResult;
+
+      // seg
+      xml.GetWordsFromSentence(vecWord, pid, sid);
+
+      // postag
+      if (str_type == LTP_SERVICE_NAME_POSTAG
+          || str_type == LTP_SERVICE_NAME_NER
+          || str_type == LTP_SERVICE_NAME_DEPPARSE
+          || str_type == LTP_SERVICE_NAME_SRL
+          || str_type == LTP_SERVICE_NAME_ALL) {
+        xml.GetPOSsFromSentence(vecPOS, pid, sid);
+      }
+
+      // ner
+      if (str_type == LTP_SERVICE_NAME_NER
+          || str_type == LTP_SERVICE_NAME_SRL
+          || str_type == LTP_SERVICE_NAME_ALL) {
+        xml.GetNEsFromSentence(vecNETag, pid, sid);
+      }
+
+      // dp
+      if (str_type == LTP_SERVICE_NAME_DEPPARSE
+          || str_type == LTP_SERVICE_NAME_SRL
+          || str_type == LTP_SERVICE_NAME_ALL) {
+        xml.GetParsesFromSentence(vecParse, pid, sid);
+      }
+
+      // srl
+      if (str_type == LTP_SERVICE_NAME_SRL
+          || str_type == LTP_SERVICE_NAME_ALL) {
+        // get by word
+      }
+
+      for (int wid = 0; wid < vecWord.size(); ++wid) {
+        Json::Value word;
+        word["id"] = wid;
+        word["cont"] = vecWord[wid];
+
+        // postag
+        if (str_type == LTP_SERVICE_NAME_POSTAG
+            || str_type == LTP_SERVICE_NAME_NER
+            || str_type == LTP_SERVICE_NAME_DEPPARSE
+            || str_type == LTP_SERVICE_NAME_SRL
+            || str_type == LTP_SERVICE_NAME_ALL) {
+          word["pos"] = vecPOS[wid];
+
+        }
+
+        // ner
+        if (str_type == LTP_SERVICE_NAME_NER
+            || str_type == LTP_SERVICE_NAME_SRL
+            || str_type == LTP_SERVICE_NAME_ALL) {
+          word["ne"] = vecNETag[wid];
+        }
+
+        // dp
+        if (str_type == LTP_SERVICE_NAME_DEPPARSE
+            || str_type == LTP_SERVICE_NAME_SRL
+            || str_type == LTP_SERVICE_NAME_ALL) {
+          word["parent"] = vecParse[wid].first;
+          word["relate"] = vecParse[wid].second;
+        }
+
+        // srl
+        if (str_type == LTP_SERVICE_NAME_SRL
+            || str_type == LTP_SERVICE_NAME_ALL) {
+          Json::Value args;
+          std::vector<std::string> vecType;
+          std::vector<std::pair<int, int>> vecBegEnd;
+          xml.GetPredArgToWord(pid, sid, wid, vecType, vecBegEnd);
+          if (vecType.size() != 0) {
+            for (int arg_id = 0; arg_id < vecType.size(); ++arg_id) {
+              Json::Value arg;
+              arg["id"] = arg_id;
+              arg["type"] = vecType[arg_id];
+              arg["beg"] = vecBegEnd[arg_id].first;
+              arg["end"] = vecBegEnd[arg_id].second;
+              args.append(arg);
+            }
+          } else {
+            args.resize(0);
+          }
+          word["arg"] = args;
+        }
+
+        sentence.append(word);
+      }
+
+      paragraph.append(sentence);
+    } // sentence
+    root.append(paragraph);
+  } // paragraph
+  return root.toStyledString();
+}
 
 static int Service(struct mg_connection *conn) {
   char *sentence;
@@ -383,13 +495,13 @@ static int Service(struct mg_connection *conn) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
         return 0;
       }
-    } else if (str_type == LTP_SERVICE_NAME_SRL){
+    } else if (str_type == LTP_SERVICE_NAME_SRL){ // srl
       int ret = engine->srl(xml4nlp);
       if (0 != ret) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
         return 0;
       }
-    } else {
+    } else {   // all
       str_type = LTP_SERVICE_NAME_ALL;
       int ret = engine->srl(xml4nlp);
       if (0 != ret) {
@@ -401,10 +513,10 @@ static int Service(struct mg_connection *conn) {
     TRACE_LOG("Analysis is done.");
 
     std::string strResult;
-    if (str_format == LTP_SERVICE_OUTPUT_FORMAT_JSON) {
-      strResult = ltp::utility::xml2jsonstr(xml4nlp, str_type);
-    } else { //xml
+    if (str_format == "xml") {
       xml4nlp.SaveDOM(strResult);
+    } else { //json
+      strResult = xml2jsonstr(xml4nlp, str_type);
     }
 
 
