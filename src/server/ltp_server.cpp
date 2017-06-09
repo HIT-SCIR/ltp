@@ -457,7 +457,6 @@ static int Service(struct mg_connection *conn) {
       str_format = format;
     }
 
-    delete []sentence;
     DEBUG_LOG("Input sentence is: %s", strSentence.c_str());
 
     //Get a XML4NLP instance here.
