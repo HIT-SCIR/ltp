@@ -1,8 +1,8 @@
 #ifndef __LTP_CONFIG_H__
 #define __LTP_CONFIG_H__
 
-#define LTP_VERSION "3.3.2"
-#define LTP_COPYRIGHT "(C) 2012-2016 HIT-SCIR"
+#define LTP_VERSION "3.4.0"
+#define LTP_COPYRIGHT "(C) 2012-2017 HIT-SCIR"
 
 
 namespace ltp {
