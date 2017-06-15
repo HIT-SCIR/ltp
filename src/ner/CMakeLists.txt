@@ -17,7 +17,8 @@ add_library (ner_static_lib STATIC
     ner_dll.h
     ner_dll.cpp
     ${ner_SRC})
-set_target_properties (ner_static_lib PROPERTIES OUTPUT_NAME ner)
+set_target_properties (ner_static_lib PROPERTIES OUTPUT_NAME ner
+                       PREFIX "lib")
 
 # -----------------------------------------------
 # SHARED LIBRARY

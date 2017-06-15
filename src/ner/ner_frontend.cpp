@@ -78,7 +78,6 @@ NamedEntityRecognizerFrontend::NamedEntityRecognizerFrontend(
 }
 
 NamedEntityRecognizerFrontend::~NamedEntityRecognizerFrontend() {
-  if (glob_con) { delete glob_con;  glob_con = 0; }
 
   for (size_t i = 0; i < train_dat.size(); ++ i) {
     if (train_dat[i]) { delete train_dat[i];  train_dat[i] = 0; }

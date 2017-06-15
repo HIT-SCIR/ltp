@@ -1,6 +1,6 @@
 include_directories (${SOURCE_DIR}/
     ${THIRDPARTY_DIR}/boost/include
-    ${THIRDPARTY_DIR}/eigen-3.2.4/
+    ${THIRDPARTY_DIR}/eigen
     )
 
 set (nndepparser_VERSION "0.0.1")
@@ -21,7 +21,8 @@ add_library(parser_static_lib STATIC
     parser_dll.cpp
     ${nndepparser_SRC})
 set_target_properties (parser_static_lib    PROPERTIES
-    OUTPUT_NAME     parser)
+    OUTPUT_NAME     parser
+    PREFIX "lib")
 
 add_library(parser_shared_lib SHARED 
     parser_dll.h

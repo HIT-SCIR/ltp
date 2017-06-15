@@ -18,41 +18,29 @@ using namespace std;
         #define SRL_DLL_API extern "C" _declspec(dllexport)
     #else
         #define SRL_DLL_API extern "C" _declspec(dllimport)
-        #pragma comment(lib, "srl.lib")
+        //#pragma comment(lib, "srl.lib")
     #endif
 #endif
-
-SRL_DLL_API int SRL(
+/**
+ *
+ * @param words
+ * @param POSs
+ * @param parse
+ * @param vecSRLResult 谓词数组[<谓词序号, 论元数组[<论元label, <位置开始，位置结束>>]>] 序号从0开始
+ * @return 执行情况 正常返回0 异常返回-1
+ */
+SRL_DLL_API int srl_dosrl(
         const vector<string> &words,
         const vector<string> &POSs,
-        const vector<string> &NEs,
-        const vector< pair<int, string> > &parse,
-        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult
+        const vector<pair<int, string> > &parse,
+        vector<pair<int, vector<pair<string, pair<int, int> > > > > &vecSRLResult
 );
 
 // Load Resources
-SRL_DLL_API int SRL_LoadResource(const string &ConfigDir);
+SRL_DLL_API int srl_load_resource(const string &modelFile);
 
 // Release Resources
-SRL_DLL_API int SRL_ReleaseResource();
-
-// Perform SRL
-SRL_DLL_API int DoSRL(
-        const vector<string> &words,
-        const vector<string> &POSs,
-        const vector<string> &NEs,
-        const vector< pair<int, string> > &parse,
-        vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult
-);
-
-SRL_DLL_API int GetSRLResult_size(
-        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult,
-        vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult);
-
-
-SRL_DLL_API int GetSRLResult(
-        vector< pair< int, vector< pair<const char *, pair< int, int > > > > > &vecSRLResult,
-        vector< pair< int, vector< pair<string, pair< int, int > > > > > &tmp_vecSRLResult);
+SRL_DLL_API int srl_release_resource();
 
 #endif
 

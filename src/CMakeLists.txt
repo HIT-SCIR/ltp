@@ -10,6 +10,7 @@ set (srl_DIR            ${SOURCE_DIR}/srl/)
 set (ltp_DIR            ${SOURCE_DIR}/ltp/)
 set (server_DIR         ${SOURCE_DIR}/server/)
 
+
 add_subdirectory ("xml4nlp")
 add_subdirectory ("splitsnt")
 add_subdirectory ("segmentor")

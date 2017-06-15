@@ -779,6 +779,7 @@ int XML4NLP::GetPredArgToWord(int pid,
   TiXmlElement *argPtr = wordPtr->FirstChildElement(TAG_SRL_ARG);
 
   if (argPtr == NULL) {
+    /*
     std::cerr << "\""
               << TAG_SRL_ARG
               << "\" does not exists in word "
@@ -787,16 +788,7 @@ int XML4NLP::GetPredArgToWord(int pid,
               << sid
               << " of paragraph "
               << pid << std::endl;
-    return -1;
-  }
-
-  if (role.size() != range.size()) {
-    std::cerr << "role's size() != range.size(), should resize() first." << std::endl;
-    return -1;
-  }
-
-  if (role.empty()) {
-    cerr << "role is empty" << endl;
+    */
     return -1;
   }
 
@@ -806,25 +798,14 @@ int XML4NLP::GetPredArgToWord(int pid,
     const char *cszType = argPtr->Attribute(TAG_SRL_TYPE);
     const char *cszBeg = argPtr->Attribute(TAG_BEGIN);
     const char *cszEnd = argPtr->Attribute(TAG_END);
-    role[i] = cszType;
+    role.push_back(cszType);
+
     int uiBeg = static_cast<int>(cszBeg != NULL ? atoi(cszBeg) : 0);
     int uiEnd = static_cast<int>(cszEnd != NULL ? atoi(cszEnd) : 0);
-    range[i].first = uiBeg;
-    range[i].second = uiEnd;
+    range.push_back(std::make_pair(uiBeg, uiEnd));
 
     argPtr = argPtr->NextSiblingElement(TAG_SRL_ARG);
-    ++i;
-  } while (argPtr != NULL && i < role.size());
-
-  if ( ! (argPtr == NULL && i == role.size()) ) {
-    if (argPtr == NULL) {
-      cerr << "role.size() is too large" << endl;
-    } else {
-      cerr << "role.size() is too small" << endl;
-    }
-
-    return -1;
-  }
+  } while (argPtr != NULL);
 
   return 0;
 }

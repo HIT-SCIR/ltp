@@ -13,14 +13,14 @@
 #include "utils/codecs.hpp"
 #include "utils/logging.hpp"
 
-#if _WIN32
-#pragma warning(disable: 4786 4284)
-#pragma comment(lib, "segmentor.lib")
-#pragma comment(lib, "postagger.lib")
-#pragma comment(lib, "parser.lib")
-#pragma comment(lib, "ner.lib")
-#pragma comment(lib, "srl.lib")
-#endif
+//#if _WIN32
+//#pragma warning(disable: 4786 4284)
+//#pragma comment(lib, "segmentor.lib")
+//#pragma comment(lib, "postagger.lib")
+//#pragma comment(lib, "parser.lib")
+//#pragma comment(lib, "ner.lib")
+//#pragma comment(lib, "srl.lib")
+//#endif
 
 // create a platform
 LTP::LTP(const std::string& last_stage,
@@ -47,7 +47,7 @@ bool LTP::load(const std::string& last_stage,
     const std::string& postagger_lexicon_file,
     const std::string& ner_model_file,
     const std::string& parser_model_file,
-    const std::string& srl_model_dir) {
+    const std::string& srl_model_file) {
 
   size_t target_mask = 0;
   if (last_stage == LTP_SERVICE_NAME_SEGMENT) {
@@ -58,7 +58,9 @@ bool LTP::load(const std::string& last_stage,
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveNER);
   } else if (last_stage == LTP_SERVICE_NAME_DEPPARSE) {
     target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser);
-  } else if ((last_stage == LTP_SERVICE_NAME_SRL) || (last_stage == "all")) {
+  } else if (last_stage == LTP_SERVICE_NAME_SRL) {
+    target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser|kActiveSRL);
+  } else if (last_stage == "all") {
     target_mask =
       (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|kActiveSRL);
   }
@@ -110,7 +112,7 @@ bool LTP::load(const std::string& last_stage,
   }
 
   if (target_mask & kActiveSRL) {
-    if ( 0 != _resource.LoadSRLResource(srl_model_dir)) {
+    if ( 0 != _resource.LoadSRLResource(srl_model_file)) {
       ERROR_LOG("in LTP::srl, failed to load srl resource");
       return false;
     }
@@ -121,6 +123,8 @@ bool LTP::load(const std::string& last_stage,
     ERROR_LOG("target is config but resource not loaded.");
     return false;
   }
+
+  INFO_LOG("Resources loading finished.");
 
   return true;
 }
@@ -432,7 +436,7 @@ int LTP::srl(XML4NLP & xml) {
     vector<string>              vecPOS;
     vector<string>              vecNE;
     vector< pair<int, string> > vecParse;
-    vector< pair<int, vector< pair<const char *, pair< int, int > > > > > vecSRLResult;
+    vector< pair<int, vector< pair<string, pair< int, int > > > > > vecSRLResult;
 
     if (xml.GetWordsFromSentence(vecWord, i) != 0) {
       ERROR_LOG("in LTP::ner, failed to get words from xml");
@@ -454,7 +458,7 @@ int LTP::srl(XML4NLP & xml) {
       return kReadXmlError;
     }
 
-    if (0 != SRL(vecWord, vecPOS, vecNE, vecParse, vecSRLResult)) {
+    if (0 != srl_dosrl(vecWord, vecPOS, vecParse, vecSRLResult)) {
       ERROR_LOG("in LTP::srl, failed to perform srl on sent. #%d", i+1);
       return kSRLError;
     }
@@ -479,4 +483,3 @@ int LTP::srl(XML4NLP & xml) {
   xml.SetNote(NOTE_SRL);
   return 0;
 }
-

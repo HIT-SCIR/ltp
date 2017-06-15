@@ -1,0 +1,10 @@
+The code that computes the l2 norm of the gradient is going to need
+scratch space on every device that DYNET is using that has a parameter.
+1) devices should know whether they have parameters/gradients
+
+alignment code is hidden away. it's all hard coded, but it looks like
+Intel at least is getting more foregiving about alingment problems so
+we might not notice opportunities for speedups if something changes.
+GPU memory is aligned mostly by CUDA
+
+the MP stuff needs to be tested by Austin.

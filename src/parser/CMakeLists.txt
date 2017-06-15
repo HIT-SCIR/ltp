@@ -16,7 +16,8 @@ set (lgdpj_SRC collections.cpp
 add_library(parser_static_lib STATIC parser_dll.cpp ${lgdpj_SRC})
 
 set_target_properties (parser_static_lib    PROPERTIES
-    OUTPUT_NAME     parser)
+    OUTPUT_NAME     parser
+    PREFIX "lib")
 
 add_library(parser_shared_lib SHARED parser_dll.cpp ${lgdpj_SRC})
 

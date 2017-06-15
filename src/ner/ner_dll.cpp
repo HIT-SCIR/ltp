@@ -43,6 +43,16 @@ public:
   int recognize(const std::vector<std::string> & words,
       const std::vector<std::string> & postags,
       std::vector<std::string> & tags) {
+    tags.clear();
+
+    if (words.size() == 0) {
+      return 0;
+    }
+
+    if (words.size() != postags.size()) {
+      return 0;
+    }
+
     ltp::framework::ViterbiFeatureContext ctx;
     ltp::framework::ViterbiScoreMatrix scm;
     ltp::framework::ViterbiDecoder decoder;
@@ -89,6 +99,12 @@ int ner_recognize(void * ner,
     const std::vector<std::string> & words,
     const std::vector<std::string> & postags,
     std::vector<std::string> & tags) {
+
+  tags.clear();
+
+  if (words.size() == 0) {
+    return 0;
+  }
 
   if (words.size() != postags.size()) {
     return 0;

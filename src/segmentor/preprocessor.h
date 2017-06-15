@@ -11,11 +11,6 @@
 #include "utils/smartmap.hpp"
 #include "utils/chartypes.hpp"
 
-#if _WIN32
-// disable auto-link feature in boost
-#define BOOST_ALL_NO_LIB
-#endif
-
 #include "boost/regex.hpp"
 
 namespace ltp {
