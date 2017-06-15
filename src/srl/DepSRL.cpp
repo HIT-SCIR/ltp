@@ -76,7 +76,7 @@ int DepSRL::GetSRLResult(
     }
     if ( !sentence.getPredicateList().size() ) {
         // skip all processing if no predicate
-        return 1;
+        return 0;
     }
     // srl prediction
     {
