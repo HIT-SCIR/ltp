@@ -84,3 +84,10 @@ Temporary Items
 
 doc/_build
 !doc/Makefile
+
+#######
+# IDE #
+#######
+
+# clion (jetbrain-ide)
+.idea
