@@ -3,7 +3,7 @@
 #include <sstream>
 #include <list>
 #include "config.h"
-#include "parser/parser_dll.h"
+#include "parser.n/parser_dll.h"
 #include "console/dispatcher.h"
 #include "boost/program_options.hpp"
 #include "utils/strutils.hpp"
