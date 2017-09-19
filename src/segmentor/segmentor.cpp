@@ -233,10 +233,32 @@ void Segmentor::load_lexicon(const char* filename, Model::lexicon_t* lexicon) co
   std::ifstream ifs(filename);
   if (!ifs.good()) { return; }
   std::string line;
+  bool updated;
+  std::string full;
+  std::string tmp;
   while (std::getline(ifs, line)) {
     trim(line);
     std::string form = line.substr(0, line.find_first_of(" \t"));
-    lexicon->set(form.c_str(), true);
+    updated = false;
+    for(int index=0; index<form.size();) {
+      if((form[index] & 0x80) == 0) {
+        if(!updated)
+          full = form.substr(0, index);
+        strutils::chartypes::sbc2dbc(form.substr(index, 1), tmp);
+        full += tmp;
+        index += 1;
+        updated = true;
+      } else if ((form[index] & 0xE0) == 0xC0) index += 2;
+      else if ((form[index] & 0xF0) == 0xE0) index += 3;
+      else if ((form[index] & 0xF8) == 0xF0) index += 4;
+      else if ((form[index] & 0xFC) == 0xF8) index += 5;
+      else if ((form[index] & 0xFE) == 0xFC) index += 6;
+      else {
+        ERROR_LOG("Unknown character prefix : 0x%x @ %s\n", form[index], form.c_str());
+        continue;
+      }
+    }
+    lexicon->set(updated?full.c_str():form.c_str(), true);
   }
   INFO_LOG("loaded %d lexicon entries", lexicon->size());
 }
