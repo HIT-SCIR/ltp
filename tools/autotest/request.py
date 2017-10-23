@@ -92,6 +92,7 @@ if __name__=="__main__":
     optparser.add_option("--case", dest="error_cases", action="store_true",
                          default=False, help="specify case test")
     optparser.add_option("--file", dest="filename", help="specify the file")
+    optparser.add_option("--sentence-batch", dest="stn_batch", help="stns in one request", default=1)
     opts, args = optparser.parse_args()
 
     if opts.error_cases:
@@ -112,8 +113,12 @@ if __name__=="__main__":
             print >> sys.stderr, "Failed to open file, use stdin instead"
             fp=sys.stdin
 
+        buffer=[]
         for line in fp:
             try:
-                print Request(line.strip(), 'n')
+                buffer.append(line.strip())
+                if len(buffer) == opts.stn_batch:
+                    print Request('\n'.join(buffer), 'n')
+                    buffer=[]
             except Exception, e:
                 print e
