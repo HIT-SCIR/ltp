@@ -521,10 +521,12 @@ static int Service(struct mg_connection *conn) {
     TRACE_LOG("Analysis is done.");
 
     std::string strResult;
-    if (str_format == "xml") {
+    if (str_format == "xml") { //xml
       xml4nlp.SaveDOM(strResult);
-    } else { //json
+    } else if (str_format == "json") { //json
       strResult = xml2jsonstr(xml4nlp, str_type);
+    } else {  // if str_format not set, or is invalid, use xml
+      xml4nlp.SaveDOM(strResult);
     }
 
 
