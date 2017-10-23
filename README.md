@@ -8,6 +8,19 @@
 新闻
 ----
 
+语言云全面改用`HTTPS`协议
+* 由于安全需求，目前改仓库的云接口平台 [语言技术平台云](https://www.ltp-cloud.com/) 已经全面换用`HTTPS`协议访问。
+* 之前使用云平台接口的用户，请切换到`HTTPS`协议访问、调用接口。
+* 如果遇到平台网页不能打开的情况，可以清理浏览器缓存解决。
+* 在迁移期间导致部分新注册用户`apikey`不能使用情况，请联系管理员。
+
+语言技术平台官网上线
+* [语言技术平台官网](http://ltp.ai/)近期上线。
+* 可访问官网 [查看文档](http://ltp.ai/docs/index.html) 、 [下载模型](http://ltp.ai/download.html) 、 [体验在线Demo](http://ltp.ai/demo.html) 。
+
+模型切换到七牛源
+* 最近很多用户反映使用百度云下载模型非常缓慢，现已切换到七牛云，请访问[该链接](http://ltp.ai/download.html)选择版本下载。
+
 语言技术平台3.4.0版 发布
 * [增加] 新的基于Bi-LSTM的SRL模型
 * [增加] 增加了SRL的多线程命令行程序`srl_cmdline`
@@ -47,12 +60,12 @@
 文档
 ---
 
-关于LTP的使用，请参考[在线文档](http://ltp.readthedocs.io/zh_CN/latest/)
+关于LTP的使用，请参考[在线文档](http://ltp.ai/docs/index.html)
 
 模型
 ---
 
-* [百度云](http://pan.baidu.com/share/link?shareid=1988562907&uk=2738088569)
+* [所有版本下载链接](http://ltp.ai/download.html)
 * 当前模型版本 3.4.0
 
 其它语言接口

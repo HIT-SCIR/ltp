@@ -18,6 +18,8 @@
 
 using namespace std;
 
+std::mutex DepSRL::mtx;
+
 // Load necessary resources into memory
 int DepSRL::LoadResource(const string &modelFile)
 {
@@ -69,22 +71,25 @@ int DepSRL::GetSRLResult(
         sentence.push_back(word);
     }
     // pi prediction
+    mtx.lock();
     {
         ComputationGraph hg;
         vector<Expression> adists = pi_model->label(hg, sentence);
         pi_model->ExtractResults(hg, adists, sentence);
     }
+    mtx.unlock();
     if ( !sentence.getPredicateList().size() ) {
         // skip all processing if no predicate
         return 0;
     }
     // srl prediction
+    mtx.lock();
     {
         ComputationGraph hg;
         vector<Expression> adists = srl_model->label(hg, sentence);
         srl_model->ExtractResults(hg, adists, sentence);
     }
-
+    mtx.unlock();
     if (!FormResult(words, POSs, sentence.getPredicateList(), sentence, vecSRLResult))
       return -1;
     return 0;
