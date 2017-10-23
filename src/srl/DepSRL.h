@@ -20,6 +20,7 @@
 #include "Pi/model/SrlPiModel.h"
 #include "Srl/model/SrlSrlModel.h"
 #include "structure/WordEmbBuilder.h"
+#include "mutex"
 
 class DepSRL {
 
@@ -93,6 +94,7 @@ class DepSRL {
         SrlSrlModel * srl_model;
         PiModel * pi_model;
         unordered_map<string, vector<float>> embedding;
+        static std::mutex mtx; // to fix dynet single CG constrain.
     private:
         void manageConfigPath(ModelConf &config, const string &dirPath);
 
