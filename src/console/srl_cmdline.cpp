@@ -100,9 +100,10 @@ int main(int argc, char ** argv) {
           ("input", value<std::string>(), "The path to the input file. "
                   "Input data should contain one word each line. "
                   "Sentence should be separated by a blank line. "
+                  "! Note that index start at 0, and index(ROOT)=-1 in the thrid column. "
                   "(e.g. \"中国    ns      2       ATT\").")
           ("pisrl-model", value<std::string>(),
-           "The path to the pi-srl joint model [default=ltp_data/pos.model].")
+           "The path to the pi-srl joint model [default=ltp_data/pisrl.model].")
           ("help,h", "Show help information");
 
   if (argc == 1) {
@@ -130,7 +131,7 @@ int main(int argc, char ** argv) {
   std::string input = "";
   if (vm.count("input")) { input = vm["input"].as<std::string>(); }
 
-  std::string srl_model = "ltp_data/pos.model";
+  std::string srl_model = "ltp_data/pisrl.model";
   if (vm.count("pisrl-model")) {
     srl_model = vm["pisrl-model"].as<std::string>();
   }

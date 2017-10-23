@@ -100,8 +100,8 @@ int main(int argc, char *argv[]) {
      "The path to the NER model [default=ltp_data/ner.model].")
     ("parser-model", value<std::string>(),
      "The path to the parser model [default=ltp_data/parser.model].")
-    ("srl-data", value<std::string>(),
-     "The path to the SRL model directory [default=ltp_data/srl_data/].")
+    ("srl-model", value<std::string>(),
+     "The path to the SRL model [default=ltp_data/pisrl.model].")
     ("debug-level", value<int>(), "The debug level.")
     ("help,h", "Show help information");
 
@@ -184,13 +184,13 @@ int main(int argc, char *argv[]) {
     parser_model= vm["parser-model"].as<std::string>();
   }
 
-  std::string srl_data= "ltp_data/srl/";
+  std::string srl_model= "ltp_data/pisrl.model";
   if (vm.count("srl-data")) {
-    srl_data = vm["srl-data"].as<std::string>();
+    srl_model = vm["srl-data"].as<std::string>();
   }
 
   LTP engine(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
-      postagger_lexcion, ner_model, parser_model, srl_data);
+      postagger_lexcion, ner_model, parser_model, srl_model);
 
   if (!engine.loaded()) {
     std::cerr << "Failed to load LTP" << std::endl;
