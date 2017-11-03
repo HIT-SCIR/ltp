@@ -1,14 +1,14 @@
 #include <iostream>
 #include <vector>
 
-#include "ltp/SRL_DLL.h"
+#include "ltp/srl_dll.h"
 
 int main(int argc, char * argv[]) {
   if (argc < 2) {
     return -1;
   }
 
-  SRL_LoadResource(argv[1]);
+  srl_load_resource(argv[1]);
 
   std::vector<std::string> words;
   std::vector<std::string> postags;
@@ -20,7 +20,7 @@ int main(int argc, char * argv[]) {
   words.push_back("过问");    postags.push_back("v"); nes.push_back("O"); parse.push_back(make_pair(-1,"HED"));
   words.push_back("。");      postags.push_back("wp");nes.push_back("O"); parse.push_back(make_pair(2,"WP"));
 
-  DoSRL(words,postags,nes,parse,srl);
+  srl_dosrl(words,postags,parse,srl);
 
   for(int i = 0;i<srl.size();++i) {
     std::cout<<srl[i].first<<":"<<std::endl;
@@ -32,7 +32,7 @@ int main(int argc, char * argv[]) {
     }
   }
 
-  SRL_ReleaseResource();
+  srl_release_resource();
   return 0;
 }
 
