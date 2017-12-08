@@ -27,7 +27,7 @@ int DepSRL::LoadResource(const string &modelFile)
     params.mem_descriptor = "2000";
     dynet::initialize(params);
 
-    ifstream in(modelFile);
+    ifstream in(modelFile, ios::binary);
     if (!in) { return  -1;}
     boost::archive::binary_iarchive ia(in);
     ia >> piConfig;
