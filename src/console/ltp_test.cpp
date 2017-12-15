@@ -127,17 +127,22 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  std::string last_stage = LTP_SERVICE_NAME_DEFAULT;
+  std::string last_stage = "all";
   if (vm.count("last-stage")) {
     last_stage = vm["last-stage"].as<std::string>();
-    if (last_stage != LTP_SERVICE_NAME_SEGMENT
-        && last_stage != LTP_SERVICE_NAME_POSTAG
-        && last_stage != LTP_SERVICE_NAME_NER
-        && last_stage != LTP_SERVICE_NAME_DEPPARSE
-        && last_stage != LTP_SERVICE_NAME_SRL
-        && last_stage != LTP_SERVICE_NAME_ALL) {
-      std::cerr << "Unknown stage name:" << last_stage << ", reset to '" LTP_SERVICE_NAME_DEFAULT "'" << std::endl;
-      last_stage = LTP_SERVICE_NAME_DEFAULT;
+    vector<string> stages = ltp::strutils::split_by_sep(last_stage, "|");
+
+    for (int j = 0; j < stages.size(); ++j) {
+      if (stages[j] != LTP_SERVICE_NAME_SEGMENT
+          && stages[j] != LTP_SERVICE_NAME_POSTAG
+          && stages[j] != LTP_SERVICE_NAME_NER
+          && stages[j] != LTP_SERVICE_NAME_DEPPARSE
+          && stages[j] != LTP_SERVICE_NAME_SRL
+          && stages[j] != "all") {
+        std::cerr << "Unknown stage name:" << last_stage << ", reset to 'all'" << std::endl;
+        last_stage = "all";
+        break;
+      }
     }
   }
 
