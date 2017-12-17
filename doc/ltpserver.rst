@@ -56,6 +56,7 @@ LTP Server在轻量级服务器程序mongoose基础上开发。在编译LTP源�
 
 其中较为重要的参数包括：
 
+- last-stage: 特别的，可以使用 "|" 来分割多个最终目标。例如需要ner和parser就设置为 "ner|dp"。
 - port：指定LTP server监听的端口
 - threads：指定LTP server运行的线程数，线程数影响并发的处理能力
 - log-level：指定日志级别，TRACE级别最低，显示日志信息最详细。INFO级别最高，显示日志最粗略。WARN与ERROR级日志默认显示。

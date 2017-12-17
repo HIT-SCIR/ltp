@@ -109,6 +109,8 @@ Pipeline与last-stage参数
 
 默认情况下，LTP将进行至语义角色标注的分析。但是，对于一部分用户，某些分析并不必要。举例来讲，如果用户只需进行词性标注，则ltp_test的pipeline分析只需进行到pos，`last-stage`用来指明分析的最后状态。同时，如果`last-stage`指定为pos，句法分析、命名实体识别和语义角色标注的模型将不被加载。
 
+注： last-stage: 特别的，可以使用 "|" 来分割多个最终目标。例如需要ner和parser就设置为 "ner|dp"。
+
 .. _xxxcmdline-reference-label:
 
 xxx_cmdline

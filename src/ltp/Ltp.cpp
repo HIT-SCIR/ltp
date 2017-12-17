@@ -2,6 +2,7 @@
 #include <ctime>
 #include <map>
 #include <string>
+#include <utils/strutils.hpp>
 
 #include "xml4nlp/Xml4nlp.h"
 #include "splitsnt/SplitSentence.h"
@@ -50,19 +51,22 @@ bool LTP::load(const std::string& last_stage,
     const std::string& srl_model_file) {
 
   size_t target_mask = 0;
-  if (last_stage == LTP_SERVICE_NAME_SEGMENT) {
-    target_mask = kActiveSegmentor;
-  } else if (last_stage == LTP_SERVICE_NAME_POSTAG) {
-    target_mask = (kActiveSegmentor|kActivePostagger);
-  } else if (last_stage == LTP_SERVICE_NAME_NER) {
-    target_mask = (kActiveSegmentor|kActivePostagger|kActiveNER);
-  } else if (last_stage == LTP_SERVICE_NAME_DEPPARSE) {
-    target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser);
-  } else if (last_stage == LTP_SERVICE_NAME_SRL) {
-    target_mask = (kActiveSegmentor|kActivePostagger|kActiveParser|kActiveSRL);
-  } else if (last_stage == "all") {
-    target_mask =
-      (kActiveSegmentor|kActivePostagger|kActiveNER|kActiveParser|kActiveSRL);
+  vector<string> stages = ltp::strutils::split_by_sep(last_stage, "|");
+  for (int j = 0; j < stages.size(); ++j) {
+    if (stages[j] == LTP_SERVICE_NAME_SEGMENT) {
+      target_mask |= kActiveSegmentor;
+    } else if (stages[j] == LTP_SERVICE_NAME_POSTAG) {
+      target_mask |= (kActiveSegmentor | kActivePostagger);
+    } else if (stages[j] == LTP_SERVICE_NAME_NER) {
+      target_mask |= (kActiveSegmentor | kActivePostagger | kActiveNER);
+    } else if (stages[j] == LTP_SERVICE_NAME_DEPPARSE) {
+      target_mask |= (kActiveSegmentor | kActivePostagger | kActiveParser);
+    } else if (stages[j] == LTP_SERVICE_NAME_SRL) {
+      target_mask |= (kActiveSegmentor | kActivePostagger | kActiveParser | kActiveSRL);
+    } else if (stages[j] == "all") {
+      target_mask |=
+              (kActiveSegmentor | kActivePostagger | kActiveNER | kActiveParser | kActiveSRL);
+    }
   }
 
   size_t loaded_mask = 0;
