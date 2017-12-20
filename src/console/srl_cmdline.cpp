@@ -67,7 +67,7 @@ void multithreaded_srl(void *args) {
     for (int k = 0; k < vecSRLResult.size(); ++k) {
       is_pred[vecSRLResult[k].first] = true;
       for (int j = 0; j < vecSRLResult[k].second.size(); ++j) {
-        arg[findRoot(parse, vecSRLResult[k].second[j].second)][k] = vecSRLResult[k].second[k].first;
+        arg[findRoot(parse, vecSRLResult[k].second[j].second)][k] = vecSRLResult[k].second[j].first;
       }
     }
 
