@@ -1,6 +1,26 @@
 .. _install-label:
 
-LTP 的下载和安装
+使用 Docker 中的LTP
+==================
+
+最简单的方式就是使用我们在docker中已经编译好的LTP服务。这种方式避免了多种不同系统编译安装时可能出现的各种问题，也避免了模型和代码匹配等问题。如果您希望快速部署LTP的接口服务器并使用。推荐这种方法。
+
+1. 安装docker，在`【docker官方下载地址】<https://www.docker.com/community-edition>`_ 下载安装即可。如果您还没有了解docker是什么，可以参考`此处<https://www.docker.com/what-docker>`_
+2. 在此处下载最新的LTP的镜像文件。` ltp3.4.0-docker <http://osr393crn.bkt.clouddn.com/docker/ltp_3_4_0.tar>`_ 并执行如下命令将其载入docker::
+
+    docker load -i ltp_3_4_0.tar
+
+3. 在配置中给docker运行给予足够大的内存。我们这里设置了6G运行内存。
+4. 使用如下命令启动容器，这里的8080是映射到本地的端口号，可以根据需要改动为其他未占用的端口::
+
+    docker run -d -p 8080:12345 ltp/ltp /ltp_server --last-stage all
+
+5. 使用如下命令测试服务器是否部署成功。启动后可能需要等待数十秒的模型加载时间。::
+
+    curl -d "s=他点头表示同意我的意见。&f=xml&t=all" http://127.0.0.1:8080/ltp
+6. 按照文档进行接口访问即可
+
+LTP 的源码编译安装
 ================
 
 如果你想要使用LTP，必须拥有两部分内容
