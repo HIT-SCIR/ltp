@@ -8,7 +8,7 @@
 1. 安装docker，在`【docker官方下载地址】<https://www.docker.com/community-edition>`_ 下载安装即可。如果您还没有了解docker是什么，可以参考`此处<https://www.docker.com/what-docker>`_
 2.1 使用本仓库Dockerfile构建镜像，仅下载Dockerfile文件，放在一个空文件夹下，并在该文件夹下执行::
 
-    docker build -t ltp/ltp . # 由于网络原因可能中途识别。多执行几次即可。
+    docker build -t ltp/ltp . # 由于网络原因可能中途失败。多执行几次即可。
 
 2.2 在此处下载最新的LTP的镜像文件。` ltp3.4.0-docker <http://osr393crn.bkt.clouddn.com/docker/ltp_3_4_0.tar>`_ 下载的文件较大，下载完成后比较其(md5=f42d128a20e26a4b8c2edf63932fed67)核对是否下载正确。注意此步骤与2.1功能相同，尝试一种可行方案即可。更推荐2.1方案。::
 
