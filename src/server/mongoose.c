@@ -466,7 +466,7 @@ static const char *config_options[] = {
   "global_auth_file", NULL,
   "index_files",
     "index.html,index.htm,index.cgi,index.shtml,index.php,index.lp",
-  "enable_keep_alive", "no",
+  "enable_keep_alive", "yes",
   "access_control_list", NULL,
   "extra_mime_types", NULL,
   "listening_ports", "8080",
@@ -5088,6 +5088,7 @@ static void process_new_connection(struct mg_connection *conn) {
     // in loop exit condition.
     keep_alive = conn->ctx->stop_flag == 0 && keep_alive_enabled &&
       conn->content_len >= 0 && should_keep_alive(conn);
+    //DEBUG_TRACE(("keep_alive: %d", keep_alive));
 
     // Discard all buffered data for this request
     discard_len = conn->content_len >= 0 && conn->request_len > 0 &&
@@ -5166,7 +5167,6 @@ static void *worker_thread(void *thread_func_param) {
          ) {
         process_new_connection(conn);
       }
-
       close_connection(conn);
     }
     free(conn);

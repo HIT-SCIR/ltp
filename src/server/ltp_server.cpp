@@ -535,7 +535,9 @@ static int Service(struct mg_connection *conn) {
     }
 
 
-    strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;
+    strResult = "HTTP/1.1 200 OK\r\nContent-Length: " \
+      + std::to_string(strResult.length()) + "\r\n\r\n" + strResult;
+    // TRACE_LOG(strResult.c_str());
     mg_printf(conn, "%s", strResult.c_str());
 
     xml4nlp.ClearDOM();

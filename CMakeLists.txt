@@ -7,7 +7,7 @@ set (CMAKE_MODULE_PATH      ${PROJECT_SOURCE_DIR}/cmake)
 
 if (APPLE)
   add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
-  set(CMAKE_CXX_FLAGS "-std=c++0x -Wno-c++11-narrowing")
+  set(CMAKE_CXX_FLAGS "-std=c++0x -Wno-c++11-narrowing -Wno-invalid-partial-specialization")
 elseif(UNIX)
   set(CMAKE_CXX_FLAGS "-std=c++0x -fPIC")
 elseif(MINGW)
