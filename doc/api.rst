@@ -50,19 +50,19 @@
 
     右键工程->Configuration properties->c/c++->general->additional include directories
 
-    .. image:: http://ir.hit.edu.cn/ltp-2014/images/include.png
+    .. image:: http://p5xnn6ehz.bkt.clouddn.com/ltp-doc-img-3.6.1-1.png
 
 2. 添加动态库路径
 
     右键工程->Configuration properties->linker->general->additional library directories
 
-    .. image:: http://ir.hit.edu.cn/ltp-2014/images/lib.png
+    .. image:: http://p5xnn6ehz.bkt.clouddn.com/ltp-doc-img-3.6.1-2.png
 
 3. 导入所需的动态库
 
     右键工程->properties->linker->input->additional additional dependencies
 
-    .. image:: http://ir.hit.edu.cn/ltp-2014/images/import.png
+    .. image:: http://p5xnn6ehz.bkt.clouddn.com/ltp-doc-img-3.6.1-3.png
 
 4. 最后，Build工程即可。
 

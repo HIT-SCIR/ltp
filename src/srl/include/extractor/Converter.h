@@ -37,9 +37,9 @@ namespace extractor{
       debug.debug("Convert '%s' to '%s' finish. generate %u %s items", T1::getClassName().c_str(), T2::getClassName().c_str(), data.size(), T2::getClassName().c_str());
     }
 
-    virtual void beforeConvert() {} // 开始转换之前
+    virtual void beforeConvert() {}
     virtual void convert(T1 &) = 0;
-    virtual void afterConvert() {} // 结束之后
+    virtual void afterConvert() {}
 
     virtual void insert(T2 item) {
       data.push_back(item);
