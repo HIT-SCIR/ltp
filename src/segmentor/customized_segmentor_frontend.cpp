@@ -36,9 +36,10 @@ CustomizedSegmentorFrontend::CustomizedSegmentorFrontend(
   const std::string& input_file,
   const std::string& model_file,
   const std::string& baseline_model_file,
-  bool evaluate)
+  bool evaluate,
+  const std::string &lexicon_file)
   : bs_model(0), bs_model_file(baseline_model_file),
-  SegmentorFrontend(input_file, model_file, evaluate) {
+    SegmentorFrontend(input_file, model_file, evaluate, false, false, lexicon_file) {
   good = load_baseline_model();
   timestamp = bs_model->param.last();
 }

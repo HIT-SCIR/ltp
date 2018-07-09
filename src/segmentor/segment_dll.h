@@ -36,7 +36,7 @@ SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path,
  * release the segmentor resources
  *
  *  @param[in]  segmentor     the segmentor
- *  @return     int           i don't know
+ *  @return     int           0 for success, -1 if a NULL parser is passed.
  */
 SEGMENTOR_DLL_API int segmentor_release_segmentor(void * parser);
 

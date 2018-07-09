@@ -141,7 +141,7 @@ int test(int argc, const char* argv[]) {
   bool sequence_prob = vm["sequence"].as<bool>();
   bool marginal_prob = vm["marginal"].as<bool>();
 
-  SegmentorFrontend frontend(input_file, model_file, evaluate, sequence_prob, marginal_prob);
+  SegmentorFrontend frontend(input_file, model_file, evaluate, sequence_prob, marginal_prob, lexicon_file);
   frontend.test();
   return 0;
 }
@@ -319,7 +319,7 @@ int customized_test(int argc, const char* argv[]) {
   bool evaluate = vm["evaluate"].as<bool>();
 
   CustomizedSegmentorFrontend frontend(input_file, model_file,
-      baseline_model_file, evaluate);
+      baseline_model_file, evaluate, lexicon_file);
   frontend.test();
   return 0;
 }

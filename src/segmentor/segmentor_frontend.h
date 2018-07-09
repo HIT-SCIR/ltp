@@ -47,7 +47,8 @@ public:
       const std::string& model_file,
       bool evaluate,
       bool sequence_prob = false,
-      bool marginal_prob = false);
+      bool marginal_prob = false,
+      const std::string &lexicon_file = "");
 
   SegmentorFrontend(const std::string& model_file);
 
