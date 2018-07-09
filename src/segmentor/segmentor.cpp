@@ -231,7 +231,10 @@ void Segmentor::build_words(const std::vector<std::string>& chars,
 
 void Segmentor::load_lexicon(const char* filename, Model::lexicon_t* lexicon) const {
   std::ifstream ifs(filename);
-  if (!ifs.good()) { return; }
+  if (!ifs.good()) {
+    WARNING_LOG("Can not find lexicon file %s. Skip loading.", filename)
+    return;
+  }
   std::string line;
   bool updated;
   std::string full;
