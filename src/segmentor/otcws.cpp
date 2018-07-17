@@ -98,6 +98,8 @@ int test(int argc, const char* argv[]) {
     ("model", value<std::string>(), "The path to the model file.")
     ("lexicon", value<std::string>(),
      "The lexicon file, (optional, if configured, constrained decoding will be performed).")
+    ("force_lexicon_file", value<std::string>(),
+     "The force lexicon file, (optional, if configured, words in the vocab file will be force extract).")
     ("input", value<std::string>(), "The path to the reference file.")
     ("evaluate", value<bool>()->default_value(false),
      "if configured, perform evaluation, input words in sentence should be separated by space [default=false].")
@@ -134,6 +136,9 @@ int test(int argc, const char* argv[]) {
   std::string lexicon_file = "";
   if (vm.count("lexicon")) { lexicon_file = vm["lexicon"].as<std::string>(); }
 
+  std::string force_lexicon_file = "";
+  if (vm.count("force_lexicon_file")) { force_lexicon_file = vm["force_lexicon_file"].as<std::string>(); }
+
   std::string output_file = "";
   if (vm.count("output")) { output_file = vm["output"].as<std::string>(); }
 
@@ -141,7 +146,7 @@ int test(int argc, const char* argv[]) {
   bool sequence_prob = vm["sequence"].as<bool>();
   bool marginal_prob = vm["marginal"].as<bool>();
 
-  SegmentorFrontend frontend(input_file, model_file, evaluate, sequence_prob, marginal_prob, lexicon_file);
+  SegmentorFrontend frontend(input_file, model_file, evaluate, sequence_prob, marginal_prob, lexicon_file, force_lexicon_file);
   frontend.test();
   return 0;
 }

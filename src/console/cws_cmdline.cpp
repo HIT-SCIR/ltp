@@ -63,6 +63,8 @@ int main(int argc, char ** argv) {
      "The path to the segment model [default=ltp_data/cws.model].")
     ("segmentor-lexicon", value<std::string>(),
      "The path to the external lexicon in segmentor [optional].")
+    ("segmentor-force-lexicon", value<std::string>(),
+     "The path to the external post force lexicon in segmentor [optional].")
     ("help,h", "Show help information");
 
   if (argc == 1) {
@@ -99,13 +101,14 @@ int main(int argc, char ** argv) {
   if (vm.count("segmentor-lexicon")) {
     segmentor_lexicon= vm["segmentor-lexicon"].as<std::string>();
   }
+  std::string segmentor_force_lexicon = "";
+  if (vm.count("segmentor-force-lexicon")) {
+    segmentor_force_lexicon= vm["segmentor-force-lexicon"].as<std::string>();
+  }
 
   void* engine = 0;
-  if (segmentor_lexicon == "") {
-    engine = segmentor_create_segmentor(segmentor_model.c_str());
-  } else {
-    engine = segmentor_create_segmentor(segmentor_model.c_str(), segmentor_lexicon.c_str());
-  }
+  engine = segmentor_create_segmentor(segmentor_model.c_str(), segmentor_lexicon.c_str(), segmentor_force_lexicon.c_str());
+
 
   if (!engine) {
     return -1;

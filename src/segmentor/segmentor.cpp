@@ -266,5 +266,55 @@ void Segmentor::load_lexicon(const char* filename, Model::lexicon_t* lexicon) co
   INFO_LOG("loaded %d lexicon entries", lexicon->size());
 }
 
+void Segmentor::post_process(std::vector<std::string> &chars, std::vector<std::string> &words) const {
+  // rule 1. force segment words in the force_lexicon vocab
+  if (force_lexicon.size() and words.size()) {
+    std::vector<size_t> soft_baffle;
+    std::string raw;
+    // construct raw and soft_baffle
+    for (int i = 0; i < words.size(); i++) {
+      raw += words[i];
+      soft_baffle.push_back(raw.length());
+    }
+    // remove the baffle inside the word and add word edge baffle
+    for (size_t gram = 1; gram < max_force_lexicon_gram; gram ++) {
+      for (size_t i = 0; i + gram <= chars.size(); i++) {
+        std::string cur_word;
+        size_t past_length = 0;
+        for (size_t j = 0; j < i; j++) {
+          past_length += chars[j].length();
+        }
+        for (size_t j = i; j < i + gram; j++) {
+          cur_word += chars[j];
+        }
+        if (force_lexicon.get(cur_word.c_str())) {
+          // find in lexicon
+          // remove the inner soft_baffle
+          for (auto b = soft_baffle.begin(); b != soft_baffle.end(); b++) {
+            if (past_length < *b and *b < past_length + cur_word.length()) {
+              soft_baffle.erase(b);
+              b --;
+            }
+          }
+          if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length) == soft_baffle.end())
+            soft_baffle.push_back(past_length);
+          if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length + cur_word.length()) == soft_baffle.end())
+            soft_baffle.push_back(past_length + cur_word.length());
+        }
+      }
+    }
+    // use the baffle to re-segment the words
+    std::sort(soft_baffle.begin(), soft_baffle.end());
+    words.clear();
+    for (int i = 0; i < soft_baffle.size(); i++) {
+      if (i) {
+        words.push_back(raw.substr(soft_baffle[i - 1], soft_baffle[i] - soft_baffle[i - 1]));
+      } else {
+        words.push_back(raw.substr(0, soft_baffle[i]));
+      }
+    }
+  }
+}
+
 }     //  end for namespace segmentor
 }     //  end for namespace ltp
