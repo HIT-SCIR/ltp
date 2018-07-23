@@ -274,7 +274,9 @@ void Segmentor::post_process(std::vector<std::string> &chars, std::vector<std::s
               b --;
             }
           }
-          if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length) == soft_baffle.end())
+          if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length) == soft_baffle.end()
+              and
+              past_length != 0)
             soft_baffle.push_back(past_length);
           if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length + cur_word.length()) == soft_baffle.end())
             soft_baffle.push_back(past_length + cur_word.length());
