@@ -71,6 +71,21 @@ int LTPResource::LoadSegmentorResource(const char* model_file, const char* lexic
   return 0;
 }
 
+int LTPResource::LoadSegmentorResource(const char* model_file, const char* lexicon, const char* force_lexicon) {
+  if (m_isSegmentorResourceLoaded) { return 0; }
+
+  INFO_LOG("Loading segmentor model from \"%s\", \"%s\", \"%s\" ...", model_file, lexicon, force_lexicon);
+  m_segmentor = segmentor_create_segmentor(model_file, lexicon, force_lexicon);
+  if (0 == m_segmentor) {
+    ERROR_LOG("Failed to load segmentor model");
+    return -1;
+  }
+
+  m_isSegmentorResourceLoaded = true;
+  INFO_LOG("segmentor model is loaded.");
+  return 0;
+}
+
 int LTPResource::LoadSegmentorResource(const std::string& model_file) {
   return LoadSegmentorResource(model_file.c_str());
 }
@@ -78,6 +93,11 @@ int LTPResource::LoadSegmentorResource(const std::string& model_file) {
 int LTPResource::LoadSegmentorResource(const std::string& model_file,
     const std::string& lexicon) {
   return LoadSegmentorResource(model_file.c_str(), lexicon.c_str());
+}
+
+int LTPResource::LoadSegmentorResource(const std::string& model_file,
+                                       const std::string& lexicon, const std::string& force_lexicon) {
+  return LoadSegmentorResource(model_file.c_str(), lexicon.c_str(), force_lexicon.c_str());
 }
 
 void LTPResource::ReleaseSegmentorResource() {

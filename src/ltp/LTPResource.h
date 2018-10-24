@@ -17,8 +17,10 @@ public:
    */
   int LoadSegmentorResource(const char* model_file);
   int LoadSegmentorResource(const char* model_file, const char* lexicon);
+  int LoadSegmentorResource(const char* model_file, const char* lexicon, const char* force_lexicon);
   int LoadSegmentorResource(const std::string& model_file);
   int LoadSegmentorResource(const std::string& model_file, const std::string& lexicon);
+  int LoadSegmentorResource(const std::string& model_file, const std::string& lexicon, const std::string& force_lexicon);
 
   /**
    * load postagger resource from model file. Return 0 on success,

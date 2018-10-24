@@ -59,6 +59,8 @@ int main(int argc, char *argv[]) {
      "The path to the segment model [default=ltp_data/cws.model].")
     ("segmentor-lexicon", value<std::string>(),
      "The path to the external lexicon in segmentor [optional].")
+    ("segmentor-force-lexicon", value<std::string>(),
+     "The path to the external force lexicon in segmentor [optional].")
     ("postagger-model", value<std::string>(),
      "The path to the postag model [default=ltp_data/pos.model].")
     ("postagger-lexicon", value<std::string>(),
@@ -135,6 +137,11 @@ int main(int argc, char *argv[]) {
     segmentor_lexicon= vm["segmentor-lexicon"].as<std::string>();
   }
 
+  std::string segmentor_force_lexicon = "";
+  if (vm.count("segmentor-force-lexicon")) {
+    segmentor_force_lexicon= vm["segmentor-force-lexicon"].as<std::string>();
+  }
+
   std::string postagger_model = "ltp_data/pos.model";
   if (vm.count("postagger-model")) {
     postagger_model= vm["postagger-model"].as<std::string>();
@@ -170,7 +177,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  engine = new LTP(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
+  engine = new LTP(last_stage, segmentor_model, segmentor_lexicon, segmentor_force_lexicon, postagger_model,
       postagger_lexcion, ner_model, parser_model, srl_model);
 
   if (!engine->loaded()) {

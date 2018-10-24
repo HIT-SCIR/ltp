@@ -28,11 +28,11 @@ public:
       return false;
     }
 
-    if (NULL != lexicon_file or lexicon_file == "") {
+    if (NULL != lexicon_file and strlen(lexicon_file)) {
       load_lexicon(lexicon_file, &model->external_lexicon);
     }
 
-    if (NULL != force_lexicon_file or force_lexicon_file == "") {
+    if (NULL != force_lexicon_file and strlen(force_lexicon_file)) {
       load_lexicon(force_lexicon_file, &force_lexicon);
     }
 
