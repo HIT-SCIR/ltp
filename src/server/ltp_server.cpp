@@ -53,6 +53,7 @@ int main(int argc, char *argv[]) {
      "- " LTP_SERVICE_NAME_POSTAG ": Part of speech tagging\n"
      "- " LTP_SERVICE_NAME_NER ": Named entity recognization\n"
      "- " LTP_SERVICE_NAME_DEPPARSE ": Dependency parsing\n"
+     "- " LTP_SERVICE_NAME_NERDP ": Named entity recognization and Dependency parsing\n"
      "- " LTP_SERVICE_NAME_SRL ": Semantic role labeling\n"
      "- all: The whole pipeline [default]")
     ("segmentor-model", value<std::string>(),
@@ -114,6 +115,7 @@ int main(int argc, char *argv[]) {
     for (int j = 0; j < stages.size(); ++j) {
       if (stages[j] != LTP_SERVICE_NAME_SEGMENT
           && stages[j] != LTP_SERVICE_NAME_POSTAG
+          && stages[j] != LTP_SERVICE_NAME_NERDP
           && stages[j] != LTP_SERVICE_NAME_NER
           && stages[j] != LTP_SERVICE_NAME_DEPPARSE
           && stages[j] != LTP_SERVICE_NAME_SRL
@@ -285,6 +287,7 @@ static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
       // postag
       if (str_type == LTP_SERVICE_NAME_POSTAG
           || str_type == LTP_SERVICE_NAME_NER
+          || str_type == LTP_SERVICE_NAME_NERDP
           || str_type == LTP_SERVICE_NAME_DEPPARSE
           || str_type == LTP_SERVICE_NAME_SRL
           || str_type == LTP_SERVICE_NAME_ALL) {
@@ -293,6 +296,7 @@ static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
 
       // ner
       if (str_type == LTP_SERVICE_NAME_NER
+          || str_type == LTP_SERVICE_NAME_NERDP
           || str_type == LTP_SERVICE_NAME_SRL
           || str_type == LTP_SERVICE_NAME_ALL) {
         xml.GetNEsFromSentence(vecNETag, pid, sid);
@@ -300,6 +304,7 @@ static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
 
       // dp
       if (str_type == LTP_SERVICE_NAME_DEPPARSE
+          || str_type == LTP_SERVICE_NAME_NERDP
           || str_type == LTP_SERVICE_NAME_SRL
           || str_type == LTP_SERVICE_NAME_ALL) {
         xml.GetParsesFromSentence(vecParse, pid, sid);
@@ -318,6 +323,7 @@ static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
 
         // postag
         if (str_type == LTP_SERVICE_NAME_POSTAG
+            || str_type == LTP_SERVICE_NAME_NERDP
             || str_type == LTP_SERVICE_NAME_NER
             || str_type == LTP_SERVICE_NAME_DEPPARSE
             || str_type == LTP_SERVICE_NAME_SRL
@@ -328,6 +334,7 @@ static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
 
         // ner
         if (str_type == LTP_SERVICE_NAME_NER
+            || str_type == LTP_SERVICE_NAME_NERDP
             || str_type == LTP_SERVICE_NAME_SRL
             || str_type == LTP_SERVICE_NAME_ALL) {
           word["ne"] = vecNETag[wid];
@@ -335,6 +342,7 @@ static std::string xml2jsonstr(const XML4NLP & xml, std::string str_type) {
 
         // dp
         if (str_type == LTP_SERVICE_NAME_DEPPARSE
+            || str_type == LTP_SERVICE_NAME_NERDP
             || str_type == LTP_SERVICE_NAME_SRL
             || str_type == LTP_SERVICE_NAME_ALL) {
           word["parent"] = vecParse[wid].first;
@@ -506,8 +514,16 @@ static int Service(struct mg_connection *conn) {
         delete[] sentence;
         return 0;
       }
-    } else if (str_type == LTP_SERVICE_NAME_SRL){ // srl
+    } else if (str_type == LTP_SERVICE_NAME_SRL) { // srl
       int ret = engine->srl(xml4nlp);
+      if (0 != ret) {
+        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
+        delete[] sentence;
+        return 0;
+      }
+    } else if (str_type == LTP_SERVICE_NAME_NERDP) {
+      int ret = engine->ner(xml4nlp);
+      ret &= engine->parser(xml4nlp);
       if (0 != ret) {
         ErrorResponse(conn, static_cast<ErrorCodes>(ret));
         delete[] sentence;

@@ -20,6 +20,7 @@
 #define LTP_SERVICE_NAME_NER      "ner"
 #define LTP_SERVICE_NAME_DEPPARSE "dp"
 #define LTP_SERVICE_NAME_SRL      "srl"
+#define LTP_SERVICE_NAME_NERDP    "ner|dp"
 #define LTP_SERVICE_NAME_ALL      "all"
 #define LTP_SERVICE_NAME_DEFAULT   LTP_SERVICE_NAME_ALL
 
