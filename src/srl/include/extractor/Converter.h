@@ -22,7 +22,11 @@ namespace extractor{
     virtual void init(vector<T1> & origin_data) {
       origin_data_ref = & origin_data;
     }
-
+	
+    virtual void beforeConvert() {}
+    virtual void convert(T1 &) = 0;
+    virtual void afterConvert() {}
+	
     virtual void run() {
       unsigned num = origin_data_ref->size();
       debug.debug("Convert '%s' to '%s' start. total %u %s items", T1::getClassName().c_str(), T2::getClassName().c_str(), num, T1::getClassName().c_str());
@@ -37,9 +41,6 @@ namespace extractor{
       debug.debug("Convert '%s' to '%s' finish. generate %u %s items", T1::getClassName().c_str(), T2::getClassName().c_str(), data.size(), T2::getClassName().c_str());
     }
 
-    virtual void beforeConvert() {}
-    virtual void convert(T1 &) = 0;
-    virtual void afterConvert() {}
 
     virtual void insert(T2 item) {
       data.push_back(item);
