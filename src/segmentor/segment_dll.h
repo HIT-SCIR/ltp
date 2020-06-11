@@ -30,13 +30,14 @@
  *  @return     void *        the pointer to the segmentor
  */
 SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * path,
-                                                    const char * lexicon_file = NULL);
+                                                    const char * lexicon_file = NULL,
+                                                    const char * force_lexicon_file = NULL);
 
 /*
  * release the segmentor resources
  *
  *  @param[in]  segmentor     the segmentor
- *  @return     int           i don't know
+ *  @return     int           0 for success, -1 if a NULL parser is passed.
  */
 SEGMENTOR_DLL_API int segmentor_release_segmentor(void * parser);
 

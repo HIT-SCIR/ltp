@@ -27,6 +27,7 @@
 LTP::LTP(const std::string& last_stage,
     const std::string& segmentor_model_file,
     const std::string& segmentor_lexicon_file,
+    const std::string& segmentor_force_lexicon_file,
     const std::string& postagger_model_file,
     const std::string& postagger_lexicon_file,
     const std::string& ner_model_file,
@@ -34,7 +35,7 @@ LTP::LTP(const std::string& last_stage,
     const std::string& srl_model_dir)
   : _resource(), _loaded(false) {
   _loaded = load(last_stage,
-      segmentor_model_file, segmentor_lexicon_file,
+      segmentor_model_file, segmentor_lexicon_file, segmentor_force_lexicon_file,
       postagger_model_file, postagger_lexicon_file,
       ner_model_file,
       parser_model_file,
@@ -44,6 +45,7 @@ LTP::LTP(const std::string& last_stage,
 bool LTP::load(const std::string& last_stage,
     const std::string& segmentor_model_file,
     const std::string& segmentor_lexicon_file,
+    const std::string& segmentor_force_lexicon_file,
     const std::string& postagger_model_file,
     const std::string& postagger_lexicon_file,
     const std::string& ner_model_file,
@@ -73,11 +75,14 @@ bool LTP::load(const std::string& last_stage,
 
   if (target_mask & kActiveSegmentor) {
     int ret;
-    if (segmentor_lexicon_file == "") {
+    if (segmentor_lexicon_file == "" and segmentor_force_lexicon_file == "") {
       ret = _resource.LoadSegmentorResource(segmentor_model_file);
-    } else {
+    } else if (segmentor_force_lexicon_file == ""){
       ret = _resource.LoadSegmentorResource(segmentor_model_file, segmentor_lexicon_file);
+    } else {
+      ret = _resource.LoadSegmentorResource(segmentor_model_file, segmentor_lexicon_file, segmentor_force_lexicon_file);
     }
+
     if (0 != ret) {
       ERROR_LOG("in LTP::wordseg, failed to load segmentor resource");
       return false;

@@ -58,20 +58,26 @@ SegmentorFrontend::SegmentorFrontend(const std::string& input_file,
     const std::string& model_file,
     bool evaluate,
     bool sequence_prob,
-    bool marginal_prob)
+    bool marginal_prob,
+    const std::string &lexicon_file,
+    const std::string &force_lexicon_file)
   : timestamp(0), Frontend(kTest) {
   test_opt.test_file = input_file;
   test_opt.model_file = model_file;
   test_opt.evaluate = evaluate;
   test_opt.sequence_prob = sequence_prob;
   test_opt.marginal_prob = marginal_prob;
+  test_opt.lexicon_file = lexicon_file;
+  test_opt.force_lexicon_file = force_lexicon_file;
 
   INFO_LOG("||| ltp segmentor, testing ...");
   INFO_LOG("report: input file = %s", test_opt.test_file.c_str());
   INFO_LOG("report: model file = %s", test_opt.model_file.c_str());
+  INFO_LOG("report: lexicon file = %s", test_opt.lexicon_file.c_str());
+  INFO_LOG("report: force lexicon file = %s", test_opt.force_lexicon_file.c_str());
   INFO_LOG("report: evaluate = %s", (test_opt.evaluate? "true": "false"));
   INFO_LOG("report: sequence probability = %s", (test_opt.sequence_prob? "true": "false"));
-  INFO_LOG("report: marginal probability = %s", (test_opt.marginal_prob? "true":"false"));
+  INFO_LOG("report: marginal probability = %s", (test_opt.marginal_prob? "true": "false"));
 }
 
 SegmentorFrontend::SegmentorFrontend(const std::string& model_file)
@@ -490,9 +496,13 @@ void SegmentorFrontend::test(void) {
   size_t num_predicted_words = 0;
   size_t num_gold_words = 0;
 
-  // load exteranl lexicon
+  // load external lexicon
   const char* lexicon_file = test_opt.lexicon_file.c_str();
   load_lexicon(lexicon_file, &(model->external_lexicon));
+
+  // load force external lexicon
+  const char* force_lexicon_file = test_opt.force_lexicon_file.c_str();
+  load_lexicon(force_lexicon_file, &force_lexicon);
 
   const char* test_file = test_opt.test_file.c_str();
   std::ifstream ifs(test_file);
@@ -541,6 +551,7 @@ void SegmentorFrontend::test(void) {
     ctx.clear();
 
     build_words(inst->raw_forms, inst->predict_tagsidx, inst->predict_words);
+    post_process(inst->raw_forms, inst->predict_words);
 
     if (test_opt.evaluate) {
       std::vector<std::string> answer_words;

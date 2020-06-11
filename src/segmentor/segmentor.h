@@ -17,6 +17,8 @@ protected:
   Preprocessor preprocessor;
   SegmentationConstrain con;
   static const std::string model_header;
+  ltp::segmentor::Model::lexicon_t force_lexicon;
+  const size_t max_force_lexicon_gram = 7;
 public:
   Segmentor();
   ~Segmentor();
@@ -99,6 +101,7 @@ protected:
   void load_lexicon(const std::vector<std::string>& texts,
       Model::lexicon_t* lexicon) const;
 
+  void post_process(std::vector<std::string> &chars, std::vector<std::string>& words) const;
 };
 
 }     //  end for namespace segmentor

@@ -14,7 +14,7 @@ public:
   __ltp_dll_segmentor_wrapper() {}
   ~__ltp_dll_segmentor_wrapper() {}
 
-  bool load(const char* model_file, const char * lexicon_file = NULL) {
+  bool load(const char * model_file, const char * lexicon_file = NULL, const char * force_lexicon_file = NULL) {
     std::ifstream mfs(model_file, std::ifstream::binary);
 
     if (!mfs) {
@@ -28,8 +28,12 @@ public:
       return false;
     }
 
-    if (NULL != lexicon_file) {
+    if (NULL != lexicon_file and strlen(lexicon_file)) {
       load_lexicon(lexicon_file, &model->external_lexicon);
+    }
+
+    if (NULL != force_lexicon_file and strlen(force_lexicon_file)) {
+      load_lexicon(force_lexicon_file, &force_lexicon);
     }
 
     lexicons.push_back(&(model->internal_lexicon));
@@ -61,6 +65,7 @@ public:
     // decoding. this modification was committed by niuox
     decoder.decode(scm, con, inst.predict_tagsidx);
     build_words(inst.raw_forms, inst.predict_tagsidx, words);
+    post_process(inst.raw_forms, words);
 
     return words.size();
   }
@@ -147,10 +152,10 @@ public:
   }
 };
 
-void * segmentor_create_segmentor(const char * path, const char * lexicon_file) {
+void * segmentor_create_segmentor(const char * path, const char * lexicon_file, const char * force_lexicon_file) {
   __ltp_dll_segmentor_wrapper* wrapper = new __ltp_dll_segmentor_wrapper();
 
-  if (!wrapper->load(path, lexicon_file)) {
+  if (!wrapper->load(path, lexicon_file, force_lexicon_file)) {
     delete wrapper;
     return 0;
   }

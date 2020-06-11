@@ -169,6 +169,11 @@ int main(int argc, char *argv[]) {
     segmentor_lexicon= vm["segmentor-lexicon"].as<std::string>();
   }
 
+  std::string segmentor_force_lexicon = "";
+  if (vm.count("segmentor-force-lexicon")) {
+    segmentor_force_lexicon= vm["segmentor-force-lexicon"].as<std::string>();
+  }
+
   std::string postagger_model = "ltp_data/pos.model";
   if (vm.count("postagger-model")) {
     postagger_model= vm["postagger-model"].as<std::string>();
@@ -194,7 +199,7 @@ int main(int argc, char *argv[]) {
     srl_model = vm["srl-data"].as<std::string>();
   }
 
-  LTP engine(last_stage, segmentor_model, segmentor_lexicon, postagger_model,
+  LTP engine(last_stage, segmentor_model, segmentor_lexicon, segmentor_force_lexicon, postagger_model,
       postagger_lexcion, ner_model, parser_model, srl_model);
 
   if (!engine.loaded()) {

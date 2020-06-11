@@ -23,6 +23,7 @@ struct TestOptions {
   std::string test_file;
   std::string model_file;
   std::string lexicon_file;
+  std::string force_lexicon_file;
   bool evaluate;
   bool sequence_prob;
   bool marginal_prob;

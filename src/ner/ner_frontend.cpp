@@ -299,6 +299,10 @@ void NamedEntityRecognizerFrontend::evaluate(double& f_score) {
     inst->tagsidx.resize(len);
     for (int i = 0; i < len; ++ i) {
       inst->tagsidx[i] = model->labels.index(inst->tags[i]);
+      if (inst->tagsidx[i] == -1) {
+        WARNING_LOG("%s tag does not appear in the training set. Using O instead.")
+        inst->tagsidx[i] = model->labels.index(OTHER);
+      }
     }
 
     NamedEntityRecognizer::extract_features((*inst), &ctx, false);
