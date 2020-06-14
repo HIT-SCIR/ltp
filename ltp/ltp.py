@@ -225,7 +225,7 @@ class LTP(object):
             dep_arc_fix = eisner(dep_arc, hidden['word_cls_mask']).unsqueeze_(-1).expand_as(dep_arc)
         dep_arc = torch.zeros_like(dep_arc, dtype=torch.bool).scatter_(dim=-1, index=dep_arc_fix, value=True)
 
-        dep_label[:, :, :, self.dep_fix:] = 0
+        dep_label[:, :, :, self.dep_fix:] = float('-inf')
         dep_label = torch.argmax(dep_label, dim=-1)
 
         word_cls_mask = hidden['word_cls_mask']

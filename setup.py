@@ -14,7 +14,7 @@ setup(
     version=version,
     author='Yunlong Feng',
     author_email='ylfeng@ir.hit.edu.cn',
-    url='https://github.com/HIT-SCIR/ltp4',
+    url='https://github.com/HIT-SCIR/ltp',
     description='Language Technology Platform',
     long_description=long_description,
     long_description_content_type="text/markdown",
