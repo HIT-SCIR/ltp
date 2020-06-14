@@ -1,4 +1,4 @@
-[![LTP](https://img.shields.io/pypi/v/ltp?label=LTP4%20ALPHA)](https://pypi.org/project/ltp/)
+[![LTP](https://img.shields.io/pypi/v/ltp?label=LTP%20ALPHA)](https://pypi.org/project/ltp/)
 ![VERSION](https://img.shields.io/pypi/pyversions/ltp)
 ![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp)
 ![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
@@ -33,11 +33,11 @@ sdp = ltp.sdp(hidden)
 
 ## 指标对比
 
-|      模型       | 分词  | 词性  | 命名实体 | 依存句法 | 语义依存 |      语义角色      | 速度(S/K句) | 模型大小 |
-| :-------------: | :---: | :---: | :------: | :------: | :------: | :----------------: | :---------: | :------: |
-|     LTP 3.X     | 97.8  | 98.3  |   94.1   |   81.1   | ~~78.9~~ | ~~77.92(Gold Pi)~~ |   364.14    |  1940M   |
-| LTP 4.0 (Small) | 98.4  | 98.2  |   94.3   |   88.0   |   79.9   |    77.2(端到端)    |    79.47    |   171M   |
-| LTP 4.0 (Tiny)  | 96.8  | 97.2  |   91.6   |   82.6   |   75.5   |    68.1(端到端)    |      ~      |   34M    |
+|      模型       | 分词  | 词性  | 命名实体 | 依存句法 | 语义依存 |      语义角色      | 速度(句/S) | 模型大小 |
+| :-------------: | :---: | :---: | :------: | :------: | :------: | :----------------: | :--------: | :------: |
+|     LTP 3.X     | 97.8  | 98.3  |   94.1   |   81.1   | ~~78.9~~ | ~~77.92(Gold Pi)~~ |    2.75    |  1940M   |
+| LTP 4.0 (Small) | 98.4  | 98.2  |   94.3   |   88.0   |   79.9   |    77.2(端到端)    |   12.58    |   171M   |
+| LTP 4.0 (Tiny)  | 96.8  | 97.2  |   91.6   |   82.6   |   75.5   |    68.1(端到端)    |   29.53    |   34M    |
 
 测试环境如下：
 
