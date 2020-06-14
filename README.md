@@ -1,8 +1,8 @@
 [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP4%20ALPHA)](https://pypi.org/project/ltp/)
 ![VERSION](https://img.shields.io/pypi/pyversions/ltp)
-![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp4)
-![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp4)
-![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp4)
+![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp)
+![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
+![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp)
 
 # LTP 4 
 
