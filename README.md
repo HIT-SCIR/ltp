@@ -41,7 +41,7 @@ sdp = ltp.sdp(hidden)
 
 测试环境如下：
 
-+ Pytorch 3.7
++ Python 3.7
 + LTP 4.0 Batch Size = 1
 + Centos 3.10.0-1062.9.1.el7.x86_64
 + Intel(R) Xeon(R) CPU E5-2640 v4 @ 2.40GHz
