@@ -128,9 +128,9 @@ class LTP(object):
     def seg(self, inputs: List[str], sen_split=True, flag="all", limit=512):
         # 加入断句 by Jeffrey:Zhi-lin Lei
         if sen_split:
-            inputs = [split_sentence(text) for text in inputs]
+            inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
             inputs = list(itertools.chain(*inputs))
-        length = torch.as_tensor([split_sentence(text) for text in inputs], device=self.device)
+        length = torch.as_tensor([len(text) for text in inputs], device=self.device)
         tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt')
         pretrained_output, *_ = self.model.pretrained(
             input_ids=tokenizerd['input_ids'].to(self.device),

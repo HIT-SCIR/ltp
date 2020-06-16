@@ -9,6 +9,8 @@ from ltp.utils.seqeval import get_entities
 import numpy as np
 from ltp import LTP
 from ltp.ltp import WORD_MIDDLE, no_gard
+from ltp.utils.sen_split import split_sentence
+import itertools
 
 
 def convert(item: list):
@@ -29,7 +31,11 @@ class FastLTP(LTP):
         self.onnx = rt.InferenceSession(onnx, so, providers=providers)
 
     @no_gard
-    def seg(self, inputs: List[str]):
+    def seg(self, inputs: List[str], sen_split=True, flag="all", limit=512):
+        # 加入断句 by Jeffrey:Zhi-lin Lei
+        if sen_split:
+            inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
+            inputs = list(itertools.chain(*inputs))
         length = [len(text) for text in inputs]
         tokenizerd = self.tokenizer.batch_encode_plus(inputs, pad_to_max_length=True)
         pretrained_inputs = {key: convert(value) for key, value in tokenizerd.items()}
