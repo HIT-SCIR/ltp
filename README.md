@@ -6,13 +6,13 @@
 
 # LTP 4 
 
-LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。
+LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。新版LTP采用原生Python实现，仅需运行 **pip install ltp** 即可安装使用。
 
 ## 快速使用
 
 ```python
 from ltp import LTP
-ltp = LTP() # 默认加载 Small 模型
+ltp = LTP() # 默认自动下载并加载 Small 模型
 # ltp = LTP(path = "small|tiny")
 segment, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
