@@ -10,6 +10,7 @@ from .clip_grad_norm import clip_grad_norm
 from .deprecated import deprecated, deprecated_param
 from .eisner import eisner
 from . import seqeval
+from.sen_split import split_sentence
 
 
 def cycle(iterable):
