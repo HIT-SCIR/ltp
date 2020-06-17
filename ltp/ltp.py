@@ -8,7 +8,7 @@ from ltp.models import Model
 from ltp.utils import length_to_mask, eisner, is_chinese_char
 from ltp.utils.seqeval import get_entities
 from transformers import AutoTokenizer, cached_path
-from ltp.utils.sen_split import split_sentence
+from ltp.utils.sent_split import split_sentence
 import itertools
 
 
@@ -124,7 +124,7 @@ class LTP(object):
 
         return res
 
-    def sent_split(self, inputs: List[str], flag: str="all", limit: int=512):
+    def sent_split(self, inputs: List[str], flag: str = "all", limit: int = 512):
         # 加入断句 by Jeffrey:Zhi-lin Lei
         inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
         inputs = list(itertools.chain(*inputs))

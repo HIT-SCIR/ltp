@@ -9,7 +9,7 @@ from ltp.utils.seqeval import get_entities
 import numpy as np
 from ltp import LTP
 from ltp.ltp import WORD_MIDDLE, no_gard
-from ltp.utils.sen_split import split_sentence
+from ltp.utils.sent_split import split_sentence
 import itertools
 
 

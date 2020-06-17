@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Time     : 2020/6/16 10:40 AM
 # @Author   : jeffrey
-# @File     : sen_split.py
+# @File     : sent_split.py
 # @Software : PyCharm
 
 
@@ -10,12 +10,12 @@ import re
 import itertools
 
 
-def split_sentence(document: str, flag: str="all", limit: int=512):
+def split_sentence(document: str, flag: str = "all", limit: int = 512):
     """
 
     Args:
         document:
-        flag: Type:str, "all" 中英文标点分句，"ch" 中文标点分句，"en" 英文标点分句
+        flag: Type:str, "all" 中英文标点分句，"zh" 中文标点分句，"en" 英文标点分句
         limit: 限制最大长度为512个字符
 
     Returns: Type:list
@@ -23,23 +23,19 @@ def split_sentence(document: str, flag: str="all", limit: int=512):
     """
     sen_list = []
     try:
-        if flag == "ch":
-            document = re.sub('(?P<quotation_mark>([。？！。！？…](?![”’"\'])))', r'\g<quotation_mark>\n',
-                              document)  # 单字符断句符
-            document = re.sub('(?P<quotation_mark>([。？！。！？]|…{1,2})[”’"\'])', r'\g<quotation_mark>\n',
-                              document)  # 特殊引号
+        if flag == "zh":
+            document = re.sub('(?P<quotation_mark>([。？！。！？…](?![”’"\'])))', r'\g<quotation_mark>\n', document)  # 单字符断句符
+            document = re.sub('(?P<quotation_mark>([。？！。！？]|…{1,2})[”’"\'])', r'\g<quotation_mark>\n', document)  # 特殊引号
 
         elif flag == "en":
-            document = re.sub('(?P<quotation_mark>([\\.?!](?![”’"\'])))', r'\g<quotation_mark>\n',
-                              document)  # 英文单字符断句符
-            document = re.sub('(?P<quotation_mark>([?!\\.]["\']))',
-                              r'\g<quotation_mark>\n', document)  # 特殊引号
+            document = re.sub('(?P<quotation_mark>([\\.?!](?![”’"\'])))', r'\g<quotation_mark>\n', document)  # 英文单字符断句符
+            document = re.sub('(?P<quotation_mark>([?!\\.]["\']))', r'\g<quotation_mark>\n', document)  # 特殊引号
 
         else:
             document = re.sub('(?P<quotation_mark>([。？！。！？…\\.?!](?![”’"\'])))', r'\g<quotation_mark>\n',
                               document)  # 单字符断句符
-            document = re.sub('(?P<quotation_mark>(([。？！。！？\\.!?]|\\…{1,2})[”’"\']))',
-                              r'\g<quotation_mark>\n', document)  # 特殊引号
+            document = re.sub('(?P<quotation_mark>(([。？！。！？\\.!?]|\\…{1,2})[”’"\']))', r'\g<quotation_mark>\n',
+                              document)  # 特殊引号
 
         sen_list_ori = document.splitlines()
         sen_list = []
@@ -57,7 +53,6 @@ def split_sentence(document: str, flag: str="all", limit: int=512):
         sen_list.clear()
         sen_list.append(document)
     return sen_list
-
 
 # if __name__ == "__main__":
 #     document = ['我们是 中国人.我们\r在这里...今天北京天气…很好?？是吗!我说："你能不能快点做好...？"',
