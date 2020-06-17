@@ -33,6 +33,7 @@ pytest
 
 #doc
 sphinx
+sphinx_rtd_theme
 
 # Server
 tornado~=6.0.4
