@@ -24,21 +24,21 @@ def split_sentence(document, flag="all", limit=512):
     sen_list = []
     try:
         if flag == "ch":
-            document = re.sub('(?P<quotation_mark>([。？！。！？…]+(?![”’"\'])))', r'\g<quotation_mark>\n',
+            document = re.sub('(?P<quotation_mark>([。？！。！？…](?![”’"\'])))', r'\g<quotation_mark>\n',
                               document)  # 单字符断句符
-            document = re.sub('(?P<quotation_mark>([。？！。！？]+|…{1,2})[”’"\'])', r'\g<quotation_mark>\n',
+            document = re.sub('(?P<quotation_mark>([。？！。！？]|…{1,2})[”’"\'])', r'\g<quotation_mark>\n',
                               document)  # 特殊引号
 
         elif flag == "en":
-            document = re.sub('(?P<quotation_mark>([\\.?!]+(?![”’"\'])))', r'\g<quotation_mark>\n',
+            document = re.sub('(?P<quotation_mark>([\\.?!](?![”’"\'])))', r'\g<quotation_mark>\n',
                               document)  # 英文单字符断句符
-            document = re.sub('(?P<quotation_mark>([?!\\.]+["\']))',
+            document = re.sub('(?P<quotation_mark>([?!\\.]["\']))',
                               r'\g<quotation_mark>\n', document)  # 特殊引号
 
         else:
-            document = re.sub('(?P<quotation_mark>([。？！。！？…\\.?!]+(?![”’"\'])))', r'\g<quotation_mark>\n',
+            document = re.sub('(?P<quotation_mark>([。？！。！？…\\.?!](?![”’"\'])))', r'\g<quotation_mark>\n',
                               document)  # 单字符断句符
-            document = re.sub('(?P<quotation_mark>(([。？！。！？\\.!?]+|\\…{1,2})[”’"\']))',
+            document = re.sub('(?P<quotation_mark>(([。？！。！？\\.!?]|\\…{1,2})[”’"\']))',
                               r'\g<quotation_mark>\n', document)  # 特殊引号
 
         sen_list_ori = document.splitlines()
