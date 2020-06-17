@@ -124,12 +124,14 @@ class LTP(object):
 
         return res
 
-    @no_gard
-    def seg(self, inputs: List[str], sen_split=True, flag="all", limit=512):
+    def sent_split(self, inputs: List[str], flag="all", limit=512):
         # 加入断句 by Jeffrey:Zhi-lin Lei
-        if sen_split:
-            inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
-            inputs = list(itertools.chain(*inputs))
+        inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
+        inputs = list(itertools.chain(*inputs))
+        return inputs
+
+    @no_gard
+    def seg(self, inputs: List[str]):
         length = torch.as_tensor([len(text) for text in inputs], device=self.device)
         tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt')
         pretrained_output, *_ = self.model.pretrained(

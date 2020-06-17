@@ -30,12 +30,14 @@ class FastLTP(LTP):
         providers = ['CPUExecutionProvider'] if self.device.type == 'cpu' else ['GPUExecutionProvider']
         self.onnx = rt.InferenceSession(onnx, so, providers=providers)
 
-    @no_gard
-    def seg(self, inputs: List[str], sen_split=True, flag="all", limit=512):
+    def sent_split(self, inputs: List[str], flag="all", limit=512):
         # 加入断句 by Jeffrey:Zhi-lin Lei
-        if sen_split:
-            inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
-            inputs = list(itertools.chain(*inputs))
+        inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
+        inputs = list(itertools.chain(*inputs))
+        return inputs
+
+    @no_gard
+    def seg(self, inputs: List[str]):
         length = [len(text) for text in inputs]
         tokenizerd = self.tokenizer.batch_encode_plus(inputs, pad_to_max_length=True)
         pretrained_inputs = {key: convert(value) for key, value in tokenizerd.items()}
