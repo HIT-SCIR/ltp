@@ -30,12 +30,6 @@ class FastLTP(LTP):
         providers = ['CPUExecutionProvider'] if self.device.type == 'cpu' else ['GPUExecutionProvider']
         self.onnx = rt.InferenceSession(onnx, so, providers=providers)
 
-    def sent_split(self, inputs: List[str], flag="all", limit=512):
-        # 加入断句 by Jeffrey:Zhi-lin Lei
-        inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
-        inputs = list(itertools.chain(*inputs))
-        return inputs
-
     @no_gard
     def seg(self, inputs: List[str]):
         length = [len(text) for text in inputs]

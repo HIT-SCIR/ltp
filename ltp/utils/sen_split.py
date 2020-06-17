@@ -10,7 +10,7 @@ import re
 import itertools
 
 
-def split_sentence(document, flag="all", limit=512):
+def split_sentence(document: str, flag: str="all", limit: int=512):
     """
 
     Args:

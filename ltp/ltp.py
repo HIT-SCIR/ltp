@@ -124,7 +124,7 @@ class LTP(object):
 
         return res
 
-    def sent_split(self, inputs: List[str], flag="all", limit=512):
+    def sent_split(self, inputs: List[str], flag: str="all", limit: int=512):
         # 加入断句 by Jeffrey:Zhi-lin Lei
         inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
         inputs = list(itertools.chain(*inputs))
