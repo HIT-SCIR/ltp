@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+# Update:
+#   加入断句 by Jeffrey:Zhi-lin Lei
 from typing import List
 
 import os, torch
@@ -124,8 +126,7 @@ class LTP(object):
 
         return res
 
-    def sent_split(self, inputs: List[str], flag: str = "all", limit: int = 512):
-        # 加入断句 by Jeffrey:Zhi-lin Lei
+    def sent_split(self, inputs: List[str], flag: str = "all", limit: int = 510):
         inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
         inputs = list(itertools.chain(*inputs))
         return inputs
