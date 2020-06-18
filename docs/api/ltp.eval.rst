@@ -4,4 +4,4 @@
 指标
 --------------------------
 
-.. automodule:: ltp4.eval.metrics
+.. automodule:: ltp.eval.metrics
