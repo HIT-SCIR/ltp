@@ -58,17 +58,14 @@ class LTP(object):
             self.device = torch.device('cuda')
         else:
             self.device = torch.device('cpu')
-        if os.path.exists(path):
-            ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
-            self.tokenizer = AutoTokenizer.from_pretrained(path, use_fast=True)
-        elif path in model_map:
+        if path in model_map or os.path.exists(path):
             cache_dir = kwargs.pop("cache_dir", LTP_CACHE)
             force_download = kwargs.pop("force_download", False)
             resume_download = kwargs.pop("resume_download", False)
             proxies = kwargs.pop("proxies", None)
             local_files_only = kwargs.pop("local_files_only", False)
             resolved_archive_path = cached_path(
-                model_map[path],
+                model_map.get(path, path),
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
