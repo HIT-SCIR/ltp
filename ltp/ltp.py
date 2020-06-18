@@ -59,7 +59,8 @@ class LTP(object):
         else:
             self.device = torch.device('cpu')
         if os.path.exists(path):
-            ckpt = torch.load(path, map_location=self.device)
+            ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
+            self.tokenizer = AutoTokenizer.from_pretrained(path, use_fast=True)
         elif path in model_map:
             cache_dir = kwargs.pop("cache_dir", LTP_CACHE)
             force_download = kwargs.pop("force_download", False)
