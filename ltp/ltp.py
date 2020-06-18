@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+# Update:
+#   加入断句 by Jeffrey:Zhi-lin Lei
 from typing import List
 
 import os, torch
@@ -8,6 +10,9 @@ from ltp.models import Model
 from ltp.utils import length_to_mask, eisner, is_chinese_char
 from ltp.utils.seqeval import get_entities
 from transformers import AutoTokenizer, cached_path
+from ltp.utils.sent_split import split_sentence
+import itertools
+
 
 try:
     from torch.hub import _get_torch_home
@@ -121,6 +126,11 @@ class LTP(object):
             res[idx].append((arc_s, arc_e, itos[label]))
 
         return res
+
+    def sent_split(self, inputs: List[str], flag: str = "all", limit: int = 510):
+        inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
+        inputs = list(itertools.chain(*inputs))
+        return inputs
 
     @no_gard
     def seg(self, inputs: List[str]):
