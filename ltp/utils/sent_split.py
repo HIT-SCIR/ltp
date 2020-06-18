@@ -50,10 +50,3 @@ def split_sentence(document: str, flag: str = "all", limit: int = 512):
         sen_list.clear()
         sen_list.append(document)
     return sen_list
-
-# if __name__ == "__main__":
-#     document = ['我们是 中国人.我们\r在这里...今天北京天气…很好?？是吗!我说："你能不能快点做好...？"',
-#                 '你好啊。我们爱你。你来这里吧."']
-#     documents = [split_sentence(x, flag="all") for x in document]
-#     document = list(itertools.chain(*documents))
-#     print(document)
