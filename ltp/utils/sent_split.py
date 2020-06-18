@@ -1,9 +1,6 @@
 #!usr/bin/env python
 # -*- coding:utf-8 -*-
-# @Time     : 2020/6/16 10:40 AM
-# @Author   : jeffrey
-# @File     : sent_split.py
-# @Software : PyCharm
+# Author: jeffrey
 
 
 import re
