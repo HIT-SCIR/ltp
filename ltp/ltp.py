@@ -10,9 +10,9 @@ from ltp.models import Model
 from ltp.utils import length_to_mask, eisner, is_chinese_char
 from ltp.utils.seqeval import get_entities
 from transformers import AutoTokenizer, cached_path
+from transformers.file_utils import is_remote_url
 from ltp.utils.sent_split import split_sentence
 import itertools
-
 
 try:
     from torch.hub import _get_torch_home
