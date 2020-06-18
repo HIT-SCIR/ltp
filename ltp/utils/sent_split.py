@@ -45,7 +45,7 @@ def split_sentence(document: str, flag: str = "all", limit: int = 512):
                 while len(sent) > limit:
                     temp = sent[0:limit]
                     sent_list.append(temp)
-                    sent = sen[limit:]
+                    sent = sent[limit:]
                 sent_list.append(sent)
     except:
         sent_list.clear()
