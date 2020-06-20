@@ -1,4 +1,5 @@
 [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP%20ALPHA)](https://pypi.org/project/ltp/)
+[![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://ltp.readthedocs.io/zh_CN/latest/?badge=latest)
 ![VERSION](https://img.shields.io/pypi/pyversions/ltp)
 ![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp)
 ![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)

@@ -7,9 +7,9 @@
 Biaffine CRF
 -----------------------
 
-.. automodule:: ltp4.modules.biaffine_crf
+.. automodule:: ltp.modules.biaffine_crf
 
 Graph
 -----------------------
 
-.. automodule:: ltp4.modules.graph
+.. automodule:: ltp.modules.graph
