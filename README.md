@@ -14,6 +14,7 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 from ltp import LTP
 ltp = LTP() # 默认自动下载并加载 Small 模型
 # ltp = LTP(path = "small|tiny")
+# sent_list = ltp.sent_split(inputs, flag="all", limit=512)
 segment, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
 ner = ltp.ner(hidden)
