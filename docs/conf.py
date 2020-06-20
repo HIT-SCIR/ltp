@@ -33,20 +33,6 @@ add_module_names = False
 templates_path = ['templates']
 language = 'zh'
 exclude_patterns = []
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 html_static_path = ['static']
 source_suffix = ['.rst', '.md']
-
-
-def autodoc_skip_member(app, what, name, obj, skip, options):
-    exclusions = (
-        'register', 'weak_register', 'hook',
-        'by_name', 'list_available', 'is_registered',
-        'iter_registered', 'from_params', 'default_implementation', 'forward'
-    )
-    exclude = name in exclusions
-    return skip or exclude
-
-
-def setup(app):
-    app.connect('autodoc-skip-member', autodoc_skip_member)

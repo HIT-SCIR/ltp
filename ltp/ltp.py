@@ -10,6 +10,8 @@ from ltp.models import Model
 from ltp.utils import length_to_mask, eisner, is_chinese_char
 from ltp.utils.seqeval import get_entities
 from transformers import AutoTokenizer, cached_path
+
+from transformers.file_utils import is_remote_url
 from ltp.utils.sent_split import split_sentence
 import itertools
 
@@ -63,16 +65,17 @@ class LTP(object):
             self.device = torch.device('cuda')
         else:
             self.device = torch.device('cpu')
-        if os.path.exists(path):
-            ckpt = torch.load(path, map_location=self.device)
-        elif path in model_map:
+        if os.path.isdir(path):
+            ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
+            self.tokenizer = AutoTokenizer.from_pretrained(path, use_fast=True)
+        elif path in model_map or is_remote_url(path) or os.path.isfile(path):
             cache_dir = kwargs.pop("cache_dir", LTP_CACHE)
             force_download = kwargs.pop("force_download", False)
             resume_download = kwargs.pop("resume_download", False)
             proxies = kwargs.pop("proxies", None)
             local_files_only = kwargs.pop("local_files_only", False)
             resolved_archive_path = cached_path(
-                model_map[path],
+                model_map.get(path, path),
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,

@@ -4,10 +4,10 @@
 可注册元类
 ----------------------------
 
-.. automodule:: ltp4.core.registrable
+.. automodule:: ltp.core.registrable
 
 异常
 ---------------------------
 
-.. automodule:: ltp4.core.exceptions
+.. automodule:: ltp.core.exceptions
 

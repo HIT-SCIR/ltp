@@ -12,6 +12,10 @@ API文档
     :titlesonly:
     :glob:
 
+    introduction
+    quickstart
+    performance
+
     api/ltp*
 
 
