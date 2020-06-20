@@ -8,6 +8,7 @@ from typing import List
 
 
 def split_sentence(document: str, flag: str = "all", limit: int = 510) -> List[str]:
+
     """
 
     Args:

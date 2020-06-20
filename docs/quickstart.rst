@@ -10,6 +10,20 @@
 
     pip install ltp
 
+分句
+-----------------
+使用LTP分句只需要调用ltp.sent_split函数
+
+.. code-block:: python
+
+    from ltp4 import LTP
+    ltp = LTP()
+    sent_list = ltp.sent_split(inputs=["他叫汤姆去拿外衣。", "汤姆生病了。他去了医院。"],
+                               flag="all", limit=512)
+
+    # sent_list=["他叫汤姆去拿外衣。",
+    #            "汤姆生病了。",
+    #            "他去了医院。"]
 
 分词
 ------------------
