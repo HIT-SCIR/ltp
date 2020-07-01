@@ -4,6 +4,7 @@
 import os
 import torch
 import itertools
+import regex as re
 from typing import List
 
 from transformers import AutoTokenizer, cached_path
@@ -91,7 +92,7 @@ class LTP(object):
         self.ner_vocab = ckpt['ner']
         self.dep_vocab = ckpt['dep']
         self.sdp_vocab = ckpt['sdp']
-        self.srl_vocab = ckpt['srl']
+        self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag) for tag in ckpt['srl']]
         self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
 
@@ -129,7 +130,7 @@ class LTP(object):
     @no_gard
     def seg(self, inputs: List[str]):
         length = torch.as_tensor([len(text) for text in inputs], device=self.device)
-        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt')
+        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt', padding=True)
         pretrained_output, *_ = self.model.pretrained(
             input_ids=tokenizerd['input_ids'].to(self.device),
             attention_mask=tokenizerd['attention_mask'].to(self.device),
