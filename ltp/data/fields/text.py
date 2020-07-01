@@ -54,6 +54,14 @@ class TextField(Field, alias='text'):
         if text_length > 510:
             raise DataUnsupported("文本过长！！")
 
+        # mixed_sentence = ' '.join(x)
+        # resplit = self.tokenizer.encode(
+        #     mixed_sentence, add_special_tokens=False, return_attention_masks=False, return_token_type_ids=False
+        # )
+        # if len(resplit) != len(word_start_idn):
+        #     print("X: ", x)
+        #     print("Mixed: ", mixed_sentence)
+
         return ' '.join(x), torch.as_tensor(text_length), \
                torch.as_tensor(word_start_idn), torch.as_tensor(word_start), torch.as_tensor(len(x)),
 

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
-__version__ = '4.0.3.post1'
+__version__ = '4.0.4'
 
 from .core import Registrable
 from .data import Dataset

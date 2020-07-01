@@ -151,6 +151,7 @@ class BiaffineCRF(Loss, alias='biaffine_crf'):
 
         mask = mask[index]
         emissions = emissions.flatten(end_dim=1)[index]
+        emissions = F.log_softmax(emissions, dim=-1)
         rel_gold = rel_gold.flatten(end_dim=1)[index]
 
         if self.cross_entropy:

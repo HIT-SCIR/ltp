@@ -37,7 +37,7 @@ class Executor(object):
         self.progressbar_metrics = set()
         self.trainer = Trainer.from_params(self.config.trainer, config=self.config)
         self.tasks = self.config.tasks
-        self.patience = self.config.max_steps
+        self.epoch_size = self.config.epoch_size
 
     def train(self, epoch: int = 30):
         epoch = self.config.epoch if epoch is None else epoch
@@ -122,6 +122,9 @@ class Executor(object):
             tasknames, sampling_weights = zip(*((k, pow(v, tau) / Z) for k, v in dataloader_sizes.items()))
         else:
             raise NotImplementedError("Dataloader 需要实现 __len__ 方法")
+
+        if self.epoch_size:
+            total_size = self.epoch_size
 
         self.tasks['default'].build_scheduler(epochs * total_size)
         self.tasks['default'].restore(self.trainer.state)
@@ -249,15 +252,9 @@ class Executor(object):
             if callback.iteration != 0 and self.trainer.state.global_step % callback.iteration == 0:
                 callback(self)
 
-        self.patience = self.patience - 1
-        if self.patience == 0:
-            self.__run_post_epoch_callbacks()
-
     def __run_post_epoch_callbacks(self):
         for callback in self.__callbacks:
             if callback.epoch is None:
                 continue
-            if (callback.epoch != 0 and self.trainer.state.global_step % callback.epoch == 0) \
-                    or (self.patience == 0):
+            if (callback.epoch != 0 and self.trainer.state.global_step % callback.epoch == 0):
                 callback(self)
-        self.patience = self.config.max_steps
