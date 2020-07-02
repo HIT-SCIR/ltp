@@ -133,12 +133,17 @@ class LTP(object):
 
     @no_gard
     def seg(self, inputs: List[str]):
-        length = torch.as_tensor([len(text) for text in inputs], device=self.device)
         tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt', padding=True)
+
+        input_ids = tokenizerd['input_ids'].to(self.device)
+        attention_mask = tokenizerd['attention_mask'].to(self.device)
+        token_type_ids = tokenizerd['token_type_ids'].to(self.device)
+        length = torch.sum(attention_mask, dim=-1) - 2
+
         pretrained_output, *_ = self.model.pretrained(
-            input_ids=tokenizerd['input_ids'].to(self.device),
-            attention_mask=tokenizerd['attention_mask'].to(self.device),
-            token_type_ids=tokenizerd['token_type_ids'].to(self.device)
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            token_type_ids=token_type_ids
         )
 
         # remove [CLS] [SEP]

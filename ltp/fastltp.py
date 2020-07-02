@@ -26,6 +26,8 @@ class FastLTP(LTP):
         import onnxruntime as rt
         so = rt.SessionOptions()
         so.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_EXTENDED
+
+        # fixme should auto detect
         providers = ['CPUExecutionProvider'] if self.device.type == 'cpu' else ['GPUExecutionProvider']
 
         onnx_path = os.path.join(self.cache_dir, "ltp.onnx")
@@ -100,9 +102,9 @@ class FastLTP(LTP):
 
     @no_gard
     def seg(self, inputs: List[str]):
-        length = [len(text) for text in inputs]
         tokenizerd = self.tokenizer.batch_encode_plus(inputs, padding=True)
         pretrained_inputs = {key: convert(value) for key, value in tokenizerd.items()}
+        length = np.sum(pretrained_inputs['attention_mask'], axis=-1) - 2
 
         # todo: io binding
         cls, hidden, seg = self.onnx.run(None, pretrained_inputs)
