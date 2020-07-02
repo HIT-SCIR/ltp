@@ -76,7 +76,7 @@ class LTP(object):
     sdp_vocab: List[str]
     srl_vocab: List[str]
 
-    def __init__(self, path: str = 'small', batch_size: int = 10, device=None, **kwargs):
+    def __init__(self, path: str = 'small', device=None, **kwargs):
         if device is not None:
             if isinstance(device, torch.device):
                 self.device = device
@@ -117,7 +117,6 @@ class LTP(object):
         self.dep_vocab = ckpt['dep']
         self.sdp_vocab = ckpt['sdp']
         self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag) for tag in ckpt['srl']]
-        self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
 
     def _convert_idx_to_name(self, y, array_len, id2label):

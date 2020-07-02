@@ -46,11 +46,12 @@ class LTPHandler(RequestHandler):
 
 
 class Server(object):
-    def __init__(self, path: str = 'small', batch_size: int = 10, device: str = None, onnx: bool = False):
+    def __init__(self, path: str = 'small', batch_size: int = 50, device: str = None, onnx: bool = False):
         if onnx:
-            self.ltp = FastLTP(path=path, batch_size=batch_size, device=device)
+            self.ltp = FastLTP(path=path, device=device)
         else:
-            self.ltp = LTP(path=path, batch_size=batch_size, device=device)
+            self.ltp = LTP(path=path, device=device)
+        self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
 
     def _build_words(self, words, pos, dep):
         res = [{'id': -1, 'length': 0, 'offset': 0, 'text': 'root'}]
@@ -72,7 +73,7 @@ class Server(object):
 
     def _predict(self, sentences: List[str]):
         result = []
-        for sentences_batch in self.ltp.split(sentences):
+        for sentences_batch in self.split(sentences):
             batch_seg, hidden = self.ltp.seg(sentences_batch)
             batch_pos = self.ltp.pos(hidden)
             batch_ner = self.ltp.ner(hidden)
