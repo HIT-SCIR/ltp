@@ -1,19 +1,21 @@
-[![LTP](https://img.shields.io/pypi/v/ltp?label=LTP%20ALPHA)](https://pypi.org/project/ltp/)
+[![LTP](https://img.shields.io/pypi/v/ltp?label=LTP4%20ALPHA)](https://pypi.org/project/ltp/)
 ![VERSION](https://img.shields.io/pypi/pyversions/ltp)
 ![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp)
 ![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
 ![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp)
+[![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://ltp.readthedocs.io/zh_CN/latest/?badge=latest)
 
 # LTP 4 
 
-LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。新版LTP采用原生Python实现，仅需运行 **pip install ltp** 即可安装使用。
+LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。
 
 ## 快速使用
 
 ```python
 from ltp import LTP
-ltp = LTP() # 默认自动下载并加载 Small 模型
-# ltp = LTP(path = "small|tiny")
+ltp = LTP() # 默认加载 Small 模型
+# ltp = LTP(path = "base|small|tiny")
+# sent_list = ltp.sent_split(inputs, flag="all", limit=510)
 segment, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
 ner = ltp.ner(hidden)
@@ -22,22 +24,37 @@ dep = ltp.dep(hidden)
 sdp = ltp.sdp(hidden)
 ```
 
-## 模型下载
+## 模型
 
-| 模型  |                  大小                  |
-| :---: | :------------------------------------: |
-| Small | [170MB](http://39.96.43.154/small.tgz) |
-| Tiny  |  [34MB](http://39.96.43.154/tiny.tgz)  |
+### 模型下载
 
-**备注**: Tiny模型使用electra前三层进行初始化
+|   模型    |                      大小                      |
+| :-------: | :--------------------------------------------: |
+| Base(v2)  | [531MB](http://39.96.43.154/ltp/v2/base.tgz) |
+| Small(v2) | [170MB](http://39.96.43.154/ltp/v2/small.tgz)  |
+| Tiny(v2)  |  [34MB](http://39.96.43.154/ltp/v2/tiny.tgz)   |
+| Small(v1) | [170MB](http://39.96.43.154/ltp/v1/small.tgz)  |
+| Tiny(v1)  |  [34MB](http://39.96.43.154/ltp/v1/tiny.tgz)   |
 
-## 指标对比
+**备注**: Tiny模型使用electra前三层进行初始化, 4.0.3.post1 版本包含对v1模型的fix，新版本请使用v2模型
 
-|      模型       | 分词  | 词性  | 命名实体 | 依存句法 | 语义依存 |      语义角色      | 速度(句/S) | 模型大小 |
-| :-------------: | :---: | :---: | :------: | :------: | :------: | :----------------: | :--------: | :------: |
-|     LTP 3.X     | 97.8  | 98.3  |   94.1   |   81.1   | ~~78.9~~ | ~~77.92(Gold Pi)~~ |    2.75    |  1940M   |
-| LTP 4.0 (Small) | 98.4  | 98.2  |   94.3   |   88.0   |   79.9   |    77.2(端到端)    |   12.58    |   171M   |
-| LTP 4.0 (Tiny)  | 96.8  | 97.2  |   91.6   |   82.6   |   75.5   |    68.1(端到端)    |   29.53    |   34M    |
+### V2 指标
+
+|      模型       | 分词  | 词性  | 命名实体 | 语义角色 | 依存句法 | 语义依存 | 速度(句/S) |
+| :-------------: | :---: | :---: | :------: | :------: | :------: | :------: | :--------: |
+| LTP 4.0 (Base)  | 98.7  | 98.4  |   96.4   |   80.0   |   90.0   |   76.5   |            |
+| LTP 4.0 (Small) | 98.4  | 98.2  |   94.3   |   78.4   |   88.3   |   74.7   |   12.58    |
+| LTP 4.0 (Tiny)  | 96.8  | 97.1  |   91.6   |   70.9   |   83.8   |   70.1   |   29.53    |
+
+**备注**: 本版本SDP采用CCS2020语义依存分析语料，其他语料同V1
+
+### V1 指标
+
+|      模型       | 分词  | 词性  | 命名实体 |      语义角色      | 依存句法 | 语义依存 | 速度(句/S) | 模型大小 |
+| :-------------: | :---: | :---: | :------: | :----------------: | :------: | :------: | :--------: | :------: |
+|     LTP 3.X     | 97.8  | 98.3  |   94.1   | ~~77.92(Gold Pi)~~ |   81.1   | ~~78.9~~ |    2.75    |  1940M   |
+| LTP 4.0 (Small) | 98.4  | 98.2  |   94.3   |    77.2(端到端)    |   88.0   |   79.9   |   12.58    |   171M   |
+| LTP 4.0 (Tiny)  | 96.8  | 97.2  |   91.6   |    68.1(端到端)    |   82.6   |   75.5   |   29.53    |   34M    |
 
 测试环境如下：
 

@@ -8,9 +8,10 @@ from .mlp import MLP
 from .ffnn import ffnn
 from .bilinear import Bilinear
 from .biaffine import Biaffine
-from .rnn import RNN, GRU, LSTM
 from .relative_transformer import RelativeTransformer
 
+from transformers import BertModel, XLNetModel
+
 __all__ = [
-    'Swish', 'HSwish', 'Mish', 'MLP', 'ffnn', 'Bilinear', 'Biaffine', 'RNN', 'GRU', 'LSTM', 'RelativeTransformer'
+    'Swish', 'HSwish', 'Mish', 'MLP', 'ffnn', 'Bilinear', 'Biaffine', 'RelativeTransformer'
 ]

@@ -64,10 +64,11 @@ class SequenceField(Field, alias='sequence'):
 
     ignore = ['dtype']
 
-    def __init__(self, name, bos: Union[str, int] = None, eos: Union[str, int] = None, unk: Union[str, int] = None,
-                 pad: Union[str, int] = None, dtype=torch.long, pad_bias=True,
-                 preprocessing=None, postprocessing=None, max_length: int = None,
-                 include_lengths=False, use_vocab=True, is_target: bool = True):
+    def __init__(self, name, bos: Union[str, int] = None, eos: Union[str, int] = None,
+                 unk: Union[str, int] = None, pad: Union[str, int] = None,
+                 dtype=torch.long, pad_bias=True, preprocessing=None, postprocessing=None,
+                 max_length: int = None, include_lengths=False, labels=None,
+                 use_vocab=True, is_target: bool = True, **kwargs):
 
         super(SequenceField, self).__init__(name, preprocessing, postprocessing, is_target)
 
@@ -89,7 +90,19 @@ class SequenceField(Field, alias='sequence'):
 
         self.pad_bias = pad_bias
 
+        if labels:
+            counter = Counter()
+            counter.update(labels)
+            specials = list(
+                OrderedDict.fromkeys(
+                    tok for tok in [self.unk, self.pad, self.bos, self.eos] + kwargs.pop('specials', []) if
+                    tok is not None)
+            )
+            self.vocab = self.vocab_cls(counter, specials=specials)
+
     def build_vocab(self, *args, **kwargs):
+        if hasattr(self, 'vocab'):
+            return
         counter = Counter()
         sources = []
         for arg in args:

@@ -4,7 +4,7 @@
 from typing import List
 
 import torch
-from ltp.utils import length_to_mask
+from ltp.utils import length_to_mask, is_chinese_char
 from ltp.utils.seqeval import get_entities
 import numpy as np
 from ltp import LTP
@@ -48,7 +48,7 @@ class FastLTP(LTP):
 
             last_word = 0
             for idx, word in enumerate(encoding.words[1:-1]):
-                if word is None or self._is_chinese_char(text[idx][-1]):
+                if word is None or is_chinese_char(text[idx][-1]):
                     continue
                 if word != last_word:
                     text[idx] = ' ' + text[idx]

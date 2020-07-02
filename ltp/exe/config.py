@@ -30,7 +30,7 @@ class Config(object):
         self.torch_seed = global_config.pop('seed', None)
         self.epoch = global_config.pop("epoch", 10)
         self.early_stopping = global_config.pop('early_stopping', None)
-        self.max_steps = global_config.pop('max_steps', 5000)
+        self.epoch_size = global_config.pop('epoch_size', None)
 
         self.grad_norm = global_config.pop("grad_norm", None)
         self.norm_type = global_config.pop("norm_type", None)

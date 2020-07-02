@@ -1,13 +1,18 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+import os
+import torch
+import itertools
+import regex as re
 from typing import List
 
-import os, torch
-from ltp.models import Model
-from ltp.utils import length_to_mask, eisner, is_chinese_char
-from ltp.utils.seqeval import get_entities
 from transformers import AutoTokenizer, cached_path
+from transformers.file_utils import is_remote_url
+
+from ltp.models import Model
+from ltp.utils import length_to_mask, eisner, is_chinese_char, split_sentence
+from ltp.utils.seqeval import get_entities
 
 try:
     from torch.hub import _get_torch_home
@@ -22,8 +27,9 @@ default_cache_path = os.path.join(torch_cache_home, "ltp")
 LTP_CACHE = os.getenv("LTP_CACHE", default_cache_path)
 
 model_map = {
-    'small': 'http://39.96.43.154/small.tgz',
-    'tiny': 'http://39.96.43.154/tiny.tgz'
+    'base': 'http://39.96.43.154/ltp/v2/base.tgz',
+    'small': 'http://39.96.43.154/ltp/v2/small.tgz',
+    'tiny': 'http://39.96.43.154/ltp/v2/tiny.tgz'
 }
 
 
@@ -40,7 +46,7 @@ WORD_MIDDLE = 'I-W'
 
 
 class LTP(object):
-    model = Model
+    model: Model
     seg_vocab: List[str]
     pos_vocab: List[str]
     ner_vocab: List[str]
@@ -58,16 +64,15 @@ class LTP(object):
             self.device = torch.device('cuda')
         else:
             self.device = torch.device('cpu')
-        if os.path.exists(path):
-            ckpt = torch.load(path, map_location=self.device)
-        elif path in model_map:
+
+        if path in model_map or is_remote_url(path) or os.path.isfile(path):
+            proxies = kwargs.pop("proxies", None)
             cache_dir = kwargs.pop("cache_dir", LTP_CACHE)
             force_download = kwargs.pop("force_download", False)
             resume_download = kwargs.pop("resume_download", False)
-            proxies = kwargs.pop("proxies", None)
             local_files_only = kwargs.pop("local_files_only", False)
-            resolved_archive_path = cached_path(
-                model_map[path],
+            path = cached_path(
+                model_map.get(path, path),
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
@@ -75,15 +80,11 @@ class LTP(object):
                 local_files_only=local_files_only,
                 extract_compressed_file=True
             )
-            resolved_ckpt_file = os.path.join(resolved_archive_path, "ltp.model")
-            ckpt = torch.load(resolved_ckpt_file, map_location=self.device)
-            self.tokenizer = AutoTokenizer.from_pretrained(resolved_archive_path, use_fast=True)
-        else:
+        elif not os.path.isdir(path):
             raise FileNotFoundError()
-
+        ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
         ckpt['model_config']['init'].pop('pretrained')
-        self.model = Model.from_params(ckpt['model_config'], config=ckpt['pretrained_config'])
-        self.model.to(self.device)
+        self.model = Model.from_params(ckpt['model_config'], config=ckpt['pretrained_config']).to(self.device)
         self.model.load_state_dict(ckpt['model'])
         self.model.eval()
         self.seg_vocab = [WORD_START, WORD_MIDDLE]
@@ -91,9 +92,9 @@ class LTP(object):
         self.ner_vocab = ckpt['ner']
         self.dep_vocab = ckpt['dep']
         self.sdp_vocab = ckpt['sdp']
-        self.srl_vocab = ckpt['srl']
-        self.dep_fix = len(self.dep_vocab)
+        self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag) for tag in ckpt['srl']]
         self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
+        self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
 
     def _convert_idx_to_name(self, y, array_len, id2label):
         if id2label:
@@ -121,10 +122,15 @@ class LTP(object):
 
         return res
 
+    def sent_split(self, inputs: List[str], flag: str = "all", limit: int = 510):
+        inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
+        inputs = list(itertools.chain(*inputs))
+        return inputs
+
     @no_gard
     def seg(self, inputs: List[str]):
         length = torch.as_tensor([len(text) for text in inputs], device=self.device)
-        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt')
+        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt', padding=True)
         pretrained_output, *_ = self.model.pretrained(
             input_ids=tokenizerd['input_ids'].to(self.device),
             attention_mask=tokenizerd['attention_mask'].to(self.device),
@@ -201,7 +207,8 @@ class LTP(object):
         index = mask[:, 0]
         mask = mask[index]
 
-        srl_entities = crf.decode(srl_output.flatten(end_dim=1)[index], mask)
+        srl_input = srl_output.flatten(end_dim=1)[index]
+        srl_entities = crf.decode(torch.log_softmax(srl_input, dim=-1), mask)
         srl_entities = self._get_entities_with_list(srl_entities, self.srl_vocab)
 
         srl_labels_res = []
@@ -224,8 +231,6 @@ class LTP(object):
         else:
             dep_arc_fix = eisner(dep_arc, hidden['word_cls_mask']).unsqueeze_(-1).expand_as(dep_arc)
         dep_arc = torch.zeros_like(dep_arc, dtype=torch.bool).scatter_(dim=-1, index=dep_arc_fix, value=True)
-
-        dep_label[:, :, :, self.dep_fix:] = float('-inf')
         dep_label = torch.argmax(dep_label, dim=-1)
 
         word_cls_mask = hidden['word_cls_mask']

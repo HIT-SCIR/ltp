@@ -4,4 +4,4 @@
 模块
 ---------------
 
-.. automodule:: ltp4.predict
+.. automodule:: ltp.predict

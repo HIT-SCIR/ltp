@@ -4,14 +4,14 @@
 模型
 --------------------------
 
-.. automodule:: ltp4.models.model
+.. automodule:: ltp.models.model
 
 序列标注模型
 -----------------------
 
-.. automodule:: ltp4.models.seq_tag_model
+.. automodule:: ltp.models.seq_tag_model
 
 多任务模型
 -----------------------
 
-.. automodule:: ltp4.models.multi_task_model
+.. automodule:: ltp.models.multi_task_model

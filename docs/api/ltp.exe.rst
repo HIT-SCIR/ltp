@@ -4,9 +4,9 @@
 Command
 --------------------------
 
-.. automodule:: ltp4.exe.commands
+.. automodule:: ltp.exe.commands
 
 Executer
 -----------------------
 
-.. automodule:: ltp4.exe.executor
+.. automodule:: ltp.exe.executor

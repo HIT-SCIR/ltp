@@ -4,10 +4,10 @@
 梯度裁剪
 --------------------------
 
-.. automodule:: ltp4.utils.clip_grad_norm
+.. automodule:: ltp.utils.clip_grad_norm
 
 参数初始化
 -----------------------
 
-.. automodule:: ltp4.utils.initial
+.. automodule:: ltp.utils.initial
 

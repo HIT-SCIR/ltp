@@ -10,6 +10,21 @@
 
     pip install ltp
 
+分句
+-----------------
+使用LTP分句只需要调用ltp.sent_split函数
+
+.. code-block:: python
+
+    from ltp import LTP
+    ltp = LTP()
+    sents = ltp.sent_split(["他叫汤姆去拿外衣。", "汤姆生病了。他去了医院。"])
+
+    # [
+    #   "他叫汤姆去拿外衣。",
+    #   "汤姆生病了。",
+    #   "他去了医院。"
+    # ]
 
 分词
 ------------------
@@ -176,3 +191,13 @@
     #         (7, 2, 'mPunc')
     #     ]
     # ]
+
+LTP Server
+------------------------------
+
+LTP Server 是对 LTP 的一个简单包装，依赖于 tornado，使用方式如下：
+
+.. code-block:: bash
+
+    pip install ltp, tornado
+    python utils/server.py serve
