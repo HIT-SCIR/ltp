@@ -4,10 +4,11 @@
 """
 LTP Server 是对 LTP 的一个简单包装，依赖于 tornado，使用方式如下：
 
+.. code-block:: bash
+
     pip install ltp, tornado
     python utils/server.py serve
 """
-
 
 import json
 import logging
@@ -45,9 +46,11 @@ class LTPHandler(RequestHandler):
 
 
 class Server(object):
-    def __init__(self, path: str = 'small', batch_size: int = 10,
-                 device: str = None, onnx: str = None, vocab: str = None):
-        self.ltp = LTP(path=path, batch_size=batch_size, device=device, vocab=vocab)
+    def __init__(self, path: str = 'small', batch_size: int = 10, device: str = None, onnx: bool = False):
+        if onnx:
+            self.ltp = FastLTP(path=path, batch_size=batch_size, device=device)
+        else:
+            self.ltp = LTP(path=path, batch_size=batch_size, device=device)
 
     def _build_words(self, words, pos, dep):
         res = [{'id': -1, 'length': 0, 'offset': 0, 'text': 'root'}]
@@ -142,6 +145,17 @@ class Server(object):
         server.bind(port)
         server.start(n_process)
         ioloop.IOLoop.instance().start()
+
+    def test(self, sentences: List[str] = None):
+        if sentences is None:
+            sentences = [
+                'My name is tom.',
+                'He called Tom to get coats.',
+                '他叫Tom去拿外衣。',
+                '他叫汤姆去拿外衣。'
+            ]
+        res = self._predict([sentence.strip() for sentence in sentences])
+        print(json.dumps(res, indent=2, sort_keys=True, ensure_ascii=False))
 
 
 if __name__ == '__main__':

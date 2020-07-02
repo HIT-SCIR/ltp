@@ -45,6 +45,28 @@ WORD_START = 'B-W'
 WORD_MIDDLE = 'I-W'
 
 
+def get_entities_with_list(labels_, itos):
+    res = []
+    for labels in labels_:
+        labels = [itos[label] for label in labels]
+        labels = get_entities(labels)
+        res.append(labels)
+    return res
+
+
+def get_graph_entities(arcs, labels, itos):
+    sequence_num = labels.size(0)
+    arcs = torch.nonzero(arcs, as_tuple=False).cpu().detach().numpy().tolist()
+    labels = labels.cpu().detach().numpy()
+
+    res = [[] for _ in range(sequence_num)]
+    for idx, arc_s, arc_e in arcs:
+        label = labels[idx, arc_s, arc_e]
+        res[idx].append((arc_s, arc_e, itos[label]))
+
+    return res
+
+
 class LTP(object):
     model: Model
     seg_vocab: List[str]
@@ -54,7 +76,7 @@ class LTP(object):
     sdp_vocab: List[str]
     srl_vocab: List[str]
 
-    def __init__(self, path: str = 'small', batch_size: int = 10, device=None, vocab: str = None, **kwargs):
+    def __init__(self, path: str = 'small', batch_size: int = 10, device=None, **kwargs):
         if device is not None:
             if isinstance(device, torch.device):
                 self.device = device
@@ -84,9 +106,11 @@ class LTP(object):
             raise FileNotFoundError()
         ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
         ckpt['model_config']['init'].pop('pretrained')
+        self.cache_dir = path
         self.model = Model.from_params(ckpt['model_config'], config=ckpt['pretrained_config']).to(self.device)
         self.model.load_state_dict(ckpt['model'])
         self.model.eval()
+        # todo fp16
         self.seg_vocab = [WORD_START, WORD_MIDDLE]
         self.pos_vocab = ckpt['pos']
         self.ner_vocab = ckpt['ner']
@@ -102,27 +126,8 @@ class LTP(object):
         else:
             return [[idx for idx in row[:row_len]] for row, row_len in zip(y, array_len)]
 
-    def _get_entities_with_list(self, labels_, itos):
-        res = []
-        for labels in labels_:
-            labels = [itos[label] for label in labels]
-            labels = get_entities(labels)
-            res.append(labels)
-        return res
-
-    def _get_graph_entities(self, arcs, labels, itos):
-        sequence_num = labels.size(0)
-        arcs = torch.nonzero(arcs, as_tuple=False).cpu().detach().numpy().tolist()
-        labels = labels.cpu().detach().numpy()
-
-        res = [[] for _ in range(sequence_num)]
-        for idx, arc_s, arc_e in arcs:
-            label = labels[idx, arc_s, arc_e]
-            res[idx].append((arc_s, arc_e, itos[label]))
-
-        return res
-
-    def sent_split(self, inputs: List[str], flag: str = "all", limit: int = 510):
+    @staticmethod
+    def sent_split(inputs: List[str], flag: str = "all", limit: int = 510):
         inputs = [split_sentence(text, flag=flag, limit=limit) for text in inputs]
         inputs = list(itertools.chain(*inputs))
         return inputs
@@ -144,6 +149,7 @@ class LTP(object):
         segment_output = torch.argmax(self.model.seg_decoder(char_input), dim=-1).cpu().numpy()
         segment_output = self._convert_idx_to_name(segment_output, length, self.seg_vocab)
 
+        # todo: performance -- maybe cython / c++ / rust
         sentences = []
         word_idx = []
         word_length = []
@@ -209,7 +215,7 @@ class LTP(object):
 
         srl_input = srl_output.flatten(end_dim=1)[index]
         srl_entities = crf.decode(torch.log_softmax(srl_input, dim=-1), mask)
-        srl_entities = self._get_entities_with_list(srl_entities, self.srl_vocab)
+        srl_entities = get_entities_with_list(srl_entities, self.srl_vocab)
 
         srl_labels_res = []
         for length in srl_length:
@@ -236,7 +242,7 @@ class LTP(object):
         word_cls_mask = hidden['word_cls_mask']
         word_cls_mask = word_cls_mask.unsqueeze(-1).expand(-1, -1, word_cls_mask.size(1))
         dep_arc = dep_arc & word_cls_mask
-        dep_label = self._get_graph_entities(dep_arc, dep_label, self.dep_vocab)
+        dep_label = get_graph_entities(dep_arc, dep_label, self.dep_vocab)
 
         return dep_label
 
@@ -266,6 +272,6 @@ class LTP(object):
         word_cls_mask = hidden['word_cls_mask']
         word_cls_mask = word_cls_mask.unsqueeze(-1).expand(-1, -1, word_cls_mask.size(1))
         sdp_arc = sdp_arc & word_cls_mask
-        sdp_label = self._get_graph_entities(sdp_arc, sdp_label, self.sdp_vocab)
+        sdp_label = get_graph_entities(sdp_arc, sdp_label, self.sdp_vocab)
 
         return sdp_label

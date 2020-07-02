@@ -20,9 +20,9 @@ setup(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(exclude=['tests', 'examples', 'docs']),
     install_requires=[
-        'torch==1.5.0',
+        'torch>=1.4.0',
         'torchtext==0.5.0',
-        'transformers>=2.11.0',
+        'transformers>=3.0',
         'cytoolz~=0.10.1',
         'torch_optimizer',
         'tqdm',
@@ -37,4 +37,5 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Topic :: Software Development :: Libraries'
     ],
+    python_requires='>=3.7.*, <4',
 )

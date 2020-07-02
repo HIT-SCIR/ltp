@@ -3,10 +3,11 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 from typing import List
 
+import os
 import torch
+import numpy as np
 from ltp.utils import length_to_mask, is_chinese_char
 from ltp.utils.seqeval import get_entities
-import numpy as np
 from ltp import LTP
 from ltp.ltp import WORD_MIDDLE, no_gard
 
@@ -20,19 +21,90 @@ def convert(item: list):
 
 
 class FastLTP(LTP):
-    def __init__(self, *args, onnx: str, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         import onnxruntime as rt
         so = rt.SessionOptions()
         so.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_EXTENDED
         providers = ['CPUExecutionProvider'] if self.device.type == 'cpu' else ['GPUExecutionProvider']
-        self.onnx = rt.InferenceSession(onnx, so, providers=providers)
+
+        onnx_path = os.path.join(self.cache_dir, "ltp.onnx")
+        if not os.path.isfile(onnx_path):
+            self.pretrained_export(onnx_path)
+
+        self.onnx = rt.InferenceSession(onnx_path, so, providers=providers)
+
+    def pretrained_export(self, path: str):
+        from torch.onnx import export
+
+        dummy_input = {
+            'input_ids': torch.as_tensor([
+                [101, 800, 1373, 3739, 1990, 1343, 2897, 1912, 6132, 511, 102, 0, 0],
+                [101, 2571, 3647, 4638, 1383, 2094, 1355, 7942, 5445, 1318, 3289, 511, 102]
+            ], device=self.device),
+            'token_type_ids': torch.as_tensor([
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ], device=self.device),
+            'attention_mask': torch.as_tensor([
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],  # 11
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  # 13
+            ], device=self.device),
+        }
+
+        input_names = ['input_ids', 'attention_mask', 'token_type_ids']
+        output_names = ['hidden', 'seg']
+        dynamic_axes = {
+            'input_ids': {0: 'batch', 1: 'length'},
+            'attention_mask': {0: 'batch', 1: 'length'},
+            'token_type_ids': {0: 'batch', 1: 'length'},
+            'hidden': {0: 'batch', 1: 'length'},
+            'seg': {0: 'batch', 1: 'length'},
+        }
+        model_args = tuple(dummy_input[arg] for arg in input_names)
+
+        class Model(torch.nn.Module):
+            def __init__(self, pretrained, seg):
+                super().__init__()
+                self.pretrained = pretrained
+                self.seg = seg
+
+            def forward(self, *args, **kwargs):
+                hidden = self.pretrained(*args, **kwargs)[0]
+
+                cls = hidden[:, :1]
+                hidden_cut = hidden[:, 1:-1]
+                seg = self.seg(hidden_cut)
+                seg = torch.argmax(seg, dim=-1)
+
+                return cls, hidden_cut, seg
+
+        model = Model(
+            self.model.pretrained,
+            self.model.seg_decoder
+        )
+
+        with torch.no_grad():
+            export(
+                model,
+                model_args,
+                f=path,
+                input_names=input_names,
+                output_names=output_names,
+                dynamic_axes=dynamic_axes,
+                do_constant_folding=True,
+                use_external_data_format=False,
+                enable_onnx_checker=True,
+                opset_version=12,
+            )
 
     @no_gard
     def seg(self, inputs: List[str]):
         length = [len(text) for text in inputs]
-        tokenizerd = self.tokenizer.batch_encode_plus(inputs, pad_to_max_length=True)
+        tokenizerd = self.tokenizer.batch_encode_plus(inputs, padding=True)
         pretrained_inputs = {key: convert(value) for key, value in tokenizerd.items()}
+
+        # todo: io binding
         cls, hidden, seg = self.onnx.run(None, pretrained_inputs)
 
         segment_output = self._convert_idx_to_name(seg, length, self.seg_vocab)
@@ -40,6 +112,7 @@ class FastLTP(LTP):
         word_cls = torch.as_tensor(cls, device=self.device)
         char_input = torch.as_tensor(hidden, device=self.device)
 
+        # todo: performance
         sentences = []
         word_idx = []
         word_length = []
