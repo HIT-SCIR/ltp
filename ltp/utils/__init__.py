@@ -88,7 +88,7 @@ except Exception as e:
     USE_PLUGIN = False
 
 
-    def segment_decode():
+    def segment_decode(inputs, segment_output, offsets, words):
         pass
 
 

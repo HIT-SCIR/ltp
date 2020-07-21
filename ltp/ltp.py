@@ -7,7 +7,7 @@ import itertools
 import regex as re
 from typing import List
 
-from transformers import AutoTokenizer, cached_path, TensorType
+from transformers import AutoTokenizer, cached_path, TensorType, BatchEncoding
 from transformers.file_utils import is_remote_url
 
 from ltp.models import Model
@@ -143,11 +143,12 @@ class LTP(object):
         inputs = list(itertools.chain(*inputs))
         return inputs
 
-    def seg_with_dict(self, inputs: List[str]):
+    def seg_with_dict(self, inputs: List[str], tokenized: BatchEncoding):
         # 进行正向字典匹配
         matching = []
-        for line in inputs:
-            matching_pos = self.trie.maximum_forward_matching(line)
+        for source_text, encoding in zip(inputs, tokenized.encodings):
+            text = [source_text[start:end] for start, end in encoding.offsets[1:-1] if end != 0]
+            matching_pos = self.trie.maximum_forward_matching(text)
             matching.append(matching_pos)
         return matching
 
@@ -177,7 +178,7 @@ class LTP(object):
 
         # merge segments with maximum forward matching
         if self.trie.is_init:
-            matching = self.seg_with_dict(inputs)
+            matching = self.seg_with_dict(inputs, tokenizerd)
             for ids, seg_out in zip(matching, seg):
                 for ids_iter in ids:
                     seg_out[ids_iter[0]] = 0

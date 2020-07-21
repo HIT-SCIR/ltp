@@ -1,8 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: jeffrey
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import os
+from typing import List
+
 import pygtrie
 
 
@@ -43,24 +46,14 @@ class Trie(pygtrie.CharTrie):
             for word in words:
                 self[word] = True
 
-    def maximum_forward_matching(self, text: str):
+    def maximum_forward_matching(self, text: List[str]):
         maximum_matching_pos = []
-        start = 0
-        text_len = len(text.strip())
-        while start < text_len:
+        text_len = len(text)
+        for start in range(text_len - 1):
             candidate = None
-            for end in range(1, self.max_window + 1):
-                if start + end - 1 < text_len and self[text[start:end]]:
-                    candidate = (start, start + end)
-                if end == self.max_window:
-                    if candidate:
-                        maximum_matching_pos.append(candidate)
-                        start = candidate[1] - 1
-                        break
-                elif start + end - 1 >= text_len:
-                    if candidate:
-                        maximum_matching_pos.append(candidate)
-                        start = candidate[1] - 1
-                    break
-            start = start + 1
+            for end in range(start + 1, min(text_len, start + self.max_window + 1)):
+                if self.get("".join(text[start:end]), False):
+                    candidate = (start, end)
+            if candidate:
+                maximum_matching_pos.append(candidate)
         return maximum_matching_pos
