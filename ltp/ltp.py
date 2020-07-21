@@ -130,6 +130,17 @@ class LTP(object):
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
         self.trie = Trie()
 
+    def __str__(self):
+        return f"LTP {self.version} on {self.device}"
+
+    def __repr__(self):
+        return f"LTP {self.version} on {self.device}"
+
+    @property
+    def version(self):
+        from ltp import __version__ as version
+        return version
+
     def init_dict(self, path, max_window=None):
         self.trie.init(path, max_window)
 
@@ -178,13 +189,13 @@ class LTP(object):
 
         # merge segments with maximum forward matching
         if self.trie.is_init:
-            matching = self.seg_with_dict(inputs, tokenizerd)
-            for ids, seg_out in zip(matching, seg):
-                for ids_iter in ids:
-                    seg_out[ids_iter[0]] = 0
-                    seg_out[ids_iter[0] + 1:ids_iter[1]] = 1
-                    if ids_iter[1] < seg_out.size:
-                        seg_out[ids_iter[1]] = 0
+            matches = self.seg_with_dict(inputs, tokenizerd)
+            for sent_match, sent_seg in zip(matches, seg):
+                for start, end in sent_match:
+                    sent_seg[start] = 0
+                    sent_seg[start + 1:end] = 1
+                    if end < len(sent_seg):
+                        sent_seg[end] = 0
 
         segment_output = convert_idx_to_name(seg, length, self.seg_vocab)
         if USE_PLUGIN:
