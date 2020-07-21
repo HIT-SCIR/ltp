@@ -25,7 +25,7 @@ def get_entities(seq, suffix=False):
     Returns:
         list: list of (chunk_type, chunk_start, chunk_end).
     Example:
-        >>> from ltp.utils.seqeval.sequence_labeling import get_entities
+        >>> from ltp.utils.seqeval import get_entities
         >>> seq = ['B-PER', 'I-PER', 'O', 'B-LOC']
         >>> get_entities(seq)
         [('PER', 0, 1), ('LOC', 3, 3)]
@@ -44,7 +44,7 @@ def get_entities(seq, suffix=False):
             type_ = chunk.split('-', maxsplit=1)[0]
         else:
             tag = chunk[0]
-            type_ = chunk.split('-', maxsplit=1)[-1]
+            type_ = chunk.rsplit('-', maxsplit=1)[-1]
 
         if end_of_chunk(prev_tag, tag, prev_type, type_):
             chunks.append((prev_type, begin_offset, i - 1))
@@ -68,17 +68,10 @@ def end_of_chunk(prev_tag, tag, prev_type, type_):
     """
     chunk_end = False
 
-    if prev_tag == 'E': chunk_end = True
-    if prev_tag == 'S': chunk_end = True
+    if (prev_tag in ["B", "I"] and tag in ["B", "S", "O"]) or prev_tag in ["E", "S"]:
+        chunk_end = True
 
-    if prev_tag == 'B' and tag == 'B': chunk_end = True
-    if prev_tag == 'B' and tag == 'S': chunk_end = True
-    if prev_tag == 'B' and tag == 'O': chunk_end = True
-    if prev_tag == 'I' and tag == 'B': chunk_end = True
-    if prev_tag == 'I' and tag == 'S': chunk_end = True
-    if prev_tag == 'I' and tag == 'O': chunk_end = True
-
-    if prev_tag != 'O' and prev_tag != '.' and prev_type != type_:
+    if prev_tag not in ['O', '.'] and prev_type != type_:
         chunk_end = True
 
     return chunk_end
@@ -96,17 +89,10 @@ def start_of_chunk(prev_tag, tag, prev_type, type_):
     """
     chunk_start = False
 
-    if tag == 'B': chunk_start = True
-    if tag == 'S': chunk_start = True
+    if (prev_tag in ["E", "S", "O"] and tag in ["E", "I"]) or tag in ["B", "S"]:
+        chunk_start = True
 
-    if prev_tag == 'E' and tag == 'E': chunk_start = True
-    if prev_tag == 'E' and tag == 'I': chunk_start = True
-    if prev_tag == 'S' and tag == 'E': chunk_start = True
-    if prev_tag == 'S' and tag == 'I': chunk_start = True
-    if prev_tag == 'O' and tag == 'E': chunk_start = True
-    if prev_tag == 'O' and tag == 'I': chunk_start = True
-
-    if tag != 'O' and tag != '.' and prev_type != type_:
+    if tag not in ['O', '.'] and prev_type != type_:
         chunk_start = True
 
     return chunk_start
@@ -125,7 +111,7 @@ def f1_score(y_true, y_pred, average='micro', suffix=False):
     Returns:
         score : float.
     Example:
-        >>> from from ltp.utils.seqeval.sequence_labeling import f1_score
+        >>> from from ltp.utils.seqeval import f1_score
         >>> y_true = [['O', 'O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> y_pred = [['O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> f1_score(y_true, y_pred)
@@ -156,7 +142,7 @@ def accuracy_score(y_true, y_pred):
     Returns:
         score : float.
     Example:
-        >>> from from ltp.utils.seqeval.sequence_labeling import accuracy_score
+        >>> from from ltp.utils.seqeval import accuracy_score
         >>> y_true = [['O', 'O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> y_pred = [['O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> accuracy_score(y_true, y_pred)
@@ -186,7 +172,7 @@ def precision_score(y_true, y_pred, average='micro', suffix=False):
     Returns:
         score : float.
     Example:
-        >>> from ltp.utils.seqeval.sequence_labeling import precision_score
+        >>> from ltp.utils.seqeval import precision_score
         >>> y_true = [['O', 'O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> y_pred = [['O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> precision_score(y_true, y_pred)
@@ -215,7 +201,7 @@ def recall_score(y_true, y_pred, average='micro', suffix=False):
     Returns:
         score : float.
     Example:
-        >>> from ltp.utils.seqeval.sequence_labeling import recall_score
+        >>> from ltp.utils.seqeval import recall_score
         >>> y_true = [['O', 'O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> y_pred = [['O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> recall_score(y_true, y_pred)
@@ -241,7 +227,7 @@ def performance_measure(y_true, y_pred):
     Returns:
         performance_dict : dict
     Example:
-        >>> from ltp.utils.seqeval.sequence_labeling import performance_measure
+        >>> from ltp.utils.seqeval import performance_measure
         >>> y_true = [['O', 'O', 'O', 'B-MISC', 'I-MISC', 'O', 'B-ORG'], ['B-PER', 'I-PER', 'O']]
         >>> y_pred = [['O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'O', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> performance_measure(y_true, y_pred)
@@ -271,7 +257,7 @@ def classification_report(y_true, y_pred, digits=2, suffix=False):
     Returns:
         report : string. Text summary of the precision, recall, F1 score for each class.
     Examples:
-        >>> from ltp.utils.seqeval.sequence_labeling import classification_report
+        >>> from ltp.utils.seqeval import classification_report
         >>> y_true = [['O', 'O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> y_pred = [['O', 'O', 'B-MISC', 'I-MISC', 'I-MISC', 'I-MISC', 'O'], ['B-PER', 'I-PER', 'O']]
         >>> print(classification_report(y_true, y_pred))

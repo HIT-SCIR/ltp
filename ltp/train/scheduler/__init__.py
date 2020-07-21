@@ -14,6 +14,7 @@ class Scheduler(lr_scheduler._LRScheduler, metaclass=Registrable):
     """
     调度器
     """
+
     @classmethod
     def from_extra(cls, extra: dict, subcls=None):
         sig = inspect.signature(subcls)
@@ -33,12 +34,16 @@ class Scheduler(lr_scheduler._LRScheduler, metaclass=Registrable):
 
 Scheduler.weak_register("LambdaLR", lr_scheduler.LambdaLR)
 Scheduler.weak_register("CosineAnnealingLR", lr_scheduler.CosineAnnealingLR)
-Scheduler.weak_register("CosineAnnealingWarmRestarts", lr_scheduler.CosineAnnealingWarmRestarts)
-Scheduler.weak_register("CyclicLR", lr_scheduler.CyclicLR)
 Scheduler.weak_register("ExponentialLR", lr_scheduler.ExponentialLR)
 Scheduler.weak_register("MultiStepLR", lr_scheduler.MultiStepLR)
 Scheduler.weak_register("ReduceLROnPlateau", lr_scheduler.ReduceLROnPlateau)
 Scheduler.weak_register("StepLR", lr_scheduler.StepLR)
+
+try:
+    Scheduler.weak_register("CosineAnnealingWarmRestarts", lr_scheduler.CosineAnnealingWarmRestarts)
+    Scheduler.weak_register("CyclicLR", lr_scheduler.CyclicLR)
+except Exception as e:
+    pass
 
 Scheduler.weak_register("ConstantLR", get_constant_schedule)
 Scheduler.weak_register("ConstantLRW", get_constant_schedule_with_warmup)
@@ -53,6 +58,7 @@ class TemperatureScheduler(metaclass=Registrable):
     """
     蒸馏温度调度器
     """
+
     def __call__(self, logits_S, logits_T, base_temperature):
         return self.forward(logits_S, logits_T, base_temperature)
 

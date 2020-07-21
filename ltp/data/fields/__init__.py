@@ -8,10 +8,8 @@ import torch
 from ltp.core import Registrable
 from ltp.data import PreProcessing, PostProcessing
 
-DataArray = TypeVar("DataArray", torch.Tensor, Dict[str, torch.Tensor])
 
-
-class Field(Generic[DataArray], metaclass=Registrable):
+class Field(metaclass=Registrable):
     """ 通用基础 Field 类型
 
     每个数据集都会包含各种类型的数据，它们都可以被表示为Field，它描述了数据被处理的过程。

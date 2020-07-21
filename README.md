@@ -11,11 +11,21 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 
 ## 快速使用
 
+```text
+# user_dict.txt
+
+负重前行
+长江大桥
+```
+
 ```python
 from ltp import LTP
 ltp = LTP() # 默认加载 Small 模型
 # ltp = LTP(path = "base|small|tiny")
+# ltp = LTP(path = "tiny.tgz|tiny-tgz-extracted") # 其中 tiny-tgz-extracted 是 tiny.tgz 解压出来的文件夹
 # sent_list = ltp.sent_split(inputs, flag="all", limit=510)
+# ltp.init_dict(path="user_dict.txt", max_window=4)
+# ltp.add_words(words=["负重前行", "长江大桥"], max_window=4)
 segment, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
 ner = ltp.ner(hidden)

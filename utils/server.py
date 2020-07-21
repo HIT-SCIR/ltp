@@ -9,7 +9,7 @@ LTP Server 是对 LTP 的一个简单包装，依赖于 tornado，使用方式�
     pip install ltp, tornado
     python utils/server.py serve
 """
-
+import sys
 import json
 import logging
 from typing import List
@@ -118,7 +118,10 @@ class Server(object):
 
         return result
 
-    def serve(self, port: int = 5000, n_process: int = 8):
+    def serve(self, port: int = 5000, n_process: int = None):
+        if n_process is None:
+            n_process = 1 if sys.platform == 'win32' else 8
+
         fmt = LogFormatter(fmt='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S', color=True)
         root_logger = logging.getLogger()
 

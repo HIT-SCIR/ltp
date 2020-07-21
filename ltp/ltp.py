@@ -7,12 +7,13 @@ import itertools
 import regex as re
 from typing import List
 
-from transformers import AutoTokenizer, cached_path
+from transformers import AutoTokenizer, cached_path, TensorType
 from transformers.file_utils import is_remote_url
 
 from ltp.models import Model
-from ltp.utils import length_to_mask, eisner, is_chinese_char, split_sentence
-from ltp.utils.seqeval import get_entities
+from ltp.utils import length_to_mask, eisner, split_sentence
+from ltp.utils import USE_PLUGIN, get_entities, is_chinese_char, segment_decode
+from ltp.utils import Trie
 
 try:
     from torch.hub import _get_torch_home
@@ -67,6 +68,13 @@ def get_graph_entities(arcs, labels, itos):
     return res
 
 
+def convert_idx_to_name(y, array_len, id2label):
+    if id2label:
+        return [[id2label[idx] for idx in row[:row_len]] for row, row_len in zip(y, array_len)]
+    else:
+        return [[idx for idx in row[:row_len]] for row, row_len in zip(y, array_len)]
+
+
 class LTP(object):
     model: Model
     seg_vocab: List[str]
@@ -75,6 +83,8 @@ class LTP(object):
     dep_vocab: List[str]
     sdp_vocab: List[str]
     srl_vocab: List[str]
+
+    tensor: TensorType = TensorType.PYTORCH
 
     def __init__(self, path: str = 'small', device=None, **kwargs):
         if device is not None:
@@ -116,14 +126,16 @@ class LTP(object):
         self.ner_vocab = ckpt['ner']
         self.dep_vocab = ckpt['dep']
         self.sdp_vocab = ckpt['sdp']
-        self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag) for tag in ckpt['srl']]
+        self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag.lstrip('ARGM-')) for tag in ckpt['srl']]
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
+        self.trie = Trie()
 
-    def _convert_idx_to_name(self, y, array_len, id2label):
-        if id2label:
-            return [[id2label[idx] for idx in row[:row_len]] for row, row_len in zip(y, array_len)]
-        else:
-            return [[idx for idx in row[:row_len]] for row, row_len in zip(y, array_len)]
+    def init_dict(self, path, max_window=None):
+        self.trie.init(path, max_window)
+
+    def add_words(self, words, max_window=4):
+        self.trie.add_words(words)
+        self.trie.max_window = max_window
 
     @staticmethod
     def sent_split(inputs: List[str], flag: str = "all", limit: int = 510):
@@ -131,10 +143,16 @@ class LTP(object):
         inputs = list(itertools.chain(*inputs))
         return inputs
 
-    @no_gard
-    def seg(self, inputs: List[str]):
-        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors='pt', padding=True)
+    def seg_with_dict(self, inputs: List[str]):
+        # 进行正向字典匹配
+        matching = []
+        for line in inputs:
+            matching_pos = self.trie.maximum_forward_matching(line)
+            matching.append(matching_pos)
+        return matching
 
+    @no_gard
+    def _seg(self, tokenizerd):
         input_ids = tokenizerd['input_ids'].to(self.device)
         attention_mask = tokenizerd['attention_mask'].to(self.device)
         token_type_ids = tokenizerd['token_type_ids'].to(self.device)
@@ -149,43 +167,63 @@ class LTP(object):
         # remove [CLS] [SEP]
         word_cls = pretrained_output[:, :1]
         char_input = torch.narrow(pretrained_output, 1, 1, pretrained_output.size(1) - 2)
-
         segment_output = torch.argmax(self.model.seg_decoder(char_input), dim=-1).cpu().numpy()
-        segment_output = self._convert_idx_to_name(segment_output, length, self.seg_vocab)
+        return word_cls, char_input, segment_output, length
 
-        # todo: performance -- maybe cython / c++ / rust
-        sentences = []
-        word_idx = []
-        word_length = []
-        for source_text, encoding, sentence_seg_tag in zip(inputs, tokenizerd.encodings, segment_output):
-            text = [source_text[start:end] for start, end in encoding.offsets[1:-1] if end != 0]
+    @no_gard
+    def seg(self, inputs: List[str]):
+        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors=self.tensor, padding=True)
+        cls, hidden, seg, length = self._seg(tokenizerd)
 
-            last_word = 0
-            for idx, word in enumerate(encoding.words[1:-1]):
-                if word is None or is_chinese_char(text[idx][-1]):
-                    continue
-                if word != last_word:
-                    text[idx] = ' ' + text[idx]
-                    last_word = word
-                else:
-                    sentence_seg_tag[idx] = WORD_MIDDLE
+        # merge segments with maximum forward matching
+        if self.trie.is_init:
+            matching = self.seg_with_dict(inputs)
+            for ids, seg_out in zip(matching, seg):
+                for ids_iter in ids:
+                    seg_out[ids_iter[0]] = 0
+                    seg_out[ids_iter[0] + 1:ids_iter[1]] = 1
+                    if ids_iter[1] < seg_out.size:
+                        seg_out[ids_iter[1]] = 0
 
-            entities = get_entities(sentence_seg_tag)
-            word_length.append(len(entities))
+        segment_output = convert_idx_to_name(seg, length, self.seg_vocab)
+        if USE_PLUGIN:
+            offsets = [list(filter(lambda x: x != (0, 0), encodings.offsets)) for encodings in tokenizerd.encodings]
+            words = [list(filter(lambda x: x is not None, encodings.words)) for encodings in tokenizerd.encodings]
+            sentences, word_idx, word_length = segment_decode(inputs, segment_output, offsets, words)
+            word_idx = [torch.as_tensor(idx, device=self.device) for idx in word_idx]
+        else:
+            sentences = []
+            word_idx = []
+            word_length = []
 
-            sentences.append([''.join(text[entity[1]:entity[2] + 1]).strip() for entity in entities])
-            word_idx.append(torch.as_tensor([entity[1] for entity in entities], device=self.device))
+            for source_text, encoding, sentence_seg_tag in zip(inputs, tokenizerd.encodings, segment_output):
+                text = [source_text[start:end] for start, end in encoding.offsets[1:-1] if end != 0]
+
+                last_word = 0
+                for idx, word in enumerate(encoding.words[1:-1]):
+                    if word is None or is_chinese_char(text[idx][-1]):
+                        continue
+                    if word != last_word:
+                        text[idx] = ' ' + text[idx]
+                        last_word = word
+                    else:
+                        sentence_seg_tag[idx] = WORD_MIDDLE
+
+                entities = get_entities(sentence_seg_tag)
+                word_length.append(len(entities))
+                sentences.append([''.join(text[entity[1]:entity[2] + 1]).strip() for entity in entities])
+                word_idx.append(torch.as_tensor([entity[1] for entity in entities], device=self.device))
 
         word_idx = torch.nn.utils.rnn.pad_sequence(word_idx, batch_first=True)
-        word_idx = word_idx.unsqueeze(-1).expand(-1, -1, char_input.shape[-1])
+        word_idx = word_idx.unsqueeze(-1).expand(-1, -1, hidden.shape[-1])  # 展开
 
-        word_input = torch.gather(char_input, dim=1, index=word_idx)
+        word_input = torch.gather(hidden, dim=1, index=word_idx)  # 每个word第一个char的向量
 
-        word_cls_input = torch.cat([word_cls, word_input], dim=1)
+        word_cls_input = torch.cat([cls, word_input], dim=1)
         word_cls_mask = length_to_mask(torch.as_tensor(word_length, device=self.device) + 1)
         word_cls_mask[:, 0] = False  # ignore the first token of each sentence
         return sentences, {
-            'word_cls': word_cls, 'word_input': word_input, 'word_length': word_length,
+            'word_cls': cls, 'word_input': word_input, 'word_length': word_length,
             'word_cls_input': word_cls_input, 'word_cls_mask': word_cls_mask
         }
 
@@ -194,7 +232,7 @@ class LTP(object):
         # 词性标注
         postagger_output = self.model.pos_decoder(hidden['word_input'], hidden['word_length'])
         postagger_output = torch.argmax(postagger_output, dim=-1).cpu().numpy()
-        postagger_output = self._convert_idx_to_name(postagger_output, hidden['word_length'], self.pos_vocab)
+        postagger_output = convert_idx_to_name(postagger_output, hidden['word_length'], self.pos_vocab)
         return postagger_output
 
     @no_gard
@@ -203,7 +241,7 @@ class LTP(object):
         word_length = torch.as_tensor(hidden['word_length'], device=self.device)
         ner_output = self.model.ner_decoder(hidden['word_input'], word_length)
         ner_output = torch.argmax(ner_output, dim=-1).cpu().numpy()
-        ner_output = self._convert_idx_to_name(ner_output, hidden['word_length'], self.ner_vocab)
+        ner_output = convert_idx_to_name(ner_output, hidden['word_length'], self.ner_vocab)
         return [get_entities(ner) for ner in ner_output]
 
     @no_gard

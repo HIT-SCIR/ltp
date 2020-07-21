@@ -10,8 +10,28 @@
 
     pip install ltp
 
+用户自定义词典
+-------------------
+```text
+# user_dict.txt
+
+负重前行
+长江大桥
+
+```
+.. code-block:: python
+
+    from ltp import LTP
+    ltp = LTP()
+    # user_dict.txt 是词典文件， max_window是最大前向分词窗口
+    ltp.init_dict(path="user_dict.txt", max_window=4)
+    # 也可以在代码中添加自定义的词语
+    ltp.add_words(words=["负重前行", "长江大桥"], max_window=4)
+
+
 分句
------------------
+--------------------------
+
 使用LTP分句只需要调用ltp.sent_split函数
 
 .. code-block:: python
@@ -25,6 +45,7 @@
     #   "汤姆生病了。",
     #   "他去了医院。"
     # ]
+
 
 分词
 ------------------
@@ -191,6 +212,7 @@
     #         (7, 2, 'mPunc')
     #     ]
     # ]
+
 
 LTP Server
 ------------------------------
