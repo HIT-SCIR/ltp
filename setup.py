@@ -24,7 +24,7 @@ setup(
         'torchtext==0.5.0',
         'transformers>=3.0',
         'cytoolz~=0.10.1',
-        'pygtrie==2.3.3'
+        'pygtrie==2.3.3',
         'tqdm',
         'toml',
         'fire',
