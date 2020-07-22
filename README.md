@@ -11,11 +11,21 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 
 ## 快速使用
 
+```text
+# user_dict.txt
+
+负重前行
+长江大桥
+```
+
 ```python
 from ltp import LTP
 ltp = LTP() # 默认加载 Small 模型
 # ltp = LTP(path = "base|small|tiny")
+# ltp = LTP(path = "tiny.tgz|tiny-tgz-extracted") # 其中 tiny-tgz-extracted 是 tiny.tgz 解压出来的文件夹
 # sent_list = ltp.sent_split(inputs, flag="all", limit=510)
+# ltp.init_dict(path="user_dict.txt", max_window=4)
+# ltp.add_words(words=["负重前行", "长江大桥"], max_window=4)
 segment, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
 ner = ltp.ner(hidden)
@@ -42,11 +52,11 @@ sdp = ltp.sdp(hidden)
 
 |      模型       | 分词  | 词性  | 命名实体 | 语义角色 | 依存句法 | 语义依存 | 速度(句/S) |
 | :-------------: | :---: | :---: | :------: | :------: | :------: | :------: | :--------: |
-| LTP 4.0 (Base)  | 98.7  | 98.4  |   96.4   |   80.0   |   90.0   |   76.5   |            |
+| LTP 4.0 (Base)  | 98.7  | 98.5  |   95.4   |   80.6   |   89.5   |   75.2   |            |
 | LTP 4.0 (Small) | 98.4  | 98.2  |   94.3   |   78.4   |   88.3   |   74.7   |   12.58    |
 | LTP 4.0 (Tiny)  | 96.8  | 97.1  |   91.6   |   70.9   |   83.8   |   70.1   |   29.53    |
 
-**备注**: 本版本SDP采用CCS2020语义依存分析语料，其他语料同V1
+**备注**: 本版本SDP采用 [CCL2020语义依存分析](http://ir.hit.edu.cn/sdp2020ccl) 语料，其他语料同V1
 
 ### V1 指标
 

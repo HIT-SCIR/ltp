@@ -1,14 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
-from typing import List
-
+import os
 import torch
-from ltp.utils import length_to_mask, is_chinese_char
-from ltp.utils.seqeval import get_entities
 import numpy as np
 from ltp import LTP
-from ltp.ltp import WORD_MIDDLE, no_gard
+from ltp.ltp import no_gard, TensorType
 
 
 def convert(item: list):
@@ -20,57 +17,102 @@ def convert(item: list):
 
 
 class FastLTP(LTP):
-    def __init__(self, *args, onnx: str, **kwargs):
+    tensor = TensorType.NUMPY
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         import onnxruntime as rt
         so = rt.SessionOptions()
         so.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_EXTENDED
+
+        # fixme should auto detect
         providers = ['CPUExecutionProvider'] if self.device.type == 'cpu' else ['GPUExecutionProvider']
-        self.onnx = rt.InferenceSession(onnx, so, providers=providers)
+
+        onnx_path = os.path.join(self.cache_dir, "ltp.onnx")
+        if not os.path.isfile(onnx_path):
+            ltp_onnx_export(self, onnx_path)
+
+        self.onnx = rt.InferenceSession(onnx_path, so, providers=providers)
+
+    def __str__(self):
+        return f"FastLTP {self.version} on {self.device}"
+
+    def __repr__(self):
+        return f"FastLTP {self.version} on {self.device}"
 
     @no_gard
-    def seg(self, inputs: List[str]):
-        length = [len(text) for text in inputs]
-        tokenizerd = self.tokenizer.batch_encode_plus(inputs, pad_to_max_length=True)
+    def _seg(self, tokenizerd):
         pretrained_inputs = {key: convert(value) for key, value in tokenizerd.items()}
-        cls, hidden, seg = self.onnx.run(None, pretrained_inputs)
+        length = np.sum(pretrained_inputs['attention_mask'], axis=-1) - 2
 
-        segment_output = self._convert_idx_to_name(seg, length, self.seg_vocab)
+        # todo: io binding
+        cls, hidden, seg = self.onnx.run(None, pretrained_inputs)
 
         word_cls = torch.as_tensor(cls, device=self.device)
         char_input = torch.as_tensor(hidden, device=self.device)
+        return word_cls, char_input, seg, length
 
-        sentences = []
-        word_idx = []
-        word_length = []
-        for source_text, encoding, sentence_seg_tag in zip(inputs, tokenizerd.encodings, segment_output):
-            text = [source_text[start:end] for start, end in encoding.offsets[1:-1] if end != 0]
 
-            last_word = 0
-            for idx, word in enumerate(encoding.words[1:-1]):
-                if word is None or is_chinese_char(text[idx][-1]):
-                    continue
-                if word != last_word:
-                    text[idx] = ' ' + text[idx]
-                    last_word = word
-                else:
-                    sentence_seg_tag[idx] = WORD_MIDDLE
+def ltp_onnx_export(ltp: LTP, path: str):
+    from torch.onnx import export
 
-            entities = get_entities(sentence_seg_tag)
-            word_length.append(len(entities))
+    dummy_input = {
+        'input_ids': torch.as_tensor([
+            [101, 800, 1373, 3739, 1990, 1343, 2897, 1912, 6132, 511, 102, 0, 0],
+            [101, 2571, 3647, 4638, 1383, 2094, 1355, 7942, 5445, 1318, 3289, 511, 102]
+        ], device=ltp.device),
+        'token_type_ids': torch.as_tensor([
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ], device=ltp.device),
+        'attention_mask': torch.as_tensor([
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],  # 11
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  # 13
+        ], device=ltp.device),
+    }
 
-            sentences.append([''.join(text[entity[1]:entity[2] + 1]).lstrip() for entity in entities])
-            word_idx.append(torch.as_tensor([entity[1] for entity in entities], device=self.device))
+    input_names = ['input_ids', 'attention_mask', 'token_type_ids']
+    output_names = ['hidden', 'seg']
+    dynamic_axes = {
+        'input_ids': {0: 'batch', 1: 'length'},
+        'attention_mask': {0: 'batch', 1: 'length'},
+        'token_type_ids': {0: 'batch', 1: 'length'},
+        'hidden': {0: 'batch', 1: 'length'},
+        'seg': {0: 'batch', 1: 'length'},
+    }
+    model_args = tuple(dummy_input[arg] for arg in input_names)
 
-        word_idx = torch.nn.utils.rnn.pad_sequence(word_idx, batch_first=True)
-        word_idx = word_idx.unsqueeze(-1).expand(-1, -1, char_input.shape[-1])
-        word_input = torch.gather(char_input, dim=1, index=word_idx)
+    class Model(torch.nn.Module):
+        def __init__(self, pretrained, seg):
+            super().__init__()
+            self.pretrained = pretrained
+            self.seg = seg
 
-        word_cls_input = torch.cat([word_cls, word_input], dim=1)
-        word_cls_mask = length_to_mask(torch.as_tensor(word_length, device=self.device) + 1)
-        word_cls_mask[:, 0] = False  # ignore the first token of each sentence
+        def forward(self, *args, **kwargs):
+            hidden = self.pretrained(*args, **kwargs)[0]
 
-        return sentences, {
-            'word_cls': word_cls, 'word_input': word_input, 'word_length': word_length,
-            'word_cls_input': word_cls_input, 'word_cls_mask': word_cls_mask
-        }
+            cls = hidden[:, :1]
+            hidden_cut = hidden[:, 1:-1]
+            seg = self.seg(hidden_cut)
+            seg = torch.argmax(seg, dim=-1)
+
+            return cls, hidden_cut, seg
+
+    model = Model(
+        ltp.model.pretrained,
+        ltp.model.seg_decoder
+    )
+
+    with torch.no_grad():
+        export(
+            model,
+            model_args,
+            f=path,
+            input_names=input_names,
+            output_names=output_names,
+            dynamic_axes=dynamic_axes,
+            do_constant_folding=True,
+            use_external_data_format=False,
+            enable_onnx_checker=True,
+            opset_version=12,
+        )

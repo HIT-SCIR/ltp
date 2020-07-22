@@ -4,11 +4,12 @@
 """
 LTP Server 是对 LTP 的一个简单包装，依赖于 tornado，使用方式如下：
 
+.. code-block:: bash
+
     pip install ltp, tornado
     python utils/server.py serve
 """
-
-
+import sys
 import json
 import logging
 from typing import List
@@ -45,9 +46,12 @@ class LTPHandler(RequestHandler):
 
 
 class Server(object):
-    def __init__(self, path: str = 'small', batch_size: int = 10,
-                 device: str = None, onnx: str = None, vocab: str = None):
-        self.ltp = LTP(path=path, batch_size=batch_size, device=device, vocab=vocab)
+    def __init__(self, path: str = 'small', batch_size: int = 50, device: str = None, onnx: bool = False):
+        if onnx:
+            self.ltp = FastLTP(path=path, device=device)
+        else:
+            self.ltp = LTP(path=path, device=device)
+        self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
 
     def _build_words(self, words, pos, dep):
         res = [{'id': -1, 'length': 0, 'offset': 0, 'text': 'root'}]
@@ -69,7 +73,7 @@ class Server(object):
 
     def _predict(self, sentences: List[str]):
         result = []
-        for sentences_batch in self.ltp.split(sentences):
+        for sentences_batch in self.split(sentences):
             batch_seg, hidden = self.ltp.seg(sentences_batch)
             batch_pos = self.ltp.pos(hidden)
             batch_ner = self.ltp.ner(hidden)
@@ -114,7 +118,10 @@ class Server(object):
 
         return result
 
-    def serve(self, port: int = 5000, n_process: int = 8):
+    def serve(self, port: int = 5000, n_process: int = None):
+        if n_process is None:
+            n_process = 1 if sys.platform == 'win32' else 8
+
         fmt = LogFormatter(fmt='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S', color=True)
         root_logger = logging.getLogger()
 
@@ -142,6 +149,17 @@ class Server(object):
         server.bind(port)
         server.start(n_process)
         ioloop.IOLoop.instance().start()
+
+    def test(self, sentences: List[str] = None):
+        if sentences is None:
+            sentences = [
+                'My name is tom.',
+                'He called Tom to get coats.',
+                '他叫Tom去拿外衣。',
+                '他叫汤姆去拿外衣。'
+            ]
+        res = self._predict([sentence.strip() for sentence in sentences])
+        print(json.dumps(res, indent=2, sort_keys=True, ensure_ascii=False))
 
 
 if __name__ == '__main__':
