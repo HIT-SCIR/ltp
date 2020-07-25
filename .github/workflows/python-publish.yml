@@ -33,5 +33,5 @@ jobs:
           twine upload dist/*
       - uses: actions/upload-artifact@v2
         with:
-          name: 'Upload artifact'
+          name: 'ltp.whl'
           path: 'dist/*.whl'
