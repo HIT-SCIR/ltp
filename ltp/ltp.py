@@ -184,7 +184,18 @@ class LTP(object):
         return word_cls, char_input, segment_output, length
 
     @no_gard
-    def seg(self, inputs: List[str], truncation=True):
+    def seg(self, inputs: List[str], truncation: bool = True):
+        """
+        分词
+
+        Args:
+            inputs: 句子列表
+            truncation: 是否对过长的句子进行截断，如果为 False 可能会抛出异常
+
+        Returns:
+            words: 分词后的序列
+            hidden: 用于其他任务的中间表示
+        """
         tokenizerd = self.tokenizer.batch_encode_plus(
             inputs, padding=True, truncation=truncation, return_tensors=self.tensor, max_length=self.max_length
         )
@@ -244,7 +255,14 @@ class LTP(object):
 
     @no_gard
     def pos(self, hidden: dict):
-        # 词性标注
+        """
+        词性标注
+        Args:
+            hidden: 分词时所得到的中间表示
+
+        Returns:
+            pos: 词性标注结果
+        """
         postagger_output = self.model.pos_decoder(hidden['word_input'], hidden['word_length'])
         postagger_output = torch.argmax(postagger_output, dim=-1).cpu().numpy()
         postagger_output = convert_idx_to_name(postagger_output, hidden['word_length'], self.pos_vocab)
@@ -252,7 +270,14 @@ class LTP(object):
 
     @no_gard
     def ner(self, hidden: dict):
-        # 命名实体识别
+        """
+        命名实体识别
+        Args:
+            hidden: 分词时所得到的中间表示
+
+        Returns:
+            pos: 命名实体识别结果
+        """
         word_length = torch.as_tensor(hidden['word_length'], device=self.device)
         ner_output = self.model.ner_decoder(hidden['word_input'], word_length)
         ner_output = torch.argmax(ner_output, dim=-1).cpu().numpy()
@@ -261,7 +286,14 @@ class LTP(object):
 
     @no_gard
     def srl(self, hidden: dict, keep_empty=True):
-        # 语义角色标注
+        """
+        语义角色标注
+        Args:
+            hidden: 分词时所得到的中间表示
+
+        Returns:
+            pos: 语义角色标注结果
+        """
         word_length = torch.as_tensor(hidden['word_length'], device=hidden['word_input'].device)
         word_mask = length_to_mask(word_length)
         srl_output, srl_length, crf = self.model.srl_decoder(hidden['word_input'], hidden['word_length'])
@@ -287,7 +319,15 @@ class LTP(object):
 
     @no_gard
     def dep(self, hidden: dict, fast=False):
-        # 依存句法树
+        """
+        依存句法树
+        Args:
+            hidden: 分词时所得到的中间表示
+            fast: 启用 fast 模式时，减少对结果的约束，速度更快，相应的精度会降低
+
+        Returns:
+            依存句法树结果
+        """
         dep_arc, dep_label, word_length = self.model.dep_decoder(hidden['word_cls_input'], hidden['word_length'])
         if fast:
             dep_arc_fix = dep_arc.argmax(dim=-1).unsqueeze_(-1).expand_as(dep_arc)
@@ -305,7 +345,15 @@ class LTP(object):
 
     @no_gard
     def sdp(self, hidden: dict, graph=True):
-        # 语义依存
+        """
+        语义依存图（树）
+        Args:
+            hidden: 分词时所得到的中间表示
+            graph: 选择是语义依存图还是语义依存树结果
+
+        Returns:
+            语义依存图（树）结果
+        """
         sdp_arc, sdp_label, _ = self.model.sdp_decoder(hidden['word_cls_input'], hidden['word_length'])
         sdp_arc = torch.sigmoid_(sdp_arc)
 
