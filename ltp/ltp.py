@@ -121,6 +121,7 @@ class LTP(object):
         self.model.load_state_dict(ckpt['model'])
         self.model.eval()
         # todo fp16
+        self.max_length = self.model.pretrained.config.max_position_embeddings
         self.seg_vocab = [WORD_START, WORD_MIDDLE]
         self.pos_vocab = ckpt['pos']
         self.ner_vocab = ckpt['ner']
@@ -183,9 +184,11 @@ class LTP(object):
         return word_cls, char_input, segment_output, length
 
     @no_gard
-    def seg(self, inputs: List[str]):
-        tokenizerd = self.tokenizer.batch_encode_plus(inputs, return_tensors=self.tensor, padding=True)
-        cls, hidden, seg, length = self._seg(tokenizerd)
+    def seg(self, inputs: List[str], truncation=True):
+        tokenizerd = self.tokenizer.batch_encode_plus(
+            inputs, padding=True, truncation=truncation, return_tensors=self.tensor, max_length=self.max_length
+        )
+        cls, hidden, seg, lengths = self._seg(tokenizerd)
 
         # merge segments with maximum forward matching
         if self.trie.is_init:
@@ -197,7 +200,7 @@ class LTP(object):
                     if end < len(sent_seg):
                         sent_seg[end] = 0
 
-        segment_output = convert_idx_to_name(seg, length, self.seg_vocab)
+        segment_output = convert_idx_to_name(seg, lengths, self.seg_vocab)
         if USE_PLUGIN:
             offsets = [list(filter(lambda x: x != (0, 0), encodings.offsets)) for encodings in tokenizerd.encodings]
             words = [list(filter(lambda x: x is not None, encodings.words)) for encodings in tokenizerd.encodings]
@@ -208,20 +211,20 @@ class LTP(object):
             word_idx = []
             word_length = []
 
-            for source_text, encoding, sentence_seg_tag in zip(inputs, tokenizerd.encodings, segment_output):
-                text = [source_text[start:end] for start, end in encoding.offsets[1:-1] if end != 0]
+            for source_text, length, encoding, seg_tag in zip(inputs, lengths, tokenizerd.encodings, segment_output):
+                words = encoding.words[1:length + 1]
+                offsets = encoding.offsets[1:length + 1]
+                text = [source_text[start:end] for start, end in offsets]
 
-                last_word = 0
-                for idx, word in enumerate(encoding.words[1:-1]):
-                    if word is None or is_chinese_char(text[idx][-1]):
-                        continue
-                    if word != last_word:
-                        text[idx] = ' ' + text[idx]
-                        last_word = word
-                    else:
-                        sentence_seg_tag[idx] = WORD_MIDDLE
+                for idx in range(1, length):
+                    current_beg = offsets[idx][0]
+                    forward_end = offsets[idx - 1][-1]
+                    if forward_end < current_beg:
+                        text[idx] = source_text[forward_end:current_beg] + text[idx]
+                    if words[idx - 1] == words[idx]:
+                        seg_tag[idx] = WORD_MIDDLE
 
-                entities = get_entities(sentence_seg_tag)
+                entities = get_entities(seg_tag)
                 word_length.append(len(entities))
                 sentences.append([''.join(text[entity[1]:entity[2] + 1]).strip() for entity in entities])
                 word_idx.append(torch.as_tensor([entity[1] for entity in entities], device=self.device))
