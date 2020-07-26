@@ -8,7 +8,6 @@ torch_optimizer
 tqdm~=4.46.0
 tensorboard>=2.1.0
 tqdm~=4.46.0
-cytoolz~=0.10.1
 pygtrie==2.3.3
 
 # Speedup
@@ -27,7 +26,7 @@ pytorch_memlab
 # pytorch-nlp
 
 # error
-pretty_errors
+# pretty_errors
 
 # Test
 pytest
