@@ -357,6 +357,10 @@ class LTP(object):
         sdp_arc, sdp_label, _ = self.model.sdp_decoder(hidden['word_cls_input'], hidden['word_length'])
         sdp_arc = torch.sigmoid_(sdp_arc)
 
+        # 避免自指
+        eye = torch.arange(0, sdp_arc.size(1), device=sdp_arc.device).view(1, 1, -1).expand(sdp_arc.size(0), -1, -1)
+        sdp_arc.scatter_(dim=1, index=eye, value=0)
+
         if graph:
             # 语义依存图
             sdp_arc.transpose_(-1, -2)
