@@ -1,0 +1,55 @@
+[Global]
+epoch=30
+batch_size=30
+grad_norm=1.0
+early_stopping={metric='f1'}
+
+
+[[Fields]]
+class = "text"
+    [Fields.init]
+    name = "text"
+    word_info = false
+    return_word_idn = true
+    [Fields.init.tokenizer]
+    path="data/electra_base"
+
+[Dataset]
+class = "line"
+path="data/ltp-data/seg"
+train="train.txt"
+validation="valid.txt"
+test="test.txt"
+
+[[Metrics]]
+class = "Segment"
+
+[Loss]
+class = "seg"
+
+[Optimizer]
+class = "BertAdamW"
+    [Optimizer.init]
+    lr = 1e-3
+    bert_lr = 1e-4
+    weight_decay = 0
+
+[Scheduler]
+class = "LinearLRW"
+type = 'step'
+warmup_proportion=0.002
+
+[Predictor]
+class = "segment"
+
+[Checkpoint]
+directory="checkpoint/ltp_base/seg"
+plugins=['best','restore']
+best={ metric='f1' }
+
+[Model]
+class = "SimpleTagging"
+
+    [Model.init]
+    label_num=2
+    pretrained="data/electra_base"

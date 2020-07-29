@@ -1,0 +1,79 @@
+[Global]
+epoch=30
+batch_size=30
+grad_norm=1.0
+early_stopping={ metric='LAS' }
+
+
+[[Fields]]
+class = "text"
+    [Fields.init]
+    name = "text"
+    [Fields.init.tokenizer]
+    path="data/electra_base"
+
+[[Fields]]
+class = "sequence"
+    [Fields.init]
+    name = 'arc'
+    pad_bias = false
+    use_vocab = false
+    is_target = true
+    [Dataset.init]
+    split='_'
+
+[[Fields]]
+class = "sequence"
+    [Fields.init]
+    name = 'label'
+    is_target = true
+    pad_bias = true
+
+[Dataset]
+class = "line"
+path="data/ltp-data/dep"
+train="train.txt"
+validation="valid.txt"
+test="test.txt"
+
+[[Metrics]]
+class = "tree"
+    [Metrics.init]
+    eisner=true
+
+[Loss]
+class = "dep"
+    [Loss.init]
+    ignore_index=-1
+
+[Optimizer]
+class = "BertAdamW"
+    [Optimizer.init]
+    lr = 1e-3
+    bert_lr = 1e-4
+    weight_decay = 0
+
+[Scheduler]
+class = "LinearLRW"
+type = 'step'
+warmup_proportion=0.002
+
+[Checkpoint]
+directory="checkpoint/ltp_base/dep"
+plugins=['best','restore']
+best={ metric='LAS' }
+
+[Model]
+class = "SimpleTagging"
+
+    [Model.init]
+    label_num=14
+    decoder="Graph"
+    word_base=true
+    use_cls=true
+    pretrained="data/electra_base"
+    [Model.init.Graph]
+    arc_hidden_size=500
+    rel_hidden_size=100
+    activation.LeakyReLU.negative_slope=0.1
+

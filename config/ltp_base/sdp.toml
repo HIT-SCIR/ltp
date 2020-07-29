@@ -1,0 +1,70 @@
+[Global]
+epoch=30
+batch_size=30
+grad_norm=1.0
+early_stopping={ metric='f1' }
+
+
+[[Fields]]
+class = "text"
+    [Fields.init]
+    name = "text"
+    [Fields.init.tokenizer]
+    path="data/electra_base"
+
+[[Fields]]
+class = "graph"
+    [Fields.init]
+    name = 'arc'
+    is_target = true
+    edge_spliter = "|"
+    tag_spliter = ":"
+
+[Dataset]
+class = "line"
+path="data/ltp-data/sdp"
+train="train.txt"
+validation="valid.txt"
+test="test.txt"
+  [Dataset.init]
+  split='_'
+
+[[Metrics]]
+class = "graph"
+
+[Loss]
+class = "sdp"
+    [Loss.init]
+    ignore_index=-1
+
+[Optimizer]
+class = "BertAdamW"
+    [Optimizer.init]
+    lr = 1e-3
+    bert_lr = 1e-4
+    weight_decay = 0
+
+[Scheduler]
+class = "LinearLRW"
+type = 'step'
+warmup_proportion=0.002
+
+[Checkpoint]
+directory="checkpoint/ltp_base/sdp"
+plugins=['best','restore']
+best={ metric='f1' }
+
+[Model]
+class = "SimpleTagging"
+
+    [Model.init]
+    label_num=59
+    decoder="Graph"
+    word_base=true
+    use_cls=true
+    pretrained="data/electra_base"
+    [Model.init.Graph]
+    arc_hidden_size=600
+    rel_hidden_size=600
+    arc_dropout=0.25
+    rel_dropout=0.33
