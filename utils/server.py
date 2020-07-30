@@ -150,17 +150,6 @@ class Server(object):
         server.start(n_process)
         ioloop.IOLoop.instance().start()
 
-    def test(self, sentences: List[str] = None):
-        if sentences is None:
-            sentences = [
-                'My name is tom.',
-                'He called Tom to get coats.',
-                '他叫Tom去拿外衣。',
-                '他叫汤姆去拿外衣。'
-            ]
-        res = self._predict([sentence.strip() for sentence in sentences])
-        print(json.dumps(res, indent=2, sort_keys=True, ensure_ascii=False))
-
 
 if __name__ == '__main__':
     Fire(Server)

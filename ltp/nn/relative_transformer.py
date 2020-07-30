@@ -86,11 +86,7 @@ class RelativeMultiHeadAttn(nn.Module):
         self.n_head = num_head
         self.head_dim = input_size // num_head
         self.dropout_layer = nn.Dropout(dropout)
-
         self.pos_embed = RelativeEmbedding(input_size // num_head, 0, max_length)
-
-        self.scale = 1
-
         if r_r_bias is None or r_w_bias is None:  # Biases are not shared
             self.r_r_bias = nn.Parameter(nn.init.xavier_normal_(torch.zeros(num_head, input_size // num_head)))
             self.r_w_bias = nn.Parameter(nn.init.xavier_normal_(torch.zeros(num_head, input_size // num_head)))
@@ -147,8 +143,9 @@ class RelativeMultiHeadAttn(nn.Module):
         bsz, n_head, max_len, _ = BD.size()
         zero_pad = BD.new_zeros(bsz, n_head, max_len, 1)
         BD = torch.cat([BD, zero_pad], dim=-1).view(bsz, n_head, -1, max_len)  # bsz x n_head x (2max_len+1) x max_len
-        BD = BD[:, :, :-1].view(bsz, n_head, max_len, -1)  # bsz x n_head x 2max_len x max_len
-        BD = BD[:, :, :, max_len:]
+        BD = BD.narrow(dim=2, start=0, length=2 * max_len) \
+            .view(bsz, n_head, max_len, -1)  # bsz x n_head x 2max_len x max_len
+        BD = BD.narrow(dim=-1, start=max_len, length=max_len)
         return BD
 
 

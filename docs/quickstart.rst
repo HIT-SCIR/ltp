@@ -10,24 +10,15 @@
 
     pip install ltp
 
-用户自定义词典
--------------------
-```text
-# user_dict.txt
+载入模型
+--------------------------
 
-负重前行
-长江大桥
-
-```
 .. code-block:: python
 
     from ltp import LTP
-    ltp = LTP()
-    # user_dict.txt 是词典文件， max_window是最大前向分词窗口
-    ltp.init_dict(path="user_dict.txt", max_window=4)
-    # 也可以在代码中添加自定义的词语
-    ltp.add_words(words=["负重前行", "长江大桥"], max_window=4)
-
+    ltp = LTP() # 默认加载 Small 模型
+    # ltp = LTP(path = "base|small|tiny")
+    # ltp = LTP(path = "tiny.tgz|tiny-tgz-extracted") # 其中 tiny-tgz-extracted 是 tiny.tgz 解压出来的文件夹
 
 分句
 --------------------------
@@ -46,6 +37,25 @@
     #   "他去了医院。"
     # ]
 
+用户自定义词典
+-------------------
+
+::
+
+    # user_dict.txt
+
+    负重前行
+    长江大桥
+
+.. code-block:: python
+
+    from ltp import LTP
+    ltp = LTP()
+    # user_dict.txt 是词典文件， max_window是最大前向分词窗口
+    ltp.init_dict(path="user_dict.txt", max_window=4)
+    # 也可以在代码中添加自定义的词语
+    ltp.add_words(words=["负重前行", "长江大桥"], max_window=4)
+
 
 分词
 ------------------
@@ -60,6 +70,9 @@
 
     segment, _ = ltp.seg(["他叫汤姆去拿外衣。"])
     # [['他', '叫', '汤姆', '去', '拿', '外衣', '。']]
+
+    # 对于已经分词的数据
+    segment, hidden = ltp.seg(["他/叫/汤姆/去/拿/外衣/。".split('/')])
 
 
 词性标注

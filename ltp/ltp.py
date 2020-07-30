@@ -5,14 +5,14 @@ import os
 import torch
 import itertools
 import regex as re
-from typing import List
+from typing import Union, List
 
 from transformers import AutoTokenizer, cached_path, TensorType, BatchEncoding
 from transformers.file_utils import is_remote_url
 
 from ltp.models import Model
 from ltp.utils import length_to_mask, eisner, split_sentence
-from ltp.utils import USE_PLUGIN, get_entities, is_chinese_char, segment_decode
+from ltp.utils import get_entities
 from ltp.utils import Trie
 
 try:
@@ -131,6 +131,17 @@ class LTP(object):
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
         self.trie = Trie()
 
+        if kwargs.pop("need_config", False):
+            config = ckpt['model_config']
+            config['init']['seg']['vocab'] = self.seg_vocab
+            config['init']['pos']['vocab'] = self.pos_vocab
+            config['init']['ner']['vocab'] = self.ner_vocab
+            config['init']['dep']['vocab'] = self.dep_vocab
+            config['init']['sdp']['vocab'] = self.sdp_vocab
+            config['init']['srl']['vocab'] = self.srl_vocab
+            config['pretrained_config'] = ckpt['pretrained_config']
+            self.config = config
+
     def __str__(self):
         return f"LTP {self.version} on {self.device}"
 
@@ -165,7 +176,7 @@ class LTP(object):
         return matching
 
     @no_gard
-    def _seg(self, tokenizerd):
+    def _seg(self, tokenizerd, is_preseged=False):
         input_ids = tokenizerd['input_ids'].to(self.device)
         attention_mask = tokenizerd['attention_mask'].to(self.device)
         token_type_ids = tokenizerd['token_type_ids'].to(self.device)
@@ -180,29 +191,35 @@ class LTP(object):
         # remove [CLS] [SEP]
         word_cls = pretrained_output[:, :1]
         char_input = torch.narrow(pretrained_output, 1, 1, pretrained_output.size(1) - 2)
-        segment_output = torch.argmax(self.model.seg_decoder(char_input), dim=-1).cpu().numpy()
+        if is_preseged:
+            segment_output = None
+        else:
+            segment_output = torch.argmax(self.model.seg_decoder(char_input), dim=-1).cpu().numpy()
         return word_cls, char_input, segment_output, length
 
     @no_gard
-    def seg(self, inputs: List[str], truncation: bool = True):
+    def seg(self, inputs: Union[List[str], List[List[str]]], truncation: bool = True, is_preseged=False):
         """
         分词
 
         Args:
             inputs: 句子列表
             truncation: 是否对过长的句子进行截断，如果为 False 可能会抛出异常
+            is_preseged:  是否已经进行过分词
 
         Returns:
             words: 分词后的序列
             hidden: 用于其他任务的中间表示
         """
         tokenizerd = self.tokenizer.batch_encode_plus(
-            inputs, padding=True, truncation=truncation, return_tensors=self.tensor, max_length=self.max_length
+            inputs, padding=True, truncation=truncation,
+            return_tensors=self.tensor, max_length=self.max_length,
+            is_pretokenized=is_preseged
         )
         cls, hidden, seg, lengths = self._seg(tokenizerd)
 
         # merge segments with maximum forward matching
-        if self.trie.is_init:
+        if self.trie.is_init and not is_preseged:
             matches = self.seg_with_dict(inputs, tokenizerd)
             for sent_match, sent_seg in zip(matches, seg):
                 for start, end in sent_match:
@@ -211,13 +228,19 @@ class LTP(object):
                     if end < len(sent_seg):
                         sent_seg[end] = 0
 
-        segment_output = convert_idx_to_name(seg, lengths, self.seg_vocab)
-        if USE_PLUGIN:
-            offsets = [list(filter(lambda x: x != (0, 0), encodings.offsets)) for encodings in tokenizerd.encodings]
-            words = [list(filter(lambda x: x is not None, encodings.words)) for encodings in tokenizerd.encodings]
-            sentences, word_idx, word_length = segment_decode(inputs, segment_output, offsets, words)
-            word_idx = [torch.as_tensor(idx, device=self.device) for idx in word_idx]
+        if is_preseged:
+            sentences = inputs
+            word_length = [len(sentence) for sentence in sentences]
+
+            word_idx = []
+            for encodings in tokenizerd.encodings:
+                sentence_word_idx = []
+                for idx, (start, end) in enumerate(encodings.offsets[1:]):
+                    if start == 0 and end != 0:
+                        sentence_word_idx.append(idx)
+                word_idx.append(torch.as_tensor(sentence_word_idx, device=self.device))
         else:
+            segment_output = convert_idx_to_name(seg, lengths, self.seg_vocab)
             sentences = []
             word_idx = []
             word_length = []
