@@ -91,3 +91,4 @@ doc/_build
 
 # clion (jetbrain-ide)
 .idea
+cmake-*

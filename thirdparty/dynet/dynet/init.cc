@@ -168,7 +168,10 @@ void initialize(DynetParams& params) {
     random_device rd;
     params.random_seed = rd();
   }
+
+#ifdef LOG
   cerr << "[dynet] random seed: " << params.random_seed << endl;
+#endif
   rndeng = new mt19937(params.random_seed);
 
   // Set weight decay rate
@@ -177,7 +180,9 @@ void initialize(DynetParams& params) {
   weight_decay_lambda = params.weight_decay;
 
   // Allocate memory
+#ifdef LOG
   cerr << "[dynet] allocating memory: " << params.mem_descriptor << "MB\n";
+#endif
   // TODO: Once multi-device support is added, we will potentially allocate both CPU
   //       and GPU, not either-or
   int default_index = 0;
@@ -193,8 +198,9 @@ void initialize(DynetParams& params) {
   kSCALAR_MINUSONE = default_device->kSCALAR_MINUSONE;
   kSCALAR_ONE = default_device->kSCALAR_ONE;
   kSCALAR_ZERO = default_device->kSCALAR_ZERO;
+#ifdef LOG
   cerr << "[dynet] memory allocation done.\n";
-
+#endif
 }
 
 void initialize(int& argc, char**& argv, bool shared_parameters) {

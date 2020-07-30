@@ -85,7 +85,7 @@ TEST(postagger_unittest, test_load_constrain_function_correction) {
   const std::string model_file = "./ltp_data/pos.model";
   const std::string constraints_file = "./test_data/unittest/postag-known.constrain";
 
-  std::ifstream mfs(model_file.c_str());
+  std::ifstream mfs(model_file.c_str(), std::ifstream::binary);
   std::ifstream lfs(constraints_file.c_str());
 
   ltp::postagger::Model * model = new ltp::postagger::Model();

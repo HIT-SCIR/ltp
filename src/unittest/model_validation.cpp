@@ -24,7 +24,7 @@ const int kNumberOfSegmentTags = 4;
 const char* kSegmentTags[] = {"b", "i", "e", "s"};
 
 bool test_segmentor_model(const std::string& filename) {
-  std::ifstream mfs(filename.c_str());
+  std::ifstream mfs(filename.c_str(), std::ifstream::binary);
   if (!mfs) {
     WARNING_LOG("testing segment model: model not exist.");
     return false;
@@ -69,7 +69,7 @@ const char * kPostags[] = {"a",  "b",  "c",
   "wp", "ws", "z"};
 
 bool test_postagger_model(const std::string& filename) {
-  std::ifstream mfs(filename.c_str());
+  std::ifstream mfs(filename.c_str(), std::ifstream::binary);
   if (!mfs) {
     WARNING_LOG("testing postag model: model not exist.");
     return false;
@@ -109,7 +109,7 @@ bool test_postagger_model(const std::string& filename) {
 }
 
 bool test_ner_model(const std::string& filename) {
-  std::ifstream mfs(filename.c_str());
+  std::ifstream mfs(filename.c_str(), std::ifstream::binary);
   if (!mfs) {
     WARNING_LOG("testing ne model: model not exist.");
     return false;
