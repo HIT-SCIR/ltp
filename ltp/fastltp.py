@@ -41,7 +41,7 @@ class FastLTP(LTP):
         return f"FastLTP {self.version} on {self.device}"
 
     @no_gard
-    def _seg(self, tokenizerd):
+    def _seg(self, tokenizerd, *args, **kwargs):
         pretrained_inputs = {key: convert(value) for key, value in tokenizerd.items()}
         length = np.sum(pretrained_inputs['attention_mask'], axis=-1) - 2
 

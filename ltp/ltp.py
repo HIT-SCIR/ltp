@@ -211,16 +211,16 @@ class LTP(object):
             words: 分词后的序列
             hidden: 用于其他任务的中间表示
         """
-        tokenizerd = self.tokenizer.batch_encode_plus(
+        tokenized = self.tokenizer.batch_encode_plus(
             inputs, padding=True, truncation=truncation,
             return_tensors=self.tensor, max_length=self.max_length,
             is_pretokenized=is_preseged
         )
-        cls, hidden, seg, lengths = self._seg(tokenizerd)
+        cls, hidden, seg, lengths = self._seg(tokenized, is_preseged=is_preseged)
 
         # merge segments with maximum forward matching
         if self.trie.is_init and not is_preseged:
-            matches = self.seg_with_dict(inputs, tokenizerd)
+            matches = self.seg_with_dict(inputs, tokenized)
             for sent_match, sent_seg in zip(matches, seg):
                 for start, end in sent_match:
                     sent_seg[start] = 0
@@ -233,7 +233,7 @@ class LTP(object):
             word_length = [len(sentence) for sentence in sentences]
 
             word_idx = []
-            for encodings in tokenizerd.encodings:
+            for encodings in tokenized.encodings:
                 sentence_word_idx = []
                 for idx, (start, end) in enumerate(encodings.offsets[1:]):
                     if start == 0 and end != 0:
@@ -245,7 +245,7 @@ class LTP(object):
             word_idx = []
             word_length = []
 
-            for source_text, length, encoding, seg_tag in zip(inputs, lengths, tokenizerd.encodings, segment_output):
+            for source_text, length, encoding, seg_tag in zip(inputs, lengths, tokenized.encodings, segment_output):
                 words = encoding.words[1:length + 1]
                 offsets = encoding.offsets[1:length + 1]
                 text = [source_text[start:end] for start, end in offsets]
