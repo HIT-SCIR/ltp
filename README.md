@@ -4,6 +4,7 @@
 ![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
 ![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp)
 [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://ltp.readthedocs.io/zh_CN/latest/?badge=latest)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/ltp)](https://pypi.python.org/pypi/ltp)
 
 # LTP 4 
 
