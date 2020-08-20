@@ -110,7 +110,7 @@ endif()
 #endforeach(test_src)
 
 # Build cpu library
-add_library(dynet ${dynet_library_SRCS} ${dynet_library_HDRS})
+add_library(dynet STATIC ${dynet_library_SRCS} ${dynet_library_HDRS})
 target_link_libraries(dynet ${LIBS})
 if(WITH_CUDA_BACKEND)
   # cuda flags
