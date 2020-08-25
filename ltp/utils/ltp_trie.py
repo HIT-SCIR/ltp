@@ -69,14 +69,20 @@ class Trie(pygtrie.CharTrie):
                 self[word] = True
                 self.min_start = len(word)
 
-    def maximum_forward_matching(self, text: List[str]):
+    def maximum_forward_matching(self, text: List[str], preffix: List[bool]):
         maximum_matching_pos = []
         text_len = len(text)
         for start in range(text_len - 1):
-            candidate = None
-            for end in range(start + self.min_start, min(text_len, start + self.max_window + 1)):
-                if self.get("".join(text[start:end]), False):
-                    candidate = (start, end)
-            if candidate:
-                maximum_matching_pos.append(candidate)
+            if preffix[start]:
+                candidate = None
+                end = start + self.min_start
+                curr_len = end - start
+                max_len = min(text_len, start + self.max_window + 1)
+                while end <= text_len and curr_len < max_len:
+                    if self.get("".join(text[start:end]), False):
+                        candidate = (start, end)
+                    curr_len += preffix[end - 1]
+                    end += 1
+                if candidate:
+                    maximum_matching_pos.append(candidate)
         return maximum_matching_pos

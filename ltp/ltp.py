@@ -166,12 +166,12 @@ class LTP(object):
         inputs = list(itertools.chain(*inputs))
         return inputs
 
-    def seg_with_dict(self, inputs: List[str], tokenized: BatchEncoding):
+    def seg_with_dict(self, inputs: List[str], tokenized: BatchEncoding, batch_prefix):
         # 进行正向字典匹配
         matching = []
-        for source_text, encoding in zip(inputs, tokenized.encodings):
+        for source_text, encoding, preffix in zip(inputs, tokenized.encodings, batch_prefix):
             text = [source_text[start:end] for start, end in encoding.offsets[1:-1] if end != 0]
-            matching_pos = self.trie.maximum_forward_matching(text)
+            matching_pos = self.trie.maximum_forward_matching(text, preffix)
             matching.append(matching_pos)
         return matching
 
@@ -218,9 +218,14 @@ class LTP(object):
         )
         cls, hidden, seg, lengths = self._seg(tokenized, is_preseged=is_preseged)
 
+        batch_prefix = [[
+            word_idx != encoding.words[idx - 1]
+            for idx, word_idx in enumerate(encoding.words) if word_idx is not None
+        ] for encoding in tokenized.encodings]
+
         # merge segments with maximum forward matching
         if self.trie.is_init and not is_preseged:
-            matches = self.seg_with_dict(inputs, tokenized)
+            matches = self.seg_with_dict(inputs, tokenized, batch_prefix)
             for sent_match, sent_seg in zip(matches, seg):
                 for start, end in sent_match:
                     sent_seg[start] = 0
@@ -245,7 +250,8 @@ class LTP(object):
             word_idx = []
             word_length = []
 
-            for source_text, length, encoding, seg_tag in zip(inputs, lengths, tokenized.encodings, segment_output):
+            for source_text, length, encoding, seg_tag, preffix in \
+                    zip(inputs, lengths, tokenized.encodings, segment_output, batch_prefix):
                 words = encoding.words[1:length + 1]
                 offsets = encoding.offsets[1:length + 1]
                 text = [source_text[start:end] for start, end in offsets]
@@ -255,7 +261,7 @@ class LTP(object):
                     forward_end = offsets[idx - 1][-1]
                     if forward_end < current_beg:
                         text[idx] = source_text[forward_end:current_beg] + text[idx]
-                    if words[idx - 1] == words[idx]:
+                    if not preffix[idx]:
                         seg_tag[idx] = WORD_MIDDLE
 
                 entities = get_entities(seg_tag)
