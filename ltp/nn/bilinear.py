@@ -28,7 +28,20 @@ class Bilinear(nn.Module):
         bound = 1 / math.sqrt(self.weight.size(1))
         nn.init.uniform_(self.weight, -bound, bound)
 
+    def onnx_forward(self, x1: Tensor, x2: Tensor):
+        if self.bias_x:
+            x1 = torch.cat((x1, torch.ones_like(x1[..., :1])), -1)
+        if self.bias_y:
+            x2 = torch.cat((x2, torch.ones_like(x2[..., :1])), -1)
+        x1 = x1.unsqueeze(1)
+        x2 = x2.unsqueeze(1)
+        s: Tensor = x1 @ self.weight @ x2.transpose(-1, -2)
+        if s.size(1) == 1:
+            s = s.squeeze(1)
+        return s
+
     def forward(self, x1: Tensor, x2: Tensor):
+        res = self.onnx_forward(x1, x2)
         if self.bias_x:
             x1 = torch.cat((x1, torch.ones_like(x1[..., :1])), -1)
         if self.bias_y:
@@ -36,6 +49,7 @@ class Bilinear(nn.Module):
         if self.expand:
             # [batch_size, n_out, seq_len, seq_len]
             s = torch.einsum('bxi,oij,byj->boxy', x1, self.weight, x2)
+            test = torch.sum(s - res)
             return s
         # [batch_size, n_out, seq_len]
         return F.bilinear(x1, x2, self.weight, None)

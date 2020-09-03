@@ -5,10 +5,14 @@ import os
 import torch
 import itertools
 import regex as re
+import transformers
 from typing import Union, List
 
+from packaging import version
 from transformers import AutoTokenizer, cached_path, TensorType, BatchEncoding
 from transformers.file_utils import is_remote_url
+
+transformers_version = version.parse(transformers.__version__)
 
 from ltp.models import Model
 from ltp.utils import length_to_mask, eisner, split_sentence
@@ -118,7 +122,7 @@ class LTP(object):
         ckpt['model_config']['init'].pop('pretrained')
         self.cache_dir = path
         self.model = Model.from_params(ckpt['model_config'], config=ckpt['pretrained_config']).to(self.device)
-        self.model.load_state_dict(ckpt['model'])
+        self.model.load_state_dict(ckpt['model'], strict=transformers_version < version.parse("3.1.0"))
         self.model.eval()
         # todo fp16
         self.max_length = self.model.pretrained.config.max_position_embeddings

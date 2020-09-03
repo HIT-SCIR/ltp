@@ -22,11 +22,11 @@ setup(
     install_requires=[
         'torch>=1.2.0',
         'torchtext==0.5.0',
-        'transformers>=3.0',
+        'transformers>=3.0, <3.2.*',
         'pygtrie==2.3.3',
         'tqdm',
         'toml',
-        'fire',
+        'fire'
     ],
     classifiers=[
         'Development Status :: 1 - Planning',
