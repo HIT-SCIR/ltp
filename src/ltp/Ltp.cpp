@@ -75,7 +75,7 @@ bool LTP::load(const std::string& last_stage,
 
   if (target_mask & kActiveSegmentor) {
     int ret;
-    if (segmentor_lexicon_file == "" and segmentor_force_lexicon_file == "") {
+    if (segmentor_lexicon_file == "" && segmentor_force_lexicon_file == "") {
       ret = _resource.LoadSegmentorResource(segmentor_model_file);
     } else if (segmentor_force_lexicon_file == ""){
       ret = _resource.LoadSegmentorResource(segmentor_model_file, segmentor_lexicon_file);
