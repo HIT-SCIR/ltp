@@ -246,7 +246,7 @@ void Segmentor::load_lexicon(const char* filename, Model::lexicon_t* lexicon) co
 
 void Segmentor::post_process(std::vector<std::string> &chars, std::vector<std::string> &words) const {
   // rule 1. force segment words in the force_lexicon vocab
-  if (force_lexicon.size() and words.size()) {
+  if (force_lexicon.size() && words.size()) {
     std::vector<size_t> soft_baffle;
     std::string raw;
     // construct raw and soft_baffle
@@ -269,13 +269,13 @@ void Segmentor::post_process(std::vector<std::string> &chars, std::vector<std::s
           // find in lexicon
           // remove the inner soft_baffle
           for (auto b = soft_baffle.begin(); b != soft_baffle.end(); b++) {
-            if (past_length < *b and *b < past_length + cur_word.length()) {
+            if (past_length < *b && *b < past_length + cur_word.length()) {
               soft_baffle.erase(b);
               b --;
             }
           }
           if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length) == soft_baffle.end()
-              and
+              &&
               past_length != 0)
             soft_baffle.push_back(past_length);
           if (std::find(soft_baffle.begin(), soft_baffle.end(), past_length + cur_word.length()) == soft_baffle.end())
