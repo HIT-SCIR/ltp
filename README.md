@@ -10,6 +10,16 @@
 
 LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。
 
+If you use any source codes included in this toolkit in your work, please kindly cite the following paper. The bibtex are listed below:
+<pre>
+@article{che2020n,
+  title={N-LTP: A Open-source Neural Chinese Language Technology Platform with Pretrained Models},
+  author={Che, Wanxiang and Feng, Yunlong and Qin, Libo and Liu, Ting},
+  journal={arXiv preprint arXiv:2009.11616},
+  year={2020}
+}
+</pre>
+
 ## 快速使用
 
 ```python
