@@ -41,7 +41,6 @@ class Bilinear(nn.Module):
         return s
 
     def forward(self, x1: Tensor, x2: Tensor):
-        res = self.onnx_forward(x1, x2)
         if self.bias_x:
             x1 = torch.cat((x1, torch.ones_like(x1[..., :1])), -1)
         if self.bias_y:
@@ -49,7 +48,6 @@ class Bilinear(nn.Module):
         if self.expand:
             # [batch_size, n_out, seq_len, seq_len]
             s = torch.einsum('bxi,oij,byj->boxy', x1, self.weight, x2)
-            test = torch.sum(s - res)
             return s
         # [batch_size, n_out, seq_len]
         return F.bilinear(x1, x2, self.weight, None)
