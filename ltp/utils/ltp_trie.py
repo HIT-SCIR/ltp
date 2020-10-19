@@ -58,6 +58,7 @@ class Trie(pygtrie.CharTrie):
                     word = word.strip()
                     if word:
                         self[word] = True
+                        self.min_start = len(word)
 
     def add_words(self, words):
         self.is_init = True
