@@ -39,7 +39,7 @@ class Executor(object):
         self.tasks = self.config.tasks
         self.epoch_size = self.config.epoch_size
 
-    def train(self, epoch: int = 30):
+    def train(self, epoch: int = None):
         epoch = self.config.epoch if epoch is None else epoch
 
         # =================================== 任务初始化 =================================
