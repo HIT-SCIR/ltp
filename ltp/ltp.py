@@ -366,7 +366,7 @@ class LTP(object):
             dep_arc_fix = dep_arc.argmax(dim=-1).unsqueeze_(-1).expand_as(dep_arc)
         else:
             dep_arc_fix = eisner(dep_arc, hidden['word_cls_mask']).unsqueeze_(-1).expand_as(dep_arc)
-        dep_arc = torch.zeros_like(dep_arc, dtype=torch.bool).scatter_(dim=-1, index=dep_arc_fix, value=True)
+        dep_arc = torch.zeros_like(dep_arc, dtype=torch.bool).scatter_(-1, dep_arc_fix, True)
         dep_label = torch.argmax(dep_label, dim=-1)
 
         word_cls_mask = hidden['word_cls_mask']
@@ -392,7 +392,7 @@ class LTP(object):
 
         # 避免自指
         eye = torch.arange(0, sdp_arc.size(1), device=sdp_arc.device).view(1, 1, -1).expand(sdp_arc.size(0), -1, -1)
-        sdp_arc.scatter_(dim=1, index=eye, value=0)
+        sdp_arc.scatter_(1, eye, 0)
 
         if graph:
             # 语义依存图
@@ -402,12 +402,11 @@ class LTP(object):
             sdp_arc[:, 0].scatter_(dim=-1, index=sdp_root_mask, value=1)
             sdp_arc_T = sdp_arc.transpose(-1, -2)
             sdp_arc_fix = sdp_arc_T.argmax(dim=-1).unsqueeze_(-1).expand_as(sdp_arc)
-            sdp_arc = ((sdp_arc_T > 0.5) & (sdp_arc_T > sdp_arc)). \
-                scatter_(dim=-1, index=sdp_arc_fix, value=True)
+            sdp_arc = ((sdp_arc_T > 0.5) & (sdp_arc_T > sdp_arc)).scatter_(-1, sdp_arc_fix, True)
         else:
             # 语义依存树
             sdp_arc_fix = eisner(sdp_arc, hidden['word_cls_mask']).unsqueeze_(-1).expand_as(sdp_arc)
-            sdp_arc = torch.zeros_like(sdp_arc, dtype=torch.bool).scatter_(dim=-1, index=sdp_arc_fix, value=True)
+            sdp_arc = torch.zeros_like(sdp_arc, dtype=torch.bool).scatter_(-1, sdp_arc_fix, True)
 
         sdp_label = torch.argmax(sdp_label, dim=-1)
 
