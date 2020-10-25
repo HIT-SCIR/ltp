@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
-import json
 from typing import List, Optional
 
 import conllu
@@ -12,7 +11,7 @@ from ltp import LTP, FastLTP
 from ltp.data.utils import iter_lines
 
 
-class Conll(object):
+class Conllu(object):
     """
     :param path: 模型路径，或者自动从网上下载 ['base', 'small', 'tiny']
     :param batch_size: 最大 Batch Size 自动切分
