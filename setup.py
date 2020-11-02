@@ -22,7 +22,7 @@ setup(
     install_requires=[
         'torch>=1.2.0',
         'torchtext==0.5.0',
-        'transformers>=3.0, <3.2.*',
+        'transformers>=3.0, <3.4.*',
         'pygtrie==2.3.3',
         'tqdm',
         'toml',
