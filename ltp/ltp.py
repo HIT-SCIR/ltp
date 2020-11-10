@@ -371,6 +371,8 @@ class LTP(object):
 
         word_cls_mask = hidden['word_cls_mask']
         word_cls_mask = word_cls_mask.unsqueeze(-1).expand(-1, -1, word_cls_mask.size(1))
+        word_cls_mask = word_cls_mask & word_cls_mask.transpose(-1, -2)
+        word_cls_mask[:, :, 0] = True
         dep_arc = dep_arc & word_cls_mask
         dep_label = get_graph_entities(dep_arc, dep_label, self.dep_vocab)
 
@@ -412,6 +414,8 @@ class LTP(object):
 
         word_cls_mask = hidden['word_cls_mask']
         word_cls_mask = word_cls_mask.unsqueeze(-1).expand(-1, -1, word_cls_mask.size(1))
+        word_cls_mask = word_cls_mask & word_cls_mask.transpose(-1, -2)
+        word_cls_mask[:, :, 0] = True
         sdp_arc = sdp_arc & word_cls_mask
         sdp_label = get_graph_entities(sdp_arc, sdp_label, self.sdp_vocab)
 

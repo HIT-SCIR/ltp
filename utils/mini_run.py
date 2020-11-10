@@ -86,7 +86,9 @@ class Run(object):
         self.ltp.add_words("DMI与主机通讯中断")
         if sentences is None:
             sentences = [
-                "他叫汤姆去拿外衣。"
+                "我们都是中国人。",
+                "遇到苦难不要放弃，加油吧！奥利给！",
+                "乔丹是一位出生在纽约的美国职业篮球运动员。"
             ]
         res = self._predict([sentence.strip() for sentence in sentences])
         print(json.dumps(res, indent=2, sort_keys=True, ensure_ascii=False))
