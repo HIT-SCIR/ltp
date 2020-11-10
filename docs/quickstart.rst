@@ -72,7 +72,7 @@
     # [['他', '叫', '汤姆', '去', '拿', '外衣', '。']]
 
     # 对于已经分词的数据
-    segment, hidden = ltp.seg(["他/叫/汤姆/去/拿/外衣/。".split('/')])
+    segment, hidden = ltp.seg(["他/叫/汤姆/去/拿/外衣/。".split('/')], is_preseged=True)
 
 
 词性标注
