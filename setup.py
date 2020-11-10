@@ -20,9 +20,9 @@ setup(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(exclude=['tests', 'examples', 'docs']),
     install_requires=[
-        'torch>=1.2.0',
-        'torchtext==0.5.0',
-        'transformers>=3.0, <3.4.*',
+        'torch>=1.2.0,<=1.6.0',
+        'torchtext>=0.5.0,<=0.7.0',
+        'transformers>=3.0, <=3.4.0',
         'pygtrie==2.3.3',
         'tqdm',
         'toml',
