@@ -11,7 +11,11 @@ import os
 from ltp import Registrable
 
 
-class Dataset(torch.utils.data.dataset.Dataset, metaclass=Registrable):
+class JoinedMeta(Registrable, type(torch.utils.data.dataset.Dataset)):
+    pass
+
+
+class Dataset(torch.utils.data.dataset.Dataset, metaclass=JoinedMeta):
     """
     数据集抽象类，在配置文件中的配置项通常为::
 
