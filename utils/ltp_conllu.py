@@ -118,4 +118,4 @@ class Conllu(object):
 
 
 if __name__ == '__main__':
-    Fire(Conll)
+    Fire(Conllu)
