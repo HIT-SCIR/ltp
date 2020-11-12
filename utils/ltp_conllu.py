@@ -3,7 +3,7 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 from typing import List, Optional
 
-import conllu # conllu 4.2
+import conllu  # conllu 4.2
 from fire import Fire
 from itertools import zip_longest
 
@@ -20,7 +20,6 @@ class Conllu(object):
     """
 
     def __init__(self, path: str = 'small', batch_size: int = 50, device: str = None, onnx: bool = False):
-
         if onnx:
             self.ltp = FastLTP(path=path, device=device, need_config=True)
         else:

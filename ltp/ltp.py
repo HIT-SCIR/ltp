@@ -119,19 +119,19 @@ class LTP(object):
         elif not os.path.isdir(path):
             raise FileNotFoundError()
         ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
-        ckpt['model_config']['init'].pop('pretrained')
+        ckpt['model_config']['init'].pop('pretrained', None)
         self.cache_dir = path
         self.model = Model.from_params(ckpt['model_config'], config=ckpt['pretrained_config']).to(self.device)
         self.model.load_state_dict(ckpt['model'], strict=transformers_version < version.parse("3.1.0"))
         self.model.eval()
         # todo fp16
         self.max_length = self.model.pretrained.config.max_position_embeddings
-        self.seg_vocab = [WORD_START, WORD_MIDDLE]
-        self.pos_vocab = ckpt['pos']
-        self.ner_vocab = ckpt['ner']
-        self.dep_vocab = ckpt['dep']
-        self.sdp_vocab = ckpt['sdp']
-        self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag.lstrip('ARGM-')) for tag in ckpt['srl']]
+        self.seg_vocab = ckpt.get('seg', [WORD_START, WORD_MIDDLE])
+        self.pos_vocab = ckpt.get('pos', [])
+        self.ner_vocab = ckpt.get('ner', [])
+        self.dep_vocab = ckpt.get('dep', [])
+        self.sdp_vocab = ckpt.get('sdp', [])
+        self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag.lstrip('ARGM-')) for tag in ckpt.get('srl', [])]
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.pretrained.config, use_fast=True)
         self.trie = Trie()
 
