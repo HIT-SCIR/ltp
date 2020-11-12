@@ -3,7 +3,7 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 from typing import List, Optional
 
-import conllu
+import conllu # conllu 4.2
 from fire import Fire
 from itertools import zip_longest
 
