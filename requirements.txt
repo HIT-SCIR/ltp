@@ -3,4 +3,4 @@ torch>=1.2.0
 transformers>=3.2.0, <4
 
 # Front End
-pygtrie>=2.3.0, <2.4
+pygtrie>=2.3.0, <2.5

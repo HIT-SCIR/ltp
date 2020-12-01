@@ -28,7 +28,7 @@ setup(
     install_requires=[
         "torch>=1.2.0",
         "transformers>=3.2.0, <4",
-        "pygtrie>=2.3.0, <2.4"
+        "pygtrie>=2.3.0, <2.5"
     ],
     classifiers=[
         'Development Status :: 1 - Planning',
@@ -37,6 +37,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Software Development :: Libraries'
     ],
     python_requires='>=3.6.*, <4',
