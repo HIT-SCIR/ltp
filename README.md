@@ -51,6 +51,7 @@ sdp = ltp.sdp(hidden)
 | Tiny(v1)  |   [34MB](http://39.96.43.154/ltp/v1/tiny.tgz)   | 877bb0cd97d82fdbd2c6f74144c4f9abf9e44ce79075cd17bde02abe314a1e49 |
 
 **备注**: Tiny模型使用electra前三层进行初始化, 4.0.3.post1 版本包含对v1模型的fix，新版本请使用v2模型, 其中v3模型是从v2转换得来
+
 **注意**: LTP 4.1.X 与旧版本 v1,v2 模型不兼容
 
 ### V2/v3 指标
