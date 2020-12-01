@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 
-from distutils.core import setup
 import setuptools
+from distutils.core import setup
 
 from ltp import __version__ as version
 
@@ -18,15 +18,17 @@ setup(
     description='Language Technology Platform',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=setuptools.find_packages(exclude=['tests', 'examples', 'docs']),
+    packages=setuptools.find_packages(exclude=[
+        'docs'
+        'tools',
+        'tests',
+        'examples',
+        'config',
+    ]),
     install_requires=[
-        'torch>=1.2.0,<=1.7.0',
-        'torchtext>=0.5.0,<=0.7.0',
-        'transformers>=3.0, <=3.4.0',
-        'pygtrie==2.3.3',
-        'tqdm',
-        'toml',
-        'fire'
+        "torch>=1.2.0",
+        "transformers>=3.2.0, <4",
+        "pygtrie>=2.3.0, <2.4"
     ],
     classifiers=[
         'Development Status :: 1 - Planning',
