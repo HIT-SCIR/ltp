@@ -6,15 +6,11 @@ from typing import List
 
 from fire import Fire
 
-from ltp import LTP, FastLTP
-
+from ltp import LTP
 
 class Run(object):
     def __init__(self, path: str = 'small', batch_size: int = 50, device: str = None, onnx: bool = False):
-        if onnx:
-            self.ltp = FastLTP(path=path, device=device, need_config=True)
-        else:
-            self.ltp = LTP(path=path, device=device, need_config=True)
+        self.ltp = LTP(path=path, device=device, need_config=True)
         self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
 
     def _build_words(self, words, pos, dep):

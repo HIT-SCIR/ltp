@@ -5,8 +5,7 @@ from typing import Optional
 import torch, math
 from torch import Tensor, nn
 import torch.nn.functional as F
-from ltp.utils import length_to_mask
-from ltp.nn import ffnn
+from ltp.nn.ffnn import FFNN
 
 
 class RelativeEmbedding(nn.Module):
@@ -164,7 +163,7 @@ class RelativeTransformerLayer(nn.Module):
         self.norm1 = nn.LayerNorm(input_size)
         self.norm2 = nn.LayerNorm(input_size)
         self.self_attn = RelativeMultiHeadAttn(input_size, num_heads, dropout=dropout, max_length=max_length)
-        self.ffn = ffnn(input_size, input_size, hidden_size, dropout, depth=2, last_dropout=True)
+        self.ffn = FFNN(input_size, input_size, hidden_size, dropout, depth=2, last_dropout=True)
 
     def forward(self, x, mask):
         """
@@ -198,14 +197,12 @@ class RelativeTransformer(nn.Module):
             for _ in range(num_layers)
         ])
 
-    def forward(self, x: Tensor, length: Tensor, gold: Optional = None):
+    def forward(self, x: Tensor, attention_mask: Tensor):
         """
         :param x: batch_size x max_len
         :param length: sequence length, B
         """
 
-        mask = length_to_mask(length, dtype=torch.long)
-
         for layer in self.layers:
-            x = layer(x, mask)
-        return x, length, gold
+            x = layer(x, attention_mask)
+        return x

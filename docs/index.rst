@@ -16,8 +16,6 @@ API文档
     quickstart
     performance
 
-    api/ltp*
-
     appendix
 
 

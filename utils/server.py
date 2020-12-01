@@ -20,7 +20,7 @@ from tornado.web import Application, RequestHandler
 from tornado.log import app_log, gen_log, access_log, LogFormatter
 from fire import Fire
 
-from ltp import LTP, FastLTP
+from ltp import LTP
 
 
 class LTPHandler(RequestHandler):
@@ -47,10 +47,7 @@ class LTPHandler(RequestHandler):
 
 class Server(object):
     def __init__(self, path: str = 'small', batch_size: int = 50, device: str = None, onnx: bool = False):
-        if onnx:
-            self.ltp = FastLTP(path=path, device=device)
-        else:
-            self.ltp = LTP(path=path, device=device)
+        self.ltp = LTP(path=path, device=device)
         self.split = lambda a: map(lambda b: a[b:b + batch_size], range(0, len(a), batch_size))
 
     def _build_words(self, words, pos, dep):

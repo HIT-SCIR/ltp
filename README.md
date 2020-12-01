@@ -39,17 +39,20 @@ sdp = ltp.sdp(hidden)
 
 ### 模型下载
 
-|   模型    |                      大小                      |
-| :-------: | :--------------------------------------------: |
-| Base(v2)  | [531MB](http://39.96.43.154/ltp/v2/base.tgz) |
-| Small(v2) | [170MB](http://39.96.43.154/ltp/v2/small.tgz)  |
-| Tiny(v2)  |  [34MB](http://39.96.43.154/ltp/v2/tiny.tgz)   |
-| Small(v1) | [170MB](http://39.96.43.154/ltp/v1/small.tgz)  |
-| Tiny(v1)  |  [34MB](http://39.96.43.154/ltp/v1/tiny.tgz)   |
+|   模型    |                      大小                       |                              sha256                              |
+| :-------: | :---------------------------------------------: | :--------------------------------------------------------------: |
+| Base(v3)  | [491.9MB](http://39.96.43.154/ltp/v3/base.tgz)  | 5c24a476d505a8c0a3385bbecb0ce816e876922450edf93e2d2bc6f3a01795ca |
+| Small(v3) | [156.8MB](http://39.96.43.154/ltp/v3/small.tgz) | 2a9a090f84ae0effc37c3d5ba2cb20e2856b149b380eeeebc6f9b3808ad8e9e4 |
+| Tiny(v3)  |  [31.3MB](http://39.96.43.154/ltp/v3/tiny.tgz)  | 0f40bce82c4610829aabb3363e82305289ced721cc846631907af3594bea453e |
+| Base(v2)  |  [531MB](http://39.96.43.154/ltp/v2/base.tgz)   | 4ba5b16e90c073fced2ba45ebd6a663e78bf081f8a83a3d68582d53ce544ed3a |
+| Small(v2) |  [170MB](http://39.96.43.154/ltp/v2/small.tgz)  | 26e79fc2912bf2ed9bff72c1de908045e471e4f520b1652f9db246bc38b7b6c6 |
+| Tiny(v2)  |   [34MB](http://39.96.43.154/ltp/v2/tiny.tgz)   | 8ed110819c9fd600c1e9cd99a82107d79c804b93d0701055e9215b93035393ba |
+| Small(v1) |  [170MB](http://39.96.43.154/ltp/v1/small.tgz)  | d78bd6507eb4b1a45859ca4d36065dc6ce69202a8fc0edfdce29934fd8307222 |
+| Tiny(v1)  |   [34MB](http://39.96.43.154/ltp/v1/tiny.tgz)   | 877bb0cd97d82fdbd2c6f74144c4f9abf9e44ce79075cd17bde02abe314a1e49 |
 
-**备注**: Tiny模型使用electra前三层进行初始化, 4.0.3.post1 版本包含对v1模型的fix，新版本请使用v2模型
+**备注**: Tiny模型使用electra前三层进行初始化, 4.0.3.post1 版本包含对v1模型的fix，新版本请使用v2模型, 其中v3模型是从v2转换得来
 
-### V2 指标
+### V2/v3 指标
 
 |      模型       | 分词  | 词性  | 命名实体 | 语义角色 | 依存句法 | 语义依存 | 速度(句/S) |
 | :-------------: | :---: | :---: | :------: | :------: | :------: | :------: | :--------: |
@@ -88,7 +91,7 @@ sdp = ltp.sdp(hidden)
 ## 构建 Wheel 包
 
 ```shell script
-python setup.py sdist
+python setup.py sdist bdist_wheel
 python -m twine upload dist/*
 ```
 
