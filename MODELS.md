@@ -2,9 +2,9 @@
 
 |   模型    |                      大小                       |                              sha256                              |
 | :-------: | :---------------------------------------------: | :--------------------------------------------------------------: |
-| Base(v3)  | [491.9MB](http://39.96.43.154/ltp/v3/base.tgz)  | 2ab941e9df35a10e6d711082ecdcbe8bfa2a077585eaf85b981df8fbec7e23c4 |
-| Small(v3) | [156.8MB](http://39.96.43.154/ltp/v3/small.tgz) | e6854fddf71d3657aae4225669b6f158de1a974da42d9dacf18647763d84665d |
-| Tiny(v3)  |  [31.3MB](http://39.96.43.154/ltp/v3/tiny.tgz)  | 1fbfa9f0c003a194392364071ce1d09246cee40db744a7c49b2bcf1196be4dcb |
+| Base(v3)  | [491.9MB](http://39.96.43.154/ltp/v3/base.tgz)  | 777a97d6770285e5ab3b0720923bc86781e3279508a72a30c2dd9140b09e5ec8 |
+| Small(v3) | [156.8MB](http://39.96.43.154/ltp/v3/small.tgz) | 0992d5037cd1c62779a3b5c6d45b883a46e4782c6bcc5850117faf69a9ee6c56 |
+| Tiny(v3)  |  [31.3MB](http://39.96.43.154/ltp/v3/tiny.tgz)  | d0ab69f1493db232676423270d481080bf636bf8547e4297129b6a21c6f73612 |
 | Base(v2)  |  [531MB](http://39.96.43.154/ltp/v2/base.tgz)   | 4ba5b16e90c073fced2ba45ebd6a663e78bf081f8a83a3d68582d53ce544ed3a |
 | Small(v2) |  [170MB](http://39.96.43.154/ltp/v2/small.tgz)  | 26e79fc2912bf2ed9bff72c1de908045e471e4f520b1652f9db246bc38b7b6c6 |
 | Tiny(v2)  |   [34MB](http://39.96.43.154/ltp/v2/tiny.tgz)   | 8ed110819c9fd600c1e9cd99a82107d79c804b93d0701055e9215b93035393ba |
