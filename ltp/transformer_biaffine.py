@@ -41,7 +41,7 @@ def sdp_loss(model, s_arc, s_rel, head, labels, logits_mask):
     mask = logits_mask.unsqueeze(-1).expand_as(s_arc)
 
     arc_loss = head_loss(s_arc[mask], head[mask].float())
-    rel_loss = rel_loss(s_rel[mask], labels[mask])
+    rel_loss = rel_loss(s_rel[head > 0], labels[head > 0])
 
     loss = 2 * ((1 - model.loss_interpolation) * arc_loss + model.loss_interpolation * rel_loss)
 
