@@ -106,17 +106,10 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
         loss, (parc, prel) = self(**batch)
 
         parc = parc[:, 1:, :]
-        parc = parc[:, 1:, :]
+        prel = prel[:, 1:, :]
 
         parc = torch.sigmoid(parc) > 0.5
         prel = torch.argmax(prel, dim=-1)
-
-        # mask arc
-        mask = batch['word_attention_mask'].unsqueeze(-1).expand_as(batch['labels'])
-        tmp_mask = mask[:, :, :-1] & torch.transpose(mask[:, :, :-1], 1, 2)
-        mask = mask.clone()
-        mask[:, :, :-1] = tmp_mask
-        parc[~mask] = False
 
         predict = metric_func(parc, prel)
         real = metric_func(batch['head'], batch['labels'])
@@ -202,10 +195,11 @@ def build_method(model):
             warmup_proportion=self.hparams.warmup_proportion,
             layerwise_lr_decay_power=self.hparams.layerwise_lr_decay_power,
             n_transformer_layers=self.transformer.config.num_hidden_layers,
-            lr_scheduler=optimization.get_polynomial_decay_schedule_with_warmup,
+            lr_scheduler=self.hparams.lr_scheduler,
             lr_scheduler_kwargs={
                 'lr_end': self.hparams.lr_end,
-                'power': self.hparams.lr_decay_power
+                'power': self.hparams.lr_decay_power,
+                'num_cycles': self.hparams.lr_num_cycles
             }
         )
 
@@ -303,7 +297,7 @@ def main():
     else:
         common_train(
             args,
-            metric='val_las',
+            metric=f'val_{task_info.metric_name}',
             model_class=Model,
             build_method=build_method,
             task='sdp',

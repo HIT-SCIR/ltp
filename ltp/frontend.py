@@ -360,7 +360,7 @@ class LTP(object):
         word_attention_mask = hidden['word_cls_mask']
         dep_arc, dep_label = self.model.dep_classifier.forward(
             input=hidden['word_cls_input'],
-            word_attention_mask=word_attention_mask
+            word_attention_mask=word_attention_mask[:, 1:]
         )[0]
         dep_arc[:, 0, 1:] = float('-inf')
         dep_arc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))
@@ -400,7 +400,7 @@ class LTP(object):
         word_attention_mask = hidden['word_cls_mask']
         sdp_arc, sdp_label = self.model.sdp_classifier(
             input=hidden['word_cls_input'],
-            word_attention_mask=word_attention_mask
+            word_attention_mask=word_attention_mask[:, 1:]
         )[0]
         sdp_arc[:, 0, 1:] = float('-inf')
         sdp_arc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))  # 避免自指

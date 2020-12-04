@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 import torch
 from torch import nn
-from transformers import AutoModel,AutoConfig
+from transformers import AutoModel, AutoConfig
 
 from ltp.nn import MLP, Bilinear, BaseModule
 
@@ -81,8 +81,7 @@ class BiaffineClassifier(nn.Module):
         s_rel = self.rel_atten(rel_d, rel_h).permute(0, 2, 3, 1)
 
         if word_attention_mask is not None:
-            activate_word_mask = word_attention_mask.clone()
-            activate_word_mask[:, 0] = True
+            activate_word_mask = torch.cat([word_attention_mask[:, :1], word_attention_mask], dim=1)
             s_arc.masked_fill_(~activate_word_mask.unsqueeze(1), float('-inf'))
 
         loss = None

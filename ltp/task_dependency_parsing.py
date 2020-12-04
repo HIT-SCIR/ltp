@@ -90,7 +90,7 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
         mask: torch.Tensor = batch['word_attention_mask']
 
         parc = parc[:, 1:, :]
-        parc = parc[:, 1:, :]
+        prel = prel[:, 1:, :]
 
         parc = torch.argmax(parc, dim=-1)
         prel = torch.argmax(prel, dim=-1)
@@ -175,10 +175,11 @@ def build_method(model):
             warmup_proportion=self.hparams.warmup_proportion,
             layerwise_lr_decay_power=self.hparams.layerwise_lr_decay_power,
             n_transformer_layers=self.transformer.config.num_hidden_layers,
-            lr_scheduler=optimization.get_polynomial_decay_schedule_with_warmup,
+            lr_scheduler=self.hparams.lr_scheduler,
             lr_scheduler_kwargs={
                 'lr_end': self.hparams.lr_end,
-                'power': self.hparams.lr_decay_power
+                'power': self.hparams.lr_decay_power,
+                'num_cycles': self.hparams.lr_num_cycles
             }
         )
 
