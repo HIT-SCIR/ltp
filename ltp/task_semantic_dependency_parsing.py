@@ -105,11 +105,11 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
     def step(self: pl.LightningModule, batch, batch_nb):
         loss, (parc, prel) = self(**batch)
 
-        parc = parc[:, 1:, :]
-        prel = prel[:, 1:, :]
+        parc[:, 0, 1:] = float('-inf')
+        parc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))  # 避免自指
 
-        parc = torch.sigmoid(parc) > 0.5
-        prel = torch.argmax(prel, dim=-1)
+        parc = torch.sigmoid(parc[:, 1:, :]) > 0.5
+        prel = torch.argmax(prel[:, 1:, :], dim=-1)
 
         predict = metric_func(parc, prel)
         real = metric_func(batch['head'], batch['labels'])
