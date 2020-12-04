@@ -6,6 +6,8 @@ import torch.utils.data
 import os
 from tqdm import tqdm
 from argparse import ArgumentParser
+
+from ltp.algorithms import eisner
 from ltp.data import dataset as datasets
 from ltp import optimization
 from ltp.data.utils import collate
@@ -89,17 +91,15 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
 
         mask: torch.Tensor = batch['word_attention_mask']
 
-        parc = parc[:, 1:, :]
-        prel = prel[:, 1:, :]
+        parc[:, 0, 1:] = float('-inf')
+        parc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))
+        parc = eisner(parc, torch.cat([torch.zeros_like(mask[:, :1], dtype=torch.bool), mask], dim=1))
 
-        parc = torch.argmax(parc, dim=-1)
         prel = torch.argmax(prel, dim=-1)
+        prel = prel.gather(-1, parc.unsqueeze(-1)).squeeze(-1)
 
-        arc = batch['head'][mask]
-        rel = batch['labels'][mask]
-
-        arc_true = parc == arc
-        rel_true = prel == rel
+        arc_true = (parc[:, 1:] == batch['head'])[mask]
+        rel_true = (prel[:, 1:] == batch['labels'])[mask]
         union_true = arc_true & rel_true
 
         return {
