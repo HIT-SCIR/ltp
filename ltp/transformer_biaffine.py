@@ -30,11 +30,11 @@ def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
 
 
 def sdp_loss(model, s_arc, s_rel, head, labels, logits_mask):
-    head_loss = nn.BCEWithLogitsLoss()
+    head_loss = nn.BCELoss()
     rel_loss = nn.CrossEntropyLoss()
 
     # ignore the first token of each sentence
-    s_arc = s_arc[:, 1:, :]
+    s_arc = torch.sigmoid(s_arc[:, 1:, :])
     s_rel = s_rel[:, 1:, :]
 
     # mask

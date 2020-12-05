@@ -78,14 +78,15 @@ def build_dataset(model, data_dir):
         labels = []
         for forms, deps in zip(examples['form'], examples['deps']):
             sentence_len = len(forms)
-            heads.append(np.zeros((sentence_len, sentence_len + 1), dtype=np.int64))
-            labels.append(np.zeros((sentence_len, sentence_len + 1), dtype=np.int64))
+            heads.append([[0 for j in range(sentence_len + 1)] for i in range(sentence_len)])
+            labels.append([[0 for j in range(sentence_len + 1)] for i in range(sentence_len)])
             for idx, head, rel in zip(deps['id'], deps['head'], deps['rel']):
-                heads[-1][idx, head] = 1
-                labels[-1][idx, head] = rel
-
+                heads[-1][idx][head] = 1
+                labels[-1][idx][head] = rel
         res['head'] = heads
         res['labels'] = labels
+        for word_index, head in zip(res['word_index'], res['head']):
+            assert len(word_index) == len(head)
         return res
 
     dataset = dataset.map(
@@ -97,7 +98,10 @@ def build_dataset(model, data_dir):
     dataset.set_format(type='torch', columns=[
         'input_ids', 'token_type_ids', 'attention_mask', 'word_index', 'word_attention_mask', 'head', 'labels'
     ])
-    dataset.shuffle()
+    dataset.shuffle(indices_cache_file_names={
+        k: d._get_cache_file_path(f"{task_info.task_name}-{k}-shuffled-index-{model.hparams.seed}") for k, d in
+        dataset.items()
+    })
     return dataset, get_graph_entities
 
 
@@ -287,7 +291,7 @@ def main():
     parser = Trainer.add_argparse_args(parser)
 
     # task specific default args
-    parser.set_defaults(num_labels=56)
+    parser.set_defaults(num_labels=56, max_epochs=10)
     parser.set_defaults(arc_hidden_size=600, rel_hidden_size=600)
 
     args = parser.parse_args()
@@ -300,7 +304,7 @@ def main():
             metric=f'val_{task_info.metric_name}',
             model_class=Model,
             build_method=build_method,
-            task='sdp',
+            task=task_info.task_name,
             loss_func=sdp_loss
         )
 
