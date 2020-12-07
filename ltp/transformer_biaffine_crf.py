@@ -5,7 +5,10 @@ from torch import nn
 from torch.nn import functional as F
 from transformers import AutoModel
 
+from collections import namedtuple
 from ltp.nn import BaseModule, MLP, Bilinear, CRF
+
+SRLResult = namedtuple('SRLResult', ['loss', 'rel_logits', 'decoded', 'labels', 'transitions'])
 
 
 class BiaffineCRFClassifier(nn.Module):
@@ -27,8 +30,7 @@ class BiaffineCRFClassifier(nn.Module):
 
         return s_rel
 
-    def forward(self, input, logits_mask=None, word_index=None,
-                word_attention_mask=None, labels=None, hidden_states=None):
+    def forward(self, input, logits_mask=None, word_index=None, word_attention_mask=None, labels=None):
         if word_index is not None:
             input = torch.gather(input, dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1)))
 
@@ -50,24 +52,20 @@ class BiaffineCRFClassifier(nn.Module):
         if labels is not None:
             labels = labels.flatten(end_dim=1)[index]
 
-        if self.training:
-            loss = - self.rel_crf.forward(emissions=crf_rel, tags=labels, mask=mask)
-            loss_output = (s_rel, None, labels)
-        elif self.eval_transitions:
-            loss_output = (
-                s_rel,
-                (
-                    self.rel_crf.start_transitions,
-                    self.rel_crf.transitions,
-                    self.rel_crf.end_transitions
-                ),
-                labels
-            )
-        else:
-            loss_output = (s_rel, self.rel_crf.decode(emissions=crf_rel, mask=mask), labels)
+        loss, decoded = None, None
+        loss = - self.rel_crf.forward(emissions=crf_rel, tags=labels, mask=mask)
 
-        output = ((loss_output,) + hidden_states[1:]) if hidden_states is not None else (loss_output,)
-        return ((loss,) + output) if loss is not None else output
+        if not self.training:
+            decoded = self.rel_crf.decode(emissions=crf_rel, mask=mask)
+
+        return SRLResult(
+            loss=loss, rel_logits=s_rel, decoded=decoded, labels=labels,
+            transitions=(
+                self.rel_crf.start_transitions,
+                self.rel_crf.transitions,
+                self.rel_crf.end_transitions
+            )
+        )
 
 
 class TransformerBiaffineCRF(BaseModule):
@@ -110,9 +108,7 @@ class TransformerBiaffineCRF(BaseModule):
             position_ids=None,
             head_mask=None,
             inputs_embeds=None,
-            labels=None,
-            output_attentions=None,
-            output_hidden_states=None,
+            labels=None
     ):
         r"""
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
@@ -126,8 +122,9 @@ class TransformerBiaffineCRF(BaseModule):
             position_ids,
             head_mask,
             inputs_embeds,
-            output_attentions,
-            output_hidden_states
+            output_attentions=False,
+            output_hidden_states=False,
+            return_dict=False,
         )
         sequence_output = hidden_states[0]
         sequence_output = sequence_output[:, 1:-1, :]
@@ -138,6 +135,5 @@ class TransformerBiaffineCRF(BaseModule):
             logits_mask=logits_mask,
             word_index=word_index,
             word_attention_mask=word_attention_mask,
-            labels=labels,
-            hidden_states=hidden_states
+            labels=labels
         )

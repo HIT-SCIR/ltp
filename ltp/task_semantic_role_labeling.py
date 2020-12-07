@@ -94,13 +94,13 @@ def validation_method(metric, loss_tag='val_loss', metric_tag=f'val_{task_info.m
     metric_func, label_feature = metric
 
     def step(self: pl.LightningModule, batch, batch_nb):
-        (logits, preds, labels), = self(**batch)
+        result = self(**batch)
 
-        sent_length = [len(sent) for sent in preds]
-        preds = [[label_feature[word] for word in sent] for sent in preds]
+        sent_length = [len(sent) for sent in result.decoded]
+        preds = [[label_feature[word] for word in sent] for sent in result.decoded]
         labels = [
             [label_feature[word] for word in sent[:sent_length[idx]]]
-            for idx, sent in enumerate(labels.detach().cpu().numpy())
+            for idx, sent in enumerate(result.labels.detach().cpu().numpy())
         ]
 
         return {'pred': preds, 'labels': labels}
@@ -136,9 +136,9 @@ def build_method(model):
         return res
 
     def training_step(self, batch, batch_nb):
-        loss, output = self(**batch)
-        self.log("loss", loss.item())
-        return loss
+        result = self(**batch)
+        self.log("loss", result.loss.item())
+        return result.loss
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(

@@ -87,7 +87,10 @@ def build_dataset(model, data_dir):
 
 def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{task_info.metric_name}', log=True):
     def step(self: pl.LightningModule, batch, batch_nb):
-        loss, (parc, prel) = self(**batch)
+        result = self(**batch)
+        loss = result.loss
+        parc = result.arc_logits
+        prel = result.rel_logits
 
         mask: torch.Tensor = batch['word_attention_mask']
 
@@ -140,9 +143,9 @@ def build_method(model):
         return res
 
     def training_step(self, batch, batch_nb):
-        loss, logits = self(**batch)
-        self.log("loss", loss.item())
-        return loss
+        result = self(**batch)
+        self.log("loss", result.loss.item())
+        return result.loss
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(

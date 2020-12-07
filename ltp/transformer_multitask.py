@@ -107,18 +107,8 @@ class TransformerMultiTask(BaseModule):
             head_mask=None,
             inputs_embeds=None,
             head=None,
-            labels=None,
-            output_attentions=None,
-            output_hidden_states=None,
-            return_dict=None
+            labels=None
     ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
-            Labels for computing the token classification loss.
-            Indices should be in ``[0, ..., config.num_labels - 1]``.
-        """
-        return_dict = return_dict if return_dict is not None else self.transformer.config.use_return_dict
-
         hidden_states = self.transformer(
             input_ids,
             attention_mask,
@@ -126,9 +116,9 @@ class TransformerMultiTask(BaseModule):
             position_ids,
             head_mask,
             inputs_embeds,
-            output_attentions,
-            output_hidden_states,
-            return_dict,
+            output_attentions=False,
+            output_hidden_states=False,
+            return_dict=False,
         )
         sequence_output = hidden_states[0]
 
@@ -139,9 +129,7 @@ class TransformerMultiTask(BaseModule):
                 input=sequence_output,
                 attention_mask=attention_mask,
                 logits_mask=logits_mask,
-                labels=labels,
-                return_dict=return_dict,
-                hidden_states=hidden_states
+                labels=labels
             )
         elif task == 'pos':
             sequence_output = sequence_output[:, 1:-1, :]
@@ -150,9 +138,7 @@ class TransformerMultiTask(BaseModule):
                 input=sequence_output,
                 attention_mask=attention_mask,
                 logits_mask=logits_mask,
-                labels=labels,
-                return_dict=return_dict,
-                hidden_states=hidden_states
+                labels=labels
             )
         elif task == 'ner':
             sequence_output = sequence_output[:, 1:-1, :]
@@ -161,9 +147,7 @@ class TransformerMultiTask(BaseModule):
                 sequence_output,
                 word_index=word_index,
                 word_attention_mask=word_attention_mask,
-                labels=labels,
-                return_dict=return_dict,
-                hidden_states=hidden_states
+                labels=labels
             )
         elif task == 'dep':
             sequence_output = sequence_output[:, :-1, :]
@@ -172,9 +156,7 @@ class TransformerMultiTask(BaseModule):
                 sequence_output,
                 word_index=word_index,
                 word_attention_mask=word_attention_mask,
-                head=head,
-                labels=labels,
-                hidden_states=hidden_states
+                head=head
             )
         elif task == 'sdp':
             sequence_output = sequence_output[:, :-1, :]
@@ -184,8 +166,7 @@ class TransformerMultiTask(BaseModule):
                 word_index=word_index,
                 word_attention_mask=word_attention_mask,
                 head=head,
-                labels=labels,
-                hidden_states=hidden_states
+                labels=labels
             )
         elif task == 'srl':
             sequence_output = sequence_output[:, 1:-1, :]
@@ -194,6 +175,5 @@ class TransformerMultiTask(BaseModule):
                 sequence_output,
                 word_index=word_index,
                 word_attention_mask=word_attention_mask,
-                labels=labels,
-                hidden_states=hidden_states
+                labels=labels
             )

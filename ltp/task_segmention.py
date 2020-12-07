@@ -75,13 +75,13 @@ def validation_method(metric, loss_tag='val_loss', metric_tag=f'val_{task_info.m
     label_mapper = ['I-W', 'B-W']
 
     def step(self: pl.LightningModule, batch, batch_nb):
-        loss, logits = self(**batch)
+        result = self(**batch)
 
         mask = batch['attention_mask'][:, 2:] != 1
 
         # acc
         labels = batch['labels']
-        preds = torch.argmax(logits, dim=-1)
+        preds = torch.argmax(result.logits, dim=-1)
 
         labels[mask] = -1
         preds[mask] = -1
@@ -89,7 +89,7 @@ def validation_method(metric, loss_tag='val_loss', metric_tag=f'val_{task_info.m
         labels = [[label_mapper[word] for word in sent if word != -1] for sent in labels.detach().cpu().numpy()]
         preds = [[label_mapper[word] for word in sent if word != -1] for sent in preds.detach().cpu().numpy()]
 
-        return {'loss': loss.item(), 'pred': preds, 'labels': labels}
+        return {'loss': result.loss.item(), 'pred': preds, 'labels': labels}
 
     def epoch_end(self: pl.LightningModule, outputs):
         if isinstance(outputs, dict):
@@ -125,9 +125,9 @@ def build_method(model):
         return res
 
     def training_step(self, batch, batch_nb):
-        loss, logits = self(**batch)
-        self.log("loss", loss.item())
-        return loss
+        result = self(**batch)
+        self.log("loss", result.loss.item())
+        return result.loss
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(

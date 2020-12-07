@@ -27,7 +27,7 @@ def build_dataset(model, data_dir):
         datasets.Conllu,
         data_dir=data_dir,
         cache_dir=data_dir,
-        xpos=os.path.join(data_dir, "pos_labels.txt")
+        xpos=os.path.join(data_dir, "xpos_labels.txt")
     )
     dataset.remove_columns_(["id", "lemma", "upos", "feats", "head", "deprel", "deps", "misc"])
     dataset.rename_column_('xpos', 'labels')
@@ -79,14 +79,14 @@ def build_dataset(model, data_dir):
 
 def validation_method(metric, loss_tag='val_loss', metric_tag=f'val_{task_info.metric_name}', log=True):
     def step(self, batch, batch_nb):
-        loss, logits = self(**batch)
+        result = self(**batch)
 
         mask = batch['logits_mask']
         labels = batch['labels']
-        preds = torch.argmax(logits, dim=-1)
+        preds = torch.argmax(result.logits, dim=-1)
         preds_true = preds[mask] == labels[mask]
         return {
-            loss_tag: loss.item(),
+            loss_tag: result.loss.item(),
             f'{metric_tag}/true': torch.sum(preds_true, dtype=torch.float).item(),
             f'{metric_tag}/all': preds_true.numel()
         }
@@ -123,9 +123,9 @@ def build_method(model):
         return res
 
     def training_step(self, batch, batch_nb):
-        loss, logits = self(**batch)
-        self.log("loss", loss)
-        return loss
+        result = self(**batch)
+        self.log("loss", result.loss)
+        return result.loss
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(

@@ -4,8 +4,8 @@ import torch
 from torch import nn
 from transformers import AutoModel
 
-from transformers.modeling_outputs import TokenClassifierOutput
 from ltp.nn import BaseModule, RelativeTransformer
+from ltp.transformer_linear import TokenClassifierResult
 
 
 class RelativeTransformerLinearClassifier(nn.Module):
@@ -44,16 +44,7 @@ class RelativeTransformerLinearClassifier(nn.Module):
             else:
                 loss = loss_fct(logits.view(-1, self.classifier.out_features), labels.view(-1))
 
-        if not return_dict:
-            output = ((logits,) + hidden_states[1:]) if hidden_states is not None else (logits,)
-            return ((loss,) + output) if loss is not None else output
-
-        return TokenClassifierOutput(
-            loss=loss,
-            logits=logits,
-            hidden_states=hidden_states.hidden_states,
-            attentions=hidden_states.attentions,
-        )
+        return TokenClassifierResult(loss=loss, logits=logits)
 
 
 class TransformerRelLinear(BaseModule):
@@ -98,18 +89,8 @@ class TransformerRelLinear(BaseModule):
             position_ids=None,
             head_mask=None,
             inputs_embeds=None,
-            labels=None,
-            output_attentions=None,
-            output_hidden_states=None,
-            return_dict=None,
+            labels=None
     ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
-            Labels for computing the token classification loss.
-            Indices should be in ``[0, ..., config.num_labels - 1]``.
-        """
-        return_dict = return_dict if return_dict is not None else self.transformer.config.use_return_dict
-
         hidden_states = self.transformer(
             input_ids,
             attention_mask,
@@ -117,9 +98,9 @@ class TransformerRelLinear(BaseModule):
             position_ids,
             head_mask,
             inputs_embeds,
-            output_attentions,
-            output_hidden_states,
-            return_dict,
+            output_attentions=False,
+            output_hidden_states=False,
+            return_dict=False,
         )
         sequence_output = hidden_states[0]
         sequence_output = sequence_output[:, 1:-1, :]
@@ -129,7 +110,5 @@ class TransformerRelLinear(BaseModule):
             sequence_output,
             word_index=word_index,
             word_attention_mask=word_attention_mask,
-            labels=labels,
-            return_dict=return_dict,
-            hidden_states=hidden_states
+            labels=labels
         )

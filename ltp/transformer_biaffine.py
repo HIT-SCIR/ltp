@@ -4,7 +4,10 @@ import torch
 from torch import nn
 from transformers import AutoModel, AutoConfig
 
+from collections import namedtuple
 from ltp.nn import MLP, Bilinear, BaseModule
+
+GraphResult = namedtuple('GraphResult', ['loss', 'arc_logits', 'rel_logits'])
 
 
 def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
@@ -64,8 +67,7 @@ class BiaffineClassifier(nn.Module):
 
         self.loss_func = loss_func
 
-    def forward(self, input, logits_mask=None, word_index=None,
-                word_attention_mask=None, head=None, labels=None, hidden_states=None):
+    def forward(self, input, logits_mask=None, word_index=None, word_attention_mask=None, head=None, labels=None):
         if word_index is not None:
             input = torch.cat([input[:, :1, :], torch.gather(
                 input[:, 1:, :], dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1))
@@ -81,7 +83,6 @@ class BiaffineClassifier(nn.Module):
         s_rel = self.rel_atten(rel_d, rel_h).permute(0, 2, 3, 1)
 
         loss = None
-        loss_output = (s_arc, s_rel)
         if labels is not None:
             if logits_mask is None:
                 logits_mask = word_attention_mask
@@ -93,8 +94,7 @@ class BiaffineClassifier(nn.Module):
             activate_word_mask = activate_word_mask & activate_word_mask.transpose(-1, -2)
             s_arc.masked_fill_(~activate_word_mask, float('-inf'))
 
-        output = ((loss_output,) + hidden_states[1:]) if hidden_states is not None else (loss_output,)
-        return ((loss,) + output) if loss is not None else output
+        return GraphResult(loss=loss, arc_logits=s_arc, rel_logits=s_rel)
 
 
 class TransformerBiaffine(BaseModule):
@@ -140,9 +140,7 @@ class TransformerBiaffine(BaseModule):
             head_mask=None,
             inputs_embeds=None,
             head=None,
-            labels=None,
-            output_attentions=None,
-            output_hidden_states=None,
+            labels=None
     ):
         r"""
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
@@ -156,8 +154,9 @@ class TransformerBiaffine(BaseModule):
             position_ids,
             head_mask,
             inputs_embeds,
-            output_attentions,
-            output_hidden_states
+            output_attentions=False,
+            output_hidden_states=False,
+            return_dict=False,
         )
         sequence_output = hidden_states[0]
         sequence_output = sequence_output[:, :-1, :]
@@ -169,6 +168,5 @@ class TransformerBiaffine(BaseModule):
             word_index=word_index,
             word_attention_mask=word_attention_mask,
             head=head,
-            labels=labels,
-            hidden_states=hidden_states
+            labels=labels
         )

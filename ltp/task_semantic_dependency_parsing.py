@@ -107,7 +107,10 @@ def build_dataset(model, data_dir):
 
 def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{task_info.metric_name}', log=True):
     def step(self: pl.LightningModule, batch, batch_nb):
-        loss, (parc, prel) = self(**batch)
+        result = self(**batch)
+        loss = result.loss
+        parc = result.arc_logits
+        prel = result.rel_logits
 
         parc[:, 0, 1:] = float('-inf')
         parc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))  # 避免自指
@@ -139,9 +142,11 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
         r = correct / true if true > 0 else 0
         f = 2 * p * r / (p + r) if (p + r > 0) else 0
 
+        prefix, appendix = metric_tag.split('_', maxsplit=1)
+
         if log:
             self.log_dict(
-                dictionary={loss_tag: loss, metric_tag: f},
+                dictionary={loss_tag: loss, f'{prefix}_p': p, f'{prefix}_r': r, metric_tag: f},
                 on_step=False, on_epoch=True, prog_bar=True, logger=True
             )
         else:
@@ -164,9 +169,9 @@ def build_method(model):
         return res
 
     def training_step(self, batch, batch_nb):
-        loss, logits = self(**batch)
-        self.log("loss", loss.item())
-        return loss
+        result = self(**batch)
+        self.log("loss", result.loss.item())
+        return result.loss
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(

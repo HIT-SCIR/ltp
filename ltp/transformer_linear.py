@@ -3,16 +3,17 @@ from argparse import ArgumentParser
 from torch import nn
 from transformers import AutoModel
 
+from collections import namedtuple
 from ltp.nn import BaseModule
-from transformers.modeling_outputs import TokenClassifierOutput
+
+TokenClassifierResult = namedtuple('TokenClassifierResult', ['loss', 'logits'])
 
 
 class LinearClassifier(nn.Linear):
     def __init__(self, hidden_size, num_labels):
         super().__init__(hidden_size, num_labels)
 
-    def forward(self, input, attention_mask=None, logits_mask=None, labels=None,
-                return_dict=None, hidden_states=None):
+    def forward(self, input, attention_mask=None, logits_mask=None, labels=None):
         logits = super(LinearClassifier, self).forward(input)
 
         loss = None
@@ -30,16 +31,7 @@ class LinearClassifier(nn.Linear):
             else:
                 loss = loss_fct(logits.view(-1, self.out_features), labels.view(-1))
 
-        if not return_dict:
-            output = ((logits,) + hidden_states[1:]) if hidden_states is not None else (logits,)
-            return ((loss,) + output) if loss is not None else output
-
-        return TokenClassifierOutput(
-            loss=loss,
-            logits=logits,
-            hidden_states=hidden_states.hidden_states,
-            attentions=hidden_states.attentions,
-        )
+        return TokenClassifierResult(loss=loss, logits=logits)
 
 
 class TransformerLinear(BaseModule):
@@ -71,18 +63,8 @@ class TransformerLinear(BaseModule):
             position_ids=None,
             head_mask=None,
             inputs_embeds=None,
-            labels=None,
-            output_attentions=None,
-            output_hidden_states=None,
-            return_dict=None,
+            labels=None
     ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
-            Labels for computing the token classification loss.
-            Indices should be in ``[0, ..., config.num_labels - 1]``.
-        """
-        return_dict = return_dict if return_dict is not None else self.transformer.config.use_return_dict
-
         hidden_states = self.transformer(
             input_ids,
             attention_mask,
@@ -90,9 +72,9 @@ class TransformerLinear(BaseModule):
             position_ids,
             head_mask,
             inputs_embeds,
-            output_attentions,
-            output_hidden_states,
-            return_dict,
+            output_attentions=False,
+            output_hidden_states=False,
+            return_dict=False,
         )
         sequence_output = hidden_states[0]
         sequence_output = sequence_output[:, 1:-1, :]
@@ -102,7 +84,5 @@ class TransformerLinear(BaseModule):
             input=sequence_output,
             attention_mask=attention_mask,
             logits_mask=logits_mask,
-            labels=labels,
-            return_dict=return_dict,
-            hidden_states=hidden_states
+            labels=labels
         )
