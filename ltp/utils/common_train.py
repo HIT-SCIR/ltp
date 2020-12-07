@@ -1,7 +1,4 @@
-import os
 import time
-import torch
-import argparse
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer, loggers
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -18,7 +15,7 @@ def common_train(args, metric, model_class, build_method, task: str, **model_kwa
     )
     model = model_class(args, **model_kwargs)
     build_method(model)
-    this_time = time.strftime("%m-%d_%H-%M-%S", time.localtime())
+    this_time = time.strftime("%m-%d_%H:%M:%S", time.localtime())
     logger = loggers.TensorBoardLogger(save_dir='lightning_logs', name=f'{task}_{this_time}')
     trainer: Trainer = Trainer.from_argparse_args(
         args,
