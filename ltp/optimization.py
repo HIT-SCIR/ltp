@@ -1,8 +1,18 @@
 import re
+import inspect
 from argparse import ArgumentParser
 
 from transformers import optimization
 from transformers.optimization import *
+
+scheduler_register = {
+    'constant_schedule': get_constant_schedule,
+    'constant_schedule_with_warmup': get_constant_schedule_with_warmup,
+    'linear_schedule_with_warmup': get_linear_schedule_with_warmup,
+    'cosine_schedule_with_warmup': get_cosine_schedule_with_warmup,
+    'cosine_with_hard_restarts_schedule_with_warmup': get_cosine_with_hard_restarts_schedule_with_warmup,
+    'polynomial_decay_schedule_with_warmup': get_polynomial_decay_schedule_with_warmup
+}
 
 
 def get_layer_lrs(
@@ -111,6 +121,13 @@ def get_layer_lrs_with_crf(
     return groups
 
 
+def get_scheduler(optimizer, name, **kwargs) -> LambdaLR:
+    scheduler = scheduler_register.get(name, get_linear_schedule_with_warmup)
+    signature = inspect.signature(scheduler)
+    kwargs = {key: value for key, value in kwargs.items() if key in signature.parameters}
+    return scheduler(optimizer, **kwargs)
+
+
 def create_optimizer(
         model, lr,
         num_train_steps,
@@ -168,8 +185,9 @@ def create_optimizer(
     )
 
     warmup_steps = max(num_train_steps * warmup_proportion, warmup_steps)
-    scheduler = lr_scheduler(
+    scheduler = get_scheduler(
         optimizer,
+        name=lr_scheduler,
         num_warmup_steps=warmup_steps,
         num_training_steps=num_train_steps,
         **lr_scheduler_kwargs
@@ -180,10 +198,14 @@ def create_optimizer(
 def add_optimizer_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
     parser.add_argument('--lr', type=float, default=1e-4)
+
+    parser.add_argument('--lr_scheduler', type=str, default='linear_schedule_with_warmup')
     parser.add_argument('--lr_end', type=float, default=1e-7)
+    parser.add_argument('--lr_num_cycles', type=float, default=0.5)
+    parser.add_argument('--lr_decay_power', type=float, default=1.0)
+
     parser.add_argument('--warmup_steps', type=int, default=0)
     parser.add_argument('--warmup_proportion', type=float, default=0.1)
     parser.add_argument('--weight_decay', type=float, default=0.0)
-    parser.add_argument('--lr_decay_power', type=float, default=1.0)
-    parser.add_argument('--layerwise_lr_decay_power', type=float, default=0.8)
+    parser.add_argument('--layerwise_lr_decay_power', type=float, default=-1.0)
     return parser
