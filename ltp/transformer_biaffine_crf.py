@@ -19,15 +19,20 @@ class BiaffineCRFClassifier(nn.Module):
         self.rel_crf = CRF(label_num)
         self.eval_transitions = eval_transitions
 
+    def rel_forword(self, input):
+        rel_h = self.mlp_rel_h(input)
+        rel_d = self.mlp_rel_d(input)
+
+        s_rel = self.rel_atten(rel_d, rel_h).permute(0, 2, 3, 1)
+
+        return s_rel
+
     def forward(self, input, logits_mask=None, word_index=None,
                 word_attention_mask=None, labels=None, hidden_states=None):
         if word_index is not None:
             input = torch.gather(input, dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1)))
 
-        rel_h = self.mlp_rel_h(input)
-        rel_d = self.mlp_rel_d(input)
-
-        s_rel = self.rel_atten(rel_d, rel_h).permute(0, 2, 3, 1)
+        s_rel = self.rel_forword(input)
 
         loss = None
         if logits_mask is None:

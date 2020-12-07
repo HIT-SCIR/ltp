@@ -83,7 +83,10 @@ def build_dataset(model, data_dir):
     dataset.set_format(type='torch', columns=[
         'input_ids', 'token_type_ids', 'attention_mask', 'word_index', 'word_attention_mask', 'labels'
     ])
-    dataset.shuffle()
+    dataset.shuffle(indices_cache_file_names={
+        k: d._get_cache_file_path(f"{task_info.task_name}-{k}-shuffled-index-{model.hparams.seed}") for k, d in
+        dataset.items()
+    })
     return dataset, (f1_score, dataset[datasets.Split.TRAIN].features['roles'].feature.feature.names)
 
 
@@ -170,10 +173,11 @@ def build_method(model):
             n_transformer_layers=self.transformer.config.num_hidden_layers,
             get_layer_lrs=optimization.get_layer_lrs_with_crf,
             get_layer_lrs_kwargs={'crf_preffix': 'rel_crf'},
-            lr_scheduler=optimization.get_polynomial_decay_schedule_with_warmup,
+            lr_scheduler=self.hparams.lr_scheduler,
             lr_scheduler_kwargs={
                 'lr_end': self.hparams.lr_end,
-                'power': self.hparams.lr_decay_power
+                'power': self.hparams.lr_decay_power,
+                'num_cycles': self.hparams.lr_num_cycles
             }
         )
 
@@ -261,7 +265,7 @@ def main():
     parser = optimization.add_optimizer_specific_args(parser)
     parser = Trainer.add_argparse_args(parser)
 
-    parser.set_defaults(num_labels=97)
+    parser.set_defaults(num_labels=97, max_epochs=10)
     args = parser.parse_args()
 
     if args.build_dataset:

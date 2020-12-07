@@ -13,25 +13,22 @@ class RelativeEmbedding(nn.Module):
     Padding symbols are ignored.
     """
 
-    def __init__(self, embedding_dim, padding_idx, init_size=1024):
+    def __init__(self, embedding_dim, init_size=1024):
         """
         :param embedding_dim: 每个位置的dimension
-        :param padding_idx:
         :param init_size:
         """
         super().__init__()
         self.embedding_dim = embedding_dim
-        self.padding_idx = padding_idx
         assert init_size % 2 == 0
         weights = self.get_embedding(
             init_size + 1,
-            embedding_dim,
-            padding_idx,
+            embedding_dim
         )
         self.register_buffer('weights', weights)
         self.register_buffer('_float_tensor', torch.as_tensor(1.0))
 
-    def get_embedding(self, num_embeddings, embedding_dim, padding_idx=None):
+    def get_embedding(self, num_embeddings, embedding_dim):
         """Build sinusoidal embeddings.
         This matches the implementation in tensor2tensor, but differs slightly
         from the description in Section 3.5 of "Attention Is All You Need".
@@ -44,8 +41,6 @@ class RelativeEmbedding(nn.Module):
         if embedding_dim % 2 == 1:
             # zero pad
             emb = torch.cat([emb, torch.zeros(num_embeddings, 1)], dim=1)
-        if padding_idx is not None:
-            emb[padding_idx, :] = 0
         self.origin_shift = num_embeddings // 2 + 1
         return emb
 
@@ -53,19 +48,6 @@ class RelativeEmbedding(nn.Module):
         """Input is expected to be of size [bsz x seqlen].
         """
         bsz, seq_len = inputs.size()
-        max_pos = self.padding_idx + seq_len
-        if max_pos > self.origin_shift:
-            # recompute/expand embeddings if needed
-            weights = self.get_embedding(
-                max_pos * 2,
-                self.embedding_dim,
-                self.padding_idx,
-            )
-            weights = weights.to(self._float_tensor)
-            del self.weights
-            self.origin_shift = weights.size(0) // 2
-            self.register_buffer('weights', weights)
-
         positions = torch.arange(-seq_len, seq_len).to(inputs.device).long() + self.origin_shift  # 2*seq_len
         embed = self.weights.index_select(0, positions.long()).detach()
         return embed
@@ -85,7 +67,7 @@ class RelativeMultiHeadAttn(nn.Module):
         self.n_head = num_head
         self.head_dim = input_size // num_head
         self.dropout_layer = nn.Dropout(dropout)
-        self.pos_embed = RelativeEmbedding(input_size // num_head, 0, max_length)
+        self.pos_embed = RelativeEmbedding(input_size // num_head, max_length)
         if r_r_bias is None or r_w_bias is None:  # Biases are not shared
             self.r_r_bias = nn.Parameter(nn.init.xavier_normal_(torch.zeros(num_head, input_size // num_head)))
             self.r_w_bias = nn.Parameter(nn.init.xavier_normal_(torch.zeros(num_head, input_size // num_head)))
@@ -142,9 +124,8 @@ class RelativeMultiHeadAttn(nn.Module):
         bsz, n_head, max_len, _ = BD.size()
         zero_pad = BD.new_zeros(bsz, n_head, max_len, 1)
         BD = torch.cat([BD, zero_pad], dim=-1).view(bsz, n_head, -1, max_len)  # bsz x n_head x (2max_len+1) x max_len
-        BD = BD.narrow(dim=2, start=0, length=2 * max_len) \
-            .view(bsz, n_head, max_len, -1)  # bsz x n_head x 2max_len x max_len
-        BD = BD.narrow(dim=-1, start=max_len, length=max_len)
+        BD = BD[:, :, :-1, :].view(bsz, n_head, max_len, -1)  # bsz x n_head x 2max_len x max_len
+        _, BD = torch.chunk(BD, dim=-1, chunks=2)
         return BD
 
 

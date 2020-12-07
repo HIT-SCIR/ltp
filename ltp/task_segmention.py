@@ -160,10 +160,11 @@ def build_method(model):
             warmup_proportion=self.hparams.warmup_proportion,
             layerwise_lr_decay_power=self.hparams.layerwise_lr_decay_power,
             n_transformer_layers=self.transformer.config.num_hidden_layers,
-            lr_scheduler=optimization.get_polynomial_decay_schedule_with_warmup,
+            lr_scheduler=self.hparams.lr_scheduler,
             lr_scheduler_kwargs={
                 'lr_end': self.hparams.lr_end,
-                'power': self.hparams.lr_decay_power
+                'power': self.hparams.lr_decay_power,
+                'num_cycles': self.hparams.lr_num_cycles
             }
         )
 
@@ -251,9 +252,10 @@ def main():
     parser = Trainer.add_argparse_args(parser)
 
     # set task specific args
-    parser.set_defaults(num_labels=2)
+    parser.set_defaults(num_labels=2, max_epochs=10)
 
     args = parser.parse_args()
+    args.data_dir = os.path.abspath(args.data_dir)
 
     if args.build_dataset:
         build_distill_dataset(args)

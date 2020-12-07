@@ -268,7 +268,7 @@ def main():
     parser = Trainer.add_argparse_args(parser)
 
     # task specific default args
-    parser.set_defaults(num_labels=14)
+    parser.set_defaults(num_labels=14, max_epochs=10)
     parser.set_defaults(arc_hidden_size=500, rel_hidden_size=100)
 
     args = parser.parse_args()
