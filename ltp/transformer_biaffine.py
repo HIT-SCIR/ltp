@@ -30,11 +30,11 @@ def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
 
 
 def sdp_loss(model, s_arc, s_rel, head, labels, logits_mask):
-    head_loss = nn.BCELoss()
+    head_loss = nn.BCEWithLogitsLoss()
     rel_loss = nn.CrossEntropyLoss()
 
     # ignore the first token of each sentence
-    s_arc = torch.sigmoid(s_arc[:, 1:, :])
+    s_arc = s_arc[:, 1:, :]
     s_rel = s_rel[:, 1:, :]
 
     # mask
@@ -80,16 +80,18 @@ class BiaffineClassifier(nn.Module):
         s_arc = self.arc_atten(arc_d, arc_h).squeeze_(1)
         s_rel = self.rel_atten(rel_d, rel_h).permute(0, 2, 3, 1)
 
-        if word_attention_mask is not None:
-            activate_word_mask = torch.cat([word_attention_mask[:, :1], word_attention_mask], dim=1)
-            s_arc.masked_fill_(~activate_word_mask.unsqueeze(1), float('-inf'))
-
         loss = None
         loss_output = (s_arc, s_rel)
         if labels is not None:
             if logits_mask is None:
                 logits_mask = word_attention_mask
             loss = self.loss_func(self, s_arc, s_rel, head, labels, logits_mask)
+
+        if word_attention_mask is not None:
+            activate_word_mask = torch.cat([word_attention_mask[:, :1], word_attention_mask], dim=1)
+            activate_word_mask = activate_word_mask.unsqueeze(-1).expand_as(s_arc)
+            activate_word_mask = activate_word_mask & activate_word_mask.transpose(-1, -2)
+            s_arc.masked_fill_(~activate_word_mask, float('-inf'))
 
         output = ((loss_output,) + hidden_states[1:]) if hidden_states is not None else (loss_output,)
         return ((loss,) + output) if loss is not None else output
