@@ -53,7 +53,8 @@ class BiaffineCRFClassifier(nn.Module):
             labels = labels.flatten(end_dim=1)[index]
 
         loss, decoded = None, None
-        loss = - self.rel_crf.forward(emissions=crf_rel, tags=labels, mask=mask)
+        if labels is not None:
+            loss = - self.rel_crf.forward(emissions=crf_rel, tags=labels, mask=mask)
 
         if not self.training:
             decoded = self.rel_crf.decode(emissions=crf_rel, mask=mask)
@@ -109,12 +110,7 @@ class TransformerBiaffineCRF(BaseModule):
             head_mask=None,
             inputs_embeds=None,
             labels=None
-    ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
-            Labels for computing the token classification loss.
-            Indices should be in ``[0, ..., config.num_labels - 1]``.
-        """
+    ) -> SRLResult:
         hidden_states = self.transformer(
             input_ids,
             attention_mask,

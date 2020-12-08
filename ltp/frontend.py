@@ -192,7 +192,7 @@ class LTP(object):
         if is_preseged:
             segment_output = None
         else:
-            segment_output = torch.argmax(self.model.seg_classifier(char_input)[0], dim=-1).cpu().numpy()
+            segment_output = torch.argmax(self.model.seg_classifier(char_input).logits, dim=-1).cpu().numpy()
         return word_cls, char_input, segment_output, length
 
     @no_gard
@@ -295,7 +295,7 @@ class LTP(object):
         Returns:
             pos: 词性标注结果
         """
-        postagger_output = self.model.pos_classifier(hidden['word_input'])[0]
+        postagger_output = self.model.pos_classifier(hidden['word_input']).logits
         postagger_output = torch.argmax(postagger_output, dim=-1).cpu().numpy()
         postagger_output = convert_idx_to_name(postagger_output, hidden['word_length'], self.pos_vocab)
         return postagger_output
@@ -312,7 +312,7 @@ class LTP(object):
         """
         ner_output = self.model.ner_classifier.forward(
             hidden['word_input'], word_attention_mask=hidden['word_cls_mask'][:, 1:]
-        )[0]
+        ).logits
         ner_output = torch.argmax(ner_output, dim=-1).cpu().numpy()
         ner_output = convert_idx_to_name(ner_output, hidden['word_length'], self.ner_vocab)
         return [get_entities(ner) for ner in ner_output]
@@ -327,10 +327,10 @@ class LTP(object):
         Returns:
             pos: 语义角色标注结果
         """
-        srl_score, srl_output, _ = self.model.srl_classifier.forward(
+        srl_output = self.model.srl_classifier.forward(
             input=hidden['word_input'],
             word_attention_mask=hidden['word_cls_mask'][:, 1:]
-        )[0]
+        ).decoded
         srl_entities = get_entities_with_list(srl_output, self.srl_vocab)
 
         srl_labels_res = []
@@ -358,10 +358,11 @@ class LTP(object):
             依存句法树结果
         """
         word_attention_mask = hidden['word_cls_mask']
-        dep_arc, dep_label = self.model.dep_classifier.forward(
+        result = self.model.dep_classifier.forward(
             input=hidden['word_cls_input'],
             word_attention_mask=word_attention_mask[:, 1:]
-        )[0]
+        )
+        dep_arc, dep_label = result.arc_logits, result.rel_logits
         dep_arc[:, 0, 1:] = float('-inf')
         dep_arc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))
         dep_arc = dep_arc.argmax(dim=-1) if fast else eisner(dep_arc, word_attention_mask)
@@ -398,10 +399,11 @@ class LTP(object):
             语义依存图（树）结果
         """
         word_attention_mask = hidden['word_cls_mask']
-        sdp_arc, sdp_label = self.model.sdp_classifier(
+        result = self.model.sdp_classifier(
             input=hidden['word_cls_input'],
             word_attention_mask=word_attention_mask[:, 1:]
-        )[0]
+        )
+        sdp_arc, sdp_label = result.arc_logits, result.rel_logits
         sdp_arc[:, 0, 1:] = float('-inf')
         sdp_arc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))  # 避免自指
         sdp_label = torch.argmax(sdp_label, dim=-1)
