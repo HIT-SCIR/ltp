@@ -64,7 +64,7 @@ class TransformerLinear(BaseModule):
             head_mask=None,
             inputs_embeds=None,
             labels=None
-    ):
+    ) -> TokenClassifierResult:
         hidden_states = self.transformer(
             input_ids,
             attention_mask,

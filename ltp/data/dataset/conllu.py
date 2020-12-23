@@ -1,6 +1,9 @@
 import logging
 
+import os
 import itertools
+from collections import Counter
+
 import datasets
 from os.path import join
 from dataclasses import dataclass
@@ -28,6 +31,38 @@ _DEV_FILE = "dev.conllu"
 _TEST_FILE = "test.conllu"
 
 
+def build_vocabs(data_dir, train_file, dev_file=None, test_file=None, min_freq=5):
+    counters = {
+        'word': (1, Counter()), 'lemma': (2, Counter()), 'upos': (3, Counter()),
+        'xpos': (4, Counter()), 'feats': (5, Counter()), 'deprel': (7, Counter()),
+        # FOR CHAR FEATS
+        'word_char': (1, Counter())
+    }
+
+    if any([os.path.exists(os.path.join(data_dir, 'vocabs', f'{key}.txt')) for key in counters]):
+        return
+
+    if not os.path.exists(os.path.join(data_dir, 'vocabs')):
+        os.makedirs(os.path.join(data_dir, 'vocabs'))
+
+    for file_name in [train_file, dev_file, test_file]:
+        for line_num, block in iter_blocks(filename=os.path.join(data_dir, file_name)):
+            values = [list(value) for value in zip(*block)]
+
+            for name, (row, counter) in counters.items():
+                if 'char' in name:
+                    counter.update(itertools.chain(*values[row]))
+                else:
+                    counter.update(values[row])
+
+    for feat, (row, counter) in counters.items():
+        if 'word' in feat:
+            counter = Counter({word: count for word, count in counter.items() if count > min_freq})
+
+        with open(os.path.join(data_dir, 'vocabs', f'{feat}.txt'), mode='w') as f:
+            f.write('\n'.join(sorted(counter.keys())))
+
+
 def create_feature(file=None):
     if file:
         return datasets.ClassLabel(names_file=file)
@@ -40,6 +75,7 @@ class ConlluConfig(datasets.BuilderConfig):
 
     upos: str = None
     xpos: str = None
+    feats: str = None
     deprel: str = None
     deps: str = None
 
@@ -49,6 +85,18 @@ class Conllu(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIG_CLASS = ConlluConfig
 
     def _info(self):
+        build_vocabs(self.config.data_dir, _TRAINING_FILE, _DEV_FILE, _TEST_FILE)
+        feats = {
+            'upos': self.config.upos,
+            'xpos': self.config.xpos,
+            'feats': self.config.feats,
+            'deprel': self.config.deprel,
+        }
+
+        for key in feats:
+            if feats[key] is None:
+                feats[key] = os.path.join(self.config.data_dir, 'vocabs', f'{key}.txt')
+
         return datasets.DatasetInfo(
             description=_DESCRIPTION,
             features=datasets.Features(
@@ -56,11 +104,11 @@ class Conllu(datasets.GeneratorBasedBuilder):
                     "id": datasets.Sequence(datasets.Value("int64")),
                     "form": datasets.Sequence(datasets.Value("string")),
                     "lemma": datasets.Sequence(datasets.Value("string")),
-                    "upos": datasets.Sequence(create_feature(self.config.upos)),
-                    "xpos": datasets.Sequence(create_feature(self.config.xpos)),
+                    "upos": datasets.Sequence(create_feature(feats['upos'])),
+                    "xpos": datasets.Sequence(create_feature(feats['xpos'])),
                     "feats": datasets.Sequence(datasets.Value("string")),
                     "head": datasets.Sequence(datasets.Value("int64")),
-                    "deprel": datasets.Sequence(create_feature(self.config.deprel)),
+                    "deprel": datasets.Sequence(create_feature(feats['deprel'])),
                     "deps": datasets.Sequence(
                         {
                             'id': datasets.Value('int64'),

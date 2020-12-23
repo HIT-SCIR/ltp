@@ -7,7 +7,7 @@ from transformers import AutoModel, AutoConfig
 from collections import namedtuple
 from ltp.nn import MLP, Bilinear, BaseModule
 
-GraphResult = namedtuple('GraphResult', ['loss', 'arc_logits', 'rel_logits'])
+GraphResult = namedtuple('GraphResult', ['loss', 'src_arc_logits', 'arc_logits', 'rel_logits'])
 
 
 def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
@@ -88,13 +88,14 @@ class BiaffineClassifier(nn.Module):
                 logits_mask = word_attention_mask
             loss = self.loss_func(self, s_arc, s_rel, head, labels, logits_mask)
 
+        decode_s_arc = s_rel
         if word_attention_mask is not None:
             activate_word_mask = torch.cat([word_attention_mask[:, :1], word_attention_mask], dim=1)
             activate_word_mask = activate_word_mask.unsqueeze(-1).expand_as(s_arc)
             activate_word_mask = activate_word_mask & activate_word_mask.transpose(-1, -2)
-            s_arc.masked_fill_(~activate_word_mask, float('-inf'))
+            decode_s_arc = s_arc.masked_fill(~activate_word_mask, float('-inf'))
 
-        return GraphResult(loss=loss, arc_logits=s_arc, rel_logits=s_rel)
+        return GraphResult(loss=loss, arc_logits=decode_s_arc, rel_logits=s_rel, src_arc_logits=s_arc)
 
 
 class TransformerBiaffine(BaseModule):
@@ -141,12 +142,7 @@ class TransformerBiaffine(BaseModule):
             inputs_embeds=None,
             head=None,
             labels=None
-    ):
-        r"""
-        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`, defaults to :obj:`None`):
-            Labels for computing the token classification loss.
-            Indices should be in ``[0, ..., config.num_labels - 1]``.
-        """
+    ) -> GraphResult:
         hidden_states = self.transformer(
             input_ids,
             attention_mask,

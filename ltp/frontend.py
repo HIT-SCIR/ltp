@@ -18,6 +18,7 @@ transformers_version = version.parse(transformers.__version__)
 from ltp.algorithms import Trie, eisner, split_sentence
 from ltp.transformer_multitask import TransformerMultiTask as Model
 from ltp.utils import length_to_mask, get_entities, fake_import_pytorch_lightning
+from ltp.patchs import patch_4_1_3
 
 try:
     from torch.hub import _get_torch_home
@@ -123,6 +124,8 @@ class LTP(object):
         except Exception as e:
             fake_import_pytorch_lightning()
             ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
+
+        patch_4_1_3(ckpt)
 
         self.cache_dir = path
         config = AutoConfig.for_model(**ckpt['transformer_config'])

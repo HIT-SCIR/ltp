@@ -5,15 +5,6 @@ from argparse import ArgumentParser
 from transformers import optimization
 from transformers.optimization import *
 
-scheduler_register = {
-    'constant_schedule': get_constant_schedule,
-    'constant_schedule_with_warmup': get_constant_schedule_with_warmup,
-    'linear_schedule_with_warmup': get_linear_schedule_with_warmup,
-    'cosine_schedule_with_warmup': get_cosine_schedule_with_warmup,
-    'cosine_with_hard_restarts_schedule_with_warmup': get_cosine_with_hard_restarts_schedule_with_warmup,
-    'polynomial_decay_schedule_with_warmup': get_polynomial_decay_schedule_with_warmup
-}
-
 
 def get_layer_lrs(
         named_parameters,
@@ -121,11 +112,34 @@ def get_layer_lrs_with_crf(
     return groups
 
 
+scheduler_register = {
+    'constant_schedule': get_constant_schedule,
+    'constant_schedule_with_warmup': get_constant_schedule_with_warmup,
+    'linear_schedule_with_warmup': get_linear_schedule_with_warmup,
+    'cosine_schedule_with_warmup': get_cosine_schedule_with_warmup,
+    'cosine_with_hard_restarts_schedule_with_warmup': get_cosine_with_hard_restarts_schedule_with_warmup,
+    'polynomial_decay_schedule_with_warmup': get_polynomial_decay_schedule_with_warmup
+}
+
+
 def get_scheduler(optimizer, name, **kwargs) -> LambdaLR:
     scheduler = scheduler_register.get(name, get_linear_schedule_with_warmup)
     signature = inspect.signature(scheduler)
     kwargs = {key: value for key, value in kwargs.items() if key in signature.parameters}
     return scheduler(optimizer, **kwargs)
+
+
+layer_lrs_getters_register = {
+    'get_layer_lrs': get_layer_lrs,
+    'get_layer_lrs_with_crf': get_layer_lrs_with_crf,
+}
+
+
+def get_layer_lrs_getters(named_parameters, name, **kwargs):
+    layer_lrs_getter = layer_lrs_getters_register.get(name, get_layer_lrs)
+    signature = inspect.signature(layer_lrs_getter)
+    kwargs = {key: value for key, value in kwargs.items() if key in signature.parameters}
+    return layer_lrs_getter(named_parameters, **kwargs)
 
 
 def create_optimizer(
@@ -137,9 +151,9 @@ def create_optimizer(
         layerwise_lr_decay_power=0.8,
         transformer_preffix="transformer",
         n_transformer_layers=12,
-        get_layer_lrs=get_layer_lrs,
-        get_layer_lrs_kwargs=None,
-        lr_scheduler=get_polynomial_decay_schedule_with_warmup,
+        layer_lrs_getter='get_layer_lrs',
+        layer_lrs_getter_kwargs=None,
+        lr_scheduler='linear_schedule_with_warmup',
         lr_scheduler_kwargs=None,
 ):
     """
@@ -159,18 +173,19 @@ def create_optimizer(
     """
     if lr_scheduler_kwargs is None:
         lr_scheduler_kwargs = {}
-    if get_layer_lrs_kwargs is None:
-        get_layer_lrs_kwargs = {}
+    if layer_lrs_getter_kwargs is None:
+        layer_lrs_getter_kwargs = {}
     if lr_scheduler_kwargs is None:
         lr_scheduler_kwargs = {}
     if layerwise_lr_decay_power > 0:
-        parameters = get_layer_lrs(
+        parameters = get_layer_lrs_getters(
             named_parameters=list(model.named_parameters()),
+            name=layer_lrs_getter,
             transformer_preffix=transformer_preffix,
             learning_rate=lr,
             layer_decay=layerwise_lr_decay_power,
             n_layers=n_transformer_layers,
-            **get_layer_lrs_kwargs
+            **layer_lrs_getter_kwargs
         )
     else:
         parameters = model.parameters()
@@ -197,6 +212,7 @@ def create_optimizer(
 
 def add_optimizer_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
+    # 3e-4 for Small, 1e-4 for Base, 5e-5 for Large
     parser.add_argument('--lr', type=float, default=1e-4)
 
     parser.add_argument('--lr_scheduler', type=str, default='linear_schedule_with_warmup')
@@ -204,8 +220,38 @@ def add_optimizer_specific_args(parent_parser):
     parser.add_argument('--lr_num_cycles', type=float, default=0.5)
     parser.add_argument('--lr_decay_power', type=float, default=1.0)
 
+    parser.add_argument('--lr_layers_getter', type=str, default='get_layer_lrs')
+    parser.add_argument('--lr_crf_preffix', type=str, default='rel_crf')
+    parser.add_argument('--lr_crf_rate', type=float, default=10.0)
+
     parser.add_argument('--warmup_steps', type=int, default=0)
     parser.add_argument('--warmup_proportion', type=float, default=0.1)
     parser.add_argument('--weight_decay', type=float, default=0.0)
-    parser.add_argument('--layerwise_lr_decay_power', type=float, default=-1.0)
+
+    # 0.8 for Base/Small, 0.9 for Large
+    parser.add_argument('--layerwise_lr_decay_power', type=float, default=0.8)
     return parser
+
+
+def from_argparse_args(args, model, num_train_steps, n_transformer_layers=12, **kwargs):
+    return create_optimizer(
+        model,
+        lr=args.lr,
+        num_train_steps=num_train_steps,
+        weight_decay=args.weight_decay,
+        warmup_steps=args.warmup_steps,
+        warmup_proportion=args.warmup_proportion,
+        layerwise_lr_decay_power=args.layerwise_lr_decay_power,
+        n_transformer_layers=n_transformer_layers,
+        layer_lrs_getter=args.lr_layers_getter,
+        layer_lrs_getter_kwargs={
+            'crf_preffix': args.lr_crf_preffix,
+            'crf_rate': args.lr_crf_rate,
+        },
+        lr_scheduler=args.lr_scheduler,
+        lr_scheduler_kwargs={
+            'lr_end': args.lr_end,
+            'power': args.lr_decay_power,
+            'num_cycles': args.lr_num_cycles
+        }, **kwargs
+    )

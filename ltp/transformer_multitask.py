@@ -100,14 +100,11 @@ class TransformerMultiTask(BaseModule):
             input_ids=None,
             logits_mask=None,
             attention_mask=None,
-            word_index=None,
-            word_attention_mask=None,
             token_type_ids=None,
             position_ids=None,
             head_mask=None,
             inputs_embeds=None,
-            head=None,
-            labels=None
+            **kwargs
     ):
         hidden_states = self.transformer(
             input_ids,
@@ -129,7 +126,7 @@ class TransformerMultiTask(BaseModule):
                 input=sequence_output,
                 attention_mask=attention_mask,
                 logits_mask=logits_mask,
-                labels=labels
+                **kwargs
             )
         elif task == 'pos':
             sequence_output = sequence_output[:, 1:-1, :]
@@ -138,42 +135,33 @@ class TransformerMultiTask(BaseModule):
                 input=sequence_output,
                 attention_mask=attention_mask,
                 logits_mask=logits_mask,
-                labels=labels
+                **kwargs
             )
         elif task == 'ner':
             sequence_output = sequence_output[:, 1:-1, :]
             sequence_output = self.dropout(sequence_output)
             return self.ner_classifier(
                 sequence_output,
-                word_index=word_index,
-                word_attention_mask=word_attention_mask,
-                labels=labels
+                **kwargs
             )
         elif task == 'dep':
             sequence_output = sequence_output[:, :-1, :]
             sequence_output = self.dropout(sequence_output)
             return self.dep_classifier(
                 sequence_output,
-                word_index=word_index,
-                word_attention_mask=word_attention_mask,
-                head=head
+                **kwargs
             )
         elif task == 'sdp':
             sequence_output = sequence_output[:, :-1, :]
             sequence_output = self.dropout(sequence_output)
             return self.sdp_classifier(
                 sequence_output,
-                word_index=word_index,
-                word_attention_mask=word_attention_mask,
-                head=head,
-                labels=labels
+                **kwargs
             )
         elif task == 'srl':
             sequence_output = sequence_output[:, 1:-1, :]
             sequence_output = self.dropout(sequence_output)
             return self.srl_classifier(
                 sequence_output,
-                word_index=word_index,
-                word_attention_mask=word_attention_mask,
-                labels=labels
+                **kwargs
             )

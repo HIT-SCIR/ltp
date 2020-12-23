@@ -11,16 +11,11 @@ from ltp import optimization
 from ltp.data.utils import collate
 from ltp.transformer_biaffine import TransformerBiaffine as Model, sdp_loss
 
-import numpy as np
-import pytorch_lightning as pl
 from pytorch_lightning import Trainer
 from transformers import AutoTokenizer
-
-from ltp.utils import TaskInfo, common_train, map2device, convert2npy
+from ltp.utils import TaskInfo, common_train, map2device, convert2npy, tune_train, dataset_cache_wrapper
 
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
-
-task_info = TaskInfo(task_name='sdp', metric_name='f1')
 
 
 # CUDA_VISIBLE_DEVICES=0 PYTHONPATH=. python ltp/task_segmention.py --data_dir=data/seg --num_labels=2 --max_epochs=10 --batch_size=16 --gpus=1 --precision=16 --auto_lr_find=lr
@@ -38,12 +33,12 @@ def get_graph_entities(arcs, labels):
     return set(res)
 
 
-def build_dataset(model, data_dir):
+@dataset_cache_wrapper(get_graph_entities)
+def build_dataset(model: Model, data_dir, task_name):
     dataset = datasets.load_dataset(
         datasets.Conllu,
         data_dir=data_dir,
-        cache_dir=data_dir,
-        deps=os.path.join(data_dir, "deps_labels.txt")
+        cache_dir=data_dir
     )
     dataset.remove_columns_(["id", "lemma", "upos", "xpos", "feats", "head", "deprel", "misc"])
     tokenizer = AutoTokenizer.from_pretrained(model.hparams.transformer, use_fast=True)
@@ -57,22 +52,19 @@ def build_dataset(model, data_dir):
             truncation=True
         )
         word_index = []
-        word_attention_mask = []
         for encoding in res.encodings:
             word_index.append([])
-            word_attention_mask.append([])
 
             last_word_idx = -1
             current_length = 0
             for word_idx in encoding.words[1:-1]:
                 if word_idx != last_word_idx:
                     word_index[-1].append(current_length)
-                    word_attention_mask[-1].append(True)
                 current_length += 1
                 last_word_idx = word_idx
 
         res['word_index'] = word_index
-        res['word_attention_mask'] = word_attention_mask
+        res['word_attention_mask'] = [[True] * len(index) for index in word_index]
 
         heads = []
         labels = []
@@ -92,22 +84,22 @@ def build_dataset(model, data_dir):
     dataset = dataset.map(
         lambda examples: tokenize(examples), batched=True,
         cache_file_names={
-            k: d._get_cache_file_path(f"{k}-tokenized") for k, d in dataset.items()
+            k: d._get_cache_file_path(f"{task_name}-{k}-tokenized") for k, d in dataset.items()
         }
     )
     dataset.set_format(type='torch', columns=[
         'input_ids', 'token_type_ids', 'attention_mask', 'word_index', 'word_attention_mask', 'head', 'labels'
     ])
     dataset.shuffle(indices_cache_file_names={
-        k: d._get_cache_file_path(f"{task_info.task_name}-{k}-shuffled-index-{model.hparams.seed}") for k, d in
+        k: d._get_cache_file_path(f"{task_name}-{k}-shuffled-index-{model.hparams.seed}") for k, d in
         dataset.items()
     })
-    return dataset, get_graph_entities
+    return dataset
 
 
-def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{task_info.metric_name}', log=True):
-    def step(self: pl.LightningModule, batch, batch_nb):
-        result = self(**batch)
+def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_f1', ret=False):
+    def step(self: Model, batch, batch_nb):
+        result = self.forward(**batch)
         loss = result.loss
         parc = result.arc_logits
         prel = result.rel_logits
@@ -128,7 +120,7 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
             f'{metric_tag}/true': len(real)
         }
 
-    def epoch_end(self: pl.LightningModule, outputs):
+    def epoch_end(self: Model, outputs):
         if isinstance(outputs, dict):
             outputs = [outputs]
         length = len(outputs)
@@ -142,106 +134,39 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_{t
         r = correct / true if true > 0 else 0
         f = 2 * p * r / (p + r) if (p + r > 0) else 0
 
-        prefix, appendix = metric_tag.split('_', maxsplit=1)
-
-        if log:
-            self.log_dict(
-                dictionary={loss_tag: loss, f'{prefix}_p': p, f'{prefix}_r': r, metric_tag: f},
-                on_step=False, on_epoch=True, prog_bar=True, logger=True
-            )
-        else:
+        self.log_dict(
+            dictionary={metric_tag.replace('f1', 'p'): p, metric_tag.replace('f1', 'r'): r},
+            on_step=False, on_epoch=True, prog_bar=False, logger=True
+        )
+        self.log_dict(
+            dictionary={loss_tag: loss, metric_tag: f},
+            on_step=False, on_epoch=True, prog_bar=True, logger=True
+        )
+        if ret:
             return f
 
     return step, epoch_end
 
 
-def build_method(model):
-    dataset, metric = build_dataset(model, model.hparams.data_dir)
-
-    def train_dataloader(self):
-        res = torch.utils.data.DataLoader(
-            dataset[datasets.Split.TRAIN],
-            batch_size=self.hparams.batch_size,
-            collate_fn=collate,
-            num_workers=self.hparams.num_workers,
-            pin_memory=True
-        )
-        return res
-
-    def training_step(self, batch, batch_nb):
-        result = self(**batch)
-        self.log("loss", result.loss.item())
-        return result.loss
-
-    def val_dataloader(self):
-        return torch.utils.data.DataLoader(
-            dataset[datasets.Split.VALIDATION],
-            batch_size=self.hparams.batch_size,
-            collate_fn=collate,
-            num_workers=self.hparams.num_workers,
-            pin_memory=True
-        )
-
-    def test_dataloader(self):
-        return torch.utils.data.DataLoader(
-            dataset[datasets.Split.TEST],
-            batch_size=self.hparams.batch_size,
-            collate_fn=collate,
-            num_workers=self.hparams.num_workers,
-            pin_memory=True
-        )
-
-    # AdamW + LR scheduler
-    def configure_optimizers(self: Model):
-        num_epoch_steps = (len(dataset[datasets.Split.TRAIN]) + self.hparams.batch_size - 1) // self.hparams.batch_size
-        num_train_steps = num_epoch_steps * self.hparams.max_epochs
-        optimizer, scheduler = optimization.create_optimizer(
-            self,
-            lr=self.hparams.lr,
-            num_train_steps=num_train_steps,
-            weight_decay=self.hparams.weight_decay,
-            warmup_steps=self.hparams.warmup_steps,
-            warmup_proportion=self.hparams.warmup_proportion,
-            layerwise_lr_decay_power=self.hparams.layerwise_lr_decay_power,
-            n_transformer_layers=self.transformer.config.num_hidden_layers,
-            lr_scheduler=self.hparams.lr_scheduler,
-            lr_scheduler_kwargs={
-                'lr_end': self.hparams.lr_end,
-                'power': self.hparams.lr_decay_power,
-                'num_cycles': self.hparams.lr_num_cycles
-            }
-        )
-
-        return [optimizer], [{'scheduler': scheduler, 'interval': 'step'}]
-
-    model.configure_optimizers = types.MethodType(configure_optimizers, model)
-
-    model.train_dataloader = types.MethodType(train_dataloader, model)
-    model.training_step = types.MethodType(training_step, model)
-    # model.training_epoch_end = types.MethodType(training_epoch_end, model)
-
-    validation_step, validation_epoch_end = validation_method(
-        metric, loss_tag='val_loss', metric_tag=f'val_{task_info.metric_name}'
-    )
-
-    model.val_dataloader = types.MethodType(val_dataloader, model)
-    model.validation_step = types.MethodType(validation_step, model)
-    model.validation_epoch_end = types.MethodType(validation_epoch_end, model)
-
-    test_step, test_epoch_end = validation_method(
-        metric, loss_tag='test_loss', metric_tag=f'test_{task_info.metric_name}'
-    )
-
-    model.test_dataloader = types.MethodType(test_dataloader, model)
-    model.test_step = types.MethodType(test_step, model)
-    model.test_epoch_end = types.MethodType(test_epoch_end, model)
+task_info = TaskInfo(
+    task_name='sdp',
+    metric_name='f1',
+    build_dataset=build_dataset,
+    validation_method=validation_method
+)
 
 
 def add_task_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
+    parser.add_argument('--tune', action='store_true')
+    parser.add_argument('--offline', action='store_true')
     parser.add_argument('--seed', type=int, default=19980524)
+    parser.add_argument('--patience', type=int, default=5)
+    parser.add_argument('--gpus_per_trial', type=float, default=1.0)
+    parser.add_argument('--cpus_per_trial', type=float, default=1.0)
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument('--num_workers', type=int, default=4)
+    parser.add_argument('--num_samples', type=int, default=10)
     parser.add_argument('--data_dir', type=str, required=True)
     parser.add_argument('--build_dataset', action='store_true')
     return parser
@@ -255,7 +180,7 @@ def build_distill_dataset(args):
     model.eval()
     model.freeze()
 
-    dataset, metric = build_dataset(model, args.data_dir)
+    dataset, metric = build_dataset(model, args.data_dir, task_info.task_name)
     train_dataloader = torch.utils.data.DataLoader(
         dataset[datasets.Split.TRAIN],
         batch_size=args.batch_size,
@@ -263,7 +188,7 @@ def build_distill_dataset(args):
         num_workers=args.num_workers
     )
 
-    output = os.path.join(args.data_dir, 'output.npz')
+    output = os.path.join(args.data_dir, task_info.task_name, 'output.npz')
 
     if torch.cuda.is_available():
         model.cuda()
@@ -277,7 +202,8 @@ def build_distill_dataset(args):
         batchs = []
         for batch in tqdm(train_dataloader):
             batch = map2cuda(batch)
-            loss, logits = model(**batch)
+            result = model.forward(**batch)
+            logits = result.src_arc_logits, result.rel_logits
             batch.update(logits=logits)
             batchs.append(map2cpu(batch))
         numpy.savez(output, data=convert2npy(batchs))
@@ -296,22 +222,17 @@ def main():
     parser = Trainer.add_argparse_args(parser)
 
     # task specific default args
-    parser.set_defaults(num_labels=56, max_epochs=10)
-    parser.set_defaults(arc_hidden_size=600, rel_hidden_size=600)
+    parser.set_defaults(gradient_clip_val=1.0, min_epochs=1, max_epochs=10)
+    parser.set_defaults(num_labels=56, arc_hidden_size=600, rel_hidden_size=600)
 
     args = parser.parse_args()
 
     if args.build_dataset:
         build_distill_dataset(args)
+    elif args.tune:
+        tune_train(args, model_class=Model, task_info=task_info, model_kwargs={'loss_func': sdp_loss})
     else:
-        common_train(
-            args,
-            metric=f'val_{task_info.metric_name}',
-            model_class=Model,
-            build_method=build_method,
-            task=task_info.task_name,
-            loss_func=sdp_loss
-        )
+        common_train(args, model_class=Model, task_info=task_info, model_kwargs={'loss_func': sdp_loss})
 
 
 if __name__ == '__main__':
