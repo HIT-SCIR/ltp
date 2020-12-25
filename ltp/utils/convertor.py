@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import torch
 from torch._six import container_abcs
 

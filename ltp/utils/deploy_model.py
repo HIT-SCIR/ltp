@@ -1,13 +1,22 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import os
+from argparse import ArgumentParser
+from collections import OrderedDict
+
 import torch
+from transformers import AutoConfig
 from packaging.version import parse as version_parse
 from ltp.transformer_multitask import TransformerMultiTask as Model
 
 from ltp import __version__
 
 
-def load_labels(labels_path):
+def load_labels(*paths):
     try:
+        labels_path = os.path.join(*paths)
         with open(labels_path, encoding='utf-8') as f:
             return [line.strip() for line in f.readlines()]
     except Exception as e:
@@ -15,35 +24,69 @@ def load_labels(labels_path):
 
 
 def deploy_model(args, version=__version__):
-    version = version_parse(version)
-    assert version.major == 4
+    parsed_version = version_parse(version)
+    assert parsed_version.major == 4
 
-    if version.minor == 0:
-        deploy_model_4_0(args)
-    elif version.minor == 1:
-        deploy_model_4_1(args)
+    if parsed_version.minor == 0:
+        deploy_model_4_0(args, version)
+    elif parsed_version.minor == 1:
+        deploy_model_4_1(args, version)
 
 
-def deploy_model_4_1(args):
+def deploy_model_4_1(args, version):
     from argparse import Namespace
 
+    fake_parser = ArgumentParser()
+    fake_parser = Model.add_model_specific_args(fake_parser)
+    model_args, _ = fake_parser.parse_known_args(namespace=args)
+
+    transformer_config = AutoConfig.from_pretrained(model_args.transformer)
     model = Model.load_from_checkpoint(
-        args.resume_from_checkpoint, hparams=args
+        args.resume_from_checkpoint, strict=False, hparams=model_args, config=transformer_config
     )
-    model_state_dict = model.state_dict()
+
     model_config = Namespace(**model.hparams)
+    # LOAD VOCAB
+    pos_labels = load_labels(args.pos_data_dir, 'vocabs', 'xpos.txt')
+    ner_labels = load_labels(args.ner_data_dir, 'ner_labels.txt')
+    srl_labels = load_labels(args.srl_data_dir, 'srl_labels.txt')
+    dep_labels = load_labels(args.dep_data_dir, 'vocabs', 'deprel.txt')
+    sdp_labels = load_labels(args.sdp_data_dir, 'vocabs', 'deps.txt')
+
+    # MODEL CLIP
+    if not len(pos_labels):
+        del model.pos_classifier
+        model_config.pos_num_labels = 0
+
+    if not len(ner_labels):
+        del model.ner_classifier
+        model_config.ner_num_labels = 0
+
+    if not len(srl_labels):
+        del model.srl_classifier
+        model_config.srl_num_labels = 0
+
+    if not len(dep_labels):
+        del model.dep_classifier
+        model_config.dep_num_labels = 0
+
+    if not len(sdp_labels):
+        del model.sdp_classifier
+        model_config.sdp_num_labels = 0
+
+    model_state_dict = OrderedDict(model.state_dict().items())
 
     ltp_model = {
-        'version': "4.1.0",
+        'version': version,
         'model': model_state_dict,
         'model_config': model_config,
         'transformer_config': model.transformer.config.to_dict(),
         'seg': ['I-W', 'B-W'],
-        'pos': load_labels(os.path.join(args.pos_data_dir, 'pos_labels.txt')),
-        'ner': load_labels(os.path.join(args.ner_data_dir, 'ner_labels.txt')),
-        'srl': load_labels(os.path.join(args.srl_data_dir, 'srl_labels.txt')),
-        'dep': load_labels(os.path.join(args.dep_data_dir, 'dep_labels.txt')),
-        'sdp': load_labels(os.path.join(args.sdp_data_dir, 'deps_labels.txt')),
+        'pos': pos_labels,
+        'ner': ner_labels,
+        'srl': srl_labels,
+        'dep': dep_labels,
+        'sdp': sdp_labels,
     }
     os.makedirs(args.ltp_model, exist_ok=True)
     torch.save(ltp_model, os.path.join(args.ltp_model, 'ltp.model'))
@@ -53,7 +96,7 @@ def deploy_model_4_1(args):
     tokenizer.save_pretrained(args.ltp_model)
 
 
-def deploy_model_4_0(args):
+def deploy_model_4_0(args, version):
     ltp_adapter_mapper = sorted([
         ('transformer', 'pretrained'),
         ('seg_classifier', 'seg_decoder'),
@@ -63,7 +106,7 @@ def deploy_model_4_0(args):
         ('ner_classifier.relative_transformer', 'ner_decoder.transformer'),
         ('srl_classifier', 'srl_decoder'),
         ('srl_classifier.rel_atten', 'srl_decoder.biaffine'),
-        ('srl_classifier.rel_crf', 'srl_decoder.crf'),
+        ('srl_classifier.crf', 'srl_decoder.crf'),
         ('dep_classifier', 'dep_decoder'),
         ('sdp_classifier', 'sdp_decoder'),
     ], key=lambda x: len(x[0]), reverse=True)
@@ -71,21 +114,28 @@ def deploy_model_4_0(args):
     model = Model.load_from_checkpoint(
         args.resume_from_checkpoint, hparams=args
     )
-    model_state_dict = model.state_dict()
+    model_state_dict = OrderedDict(model.state_dict().items())
     for preffix, target_preffix in ltp_adapter_mapper:
         model_state_dict = {
             key.replace(preffix, target_preffix, 1): value
             for key, value in model_state_dict.items()
         }
 
+    pos_labels = load_labels(args.pos_data_dir, 'vocabs', 'xpos.txt')
+    ner_labels = load_labels(args.ner_data_dir, 'ner_labels.txt')
+    srl_labels = load_labels(args.srl_data_dir, 'srl_labels.txt')
+    dep_labels = load_labels(args.dep_data_dir, 'vocabs', 'deprel.txt')
+    sdp_labels = load_labels(args.sdp_data_dir, 'vocabs', 'deps.txt')
+
     ltp_model = {
         'version': '4.0.0',
+        'code_version': version,
         'seg': ['I-W', 'B-W'],
-        'pos': load_labels(os.path.join(args.pos_data_dir, 'pos_labels.txt')),
-        'ner': load_labels(os.path.join(args.ner_data_dir, 'ner_labels.txt')),
-        'srl': load_labels(os.path.join(args.srl_data_dir, 'srl_labels.txt')),
-        'dep': load_labels(os.path.join(args.dep_data_dir, 'dep_labels.txt')),
-        'sdp': load_labels(os.path.join(args.sdp_data_dir, 'deps_labels.txt')),
+        'pos': pos_labels,
+        'ner': ner_labels,
+        'srl': srl_labels,
+        'dep': dep_labels,
+        'sdp': sdp_labels,
         'pretrained_config': model.transformer.config,
         'model_config': {
             'class': 'SimpleMultiTaskModel',

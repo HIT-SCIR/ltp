@@ -1,4 +1,6 @@
-import types
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import numpy
 import torch
@@ -105,7 +107,7 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_f1
         prel = result.rel_logits
 
         parc[:, 0, 1:] = float('-inf')
-        parc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))  # 避免自指
+        parc.diagonal(0, 1, 2).fill_(float('-inf'))  # 避免自指
 
         parc = torch.sigmoid(parc[:, 1:, :]) > 0.5
         prel = torch.argmax(prel[:, 1:, :], dim=-1)

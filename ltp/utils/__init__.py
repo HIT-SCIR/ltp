@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 from .layze_import import LazyModule
 from .layze_import import fake_import_pytorch_lightning
 

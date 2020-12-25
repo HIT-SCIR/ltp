@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 from argparse import ArgumentParser
 
 from torch import nn
@@ -34,7 +38,9 @@ class TransformerMultiTask(BaseModule):
                 num_heads=self.hparams.ner_num_heads,
                 num_labels=self.hparams.ner_num_labels,
                 dropout=self.hparams.dropout,
-                max_length=max_length
+                max_length=max_length,
+                use_crf=self.hparams.ner_use_crf,
+                crf_reduction=self.hparams.ner_crf_reduction
             )
         if self.hparams.dep_num_labels:
             self.dep_classifier = BiaffineClassifier(
@@ -73,10 +79,11 @@ class TransformerMultiTask(BaseModule):
         parser.add_argument('--pos_num_labels', type=int, default=27)
 
         parser.add_argument('--ner_num_labels', type=int, default=13)
+        parser.add_argument('--ner_use_crf', action='store_true')
+        parser.add_argument('--ner_crf_reduction', type=str, default='sum')
+        parser.add_argument('--ner_num_heads', type=int, default=4)
         parser.add_argument('--ner_num_layers', type=int, default=2)
         parser.add_argument('--ner_hidden_size', type=int, default=256)
-
-        parser.add_argument('--ner_num_heads', type=int, default=4)
 
         parser.add_argument('--dep_num_labels', type=int, default=14)
         parser.add_argument('--dep_arc_hidden_size', type=int, default=500)

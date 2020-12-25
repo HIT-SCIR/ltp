@@ -1,7 +1,10 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import os
-import numpy
-import numpy as np
 import types
+import numpy as np
 from argparse import ArgumentParser
 
 import torch
@@ -81,8 +84,27 @@ def distill_linear(batch, result, target, temperature_scheduler, model: Model = 
         logits_mask = batch['attention_mask'][:, 2:]
     active_logits = result.logits[logits_mask]
     active_target_logits = target[logits_mask]
-    temperature = temperature_scheduler(active_logits, active_target_logits)
-    return kd_ce_loss(active_logits, active_target_logits, temperature=temperature)
+
+    if result.decoded is not None and extra is not None:
+        start_transitions = torch.as_tensor(extra['start_transitions'], device=model.device)
+        transitions = torch.as_tensor(extra['transitions'], device=model.device)
+        end_transitions = torch.as_tensor(extra['end_transitions'], device=model.device)
+
+        temperature = temperature_scheduler(active_logits, active_target_logits)
+        kd_loss = kd_mse_loss(active_logits, active_target_logits, temperature)
+
+        transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
+        s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
+        e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
+
+        crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions, transitions_temp) + \
+                   kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions, s_transitions_temp) + \
+                   kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions, e_transitions_temp)
+
+        return kd_loss + crf_loss
+    else:
+        temperature = temperature_scheduler(active_logits, active_target_logits)
+        return kd_ce_loss(active_logits, active_target_logits, temperature=temperature)
 
 
 def distill_matrix_dep(batch, result, target, temperature_scheduler, model: Model = None, extra=None) -> torch.Tensor:
@@ -149,16 +171,24 @@ def distill_matrix_crf(batch, result, target, temperature_scheduler, model: Mode
     s_rel, labels = result.arc_logits, result.labels
     t_rel = target
 
-    logits_loss = kd_mse_loss(s_rel[logits_mask], t_rel[logits_mask])
+    active_logits = s_rel[logits_mask]
+    active_target_logits = t_rel[logits_mask]
+
+    temperature = temperature_scheduler(active_logits, active_target_logits)
+    kd_loss = kd_mse_loss(active_logits, active_target_logits, temperature)
 
     start_transitions = torch.as_tensor(extra['start_transitions'], device=model.device)
     transitions = torch.as_tensor(extra['transitions'], device=model.device)
     end_transitions = torch.as_tensor(extra['end_transitions'], device=model.device)
 
-    crf_loss = kd_mse_loss(transitions, model.srl_classifier.rel_crf.transitions) + \
-               kd_mse_loss(start_transitions, model.srl_classifier.rel_crf.start_transitions) + \
-               kd_mse_loss(end_transitions, model.srl_classifier.rel_crf.end_transitions)
-    return (logits_loss + crf_loss) / 2
+    transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
+    s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
+    e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
+
+    crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions, transitions_temp) + \
+               kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions, s_transitions_temp) + \
+               kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions, e_transitions_temp)
+    return kd_loss + crf_loss
 
 
 distill_loss_map = {
@@ -179,7 +209,7 @@ def build_dataset(model, **kwargs):
 
     for task, task_data_dir in kwargs.items():
         task_distill_path = os.path.join(task_data_dir, task, 'output.npz')
-        task_distill_data = numpy.load(task_distill_path, allow_pickle=True)
+        task_distill_data = np.load(task_distill_path, allow_pickle=True)
 
         distill_datasets[task] = task_distill_data['data'].tolist()
         distill_datasets_extra[task] = task_distill_data.get('extra', None)

@@ -1,15 +1,24 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 from argparse import ArgumentParser
+from typing import Optional
 
 import torch
 from torch import nn
+from torch.nn import functional as F
 from transformers import AutoModel
 
-from ltp.nn import BaseModule, RelativeTransformer
+from ltp.nn import BaseModule, RelativeTransformer, CRF
 from ltp.transformer_linear import TokenClassifierResult
 
 
 class RelativeTransformerLinearClassifier(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers, num_heads, num_labels, max_length, dropout):
+    crf: Optional[CRF]
+
+    def __init__(self, input_size, hidden_size, num_layers, num_heads, num_labels, max_length, dropout, use_crf=False,
+                 crf_reduction='sum'):
         super().__init__()
 
         self.relative_transformer = RelativeTransformer(
@@ -21,6 +30,11 @@ class RelativeTransformerLinearClassifier(nn.Module):
             max_length=max_length * 2
         )
         self.classifier = nn.Linear(input_size, num_labels)
+        if use_crf:
+            self.crf = CRF(num_labels, batch_first=True)
+            self.crf_reduction = crf_reduction
+        else:
+            self.crf = None
 
     def forward(self, input, word_index=None, word_attention_mask=None, labels=None,
                 return_dict=None, hidden_states=None):
@@ -36,7 +50,10 @@ class RelativeTransformerLinearClassifier(nn.Module):
         if labels is not None:
             loss_fct = nn.CrossEntropyLoss()
             # Only keep active parts of the loss
-            if word_attention_mask is not None:
+            if word_attention_mask is not None and self.crf is not None:
+                logits = F.log_softmax(logits, dim=-1)
+                loss = - self.crf.forward(logits, labels, word_attention_mask, reduction=self.crf_reduction)
+            elif word_attention_mask is not None:
                 active_loss = word_attention_mask.view(-1)
                 active_logits = logits.view(-1, self.classifier.out_features)[active_loss]
                 active_labels = labels.view(-1)[active_loss]
@@ -44,7 +61,11 @@ class RelativeTransformerLinearClassifier(nn.Module):
             else:
                 loss = loss_fct(logits.view(-1, self.classifier.out_features), labels.view(-1))
 
-        return TokenClassifierResult(loss=loss, logits=logits)
+        decoded = None
+        if not self.training and self.crf is not None:
+            decoded = self.crf.decode(emissions=logits, mask=word_attention_mask)
+
+        return TokenClassifierResult(loss=loss, logits=logits, decoded=decoded, labels=labels)
 
 
 class TransformerRelLinear(BaseModule):
@@ -65,7 +86,9 @@ class TransformerRelLinear(BaseModule):
             num_heads=self.hparams.num_heads,
             dropout=self.hparams.dropout,
             max_length=max_length,
-            num_labels=self.hparams.num_labels
+            num_labels=self.hparams.num_labels,
+            use_crf=self.hparams.use_crf,
+            crf_reduction=self.hparams.crf_reduction
         )
 
     @staticmethod
@@ -76,6 +99,8 @@ class TransformerRelLinear(BaseModule):
         parser.add_argument('--hidden_size', type=int, default=256)
         parser.add_argument('--num_heads', type=int, default=4)
         parser.add_argument('--dropout', type=float, default=0.1)
+        parser.add_argument('--use_crf', action='store_true')
+        parser.add_argument('--crf_reduction', type=str, default='sum')
         parser.add_argument('--num_labels', type=int)
         return parser
 

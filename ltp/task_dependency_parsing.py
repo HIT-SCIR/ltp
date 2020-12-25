@@ -1,4 +1,6 @@
-import types
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import numpy
 import torch
@@ -86,7 +88,7 @@ def validation_method(metric_func=None, loss_tag='val_loss', metric_tag=f'val_ac
         mask: torch.Tensor = batch['word_attention_mask']
 
         parc[:, 0, 1:] = float('-inf')
-        parc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))
+        parc.diagonal(0, 1, 2).fill_(float('-inf'))
         parc = eisner(parc, torch.cat([torch.zeros_like(mask[:, :1], dtype=torch.bool), mask], dim=1))
 
         prel = torch.argmax(prel, dim=-1)

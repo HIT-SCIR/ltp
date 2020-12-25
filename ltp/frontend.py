@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import os
 import torch
 import itertools
@@ -280,9 +281,13 @@ class LTP(object):
 
         word_input = torch.gather(hidden, dim=1, index=word_idx)  # 每个word第一个char的向量
 
-        word_cls_input = torch.cat([cls, word_input], dim=1)
-        word_cls_mask = length_to_mask(torch.as_tensor(word_length, device=self.device) + 1)
-        word_cls_mask[:, 0] = False
+        if len(self.dep_vocab) + len(self.sdp_vocab) > 0:
+            word_cls_input = torch.cat([cls, word_input], dim=1)
+            word_cls_mask = length_to_mask(torch.as_tensor(word_length, device=self.device) + 1)
+            word_cls_mask[:, 0] = False
+        else:
+            word_cls_input, word_cls_mask = None, None
+
         return sentences, {
             'word_cls': cls, 'word_input': word_input, 'word_length': word_length,
             'word_cls_input': word_cls_input, 'word_cls_mask': word_cls_mask
@@ -298,27 +303,32 @@ class LTP(object):
         Returns:
             pos: 词性标注结果
         """
+        if len(self.pos_vocab) == 0:
+            return []
         postagger_output = self.model.pos_classifier(hidden['word_input']).logits
         postagger_output = torch.argmax(postagger_output, dim=-1).cpu().numpy()
         postagger_output = convert_idx_to_name(postagger_output, hidden['word_length'], self.pos_vocab)
         return postagger_output
 
     @no_gard
-    def ner(self, hidden: dict):
+    def ner(self, hidden: dict, as_entities=True):
         """
         命名实体识别
         Args:
             hidden: 分词时所得到的中间表示
+            as_entities: 是否以 Entity(Type, Start, End) 的形式返回
 
         Returns:
             pos: 命名实体识别结果
         """
+        if len(self.ner_vocab) == 0:
+            return []
         ner_output = self.model.ner_classifier.forward(
             hidden['word_input'], word_attention_mask=hidden['word_cls_mask'][:, 1:]
-        ).logits
-        ner_output = torch.argmax(ner_output, dim=-1).cpu().numpy()
+        )
+        ner_output = ner_output.decoded or torch.argmax(ner_output.logits, dim=-1).cpu().numpy()
         ner_output = convert_idx_to_name(ner_output, hidden['word_length'], self.ner_vocab)
-        return [get_entities(ner) for ner in ner_output]
+        return [get_entities(ner) for ner in ner_output] if as_entities else ner_output
 
     @no_gard
     def srl(self, hidden: dict, keep_empty=True):
@@ -330,6 +340,8 @@ class LTP(object):
         Returns:
             pos: 语义角色标注结果
         """
+        if len(self.srl_vocab) == 0:
+            return []
         srl_output = self.model.srl_classifier.forward(
             input=hidden['word_input'],
             word_attention_mask=hidden['word_cls_mask'][:, 1:]
@@ -350,16 +362,19 @@ class LTP(object):
         return srl_labels_res
 
     @no_gard
-    def dep(self, hidden: dict, fast=True):
+    def dep(self, hidden: dict, fast=True, as_tuple=True):
         """
         依存句法树
         Args:
             hidden: 分词时所得到的中间表示
             fast: 启用 fast 模式时，减少对结果的约束，速度更快，相应的精度会降低
+            as_tuple: 返回的结果是否为 (idx, head, rel) 的格式，否则返回 heads, rels
 
         Returns:
             依存句法树结果
         """
+        if len(self.dep_vocab) == 0:
+            return []
         word_attention_mask = hidden['word_cls_mask']
         result = self.model.dep_classifier.forward(
             input=hidden['word_cls_input'],
@@ -367,7 +382,7 @@ class LTP(object):
         )
         dep_arc, dep_label = result.arc_logits, result.rel_logits
         dep_arc[:, 0, 1:] = float('-inf')
-        dep_arc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))
+        dep_arc.diagonal(0, 1, 2).fill_(float('-inf'))
         dep_arc = dep_arc.argmax(dim=-1) if fast else eisner(dep_arc, word_attention_mask)
 
         dep_label = torch.argmax(dep_label, dim=-1)
@@ -376,7 +391,7 @@ class LTP(object):
         dep_arc[~word_attention_mask] = -1
         dep_label[~word_attention_mask] = -1
 
-        arc_pred = [
+        head_pred = [
             [item for item in arcs if item != -1]
             for arcs in dep_arc[:, 1:].cpu().numpy().tolist()
         ]
@@ -384,23 +399,27 @@ class LTP(object):
             [self.dep_vocab[item] for item in rels if item != -1]
             for rels in dep_label[:, 1:].cpu().numpy().tolist()
         ]
-
+        if not as_tuple:
+            return head_pred, rel_pred
         return [
-            [(idx + 1, arc, rel) for idx, (arc, rel) in enumerate(zip(arcs, rels))]
-            for arcs, rels in zip(arc_pred, rel_pred)
+            [(idx + 1, head, rel) for idx, (head, rel) in enumerate(zip(heads, rels))]
+            for heads, rels in zip(head_pred, rel_pred)
         ]
 
     @no_gard
-    def sdp(self, hidden: dict, graph=True):
+    def sdp(self, hidden: dict, mode: str = 'graph'):
         """
         语义依存图（树）
         Args:
             hidden: 分词时所得到的中间表示
-            graph: 选择是语义依存图还是语义依存树结果
+            mode: ['tree', 'graph', 'mix']
 
         Returns:
             语义依存图（树）结果
         """
+        if len(self.sdp_vocab) == 0:
+            return []
+
         word_attention_mask = hidden['word_cls_mask']
         result = self.model.sdp_classifier(
             input=hidden['word_cls_input'],
@@ -408,17 +427,22 @@ class LTP(object):
         )
         sdp_arc, sdp_label = result.arc_logits, result.rel_logits
         sdp_arc[:, 0, 1:] = float('-inf')
-        sdp_arc.diagonal(0, 1, 2)[1:].fill_(float('-inf'))  # 避免自指
+        sdp_arc.diagonal(0, 1, 2).fill_(float('-inf'))  # 避免自指
         sdp_label = torch.argmax(sdp_label, dim=-1)
 
-        if graph:
-            # 语义依存图
-            sdp_arc = torch.sigmoid_(sdp_arc) > 0.5
-        else:
+        if mode == 'tree':
             # 语义依存树
             sdp_arc_idx = eisner(sdp_arc, word_attention_mask).unsqueeze_(-1).expand_as(sdp_arc)
-            sdp_arc = torch.zeros_like(sdp_arc, dtype=torch.bool).scatter_(-1, sdp_arc_idx, True)
-        sdp_arc[~word_attention_mask] = False
-        sdp_label = get_graph_entities(sdp_arc, sdp_label, self.sdp_vocab)
+            sdp_arc_res = torch.zeros_like(sdp_arc, dtype=torch.bool).scatter_(-1, sdp_arc_idx, True)
+        elif mode == 'mix':
+            # 混合解码
+            sdp_arc_idx = eisner(sdp_arc, word_attention_mask).unsqueeze_(-1).expand_as(sdp_arc)
+            sdp_arc_res = (sdp_arc.sigmoid_() > 0.5).scatter_(-1, sdp_arc_idx, True)
+        else:
+            # 语义依存图
+            sdp_arc_res = torch.sigmoid_(sdp_arc) > 0.5
+
+        sdp_arc_res[~word_attention_mask] = False
+        sdp_label = get_graph_entities(sdp_arc_res, sdp_label, self.sdp_vocab)
 
         return sdp_label

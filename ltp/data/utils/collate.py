@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import torch
 from torch._six import int_classes, string_classes, container_abcs
 from torch.utils.data._utils.collate import np_str_obj_array_pattern, default_collate_err_msg_format

@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import re
 import inspect
 from argparse import ArgumentParser
@@ -220,8 +224,8 @@ def add_optimizer_specific_args(parent_parser):
     parser.add_argument('--lr_num_cycles', type=float, default=0.5)
     parser.add_argument('--lr_decay_power', type=float, default=1.0)
 
-    parser.add_argument('--lr_layers_getter', type=str, default='get_layer_lrs')
-    parser.add_argument('--lr_crf_preffix', type=str, default='rel_crf')
+    parser.add_argument('--lr_layers_getter', type=str, default='get_layer_lrs_with_crf')
+    parser.add_argument('--lr_crf_preffix', type=str, default='crf')
     parser.add_argument('--lr_crf_rate', type=float, default=10.0)
 
     parser.add_argument('--warmup_steps', type=int, default=0)

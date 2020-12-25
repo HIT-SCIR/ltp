@@ -1,4 +1,6 @@
-import types
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import numpy
 import torch
@@ -80,16 +82,17 @@ def validation_method(metric, loss_tag='val_loss', metric_tag=f'val_f1', ret=Fal
         result = self.forward(**batch)
 
         mask = batch['word_attention_mask'] == False
-
-        # acc
         labels = batch['labels']
-        preds = torch.argmax(result.logits, dim=-1)
-
         labels[mask] = -1
-        preds[mask] = -1
-
         labels = [[label_feature[word] for word in sent if word != -1] for sent in labels.detach().cpu().numpy()]
-        preds = [[label_feature[word] for word in sent if word != -1] for sent in preds.detach().cpu().numpy()]
+
+        if result.decoded is None:
+            # acc
+            preds = torch.argmax(result.logits, dim=-1)
+            preds[mask] = -1
+            preds = [[label_feature[word] for word in sent if word != -1] for sent in preds.detach().cpu().numpy()]
+        else:
+            preds = [[label_feature[word] for word in sent] for sent in result.decoded]
 
         return {'loss': result.loss.item(), 'pred': preds, 'labels': labels}
 
@@ -171,7 +174,15 @@ def build_distill_dataset(args):
             logits = model.forward(**batch).logits
             batch.update(logits=logits)
             batchs.append(map2cpu(batch))
-        numpy.savez(output, data=convert2npy(batchs))
+        numpy.savez(
+            output,
+            data=convert2npy(batchs),
+            extra=convert2npy({
+                'transitions': model.classifier.crf.transitions,
+                'start_transitions': model.classifier.crf.start_transitions,
+                'end_transitions': model.classifier.crf.end_transitions
+            })
+        )
 
     print("Done")
 

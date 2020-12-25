@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 import torch, math
 from torch import nn, Tensor
 from torch.nn import functional as F

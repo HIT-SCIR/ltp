@@ -1,4 +1,6 @@
-import types
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import numpy
 import torch
@@ -181,9 +183,9 @@ def build_distill_dataset(args):
             output,
             data=convert2npy(batchs),
             extra=convert2npy({
-                'transitions': model.classifier.rel_crf.transitions,
-                'start_transitions': model.classifier.rel_crf.start_transitions,
-                'end_transitions': model.classifier.rel_crf.end_transitions
+                'transitions': model.classifier.crf.transitions,
+                'start_transitions': model.classifier.crf.start_transitions,
+                'end_transitions': model.classifier.crf.end_transitions
             })
         )
 

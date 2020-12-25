@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 from argparse import ArgumentParser
 
 from torch import nn
@@ -6,7 +10,7 @@ from transformers import AutoModel
 from collections import namedtuple
 from ltp.nn import BaseModule
 
-TokenClassifierResult = namedtuple('TokenClassifierResult', ['loss', 'logits'])
+TokenClassifierResult = namedtuple('TokenClassifierResult', ['loss', 'logits', 'decoded', 'labels'])
 
 
 class LinearClassifier(nn.Linear):
@@ -31,7 +35,7 @@ class LinearClassifier(nn.Linear):
             else:
                 loss = loss_fct(logits.view(-1, self.out_features), labels.view(-1))
 
-        return TokenClassifierResult(loss=loss, logits=logits)
+        return TokenClassifierResult(loss=loss, logits=logits, decoded=None, labels=None)
 
 
 class TransformerLinear(BaseModule):

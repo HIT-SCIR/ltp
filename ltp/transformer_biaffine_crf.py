@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*_
+# Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
+
 from argparse import ArgumentParser
 
 import torch
@@ -19,7 +23,7 @@ class BiaffineCRFClassifier(nn.Module):
         self.mlp_rel_d = MLP(input_size, hidden_size, dropout, activation=nn.ReLU)
 
         self.rel_atten = Bilinear(hidden_size, hidden_size, label_num, bias_x=True, bias_y=True, expand=True)
-        self.rel_crf = CRF(label_num)
+        self.crf = CRF(label_num)
 
     def rel_forword(self, input):
         rel_h = self.mlp_rel_h(input)
@@ -49,10 +53,10 @@ class BiaffineCRFClassifier(nn.Module):
         loss, decoded = None, None
         if labels is not None:
             labels = labels.flatten(end_dim=1)[index]
-            loss = - self.rel_crf.forward(emissions=crf_rel, tags=labels, mask=mask)
+            loss = - self.crf.forward(emissions=crf_rel, tags=labels, mask=mask)
 
         if not self.training:
-            decoded = self.rel_crf.decode(emissions=crf_rel, mask=mask)
+            decoded = self.crf.decode(emissions=crf_rel, mask=mask)
 
         return SRLResult(
             loss=loss, rel_logits=s_rel, decoded=decoded, labels=labels

@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
-from typing import Optional
+# ref: https://github.com/fastnlp/TENER
+
 import torch, math
 from torch import Tensor, nn
 import torch.nn.functional as F
