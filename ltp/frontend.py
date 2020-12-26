@@ -140,14 +140,19 @@ class LTP(object):
         self.dep_vocab = ckpt.get('dep', [])
         self.sdp_vocab = ckpt.get('sdp', [])
         self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag.lstrip('ARGM-')) for tag in ckpt.get('srl', [])]
+        self.model_version = ckpt.get('version', 'unknown')
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.transformer.config, use_fast=True)
         self.trie = Trie()
 
     def __str__(self):
-        return f"LTP {self.version} on {self.device}"
+        return f"LTP {self.version} on {self.device} (model version: {self.model_version}) "
 
     def __repr__(self):
-        return f"LTP {self.version} on {self.device}"
+        return f"LTP {self.version} on {self.device} (model version: {self.model_version}) "
+
+    @property
+    def avaliable(self):
+        return model_map.keys()
 
     @property
     def version(self):

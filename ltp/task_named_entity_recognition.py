@@ -174,15 +174,19 @@ def build_distill_dataset(args):
             logits = model.forward(**batch).logits
             batch.update(logits=logits)
             batchs.append(map2cpu(batch))
-        numpy.savez(
-            output,
-            data=convert2npy(batchs),
-            extra=convert2npy({
-                'transitions': model.classifier.crf.transitions,
-                'start_transitions': model.classifier.crf.start_transitions,
-                'end_transitions': model.classifier.crf.end_transitions
-            })
-        )
+
+        try:
+            numpy.savez(
+                output,
+                data=convert2npy(batchs),
+                extra=convert2npy({
+                    'transitions': model.classifier.crf.transitions,
+                    'start_transitions': model.classifier.crf.start_transitions,
+                    'end_transitions': model.classifier.crf.end_transitions
+                })
+            )
+        except Exception as e:
+            numpy.savez(output, data=convert2npy(batchs))
 
     print("Done")
 
