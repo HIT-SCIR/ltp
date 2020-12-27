@@ -17,7 +17,7 @@ class LinearClassifier(nn.Linear):
     def __init__(self, hidden_size, num_labels):
         super().__init__(hidden_size, num_labels)
 
-    def forward(self, input, attention_mask=None, logits_mask=None, labels=None):
+    def forward(self, input, attention_mask=None, logits_mask=None, labels=None) -> TokenClassifierResult:
         logits = super(LinearClassifier, self).forward(input)
 
         loss = None

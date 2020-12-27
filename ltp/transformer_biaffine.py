@@ -92,7 +92,7 @@ class BiaffineClassifier(nn.Module):
                 logits_mask = word_attention_mask
             loss = self.loss_func(self, s_arc, s_rel, head, labels, logits_mask)
 
-        decode_s_arc = s_rel
+        decode_s_arc = s_arc
         if word_attention_mask is not None:
             activate_word_mask = torch.cat([word_attention_mask[:, :1], word_attention_mask], dim=1)
             activate_word_mask = activate_word_mask.unsqueeze(-1).expand_as(s_arc)
