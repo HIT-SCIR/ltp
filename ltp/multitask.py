@@ -7,9 +7,11 @@ import types
 from argparse import ArgumentParser
 from collections import OrderedDict
 
+import numpy
 import torch
 import torch.utils.data
 from pytorch_lightning import Trainer
+from tqdm import tqdm
 
 import ltp
 from ltp import (
@@ -20,7 +22,7 @@ from ltp import (
 from ltp.data import dataset as datasets
 from ltp.data.utils import collate, MultiTaskDataloader
 from ltp.transformer_multitask import TransformerMultiTask as Model
-from ltp.utils import TaskInfo, common_train, tune_train
+from ltp.utils import TaskInfo, common_train, tune_train, map2device, convert2npy
 from ltp.utils import deploy_model
 
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
@@ -190,6 +192,55 @@ task_info = TaskInfo(
 )
 
 
+def build_ner_distill_dataset(args):
+    model = Model.load_from_checkpoint(
+        args.resume_from_checkpoint, hparams=args
+    )
+
+    model.eval()
+    model.freeze()
+
+    dataset, metric = task_named_entity_recognition.build_dataset(model, args.ner_data_dir, task_info.task_name)
+    train_dataloader = torch.utils.data.DataLoader(
+        dataset[datasets.Split.TRAIN],
+        batch_size=args.batch_size,
+        collate_fn=collate,
+        num_workers=args.num_workers
+    )
+
+    output = os.path.join(args.ner_data_dir, task_info.task_name, 'output.npz')
+
+    if torch.cuda.is_available():
+        model.cuda()
+        map2cpu = lambda x: map2device(x)
+        map2cuda = lambda x: map2device(x, model.device)
+    else:
+        map2cpu = lambda x: x
+        map2cuda = lambda x: x
+
+    with torch.no_grad():
+        batchs = []
+        for batch in tqdm(train_dataloader):
+            batch = map2cuda(batch)
+            logits = model.forward(task='ner', **batch).logits
+            batch.update(logits=logits)
+            batchs.append(map2cpu(batch))
+        try:
+            numpy.savez(
+                output,
+                data=convert2npy(batchs),
+                extra=convert2npy({
+                    'transitions': model.ner_classifier.crf.transitions,
+                    'start_transitions': model.ner_classifier.crf.start_transitions,
+                    'end_transitions': model.ner_classifier.crf.end_transitions
+                })
+            )
+        except Exception as e:
+            numpy.savez(output, data=convert2npy(batchs))
+
+    print("Done")
+
+
 def add_task_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
     parser.add_argument('--seed', type=int, default=19980524)
@@ -210,6 +261,7 @@ def add_task_specific_args(parent_parser):
     parser.add_argument('--dep_data_dir', type=str, default=None)
     parser.add_argument('--sdp_data_dir', type=str, default=None)
     parser.add_argument('--srl_data_dir', type=str, default=None)
+    parser.add_argument('--build_ner_dataset', action='store_true')
     return parser
 
 
@@ -226,6 +278,8 @@ def main():
 
     if args.ltp_model is not None and args.resume_from_checkpoint is not None:
         deploy_model(args, args.ltp_version)
+    elif args.build_ner_dataset:
+        build_ner_distill_dataset(args)
     elif args.tune:
         tune_train(args, model_class=Model, task_info=task_info, build_method=build_method)
     else:

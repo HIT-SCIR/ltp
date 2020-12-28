@@ -141,6 +141,7 @@ class LTP(object):
         self.model.eval()
 
         self.seg_vocab = ckpt.get('seg', [WORD_MIDDLE, WORD_START])
+        self.seg_vocab_dict = {tag: idx for idx, tag in enumerate(self.seg_vocab)}
         self.pos_vocab = ckpt.get('pos', [])
         self.ner_vocab = ckpt.get('ner', [])
         self.dep_vocab = ckpt.get('dep', [])
@@ -255,10 +256,10 @@ class LTP(object):
             matches = self.seg_with_dict(inputs, tokenized, batch_prefix)
             for sent_match, sent_seg in zip(matches, seg):
                 for start, end in sent_match:
-                    sent_seg[start] = 0
-                    sent_seg[start + 1:end] = 1
+                    sent_seg[start] = self.seg_vocab_dict[WORD_START]
+                    sent_seg[start + 1:end] = self.seg_vocab_dict[WORD_MIDDLE]
                     if end < len(sent_seg):
-                        sent_seg[end] = 0
+                        sent_seg[end] = self.seg_vocab_dict[WORD_START]
 
         if is_preseged:
             sentences = inputs
