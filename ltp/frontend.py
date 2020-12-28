@@ -36,7 +36,11 @@ LTP_CACHE = os.getenv("LTP_CACHE", default_cache_path)
 model_map = {
     'base': 'http://39.96.43.154/ltp/v3/base.tgz',
     'small': 'http://39.96.43.154/ltp/v3/small.tgz',
-    'tiny': 'http://39.96.43.154/ltp/v3/tiny.tgz'
+    'tiny': 'http://39.96.43.154/ltp/v3/tiny.tgz',
+    'GSD': 'http://39.96.43.154/ltp/ud/gsd.tgz',
+    'GSD+CRF': 'http://39.96.43.154/ltp/ud/gsd_crf.tgz',
+    'GSDSimp': 'http://39.96.43.154/ltp/ud/gsd.tgz',
+    'GSDSimp+CRF': 'http://39.96.43.154/ltp/ud/gsd_crf.tgz',
 }
 
 
@@ -129,20 +133,22 @@ class LTP(object):
         patch_4_1_3(ckpt)
 
         self.cache_dir = path
-        config = AutoConfig.for_model(**ckpt['transformer_config'])
+        transformer_config = ckpt['transformer_config']
+        transformer_config['torchscript'] = True
+        config = AutoConfig.for_model(**transformer_config)
         self.model = Model(ckpt['model_config'], config=config).to(self.device)
         self.model.load_state_dict(ckpt['model'], strict=False)
         self.model.eval()
-        self.max_length = self.model.transformer.config.max_position_embeddings
+
         self.seg_vocab = ckpt.get('seg', [WORD_MIDDLE, WORD_START])
         self.pos_vocab = ckpt.get('pos', [])
         self.ner_vocab = ckpt.get('ner', [])
         self.dep_vocab = ckpt.get('dep', [])
         self.sdp_vocab = ckpt.get('sdp', [])
         self.srl_vocab = [re.sub(r'ARG(\d)', r'A\1', tag.lstrip('ARGM-')) for tag in ckpt.get('srl', [])]
-        self.model_version = ckpt.get('version', 'unknown')
         self.tokenizer = AutoTokenizer.from_pretrained(path, config=self.model.transformer.config, use_fast=True)
         self.trie = Trie()
+        self._model_version = ckpt.get('version', None)
 
     def __str__(self):
         return f"LTP {self.version} on {self.device} (model version: {self.model_version}) "
@@ -151,13 +157,21 @@ class LTP(object):
         return f"LTP {self.version} on {self.device} (model version: {self.model_version}) "
 
     @property
-    def avaliable(self):
+    def avaliable_models(self):
         return model_map.keys()
 
     @property
     def version(self):
         from ltp import __version__ as version
         return version
+
+    @property
+    def model_version(self):
+        return self._model_version or 'unknown'
+
+    @property
+    def max_length(self):
+        return self.model.transformer.config.max_position_embeddings
 
     def init_dict(self, path, max_window=None):
         self.trie.init(path, max_window)

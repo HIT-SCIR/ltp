@@ -88,5 +88,7 @@ class Trie(pygtrie.CharTrie):
                     maximum_matching_pos.append(candidate)
                 else:
                     start += 1
+            else:
+                start += 1
 
         return maximum_matching_pos
