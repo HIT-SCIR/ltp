@@ -46,10 +46,12 @@
 
 ## [Universal Dependencies](https://universaldependencies.org/)
 
-|                                     模型                                     | 分词  | 词性(XPOS) | 命名实体 | 依存句法 |                              SHA256                              |
-| :--------------------------------------------------------------------------: | :---: | :--------: | :------: | :------: | :--------------------------------------------------------------: |
-|         GSD + OntoNotes ([GSD](http://39.96.43.154/ltp/ud/gsd.tgz))          | 98.4  |   96.85    |  78.56   |  87.24   | e4fd41c6f2c6d84d6df2657f1e47078cb98364366d91e852f0980102c755592a |
-|     GSD + OntoNotes ([GSD+CRF](http://39.96.43.154/ltp/ud/gsd_crf.tgz))      | 98.26 |   96.38    |  79.77   |  86.57   | 0264b4a92e34bb97054ff06f99068b884c54908d1ad265926b0983f2594e1e6a |
-|     GSDSimp + OntoNotes ([GSDSimp](http://39.96.43.154/ltp/ud/gsds.tgz))     | 98.44 |   96.84    |  78.06   |  87.58   | d51b8508f290ab82d1c3844541eb774506213c1f6cf7d2b86fe7d69358d0d52a |
-| GSDSimp + OntoNotes ([GSDSimp+CRF](http://39.96.43.154/ltp/ud/gsds_crf.tgz)) | 98.4  |   96.47    |  79.69   |  86.39   | 1e9ea20cfbc1837bf5736f8b8502aaecb9343590e98b04bba18e15724d3092b2 |
+|                                     模型                                     | 分词  | 词性(XPOS) |  命名实体   | 依存句法 |                              SHA256                              |
+| :--------------------------------------------------------------------------: | :---: | :--------: | :---------: | :------: | :--------------------------------------------------------------: |
+|                                 GSD(Single)                                  | 98.4  |   96.67    |    75.01    |  86.72   |                                -                                 |
+|         GSD + OntoNotes ([GSD](http://39.96.43.154/ltp/ud/gsd.tgz))          | 98.4  |   96.85    |    78.56    |  87.24   | e4fd41c6f2c6d84d6df2657f1e47078cb98364366d91e852f0980102c755592a |
+|     GSD + OntoNotes ([GSD+CRF](http://39.96.43.154/ltp/ud/gsd_crf.tgz))      | 98.26 |   96.38    |    79.77    |  86.57   | 0264b4a92e34bb97054ff06f99068b884c54908d1ad265926b0983f2594e1e6a |
+|                              GSDSimple(Single)                               | 98.29 |   96.69    | 76.67(+CRF) |   87.2   |                                -                                 |
+|     GSDSimp + OntoNotes ([GSDSimp](http://39.96.43.154/ltp/ud/gsds.tgz))     | 98.44 |   96.84    |    78.06    |  87.58   | d51b8508f290ab82d1c3844541eb774506213c1f6cf7d2b86fe7d69358d0d52a |
+| GSDSimp + OntoNotes ([GSDSimp+CRF](http://39.96.43.154/ltp/ud/gsds_crf.tgz)) | 98.4  |   96.47    |    79.69    |  86.39   | 1e9ea20cfbc1837bf5736f8b8502aaecb9343590e98b04bba18e15724d3092b2 |
 
