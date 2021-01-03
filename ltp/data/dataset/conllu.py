@@ -40,7 +40,9 @@ def build_vocabs(data_dir, train_file, dev_file=None, test_file=None, min_freq=5
         'word': (1, Counter()), 'lemma': (2, Counter()), 'upos': (3, Counter()),
         'xpos': (4, Counter()), 'feats': (5, Counter()), 'deprel': (7, Counter()),
         # FOR CHAR FEATS
-        'word_char': (1, Counter())
+        'word_char': (1, Counter()),
+        # DEPS
+        'deps': (8, Counter())
     }
 
     if any([os.path.exists(os.path.join(data_dir, 'vocabs', f'{key}.txt')) for key in counters]):
@@ -56,6 +58,9 @@ def build_vocabs(data_dir, train_file, dev_file=None, test_file=None, min_freq=5
             for name, (row, counter) in counters.items():
                 if 'char' in name:
                     counter.update(itertools.chain(*values[row]))
+                elif 'deps' == name:
+                    deps = [[label.split(':', maxsplit=1)[1] for label in dep.split('|')] for dep in values[row]]
+                    counter.update(itertools.chain(*deps))
                 else:
                     counter.update(values[row])
 
@@ -95,11 +100,16 @@ class Conllu(datasets.GeneratorBasedBuilder):
             'xpos': self.config.xpos,
             'feats': self.config.feats,
             'deprel': self.config.deprel,
+            'deps': self.config.deps
         }
 
         for key in feats:
             if feats[key] is None:
                 feats[key] = os.path.join(self.config.data_dir, 'vocabs', f'{key}.txt')
+
+        deps_rel_feature = create_feature(feats['deps'])
+        if deps_rel_feature.num_classes > 1:
+            self.config.deps = feats['deps']
 
         return datasets.DatasetInfo(
             description=_DESCRIPTION,
@@ -117,8 +127,8 @@ class Conllu(datasets.GeneratorBasedBuilder):
                         {
                             'id': datasets.Value('int64'),
                             'head': datasets.Value("int64"),
-                            'rel': create_feature(self.config.deps)
-                        } if self.config.deps else create_feature(self.config.deps)
+                            'rel': deps_rel_feature
+                        } if deps_rel_feature.num_classes > 1 else create_feature(None)
                     ),
                     "misc": datasets.Sequence(datasets.Value("string")),
                 }

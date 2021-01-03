@@ -43,7 +43,7 @@ def common_train(args, model_class, task_info: TaskInfo, build_method=default_bu
     try:
         import wandb
         logger = loggers.WandbLogger(
-            project='ltp4',
+            project=args.project,
             save_dir='lightning_logs',
             name=f'{task_info.task_name}_{this_time}',
             offline=args.offline

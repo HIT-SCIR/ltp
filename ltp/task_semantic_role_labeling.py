@@ -134,6 +134,7 @@ def add_task_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
     parser.add_argument('--tune', action='store_true')
     parser.add_argument('--offline', action='store_true')
+    parser.add_argument('--project', type=str, default='ltp')
     parser.add_argument('--patience', type=int, default=5)
     parser.add_argument('--gpus_per_trial', type=float, default=1.0)
     parser.add_argument('--cpus_per_trial', type=float, default=1.0)

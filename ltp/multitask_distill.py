@@ -90,16 +90,11 @@ def distill_linear(batch, result, target, temperature_scheduler, model: Model = 
         transitions = torch.as_tensor(extra['transitions'], device=model.device)
         end_transitions = torch.as_tensor(extra['end_transitions'], device=model.device)
 
-        temperature = temperature_scheduler(active_logits, active_target_logits)
-        kd_loss = kd_mse_loss(active_logits, active_target_logits, temperature)
+        kd_loss = kd_mse_loss(active_logits, active_target_logits)
 
-        transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
-        s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
-        e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
-
-        crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions, transitions_temp) + \
-                   kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions, s_transitions_temp) + \
-                   kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions, e_transitions_temp)
+        crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions) + \
+                   kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions) + \
+                   kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions)
 
         return kd_loss + crf_loss
     else:
@@ -168,7 +163,7 @@ def distill_matrix_crf(batch, result, target, temperature_scheduler, model: Mode
     index = logits_mask[:, 0]
     logits_mask = logits_mask[index]
 
-    s_rel, labels = result.arc_logits, result.labels
+    s_rel, labels = result.rel_logits, result.labels
     t_rel = target
 
     active_logits = s_rel[logits_mask]
@@ -181,13 +176,13 @@ def distill_matrix_crf(batch, result, target, temperature_scheduler, model: Mode
     transitions = torch.as_tensor(extra['transitions'], device=model.device)
     end_transitions = torch.as_tensor(extra['end_transitions'], device=model.device)
 
-    transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
-    s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
-    e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
+    # transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
+    # s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
+    # e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
 
-    crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions, transitions_temp) + \
-               kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions, s_transitions_temp) + \
-               kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions, e_transitions_temp)
+    crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions) + \
+               kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions) + \
+               kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions)
     return kd_loss + crf_loss
 
 
@@ -359,6 +354,7 @@ def add_task_specific_args(parent_parser):
     parser.add_argument('--seed', type=int, default=19980524)
     parser.add_argument('--tune', action='store_true')
     parser.add_argument('--offline', action='store_true')
+    parser.add_argument('--project', type=str, default='ltp')
 
     parser.add_argument('--disable_seg', action='store_true')
     parser.add_argument('--disable_pos', action='store_true')

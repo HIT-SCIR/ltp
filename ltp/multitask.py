@@ -200,7 +200,10 @@ def build_ner_distill_dataset(args):
     model.eval()
     model.freeze()
 
-    dataset, metric = task_named_entity_recognition.build_dataset(model, args.ner_data_dir, task_info.task_name)
+    dataset, metric = task_named_entity_recognition.build_dataset(
+        model, args.ner_data_dir,
+        task_named_entity_recognition.task_info.task_name
+    )
     train_dataloader = torch.utils.data.DataLoader(
         dataset[datasets.Split.TRAIN],
         batch_size=args.batch_size,
@@ -208,7 +211,7 @@ def build_ner_distill_dataset(args):
         num_workers=args.num_workers
     )
 
-    output = os.path.join(args.ner_data_dir, task_info.task_name, 'output.npz')
+    output = os.path.join(args.ner_data_dir, task_named_entity_recognition.task_info.task_name, 'output.npz')
 
     if torch.cuda.is_available():
         model.cuda()
@@ -246,6 +249,7 @@ def add_task_specific_args(parent_parser):
     parser.add_argument('--seed', type=int, default=19980524)
     parser.add_argument('--tune', action='store_true')
     parser.add_argument('--offline', action='store_true')
+    parser.add_argument('--project', type=str, default='ltp')
     parser.add_argument('--patience', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--gpus_per_trial', type=float, default=1.0)
