@@ -75,7 +75,7 @@ class Server(object):
             batch_pos = self.ltp.pos(hidden)
             batch_ner = self.ltp.ner(hidden)
             batch_srl = self.ltp.srl(hidden)
-            batch_dep = self.ltp.dep(hidden)
+            batch_dep = self.ltp.dep(hidden, fast=False)
             batch_sdp = self.ltp.sdp(hidden, mode='mix')
 
             for sent, seg, pos, ner, srl, dep, sdp in \
