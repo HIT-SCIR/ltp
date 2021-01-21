@@ -37,8 +37,7 @@ class Trie(pygtrie.CharTrie):
     @max_window.setter
     def max_window(self, value: int):
         if isinstance(value, int) and value > 0:
-            self.__max_window = value
-            self.__min_start = min(self.__min_start, self.__max_window)
+            self.__max_window = max(self.__min_start, self.__max_window, value)
 
     @property
     def min_start(self):
@@ -47,7 +46,7 @@ class Trie(pygtrie.CharTrie):
     @min_start.setter
     def min_start(self, value: int):
         if isinstance(value, int) and value > 0:
-            self.__min_start = min(value, self.__min_start, self.__max_window)
+            self.__min_start = min(self.__min_start, self.__max_window, value)
 
     def init(self, init_path: str = None, max_window=None):
         self.max_window = max_window
@@ -59,16 +58,19 @@ class Trie(pygtrie.CharTrie):
                     if word:
                         self[word] = True
                         self.min_start = len(word)
+                        self.max_window = len(word)
 
     def add_words(self, words):
         self.is_init = True
         if isinstance(words, str):
             self[words] = True
             self.min_start = len(words)
+            self.max_window = len(words)
         if isinstance(words, list):
             for word in words:
                 self[word] = True
                 self.min_start = len(word)
+                self.max_window = len(word)
 
     def maximum_forward_matching(self, text: List[str], preffix: List[bool]):
         maximum_matching_pos = []
@@ -84,7 +86,7 @@ class Trie(pygtrie.CharTrie):
                         candidate = (start, end)
                         break
                 if candidate:
-                    start += candidate[1]
+                    start = candidate[1] + 1
                     maximum_matching_pos.append(candidate)
                 else:
                     start += 1

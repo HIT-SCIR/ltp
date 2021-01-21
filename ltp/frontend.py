@@ -177,7 +177,7 @@ class LTP(object):
     def init_dict(self, path, max_window=None):
         self.trie.init(path, max_window)
 
-    def add_words(self, words, max_window=4):
+    def add_words(self, words, max_window=None):
         self.trie.add_words(words)
         self.trie.max_window = max_window
 
