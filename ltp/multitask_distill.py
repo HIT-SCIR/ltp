@@ -37,8 +37,8 @@ def kd_ce_loss(logits_S, logits_T, temperature=1):
     beta_logits_T = logits_T / temperature
     beta_logits_S = logits_S / temperature
     p_T = F.softmax(beta_logits_T, dim=-1)
-    loss = -(p_T * F.log_softmax(beta_logits_S, dim=-1)).sum(dim=-1).mean()
-    return loss
+    loss = -(p_T * F.log_softmax(beta_logits_S, dim=-1))
+    return (temperature * temperature * loss).sum(dim=-1).mean()
 
 
 def kd_mse_loss(logits_S, logits_T, temperature=1):
@@ -53,11 +53,11 @@ def kd_mse_loss(logits_S, logits_T, temperature=1):
         temperature = temperature.unsqueeze(-1)
     beta_logits_T = logits_T / temperature
     beta_logits_S = logits_S / temperature
-    loss = F.mse_loss(beta_logits_S, beta_logits_T)
-    return loss
+    loss = F.mse_loss(beta_logits_S, beta_logits_T, reduction='none')
+    return (temperature * temperature * loss).mean()
 
 
-def flsw_temperature_scheduler_builder(beta, gamma, base_temperature=8, eps=1e-4, *args):
+def flsw_temperature_scheduler_builder(beta=1, gamma=2, base_temperature=8, eps=1e-4, *args):
     '''
     adapted from arXiv:1911.07471
     '''
@@ -90,11 +90,16 @@ def distill_linear(batch, result, target, temperature_scheduler, model: Model = 
         transitions = torch.as_tensor(extra['transitions'], device=model.device)
         end_transitions = torch.as_tensor(extra['end_transitions'], device=model.device)
 
-        kd_loss = kd_mse_loss(active_logits, active_target_logits)
+        temperature = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
+        kd_loss = kd_mse_loss(active_logits, active_target_logits, temperature)
 
-        crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions) + \
-                   kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions) + \
-                   kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions)
+        transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
+        s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
+        e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
+
+        crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions, transitions_temp) + \
+                   kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions, s_transitions_temp) + \
+                   kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions, e_transitions_temp)
 
         return kd_loss + crf_loss
     else:
@@ -176,13 +181,13 @@ def distill_matrix_crf(batch, result, target, temperature_scheduler, model: Mode
     transitions = torch.as_tensor(extra['transitions'], device=model.device)
     end_transitions = torch.as_tensor(extra['end_transitions'], device=model.device)
 
-    # transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
-    # s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
-    # e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
+    transitions_temp = temperature_scheduler(model.srl_classifier.crf.transitions, transitions)
+    s_transitions_temp = temperature_scheduler(model.srl_classifier.crf.start_transitions, start_transitions)
+    e_transitions_temp = temperature_scheduler(model.srl_classifier.crf.end_transitions, end_transitions)
 
-    crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions) + \
-               kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions) + \
-               kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions)
+    crf_loss = kd_mse_loss(transitions, model.srl_classifier.crf.transitions, transitions_temp) + \
+               kd_mse_loss(start_transitions, model.srl_classifier.crf.start_transitions, s_transitions_temp) + \
+               kd_mse_loss(end_transitions, model.srl_classifier.crf.end_transitions, e_transitions_temp)
     return kd_loss + crf_loss
 
 
@@ -368,7 +373,7 @@ def add_task_specific_args(parent_parser):
     parser.add_argument('--gpus_per_trial', type=float, default=1.0)
     parser.add_argument('--cpus_per_trial', type=float, default=5.0)
     parser.add_argument('--distill_beta', type=float, default=1.0)
-    parser.add_argument('--distill_gamma', type=float, default=1.0)
+    parser.add_argument('--distill_gamma', type=float, default=2.0)
     parser.add_argument('--temperature', type=float, default=8.0)
     parser.add_argument('--num_workers', type=int, default=4)
     parser.add_argument('--num_samples', type=int, default=10)

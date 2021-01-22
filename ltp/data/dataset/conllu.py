@@ -59,8 +59,11 @@ def build_vocabs(data_dir, train_file, dev_file=None, test_file=None, min_freq=5
                 if 'char' in name:
                     counter.update(itertools.chain(*values[row]))
                 elif 'deps' == name:
-                    deps = [[label.split(':', maxsplit=1)[1] for label in dep.split('|')] for dep in values[row]]
-                    counter.update(itertools.chain(*deps))
+                    try:
+                        deps = [[label.split(':', maxsplit=1)[1] for label in dep.split('|')] for dep in values[row]]
+                        counter.update(itertools.chain(*deps))
+                    except:
+                        counter.update('_')
                 else:
                     counter.update(values[row])
 
@@ -158,7 +161,7 @@ class Conllu(datasets.GeneratorBasedBuilder):
             id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = [list(value) for value in zip(*block)]
             if self.config.deps:
                 deps = [[label.split(':', maxsplit=1) for label in dep.split('|')] for dep in deps]
-                deps = [[{'id': depid, 'head': int(label[0]), 'rel': label[1]} for label in dep] for depid, dep in
+                deps = [[{'id': depid, 'head': int(label[0]), 'rel': label[-1]} for label in dep] for depid, dep in
                         enumerate(deps)]
                 deps = list(itertools.chain(*deps))
                 if any([dep['head'] >= len(words) for dep in deps]):

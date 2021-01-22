@@ -126,7 +126,7 @@ class RelativeMultiHeadAttn(nn.Module):
         zero_pad = BD.new_zeros(bsz, n_head, max_len, 1)
         BD = torch.cat([BD, zero_pad], dim=-1).view(bsz, n_head, -1, max_len)  # bsz x n_head x (2max_len+1) x max_len
         BD = BD[:, :, :-1, :].view(bsz, n_head, max_len, -1)  # bsz x n_head x 2max_len x max_len
-        _, BD = torch.chunk(BD, dim=-1, chunks=2)
+        BD = BD[:, :, :, :max_len]
         return BD
 
 

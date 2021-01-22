@@ -17,6 +17,11 @@ def patch(ckpt):
         setattr(model_config, 'ner_use_crf', False)
         setattr(model_config, 'ner_crf_reduction', 'sum')
 
+        if ckpt['seg'][0].startswith('B'):
+            ckpt['seg'] = list(reversed(ckpt['seg']))
+            seg_classifier_weight = ckpt['model']['seg_classifier.weight']
+            ckpt['model']['seg_classifier.weight'] = seg_classifier_weight[[1, 0]]
+
         for key, value in ckpt['model'].items():
             key: str
             if key.startswith('srl_classifier.mlp_rel_h'):
