@@ -281,7 +281,11 @@ class LTP(object):
             for source_text, length, encoding, seg_tag, preffix in \
                     zip(inputs, lengths, tokenized.encodings, segment_output, batch_prefix):
                 offsets = encoding.offsets[1:length + 1]
-                text = [source_text[start:end] for start, end in offsets]
+                text = []
+                last_offset = None
+                for start, end in offsets:
+                    text.append('' if last_offset == (start, end) else source_text[start:end])
+                    last_offset = (start, end)
 
                 for idx in range(1, length):
                     current_beg = offsets[idx][0]
