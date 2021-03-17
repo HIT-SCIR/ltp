@@ -105,7 +105,7 @@
     # [[('Nh', 2, 2)]]
 
     tag, start, end = ner[0][0]
-    print(tag,":", "".join(seg[0][start:end + 1]))]
+    print(tag,":", "".join(seg[0][start:end + 1]))
     # Nh : 汤姆
 
 
