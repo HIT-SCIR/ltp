@@ -6,11 +6,12 @@
 [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://ltp.readthedocs.io/zh_CN/latest/?badge=latest)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/ltp)](https://pypi.python.org/pypi/ltp)
 
-# LTP 4 
+# LTP 4
 
 LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。
 
-If you use any source codes included in this toolkit in your work, please kindly cite the following paper. The bibtex are listed below:
+If you use any source codes included in this toolkit in your work, please kindly cite the following paper. The bibtex
+are listed below:
 <pre>
 @article{che2020n,
   title={N-LTP: A Open-source Neural Chinese Language Technology Platform with Pretrained Models},
@@ -24,7 +25,8 @@ If you use any source codes included in this toolkit in your work, please kindly
 
 ```python
 from ltp import LTP
-ltp = LTP() # 默认加载 Small 模型
+
+ltp = LTP()  # 默认加载 Small 模型
 seg, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
 ner = ltp.ner(hidden)
@@ -34,6 +36,10 @@ sdp = ltp.sdp(hidden)
 ```
 
 **[详细说明](docs/quickstart.rst)**
+
+## Language Bindings
+
+[libltp](https://github.com/HIT-SCIR/libltp)
 
 ## 指标
 
@@ -66,14 +72,17 @@ python -m twine upload dist/*
 + 冯云龙 <<[ylfeng@ir.hit.edu.cn](mailto:ylfeng@ir.hit.edu.cn)>>
 
 ## 开源协议
+
 1. 语言技术平台面向国内外大学、中科院各研究所以及个人研究者免费开放源代码，但如上述机构和个人将该平台用于商业目的（如企业合作项目等）则需要付费。
 2. 除上述机构以外的企事业单位，如申请使用该平台，需付费。
 3. 凡涉及付费问题，请发邮件到 car@ir.hit.edu.cn 洽商。
-4. 如果您在 LTP 基础上发表论文或取得科研成果，请您在发表论文和申报成果时声明“使用了哈工大社会计算与信息检索研究中心研制的语言技术平台（LTP）”. 同时，发信给car@ir.hit.edu.cn，说明发表论文或申报成果的题目、出处等。
-
+4. 如果您在 LTP 基础上发表论文或取得科研成果，请您在发表论文和申报成果时声明“使用了哈工大社会计算与信息检索研究中心研制的语言技术平台（LTP）”.
+   同时，发信给car@ir.hit.edu.cn，说明发表论文或申报成果的题目、出处等。
 
 ## 脚注
 
 + <a name="RELTRANS">1</a>:: [Chinese-ELECTRA](https://github.com/ymcui/Chinese-ELECTRA)
-+ <a name="RELTRANS">2</a>:: [TENER: Adapting Transformer Encoder for Named Entity Recognition](https://arxiv.org/abs/1911.04474)
-+ <a name="Eisner">3</a>:: [A PyTorch implementation of "Deep Biaffine Attention for Neural Dependency Parsing"](https://github.com/yzhangcs/parser)
++ <a name="RELTRANS">
+  2</a>:: [TENER: Adapting Transformer Encoder for Named Entity Recognition](https://arxiv.org/abs/1911.04474)
++ <a name="Eisner">
+  3</a>:: [A PyTorch implementation of "Deep Biaffine Attention for Neural Dependency Parsing"](https://github.com/yzhangcs/parser)
