@@ -39,6 +39,11 @@ sdp = ltp.sdp(hidden)
 
 ## Language Bindings
 
++ C++
++ Rust
++ Java
++ Python Rebinding
+
 [libltp](https://github.com/HIT-SCIR/libltp)
 
 ## 指标
