@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
+from collections import namedtuple
 from argparse import ArgumentParser
 
 import torch
@@ -9,7 +10,6 @@ from torch import nn
 from torch.nn import functional as F
 from transformers import AutoModel
 
-from collections import namedtuple
 from ltp.nn import BaseModule, MLP, Bilinear, CRF
 
 SRLResult = namedtuple('SRLResult', ['loss', 'rel_logits', 'decoded', 'labels'])
@@ -19,8 +19,9 @@ class BiaffineCRFClassifier(nn.Module):
     def __init__(self, input_size, label_num, dropout, hidden_size=300):
         super().__init__()
         self.label_num = label_num
-        self.mlp_rel_h = MLP(input_size, hidden_size, dropout, activation=nn.ReLU)
-        self.mlp_rel_d = MLP(input_size, hidden_size, dropout, activation=nn.ReLU)
+
+        self.mlp_rel_h = MLP([input_size, hidden_size], output_dropout=dropout, output_activation=nn.ReLU)
+        self.mlp_rel_d = MLP([input_size, hidden_size], output_dropout=dropout, output_activation=nn.ReLU)
 
         self.rel_atten = Bilinear(hidden_size, hidden_size, label_num, bias_x=True, bias_y=True, expand=True)
         self.crf = CRF(label_num)
@@ -32,16 +33,19 @@ class BiaffineCRFClassifier(nn.Module):
         s_rel = self.rel_atten(rel_h, rel_d).permute(0, 2, 3, 1)
         return s_rel
 
-    def forward(self, input, logits_mask=None, word_index=None, word_attention_mask=None, labels=None):
-        if word_index is not None:
-            input = torch.gather(input, dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1)))
+    def forward(self, input, attention_mask=None, word_index=None, word_attention_mask=None, labels=None,
+                is_processed=False):
+        if not is_processed:
+            input = input[:, 1:-1, :]
+            if word_attention_mask is None:
+                assert word_index is None
+                word_attention_mask = attention_mask[:, 2:] == 1
+            if word_index is not None:
+                input = torch.gather(input, dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1)))
 
         s_rel = self.rel_forword(input)
 
-        if logits_mask is None:
-            logits_mask = word_attention_mask
-
-        mask = logits_mask.unsqueeze(-1).expand(-1, -1, logits_mask.size(1))
+        mask = word_attention_mask.unsqueeze(-1).expand(-1, -1, word_attention_mask.size(1))
         mask = mask & torch.transpose(mask, -1, -2)
         mask = mask.flatten(end_dim=1)
         index = mask[:, 0]
@@ -82,7 +86,7 @@ class TransformerBiaffineCRF(BaseModule):
 
     @staticmethod
     def add_model_specific_args(parent_parser):
-        parser = ArgumentParser(parents=[parent_parser], add_help=False)
+        parser = ArgumentParser(parents=[parent_parser], add_help=False, conflict_handler='resolve')
         parser.add_argument('--transformer', type=str, default="hfl/chinese-electra-base-discriminator")
         parser.add_argument('--hidden_size', type=int, default=300)
         parser.add_argument('--loss_interpolation', type=float, default=0.4)
@@ -93,7 +97,6 @@ class TransformerBiaffineCRF(BaseModule):
     def forward(
             self,
             input_ids=None,
-            logits_mask=None,
             attention_mask=None,
             word_index=None,
             word_attention_mask=None,
@@ -115,13 +118,12 @@ class TransformerBiaffineCRF(BaseModule):
             return_dict=False,
         )
         sequence_output = hidden_states[0]
-        sequence_output = sequence_output[:, 1:-1, :]
         sequence_output = self.dropout(sequence_output)
 
         return self.classifier(
             input=sequence_output,
-            logits_mask=logits_mask,
             word_index=word_index,
+            attention_mask=attention_mask,
             word_attention_mask=word_attention_mask,
             labels=labels
         )

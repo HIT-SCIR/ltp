@@ -149,6 +149,8 @@ def get_layer_lrs_getters(named_parameters, name, **kwargs):
 def create_optimizer(
         model, lr,
         num_train_steps,
+        beta1=0.9,
+        beta2=0.999,
         weight_decay=0.0,
         warmup_steps=0,
         warmup_proportion=0.1,
@@ -198,7 +200,7 @@ def create_optimizer(
         parameters,
         lr=lr,
         weight_decay=weight_decay,
-        betas=(0.9, 0.999),
+        betas=(beta1, beta2),
         eps=1e-6,
         correct_bias=False,
     )
@@ -216,15 +218,22 @@ def create_optimizer(
 
 def add_optimizer_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
+    parser.add_argument('--beta1', type=float, default=0.9)
+    parser.add_argument('--beta2', type=float, default=0.999)
+
     # 3e-4 for Small, 1e-4 for Base, 5e-5 for Large
     parser.add_argument('--lr', type=float, default=1e-4)
 
-    parser.add_argument('--lr_scheduler', type=str, default='linear_schedule_with_warmup')
+    parser.add_argument(
+        '--lr_scheduler', type=str, default='linear_schedule_with_warmup', choices=scheduler_register.keys()
+    )
     parser.add_argument('--lr_end', type=float, default=1e-7)
     parser.add_argument('--lr_num_cycles', type=float, default=0.5)
     parser.add_argument('--lr_decay_power', type=float, default=1.0)
 
-    parser.add_argument('--lr_layers_getter', type=str, default='get_layer_lrs_with_crf')
+    parser.add_argument(
+        '--lr_layers_getter', type=str, default='get_layer_lrs_with_crf', choices=layer_lrs_getters_register.keys()
+    )
     parser.add_argument('--lr_crf_preffix', type=str, default='crf')
     parser.add_argument('--lr_crf_rate', type=float, default=10.0)
 
@@ -241,6 +250,8 @@ def from_argparse_args(args, model, num_train_steps, n_transformer_layers=12, **
     return create_optimizer(
         model,
         lr=args.lr,
+        beta1=args.beta1,
+        beta2=args.beta2,
         num_train_steps=num_train_steps,
         weight_decay=args.weight_decay,
         warmup_steps=args.warmup_steps,

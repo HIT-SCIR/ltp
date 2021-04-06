@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
+from collections import namedtuple
 from argparse import ArgumentParser
 
 import torch
 from torch import nn
 from transformers import AutoModel, AutoConfig
 
-from collections import namedtuple
 from ltp.nn import MLP, Bilinear, BaseModule
 
 GraphResult = namedtuple('GraphResult', ['loss', 'src_arc_logits', 'arc_logits', 'rel_logits'])
 
 
-def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
+def dep_loss(model, s_arc, s_rel, head, labels, mask):
     head_loss = nn.CrossEntropyLoss()
     rel_loss = nn.CrossEntropyLoss()
 
@@ -23,9 +23,9 @@ def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
     s_rel = s_rel[:, 1:, :]
 
     # Only keep active parts of the loss
-    active_heads = head[logits_mask]
-    active_labels = labels[logits_mask]
-    s_arc, s_rel = s_arc[logits_mask], s_rel[logits_mask]
+    active_heads = head[mask]
+    active_labels = labels[mask]
+    s_arc, s_rel = s_arc[mask], s_rel[mask]
 
     s_rel = s_rel[torch.arange(len(active_heads)), active_heads]
 
@@ -36,7 +36,7 @@ def dep_loss(model, s_arc, s_rel, head, labels, logits_mask):
     return loss
 
 
-def sdp_loss(model, s_arc, s_rel, head, labels, logits_mask):
+def sdp_loss(model, s_arc, s_rel, head, labels, mask):
     head_loss = nn.BCEWithLogitsLoss()
     rel_loss = nn.CrossEntropyLoss()
 
@@ -45,7 +45,7 @@ def sdp_loss(model, s_arc, s_rel, head, labels, logits_mask):
     s_rel = s_rel[:, 1:, :]
 
     # mask
-    mask = logits_mask.unsqueeze(-1).expand_as(s_arc)
+    mask = mask.unsqueeze(-1).expand_as(s_arc)
 
     arc_loss = head_loss(s_arc[mask], head[mask].float())
     rel_loss = rel_loss(s_rel[head > 0], labels[head > 0])
@@ -56,26 +56,41 @@ def sdp_loss(model, s_arc, s_rel, head, labels, logits_mask):
 
 
 class BiaffineClassifier(nn.Module):
-    def __init__(self, input_size, label_num, dropout,
-                 arc_hidden_size=500, rel_hidden_size=100, loss_interpolation=0.4, loss_func=dep_loss):
+    def __init__(self, input_size, label_num, dropout, arc_hidden_size=500, rel_hidden_size=100,
+                 loss_interpolation=0.4, loss_func=dep_loss, char_based=False):
         super().__init__()
+        self.char_based = char_based
         self.label_num = label_num
         self.loss_interpolation = loss_interpolation
-        self.mlp_arc_h = MLP(input_size, arc_hidden_size, dropout, activation=nn.ReLU)
-        self.mlp_arc_d = MLP(input_size, arc_hidden_size, dropout, activation=nn.ReLU)
-        self.mlp_rel_h = MLP(input_size, rel_hidden_size, dropout, activation=nn.ReLU)
-        self.mlp_rel_d = MLP(input_size, rel_hidden_size, dropout, activation=nn.ReLU)
+
+        self.mlp_arc_h = MLP([input_size, arc_hidden_size], output_dropout=dropout, output_activation=nn.ReLU)
+        self.mlp_arc_d = MLP([input_size, arc_hidden_size], output_dropout=dropout, output_activation=nn.ReLU)
+        self.mlp_rel_h = MLP([input_size, rel_hidden_size], output_dropout=dropout, output_activation=nn.ReLU)
+        self.mlp_rel_d = MLP([input_size, rel_hidden_size], output_dropout=dropout, output_activation=nn.ReLU)
 
         self.arc_atten = Bilinear(arc_hidden_size, arc_hidden_size, 1, bias_x=True, bias_y=False, expand=True)
         self.rel_atten = Bilinear(rel_hidden_size, rel_hidden_size, label_num, bias_x=True, bias_y=True, expand=True)
 
         self.loss_func = loss_func
 
-    def forward(self, input, logits_mask=None, word_index=None, word_attention_mask=None, head=None, labels=None):
-        if word_index is not None:
-            input = torch.cat([input[:, :1, :], torch.gather(
-                input[:, 1:, :], dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1))
-            )], dim=1)
+    def forward(self, input, attention_mask=None, word_index=None,
+                word_attention_mask=None, head=None, labels=None, is_processed=False):
+        if not is_processed:
+            input = input[:, :-1, :]
+            if self.char_based:
+                mask = attention_mask[:, 2:] == 1
+                # use bigram ?
+                # bigram = torch.cat([input[:, :-1, :].unsqueeze(2), input[:, 1:, :].unsqueeze(2)], dim=2)
+                # bigram = torch.mean(bigram, dim=2)
+                # input = torch.cat([input[:, :1, :], bigram], dim=1)
+            else:
+                mask = word_attention_mask
+                if word_index is not None:
+                    input = torch.cat([input[:, :1, :], torch.gather(
+                        input[:, 1:, :], dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1))
+                    )], dim=1)
+        else:
+            mask = word_attention_mask
 
         arc_h = self.mlp_arc_h(input)
         arc_d = self.mlp_arc_d(input)
@@ -88,13 +103,11 @@ class BiaffineClassifier(nn.Module):
 
         loss = None
         if labels is not None:
-            if logits_mask is None:
-                logits_mask = word_attention_mask
-            loss = self.loss_func(self, s_arc, s_rel, head, labels, logits_mask)
+            loss = self.loss_func(self, s_arc, s_rel, head, labels, mask)
 
         decode_s_arc = s_arc
-        if word_attention_mask is not None:
-            activate_word_mask = torch.cat([word_attention_mask[:, :1], word_attention_mask], dim=1)
+        if mask is not None:
+            activate_word_mask = torch.cat([mask[:, :1], mask], dim=1)
             activate_word_mask = activate_word_mask.unsqueeze(-1).expand_as(s_arc)
             activate_word_mask = activate_word_mask & activate_word_mask.transpose(-1, -2)
             decode_s_arc = s_arc.masked_fill(~activate_word_mask, float('-inf'))
@@ -119,18 +132,20 @@ class TransformerBiaffine(BaseModule):
             arc_hidden_size=self.hparams.arc_hidden_size,
             rel_hidden_size=self.hparams.rel_hidden_size,
             loss_interpolation=self.hparams.loss_interpolation,
-            loss_func=loss_func
+            loss_func=loss_func,
+            char_based=self.hparams.char_based
         )
 
     @staticmethod
     def add_model_specific_args(parent_parser):
-        parser = ArgumentParser(parents=[parent_parser], add_help=False)
+        parser = ArgumentParser(parents=[parent_parser], add_help=False, conflict_handler='resolve')
         parser.add_argument('--transformer', type=str, default="hfl/chinese-electra-base-discriminator")
         parser.add_argument('--arc_hidden_size', type=int, default=500)
         parser.add_argument('--rel_hidden_size', type=int, default=200)
         parser.add_argument('--loss_interpolation', type=float, default=0.4)
         parser.add_argument('--dropout', type=float, default=0.1)
         parser.add_argument('--num_labels', type=int)
+        parser.add_argument('--char_based', action='store_true')
         return parser
 
     def forward(
@@ -159,12 +174,11 @@ class TransformerBiaffine(BaseModule):
             return_dict=False,
         )
         sequence_output = hidden_states[0]
-        sequence_output = sequence_output[:, :-1, :]
         sequence_output = self.dropout(sequence_output)
 
         return self.classifier(
             input=sequence_output,
-            logits_mask=logits_mask,
+            attention_mask=attention_mask,
             word_index=word_index,
             word_attention_mask=word_attention_mask,
             head=head,

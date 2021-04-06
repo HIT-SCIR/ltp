@@ -50,9 +50,10 @@ class TuneCheckpointCallback(tune_pl.TuneCallback):
 class TuneReportCheckpointCallback(tune_pl.TuneCallback):
     def __init__(self,
                  metrics: Union[None, str, List[str], Dict[str, str]] = None,
-                 filename: str = "checkpoint",
-                 on: Union[str, List[str]] = "validation_end"):
+                 filename: str = "checkpoint", on=None):
         super(TuneReportCheckpointCallback, self).__init__(on)
+        if on is None:
+            on = ["validation_end", "test_end"]
         self._checkpoint = TuneCheckpointCallback(filename, on)
         self._report = TuneReportCallback(metrics, on)
 

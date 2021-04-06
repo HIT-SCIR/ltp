@@ -8,6 +8,7 @@ from .srl import Srl
 
 from typing import Optional, Union, Dict, List
 from datasets import DatasetBuilder, Features, Split, DatasetDict, Dataset
+from datasets import Sequence, ClassLabel, Value, Translation, TranslationVariableLanguages
 
 
 def load_dataset(

@@ -17,18 +17,23 @@ from ltp.transformer_linear import TokenClassifierResult
 class RelativeTransformerLinearClassifier(nn.Module):
     crf: Optional[CRF]
 
-    def __init__(self, input_size, hidden_size, num_layers, num_heads, num_labels, max_length, dropout, use_crf=False,
-                 crf_reduction='sum'):
+    def __init__(self, input_size, hidden_size, num_layers, num_heads, num_labels, max_length, dropout,
+                 disable_relative_transformer=False, use_cls=False, use_sep=False, use_crf=False, crf_reduction='sum'):
         super().__init__()
 
-        self.relative_transformer = RelativeTransformer(
-            input_size=input_size,
-            hidden_size=hidden_size,
-            num_layers=num_layers,
-            num_heads=num_heads,
-            dropout=dropout,
-            max_length=max_length * 2
-        )
+        self.use_cls = use_cls
+        self.use_sep = use_sep
+        if disable_relative_transformer:
+            self.relative_transformer = None
+        else:
+            self.relative_transformer = RelativeTransformer(
+                input_size=input_size,
+                hidden_size=hidden_size,
+                num_layers=num_layers,
+                num_heads=num_heads,
+                dropout=dropout,
+                max_length=max_length * 2
+            )
         self.classifier = nn.Linear(input_size, num_labels)
         if use_crf:
             self.crf = CRF(num_labels, batch_first=True)
@@ -36,14 +41,27 @@ class RelativeTransformerLinearClassifier(nn.Module):
         else:
             self.crf = None
 
-    def forward(self, input, word_index=None, word_attention_mask=None, labels=None,
-                return_dict=None, hidden_states=None):
-        if word_index is not None:
-            input = torch.gather(
-                input, dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1))
-            )
+    def forward(self, input, attention_mask=None, word_index=None, word_attention_mask=None, labels=None,
+                is_processed=False):
+        if not is_processed:
+            if not self.use_cls:
+                input = input[:, 1:, :]
+            if not self.use_cls:
+                input = input[:, :-1, :]
 
-        sequence_output = self.relative_transformer(input, word_attention_mask)
+            if word_attention_mask is None:
+                assert word_index is None
+                bias = int(not self.use_cls) + int(not self.use_sep)
+                word_attention_mask = attention_mask[:, bias:] == 1
+
+            if word_index is not None:
+                input = torch.gather(input, dim=1, index=word_index.unsqueeze(-1).expand(-1, -1, input.size(-1)))
+
+        if self.relative_transformer is not None:
+            sequence_output = self.relative_transformer(input, word_attention_mask)
+        else:
+            sequence_output = input
+
         logits = self.classifier(sequence_output)
 
         loss = None
@@ -64,7 +82,12 @@ class RelativeTransformerLinearClassifier(nn.Module):
         decoded = None
         if not self.training and self.crf is not None:
             decoded = self.crf.decode(emissions=logits, mask=word_attention_mask)
-
+            if self.use_cls:
+                decoded = [sent[1:] for sent in decoded]
+                labels = labels[:, 1:]
+            if self.use_sep:
+                decoded = [sent[:-1] for sent in decoded]
+                labels = labels[:, :-1]
         return TokenClassifierResult(loss=loss, logits=logits, decoded=decoded, labels=labels)
 
 
@@ -88,18 +111,24 @@ class TransformerRelLinear(BaseModule):
             max_length=max_length,
             num_labels=self.hparams.num_labels,
             use_crf=self.hparams.use_crf,
-            crf_reduction=self.hparams.crf_reduction
+            use_cls=self.hparams.use_cls,
+            use_sep=self.hparams.use_sep,
+            crf_reduction=self.hparams.crf_reduction,
+            disable_relative_transformer=self.hparams.disable_relative_transformer
         )
 
     @staticmethod
     def add_model_specific_args(parent_parser):
-        parser = ArgumentParser(parents=[parent_parser], add_help=False)
+        parser = ArgumentParser(parents=[parent_parser], add_help=False, conflict_handler='resolve')
         parser.add_argument('--transformer', type=str, default="hfl/chinese-electra-base-discriminator")
         parser.add_argument('--num_layers', type=int, default=2)
         parser.add_argument('--hidden_size', type=int, default=256)
         parser.add_argument('--num_heads', type=int, default=4)
         parser.add_argument('--dropout', type=float, default=0.1)
         parser.add_argument('--use_crf', action='store_true')
+        parser.add_argument('--use_cls', action='store_true')
+        parser.add_argument('--use_sep', action='store_true')
+        parser.add_argument('--disable_relative_transformer', action='store_true')
         parser.add_argument('--crf_reduction', type=str, default='sum')
         parser.add_argument('--num_labels', type=int)
         return parser
@@ -128,12 +157,12 @@ class TransformerRelLinear(BaseModule):
             return_dict=False,
         )
         sequence_output = hidden_states[0]
-        sequence_output = sequence_output[:, 1:-1, :]
         sequence_output = self.dropout(sequence_output)
 
         return self.classifier(
             sequence_output,
             word_index=word_index,
+            attention_mask=attention_mask,
             word_attention_mask=word_attention_mask,
             labels=labels
         )

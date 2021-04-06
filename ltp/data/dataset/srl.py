@@ -4,14 +4,67 @@
 
 import logging
 
+import os
+import itertools
+from collections import Counter
+
 import datasets
 from os.path import join
 from dataclasses import dataclass
-from ltp.data.utils import iter_blocks
+from ltp.data.utils import iter_blocks, vocab_builder
 
 _TRAINING_FILE = "train.txt"
 _DEV_FILE = "dev.txt"
 _TEST_FILE = "test.txt"
+
+
+@vocab_builder
+def build_vocabs(data_dir, *files):
+    counters = {'predicate': (1, Counter()), 'arguments': (slice(2, None), Counter())}
+
+    if any([os.path.exists(os.path.join(data_dir, 'vocabs', f'{key}.txt')) for key in counters]):
+        return
+
+    if not os.path.exists(os.path.join(data_dir, 'vocabs')):
+        os.makedirs(os.path.join(data_dir, 'vocabs'))
+
+    for filename in files:
+        for line_num, block in iter_blocks(filename=filename):
+            values = [list(value) for value in zip(*block)]
+
+            for name, (row, counter) in counters.items():
+                current = values[row]
+                if not len(current):
+                    continue
+                item = current[0]
+                if isinstance(item, list):
+                    for item in current:
+                        counter.update(item)
+                else:
+                    counter.update(current)
+
+    for feat, (row, counter) in counters.items():
+        with open(os.path.join(data_dir, 'vocabs', f'{feat}.txt'), mode='w') as f:
+            # some process
+            if feat == 'predicate':
+                tags = sorted(counter.keys())
+                tags.remove('_')
+                tags = ['_'] + tags
+            elif feat == 'arguments':
+                tags = sorted(counter.keys())
+                tags.remove('O')
+                if 'B-V' in tags:
+                    tags.remove('B-V')
+                    tags_backup = ['O', 'B-V']
+                else:
+                    tags_backup = ['O']
+                tags = sorted(set([tag[2:] for tag in tags]))
+                tags = [f'B-{tag}' for tag in tags] + [f'I-{tag}' for tag in tags]
+
+                tags = tags_backup + tags
+            else:
+                tags = ['_']
+            f.write('\n'.join(tags))
 
 
 def create_feature(file=None):
@@ -25,21 +78,34 @@ class SrlConfig(datasets.BuilderConfig):
     """BuilderConfig for Conll2003"""
 
     predicate: str = None
-    labels: str = None
+    arguments: str = None
 
 
 # ["word", "bio"]
 class Srl(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIG_CLASS = SrlConfig
 
+    @staticmethod
+    def default_files(data_dir) -> dict:
+        return {
+            datasets.Split.TRAIN: join(data_dir, _TRAINING_FILE),
+            datasets.Split.VALIDATION: join(data_dir, _DEV_FILE),
+            datasets.Split.TEST: join(data_dir, _TEST_FILE),
+        }
+
     def _info(self):
+        build_vocabs(self.config)
+        feats = {'predicate': self.config.predicate, 'arguments': self.config.arguments}
+        for key in feats:
+            if feats[key] is None:
+                feats[key] = os.path.join(self.config.data_dir, 'vocabs', f'{key}.txt')
         return datasets.DatasetInfo(
             features=datasets.Features(
                 {
-                    "words": datasets.Sequence(datasets.Value("string")),
-                    "predicate": datasets.Sequence(create_feature(self.config.predicate)),
-                    "roles": datasets.Sequence(
-                        datasets.Sequence(create_feature(self.config.labels))
+                    "form": datasets.Sequence(datasets.Value("string")),
+                    "predicate": datasets.Sequence(create_feature(feats['predicate'])),
+                    "arguments": datasets.Sequence(
+                        datasets.Sequence(create_feature(feats['arguments']))
                     ),
                 }
             ),
@@ -47,25 +113,29 @@ class Srl(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        data_files = {
-            "train": join(self.config.data_dir, _TRAINING_FILE),
-            "dev": join(self.config.data_dir, _DEV_FILE),
-            "test": join(self.config.data_dir, _TEST_FILE),
-        }
-        data_files = dl_manager.download_and_extract(data_files)
+        """We handle string, list and dicts in datafiles"""
+        if not self.config.data_files:
+            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
+        data_files = dl_manager.download_and_extract(self.config.data_files)
+        if isinstance(data_files, (str, list, tuple)):
+            files = data_files
+            if isinstance(files, str):
+                files = [files]
+            return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})]
+        splits = []
+        for split_name, files in data_files.items():
+            if isinstance(files, str):
+                files = [files]
+            splits.append(datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
+        return splits
 
-        return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": data_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": data_files["dev"]}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": data_files["test"]}),
-        ]
+    def _generate_examples(self, files):
+        for filename in files:
+            logging.info("⏳ Generating examples from = %s", filename)
+            for line_num, block in iter_blocks(filename=filename):
+                # last example
+                words, predicate, *roles = [list(value) for value in zip(*block)]
 
-    def _generate_examples(self, filepath):
-        logging.info("⏳ Generating examples from = %s", filepath)
-        for line_num, block in iter_blocks(filename=filepath):
-            # last example
-            words, predicate, *roles = [list(value) for value in zip(*block)]
-
-            yield line_num, {
-                "words": words, "predicate": predicate, "roles": roles
-            }
+                yield line_num, {
+                    "form": words, "predicate": predicate, "arguments": roles
+                }

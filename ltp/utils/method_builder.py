@@ -14,7 +14,11 @@ from ltp.nn import BaseModule as Model
 
 
 def default_build_method(model: Model, task_info: TaskInfo):
-    dataset, metric = task_info.build_dataset(model, model.hparams.data_dir, task_info.task_name)
+    dataset, metric = task_info.build_dataset(
+        data_dir=model.hparams.data_dir,
+        task_name=task_info.task_name,
+        model=model
+    )
 
     def train_dataloader(self: Model):
         res = torch.utils.data.DataLoader(
@@ -22,7 +26,8 @@ def default_build_method(model: Model, task_info: TaskInfo):
             batch_size=self.hparams.batch_size,
             collate_fn=collate,
             num_workers=self.hparams.num_workers,
-            pin_memory=True
+            pin_memory=True,
+            shuffle=True
         )
         return res
 
@@ -66,10 +71,9 @@ def default_build_method(model: Model, task_info: TaskInfo):
 
     model.train_dataloader = types.MethodType(train_dataloader, model)
     model.training_step = types.MethodType(training_step, model)
-    # model.training_epoch_end = types.MethodType(training_epoch_end, model)
 
     validation_step, validation_epoch_end = task_info.validation_method(
-        metric, loss_tag='val_loss', metric_tag=f'val_{task_info.metric_name}'
+        metric, task=task_info.task_name, preffix='val'
     )
 
     model.val_dataloader = types.MethodType(val_dataloader, model)
@@ -77,7 +81,7 @@ def default_build_method(model: Model, task_info: TaskInfo):
     model.validation_epoch_end = types.MethodType(validation_epoch_end, model)
 
     test_step, test_epoch_end = task_info.validation_method(
-        metric, loss_tag='test_loss', metric_tag=f'test_{task_info.metric_name}'
+        metric, task=task_info.task_name, preffix='test'
     )
 
     model.test_dataloader = types.MethodType(test_dataloader, model)

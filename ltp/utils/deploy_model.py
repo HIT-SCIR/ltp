@@ -3,12 +3,12 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import os
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from collections import OrderedDict
+from packaging.version import parse as version_parse
 
 import torch
 from transformers import AutoConfig
-from packaging.version import parse as version_parse
 from ltp.transformer_multitask import TransformerMultiTask as Model
 
 from ltp import __version__
@@ -35,21 +35,31 @@ def deploy_model(args, version=__version__):
 
 def deploy_model_4_1(args, version):
     from argparse import Namespace
+    from pytorch_lightning.core.saving import ModelIO
 
     fake_parser = ArgumentParser()
     fake_parser = Model.add_model_specific_args(fake_parser)
-    model_args, _ = fake_parser.parse_known_args(namespace=args)
+    hparams = fake_parser.parse_args(args=[])
 
-    transformer_config = AutoConfig.from_pretrained(model_args.transformer)
-    model = Model.load_from_checkpoint(
-        args.resume_from_checkpoint, strict=False, hparams=model_args, config=transformer_config
-    )
+    try:
+        ckpt = torch.load(args.resume_from_checkpoint, map_location='cpu')
+    except AttributeError as e:
+        if "_gpus_arg_default" in e.args[0]:
+            from ltp.patchs import pl_1_2_patch_1_1
+            patched_model_path = pl_1_2_patch_1_1(args.resume_from_checkpoint)
+            ckpt = torch.load(patched_model_path, map_location='cpu')
+        else:
+            raise e
+    hparams.__dict__.update(ckpt[ModelIO.CHECKPOINT_HYPER_PARAMS_KEY])
+    transformer_config = AutoConfig.from_pretrained(hparams.transformer)
+    model = Model(hparams, config=transformer_config)
+    model.load_state_dict(ckpt['state_dict'])
 
     model_config = Namespace(**model.hparams)
     # LOAD VOCAB
     pos_labels = load_labels(args.pos_data_dir, 'vocabs', 'xpos.txt')
-    ner_labels = load_labels(args.ner_data_dir, 'ner_labels.txt')
-    srl_labels = load_labels(args.srl_data_dir, 'srl_labels.txt')
+    ner_labels = load_labels(args.ner_data_dir, 'vocabs', 'bio.txt')
+    srl_labels = load_labels(args.srl_data_dir, 'vocabs', 'arguments.txt')
     dep_labels = load_labels(args.dep_data_dir, 'vocabs', 'deprel.txt')
     sdp_labels = load_labels(args.sdp_data_dir, 'vocabs', 'deps.txt')
 

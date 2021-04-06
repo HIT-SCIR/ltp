@@ -10,6 +10,7 @@ from torch.nn.utils.rnn import pad_sequence
 def eisner(scores, mask) -> torch.Tensor:
     lens = mask.sum(1)
     batch_size, seq_len, _ = scores.shape
+    # [batch_size, w, n]
     scores = scores.permute(2, 1, 0)
     s_i = torch.full_like(scores, float('-inf'))
     s_c = torch.full_like(scores, float('-inf'))

@@ -16,26 +16,30 @@ from tqdm import tqdm
 import ltp
 from ltp import (
     optimization,
-    task_segmention, task_part_of_speech, task_named_entity_recognition,
-    task_dependency_parsing, task_semantic_dependency_parsing, task_semantic_role_labeling
+    task_segmention as seg,
+    task_part_of_speech as pos,
+    task_named_entity_recognition as ner,
+    task_dependency_parsing as dep,
+    task_semantic_dependency_parsing as sdp,
+    task_semantic_role_labeling as srl
 )
 from ltp.data import dataset as datasets
 from ltp.data.utils import collate, MultiTaskDataloader
 from ltp.transformer_multitask import TransformerMultiTask as Model
-from ltp.utils import TaskInfo, common_train, tune_train, map2device, convert2npy
-from ltp.utils import deploy_model
+from ltp.utils import TaskInfo, common_train, tune_train, map2device, convert2npy, add_common_specific_args
+from ltp.utils import deploy_model, add_tune_specific_args
 
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 
 # CUDA_VISIBLE_DEVICES=0 PYTHONPATH=. python ltp/multitask.py --max_epochs=10 --batch_size=16 --gpus=1 --precision=16 --seg_data_dir=data/seg --pos_data_dir=data/pos --ner_data_dir=data/ner
 
 task_builder = {
-    task_segmention.task_info.task_name: task_segmention,
-    task_part_of_speech.task_info.task_name: task_part_of_speech,
-    task_named_entity_recognition.task_info.task_name: task_named_entity_recognition,
-    task_dependency_parsing.task_info.task_name: task_dependency_parsing,
-    task_semantic_dependency_parsing.task_info.task_name: task_semantic_dependency_parsing,
-    task_semantic_role_labeling.task_info.task_name: task_semantic_role_labeling,
+    seg.task_info.task_name: seg,
+    pos.task_info.task_name: pos,
+    ner.task_info.task_name: ner,
+    dep.task_info.task_name: dep,
+    sdp.task_info.task_name: sdp,
+    srl.task_info.task_name: srl,
 }
 
 
@@ -46,29 +50,29 @@ def build_dataset(model, **kwargs):
     metrics = OrderedDict()
 
     for task, task_data_dir in kwargs.items():
-        dataset, metric = task_builder[task].build_dataset(model, task_data_dir, task)
+        dataset, metric = task_builder[task].build_dataset(
+            data_dir=task_data_dir, task_name=task, model=model
+        )
         datasets[task] = dataset
         metrics[task] = metric
 
     return datasets, metrics
 
 
-def validation_method(metric: dict = None, loss_tag='val_loss', metric_tag: str = None, metric_tags: dict = None,
-                      ret=True):
-    if metric is None or metric_tags is None:
+def validation_method(metric: dict = None, task='multi', preffix='val', ret=True):
+    if metric is None:
         raise NotImplemented
 
     task_mapper = []
     step_mapper = []
     epoch_mapper = []
 
-    for task, task_metric in metric.items():
-        task_metric_tag = metric_tags[task]
-        task_step, task_epoch_end = task_builder[task].validation_method(
-            task_metric, loss_tag=f'{loss_tag}/{task}', metric_tag=f'{task_metric_tag}/{task}', ret=True
+    for sub_task_name, sub_task_metric in metric.items():
+        task_step, task_epoch_end = task_builder[sub_task_name].validation_method(
+            sub_task_metric, task=sub_task_name, preffix=preffix, ret=True
         )
 
-        task_mapper.append(task)
+        task_mapper.append(sub_task_name)
         step_mapper.append(task_step)
         epoch_mapper.append(task_epoch_end)
 
@@ -82,7 +86,7 @@ def validation_method(metric: dict = None, loss_tag='val_loss', metric_tag: str 
             metric = epoch_mapper[idx](self, task_output)
             metrics.append(metric)
         metric_mean = sum(metrics) / len(metrics)
-        self.log(metric_tag, metric_mean, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log(f'{task}/{preffix}_metric_mean', metric_mean, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         if ret:
             return metric_mean
 
@@ -104,10 +108,11 @@ def build_method(model: Model, task_info: TaskInfo):
         multi_dataloader = {
             task: torch.utils.data.DataLoader(
                 task_dataset[datasets.Split.TRAIN],
-                batch_size=self.hparams.batch_size,
+                batch_size=getattr(self.hparams, f'{task}_batch_size') or self.hparams.batch_size,
                 collate_fn=collate,
                 num_workers=self.hparams.num_workers,
-                pin_memory=True
+                pin_memory=True,
+                shuffle=True
             )
             for task, task_dataset in multi_dataset.items()
         }
@@ -123,7 +128,7 @@ def build_method(model: Model, task_info: TaskInfo):
         return [
             torch.utils.data.DataLoader(
                 task_dataset[datasets.Split.VALIDATION],
-                batch_size=self.hparams.batch_size,
+                batch_size=getattr(self.hparams, f'{task}_batch_size') or self.hparams.batch_size,
                 collate_fn=collate,
                 num_workers=self.hparams.num_workers,
                 pin_memory=True
@@ -134,7 +139,7 @@ def build_method(model: Model, task_info: TaskInfo):
         return [
             torch.utils.data.DataLoader(
                 task_dataset[datasets.Split.TEST],
-                batch_size=self.hparams.batch_size,
+                batch_size=getattr(self.hparams, f'{task}_batch_size') or self.hparams.batch_size,
                 collate_fn=collate,
                 num_workers=self.hparams.num_workers,
                 pin_memory=True
@@ -162,10 +167,7 @@ def build_method(model: Model, task_info: TaskInfo):
     model.training_step = types.MethodType(training_step, model)
 
     validation_step, validation_epoch_end = task_info.validation_method(
-        multi_metric, loss_tag='val_loss', metric_tags={
-            task_name: f"val_{task_module.task_info.metric_name}"
-            for task_name, task_module in task_builder.items()
-        }, metric_tag=f"val_{task_info.metric_name}"
+        multi_metric, task=task_info.task_name, preffix='val'
     )
 
     model.val_dataloader = types.MethodType(val_dataloader, model)
@@ -173,10 +175,7 @@ def build_method(model: Model, task_info: TaskInfo):
     model.validation_epoch_end = types.MethodType(validation_epoch_end, model)
 
     test_step, test_epoch_end = task_info.validation_method(
-        multi_metric, loss_tag='test_loss', metric_tags={
-            task_name: f"test_{task_module.task_info.metric_name}"
-            for task_name, task_module in task_builder.items()
-        }, metric_tag=f"test_{task_info.metric_name}"
+        multi_metric, task=task_info.task_name, preffix='test'
     )
 
     model.test_dataloader = types.MethodType(test_dataloader, model)
@@ -200,9 +199,9 @@ def build_ner_distill_dataset(args):
     model.eval()
     model.freeze()
 
-    dataset, metric = task_named_entity_recognition.build_dataset(
+    dataset, metric = ner.build_dataset(
         model, args.ner_data_dir,
-        task_named_entity_recognition.task_info.task_name
+        ner.task_info.task_name
     )
     train_dataloader = torch.utils.data.DataLoader(
         dataset[datasets.Split.TRAIN],
@@ -211,7 +210,7 @@ def build_ner_distill_dataset(args):
         num_workers=args.num_workers
     )
 
-    output = os.path.join(args.ner_data_dir, task_named_entity_recognition.task_info.task_name, 'output.npz')
+    output = os.path.join(args.ner_data_dir, ner.task_info.task_name, 'output.npz')
 
     if torch.cuda.is_available():
         model.cuda()
@@ -246,16 +245,8 @@ def build_ner_distill_dataset(args):
 
 def add_task_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
-    parser.add_argument('--seed', type=int, default=19980524)
-    parser.add_argument('--tune', action='store_true')
-    parser.add_argument('--offline', action='store_true')
-    parser.add_argument('--project', type=str, default='ltp')
-    parser.add_argument('--patience', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=8)
-    parser.add_argument('--gpus_per_trial', type=float, default=1.0)
-    parser.add_argument('--cpus_per_trial', type=float, default=5.0)
     parser.add_argument('--num_workers', type=int, default=4)
-    parser.add_argument('--num_samples', type=int, default=10)
     parser.add_argument('--tau', type=float, default=0.8)
     parser.add_argument('--ltp_model', type=str, default=None)
     parser.add_argument('--ltp_version', type=str, default=ltp.__version__)
@@ -265,6 +256,12 @@ def add_task_specific_args(parent_parser):
     parser.add_argument('--dep_data_dir', type=str, default=None)
     parser.add_argument('--sdp_data_dir', type=str, default=None)
     parser.add_argument('--srl_data_dir', type=str, default=None)
+    parser.add_argument('--seg_batch_size', type=int, default=None)
+    parser.add_argument('--pos_batch_size', type=int, default=None)
+    parser.add_argument('--ner_batch_size', type=int, default=None)
+    parser.add_argument('--dep_batch_size', type=int, default=None)
+    parser.add_argument('--sdp_batch_size', type=int, default=None)
+    parser.add_argument('--srl_batch_size', type=int, default=None)
     parser.add_argument('--build_ner_dataset', action='store_true')
     return parser
 
@@ -272,10 +269,17 @@ def add_task_specific_args(parent_parser):
 def main():
     # 如果要输出 LTP master 分支可以使用的模型，传入 ltp_adapter 参数为输出文件夹路径，如 ltp_model
     parser = ArgumentParser()
+
+    # add task level args
+    parser = add_common_specific_args(parser)
+    parser = add_tune_specific_args(parser)
     parser = add_task_specific_args(parser)
+
+    # add model specific args
     parser = Model.add_model_specific_args(parser)
     parser = optimization.add_optimizer_specific_args(parser)
     parser = Trainer.add_argparse_args(parser)
+
     parser.set_defaults(min_epochs=1, max_epochs=10)
     parser.set_defaults(gradient_clip_val=1.0, lr_layers_getter='get_layer_lrs_with_crf')
     args = parser.parse_args()
@@ -285,7 +289,27 @@ def main():
     elif args.build_ner_dataset:
         build_ner_distill_dataset(args)
     elif args.tune:
-        tune_train(args, model_class=Model, task_info=task_info, build_method=build_method)
+        from ltp.utils.common_train import tune
+        tune_config = {
+            # 3e-4 for Small, 1e-4 for Base, 5e-5 for Large
+            "lr": tune.loguniform(args.tune_min_lr, args.tune_max_lr),
+
+            # dataset split
+            "tau": tune.choice([0.8, 0.9, 1.0]),
+
+            # 梯度衰减
+            "weight_decay": tune.choice([0.0, 0.01]),
+
+            # 梯度裁剪
+            "gradient_clip_val": tune.choice([1.0, 2.0, 3.0, 4.0, 5.0]),
+
+            # lr scheduler
+            "lr_scheduler": tune.choice([
+                'linear_schedule_with_warmup',
+                'polynomial_decay_schedule_with_warmup',
+            ]),
+        }
+        tune_train(args, model_class=Model, task_info=task_info, build_method=build_method, tune_config=tune_config)
     else:
         common_train(args, model_class=Model, task_info=task_info, build_method=build_method)
 

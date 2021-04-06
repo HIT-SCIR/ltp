@@ -18,7 +18,8 @@ from ltp import optimization, multitask
 from ltp.data import dataset as datasets
 from ltp.data.utils import collate, MultiTaskDataloader
 from ltp.transformer_multitask import TransformerMultiTask as Model
-from ltp.utils import TaskInfo, common_train, deploy_model, tune_train, map2device
+from ltp.utils import TaskInfo, common_train, deploy_model, tune_train, map2device, add_common_specific_args
+from ltp.utils import add_tune_specific_args
 from ltp.multitask import validation_method
 
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
@@ -254,7 +255,8 @@ def build_method(model: Model, task_info: TaskInfo):
                 task_dataset,
                 batch_size=None,
                 num_workers=self.hparams.num_workers,
-                pin_memory=True
+                pin_memory=True,
+                shuffle=True
             )
             for task, task_dataset in distill_datasets.items()
         }
@@ -287,7 +289,7 @@ def build_method(model: Model, task_info: TaskInfo):
         return [
             torch.utils.data.DataLoader(
                 task_dataset[datasets.Split.VALIDATION],
-                batch_size=self.hparams.batch_size,
+                batch_size=getattr(self.hparams, f'{task}_batch_size') or self.hparams.batch_size,
                 collate_fn=collate,
                 num_workers=self.hparams.num_workers,
                 pin_memory=True
@@ -298,7 +300,7 @@ def build_method(model: Model, task_info: TaskInfo):
         return [
             torch.utils.data.DataLoader(
                 task_dataset[datasets.Split.TEST],
-                batch_size=self.hparams.batch_size,
+                batch_size=getattr(self.hparams, f'{task}_batch_size') or self.hparams.batch_size,
                 collate_fn=collate,
                 num_workers=self.hparams.num_workers,
                 pin_memory=True
@@ -324,10 +326,7 @@ def build_method(model: Model, task_info: TaskInfo):
     model.training_step = types.MethodType(training_step, model)
 
     validation_step, validation_epoch_end = task_info.validation_method(
-        multi_metric, loss_tag='val_loss', metric_tags={
-            task_name: f"val_{task_module.task_info.metric_name}"
-            for task_name, task_module in multitask.task_builder.items()
-        }, metric_tag=f"val_{task_info.metric_name}"
+        multi_metric, task=task_info.task_name, preffix='val'
     )
 
     model.val_dataloader = types.MethodType(val_dataloader, model)
@@ -335,10 +334,7 @@ def build_method(model: Model, task_info: TaskInfo):
     model.validation_epoch_end = types.MethodType(validation_epoch_end, model)
 
     test_step, test_epoch_end = task_info.validation_method(
-        multi_metric, loss_tag='test_loss', metric_tags={
-            task_name: f"test_{task_module.task_info.metric_name}"
-            for task_name, task_module in multitask.task_builder.items()
-        }, metric_tag=f"test_{task_info.metric_name}"
+        multi_metric, task=task_info.task_name, preffix='test'
     )
 
     model.test_dataloader = types.MethodType(test_dataloader, model)
@@ -356,27 +352,17 @@ task_info = TaskInfo(
 
 def add_task_specific_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
-    parser.add_argument('--seed', type=int, default=19980524)
-    parser.add_argument('--tune', action='store_true')
-    parser.add_argument('--offline', action='store_true')
-    parser.add_argument('--project', type=str, default='ltp')
-
     parser.add_argument('--disable_seg', action='store_true')
     parser.add_argument('--disable_pos', action='store_true')
     parser.add_argument('--disable_ner', action='store_true')
     parser.add_argument('--disable_srl', action='store_true')
     parser.add_argument('--disable_dep', action='store_true')
     parser.add_argument('--disable_sdp', action='store_true')
-
-    parser.add_argument('--patience', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=24)
-    parser.add_argument('--gpus_per_trial', type=float, default=1.0)
-    parser.add_argument('--cpus_per_trial', type=float, default=5.0)
     parser.add_argument('--distill_beta', type=float, default=1.0)
     parser.add_argument('--distill_gamma', type=float, default=2.0)
     parser.add_argument('--temperature', type=float, default=8.0)
     parser.add_argument('--num_workers', type=int, default=4)
-    parser.add_argument('--num_samples', type=int, default=10)
     parser.add_argument('--tau', type=float, default=0.8)
     parser.add_argument('--ltp_model', type=str, default=None)
     parser.add_argument('--ltp_version', type=str, default=ltp.__version__)
@@ -386,15 +372,28 @@ def add_task_specific_args(parent_parser):
     parser.add_argument('--dep_data_dir', type=str, default=None)
     parser.add_argument('--sdp_data_dir', type=str, default=None)
     parser.add_argument('--srl_data_dir', type=str, default=None)
+    parser.add_argument('--seg_batch_size', type=int, default=None)
+    parser.add_argument('--pos_batch_size', type=int, default=None)
+    parser.add_argument('--ner_batch_size', type=int, default=None)
+    parser.add_argument('--dep_batch_size', type=int, default=None)
+    parser.add_argument('--sdp_batch_size', type=int, default=None)
+    parser.add_argument('--srl_batch_size', type=int, default=None)
     return parser
 
 
 def main():
     parser = ArgumentParser()
+
+    # add task level args
+    parser = add_common_specific_args(parser)
+    parser = add_tune_specific_args(parser)
     parser = add_task_specific_args(parser)
+
+    # add model specific args
     parser = Model.add_model_specific_args(parser)
     parser = optimization.add_optimizer_specific_args(parser)
     parser = Trainer.add_argparse_args(parser)
+
     parser.set_defaults(min_epochs=1, max_epochs=10)
     parser.set_defaults(gradient_clip_val=1.0, lr_layers_getter='get_layer_lrs_with_crf')
     args = parser.parse_args()

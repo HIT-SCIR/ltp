@@ -11,7 +11,7 @@ from collections import Counter
 import datasets
 from os.path import join
 from dataclasses import dataclass
-from ltp.data.utils import iter_blocks
+from ltp.data.utils import iter_blocks, vocab_builder
 
 _CITATION = """\
 @misc{nivre2020universal,
@@ -35,7 +35,8 @@ _DEV_FILE = "dev.conllu"
 _TEST_FILE = "test.conllu"
 
 
-def build_vocabs(data_dir, train_file, dev_file=None, test_file=None, min_freq=5):
+@vocab_builder
+def build_vocabs(data_dir, *files, min_freq=5):
     counters = {
         'word': (1, Counter()), 'lemma': (2, Counter()), 'upos': (3, Counter()),
         'xpos': (4, Counter()), 'feats': (5, Counter()), 'deprel': (7, Counter()),
@@ -51,8 +52,8 @@ def build_vocabs(data_dir, train_file, dev_file=None, test_file=None, min_freq=5
     if not os.path.exists(os.path.join(data_dir, 'vocabs')):
         os.makedirs(os.path.join(data_dir, 'vocabs'))
 
-    for file_name in [train_file, dev_file, test_file]:
-        for line_num, block in iter_blocks(filename=os.path.join(data_dir, file_name)):
+    for filename in files:
+        for line_num, block in iter_blocks(filename=filename):
             values = [list(value) for value in zip(*block)]
 
             for name, (row, counter) in counters.items():
@@ -96,8 +97,16 @@ class ConlluConfig(datasets.BuilderConfig):
 class Conllu(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIG_CLASS = ConlluConfig
 
+    @staticmethod
+    def default_files(data_dir) -> dict:
+        return {
+            datasets.Split.TRAIN: join(data_dir, _TRAINING_FILE),
+            datasets.Split.VALIDATION: join(data_dir, _DEV_FILE),
+            datasets.Split.TEST: join(data_dir, _TEST_FILE),
+        }
+
     def _info(self):
-        build_vocabs(self.config.data_dir, _TRAINING_FILE, _DEV_FILE, _TEST_FILE)
+        build_vocabs(self.config)
         feats = {
             'upos': self.config.upos,
             'xpos': self.config.xpos,
@@ -141,33 +150,37 @@ class Conllu(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        data_files = {
-            "train": join(self.config.data_dir, _TRAINING_FILE),
-            "dev": join(self.config.data_dir, _DEV_FILE),
-            "test": join(self.config.data_dir, _TEST_FILE),
-        }
-        data_files = dl_manager.download_and_extract(data_files)
+        """We handle string, list and dicts in datafiles"""
+        if not self.config.data_files:
+            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
+        data_files = dl_manager.download_and_extract(self.config.data_files)
+        if isinstance(data_files, (str, list, tuple)):
+            files = data_files
+            if isinstance(files, str):
+                files = [files]
+            return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})]
+        splits = []
+        for split_name, files in data_files.items():
+            if isinstance(files, str):
+                files = [files]
+            splits.append(datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
+        return splits
 
-        return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": data_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": data_files["dev"]}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": data_files["test"]}),
-        ]
+    def _generate_examples(self, files):
+        for filename in files:
+            logging.info("⏳ Generating examples from = %s", filename)
+            for line_num, block in iter_blocks(filename=filename):
+                # last example
+                id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = [list(value) for value in zip(*block)]
+                if self.config.deps:
+                    deps = [[label.split(':', maxsplit=1) for label in dep.split('|')] for dep in deps]
+                    deps = [[{'id': depid, 'head': int(label[0]), 'rel': label[-1]} for label in dep] for depid, dep in
+                            enumerate(deps)]
+                    deps = list(itertools.chain(*deps))
+                    if any([dep['head'] >= len(words) for dep in deps]):
+                        continue
 
-    def _generate_examples(self, filepath):
-        logging.info("⏳ Generating examples from = %s", filepath)
-        for line_num, block in iter_blocks(filename=filepath):
-            # last example
-            id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = [list(value) for value in zip(*block)]
-            if self.config.deps:
-                deps = [[label.split(':', maxsplit=1) for label in dep.split('|')] for dep in deps]
-                deps = [[{'id': depid, 'head': int(label[0]), 'rel': label[-1]} for label in dep] for depid, dep in
-                        enumerate(deps)]
-                deps = list(itertools.chain(*deps))
-                if any([dep['head'] >= len(words) for dep in deps]):
-                    continue
-
-            yield line_num, {
-                "id": id, "form": words, "lemma": lemma, "upos": upos, "xpos": xpos,
-                "feats": feats, "head": head, "deprel": deprel, "deps": deps, "misc": misc,
-            }
+                yield line_num, {
+                    "id": id, "form": words, "lemma": lemma, "upos": upos, "xpos": xpos,
+                    "feats": feats, "head": head, "deprel": deprel, "deps": deps, "misc": misc,
+                }

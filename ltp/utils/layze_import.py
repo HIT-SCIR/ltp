@@ -54,8 +54,10 @@ def fake_import_pytorch_lightning():
         import sys
         pytorch_lightning = FakePytorchLightning('pytorch_lightning')
         pytorch_lightning_utilities = FakePytorchLightning('pytorch_lightning.utilities')
+        pytorch_lightning_utilities_argparse = FakePytorchLightning('pytorch_lightning.utilities.argparse')
         pytorch_lightning_utilities_argparse_utils = FakePytorchLightning('pytorch_lightning.utilities.argparse_utils')
 
         sys.modules['pytorch_lightning'] = pytorch_lightning
         sys.modules['pytorch_lightning.utilities'] = pytorch_lightning_utilities
+        sys.modules['pytorch_lightning.utilities.argparse'] = pytorch_lightning_utilities_argparse
         sys.modules['pytorch_lightning.utilities.argparse_utils'] = pytorch_lightning_utilities_argparse_utils

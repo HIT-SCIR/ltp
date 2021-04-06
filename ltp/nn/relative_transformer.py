@@ -3,7 +3,8 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 # ref: https://github.com/fastnlp/TENER
 
-import torch, math
+import math
+import torch
 from torch import Tensor, nn
 import torch.nn.functional as F
 from ltp.nn.ffnn import FFNN

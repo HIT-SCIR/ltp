@@ -3,13 +3,14 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import os
-import torch
 import itertools
 import regex as re
-import transformers
-from typing import Union, List
-
 from packaging import version
+from typing import Union, List
+from argparse import ArgumentParser
+
+import torch
+import transformers
 from transformers import AutoTokenizer, AutoConfig
 from transformers import cached_path, TensorType, BatchEncoding
 from transformers.file_utils import is_remote_url
@@ -19,7 +20,7 @@ transformers_version = version.parse(transformers.__version__)
 from ltp.algorithms import Trie, eisner, split_sentence
 from ltp.transformer_multitask import TransformerMultiTask as Model
 from ltp.utils import length_to_mask, get_entities, fake_import_pytorch_lightning
-from ltp.patchs import patch_4_1_3
+from ltp.patchs import model_patch_4_1_3
 
 try:
     from torch.hub import _get_torch_home
@@ -35,6 +36,8 @@ LTP_CACHE = os.getenv("LTP_CACHE", default_cache_path)
 
 model_map = {
     'base': 'http://39.96.43.154/ltp/v3/base.tgz',
+    'base1': 'http://39.96.43.154/ltp/v3/base1.tgz',
+    'base2': 'http://39.96.43.154/ltp/v3/base2.tgz',
     'small': 'http://39.96.43.154/ltp/v3/small.tgz',
     'tiny': 'http://39.96.43.154/ltp/v3/tiny.tgz',
     'GSD': 'http://39.96.43.154/ltp/ud/gsd.tgz',
@@ -130,13 +133,18 @@ class LTP(object):
             fake_import_pytorch_lightning()
             ckpt = torch.load(os.path.join(path, "ltp.model"), map_location=self.device)
 
-        patch_4_1_3(ckpt)
+        model_patch_4_1_3(ckpt)
 
         self.cache_dir = path
         transformer_config = ckpt['transformer_config']
         transformer_config['torchscript'] = True
         config = AutoConfig.for_model(**transformer_config)
-        self.model = Model(ckpt['model_config'], config=config).to(self.device)
+
+        parser = ArgumentParser()
+        parser = Model.add_model_specific_args(parser)
+        model_args = parser.parse_args(args=[], namespace=ckpt['model_config'])
+
+        self.model = Model(model_args, config=config).to(self.device)
         self.model.load_state_dict(ckpt['model'], strict=False)
         self.model.eval()
 
@@ -216,7 +224,8 @@ class LTP(object):
         if is_preseged:
             segment_output = None
         else:
-            segment_output = torch.argmax(self.model.seg_classifier(char_input).logits, dim=-1).cpu().numpy()
+            segment_output = self.model.seg_classifier.forward(char_input, is_processed=True)
+            segment_output = segment_output.decoded or torch.argmax(segment_output.logits, dim=-1).cpu().numpy()
         return word_cls, char_input, segment_output, length
 
     @no_gard
@@ -329,8 +338,8 @@ class LTP(object):
         """
         if len(self.pos_vocab) == 0:
             return []
-        postagger_output = self.model.pos_classifier(hidden['word_input']).logits
-        postagger_output = torch.argmax(postagger_output, dim=-1).cpu().numpy()
+        postagger_output = self.model.pos_classifier(hidden['word_input'], is_processed=True)
+        postagger_output = postagger_output.decoded or torch.argmax(postagger_output.logits, dim=-1).cpu().numpy()
         postagger_output = convert_idx_to_name(postagger_output, hidden['word_length'], self.pos_vocab)
         return postagger_output
 
@@ -348,7 +357,7 @@ class LTP(object):
         if len(self.ner_vocab) == 0:
             return []
         ner_output = self.model.ner_classifier.forward(
-            hidden['word_input'], word_attention_mask=hidden['word_cls_mask'][:, 1:]
+            hidden['word_input'], word_attention_mask=hidden['word_cls_mask'][:, 1:], is_processed=True
         )
         ner_output = ner_output.decoded or torch.argmax(ner_output.logits, dim=-1).cpu().numpy()
         ner_output = convert_idx_to_name(ner_output, hidden['word_length'], self.ner_vocab)
@@ -368,7 +377,8 @@ class LTP(object):
             return []
         srl_output = self.model.srl_classifier.forward(
             input=hidden['word_input'],
-            word_attention_mask=hidden['word_cls_mask'][:, 1:]
+            word_attention_mask=hidden['word_cls_mask'][:, 1:],
+            is_processed=True
         ).decoded
         srl_entities = get_entities_with_list(srl_output, self.srl_vocab)
 
@@ -402,7 +412,8 @@ class LTP(object):
         word_attention_mask = hidden['word_cls_mask']
         result = self.model.dep_classifier.forward(
             input=hidden['word_cls_input'],
-            word_attention_mask=word_attention_mask[:, 1:]
+            word_attention_mask=word_attention_mask[:, 1:],
+            is_processed=True
         )
         dep_arc, dep_label = result.arc_logits, result.rel_logits
         dep_arc[:, 0, 1:] = float('-inf')
@@ -447,7 +458,8 @@ class LTP(object):
         word_attention_mask = hidden['word_cls_mask']
         result = self.model.sdp_classifier(
             input=hidden['word_cls_input'],
-            word_attention_mask=word_attention_mask[:, 1:]
+            word_attention_mask=word_attention_mask[:, 1:],
+            is_processed=True
         )
         sdp_arc, sdp_label = result.arc_logits, result.rel_logits
         sdp_arc[:, 0, 1:] = float('-inf')
