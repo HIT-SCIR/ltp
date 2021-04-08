@@ -183,7 +183,7 @@
     ltp = LTP()
 
     seg, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
-    sdp = ltp.sdp(hidden, graph=False)
+    sdp = ltp.sdp(hidden, mode='tree')
     # [['他', '叫', '汤姆', '去', '拿', '外衣', '。']]
     # [
     #     [
@@ -210,7 +210,7 @@
     ltp = LTP()
 
     seg, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
-    sdp = ltp.sdp(hidden, graph=True)
+    sdp = ltp.sdp(hidden, mode='graph')
     # [['他', '叫', '汤姆', '去', '拿', '外衣', '。']]
     # [
     #     [
