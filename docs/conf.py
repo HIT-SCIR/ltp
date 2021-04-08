@@ -36,3 +36,4 @@ exclude_patterns = []
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['static']
 source_suffix = ['.rst', '.md']
+master_doc = 'index'
