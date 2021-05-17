@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
-__version__ = '4.1.4'
+__version__ = '4.1.4.post1'
 
 from . import const
 from . import nn, utils

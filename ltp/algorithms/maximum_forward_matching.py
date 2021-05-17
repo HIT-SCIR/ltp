@@ -86,7 +86,7 @@ class Trie(pygtrie.CharTrie):
                         candidate = (start, end)
                         break
                 if candidate:
-                    start = candidate[1] + 1
+                    start = candidate[1]
                     maximum_matching_pos.append(candidate)
                 else:
                     start += 1
