@@ -166,7 +166,7 @@ class LTP(object):
         return f"LTP {self.version} on {self.device} (model version: {self.model_version}) "
 
     @property
-    def avaliable_models(self):
+    def available_models(self):
         return model_map.keys()
 
     @property
