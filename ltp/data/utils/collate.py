@@ -3,9 +3,16 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import torch
-from torch._six import int_classes, string_classes, container_abcs
+from torch._six import string_classes
 from torch.utils.data._utils.collate import np_str_obj_array_pattern, default_collate_err_msg_format
 
+_TORCH_MAJOR, _TORCH_MINOR = map(int, torch.__version__.split('.')[0:2])
+
+if _TORCH_MAJOR < 1 or (_TORCH_MAJOR == 1 and _TORCH_MINOR < 8):
+    from torch._six import int_classes, container_abcs
+else:
+    int_classes = int
+    import collections.abc as container_abcs
 
 def collate(batch):
     r"""Puts each data field into a tensor with outer dimension batch size"""
