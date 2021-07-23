@@ -396,7 +396,7 @@ class LTP(object):
         return srl_labels_res
 
     @no_grad
-    def dep(self, hidden: dict, fast=True, as_tuple=True):
+    def dep(self, hidden: dict, fast=False, as_tuple=True):
         """
         依存句法树
         Args:
@@ -442,7 +442,7 @@ class LTP(object):
         ]
 
     @no_grad
-    def sdp(self, hidden: dict, mode: str = 'graph'):
+    def sdp(self, hidden: dict, mode: str = 'mix'):
         """
         语义依存图（树）
         Args:

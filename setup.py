@@ -27,7 +27,7 @@ setup(
     ]),
     install_requires=[
         "torch>=1.2.0",
-        "transformers>=4.0.0, <5.0",
+        "transformers>=4.0.0, <=4.7.0",
         "pygtrie>=2.3.0, <2.5",
         "packaging>=20.0"
     ],
