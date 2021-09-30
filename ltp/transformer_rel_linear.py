@@ -46,7 +46,7 @@ class RelativeTransformerLinearClassifier(nn.Module):
         if not is_processed:
             if not self.use_cls:
                 input = input[:, 1:, :]
-            if not self.use_cls:
+            if not self.use_sep:
                 input = input[:, :-1, :]
 
             if word_attention_mask is None:
