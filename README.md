@@ -28,7 +28,11 @@ are listed below:
 ```python
 from ltp import LTP
 
-ltp = LTP()  # 默认加载 Small 模型
+ltp = LTP()     # 默认加载 Small 模型
+                # ltp = LTP(path="small")
+                #     其中 path 可接受的路径为下载下来的模型或者解压后的文件夹路径
+                #     另外也可以接受一些已注册可自动下载的模型名(可使用 ltp.available_models() 查看): 
+                #     base/base1/base2/small/tiny/GSD/GSD+CRF/GSDSimp/GSDSimp+CRF
 seg, hidden = ltp.seg(["他叫汤姆去拿外衣。"])
 pos = ltp.pos(hidden)
 ner = ltp.ner(hidden)
