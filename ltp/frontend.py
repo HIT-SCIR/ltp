@@ -278,7 +278,7 @@ class LTP(object):
             for encodings in tokenized.encodings:
                 sentence_word_idx = []
                 for idx, (start, end) in enumerate(encodings.offsets[1:]):
-                    if start == 0 and end != 0:
+                    if start == 0 and end:
                         sentence_word_idx.append(idx)
                 word_idx.append(torch.as_tensor(sentence_word_idx, device=self.device))
         else:
