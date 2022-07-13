@@ -2,14 +2,9 @@
 # -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
+import collections.abc as container_abcs
+
 import torch
-
-_TORCH_MAJOR, _TORCH_MINOR = map(int, torch.__version__.split('.')[0:2])
-
-if _TORCH_MAJOR < 1 or (_TORCH_MAJOR == 1 and _TORCH_MINOR < 8):
-    from torch._six import container_abcs
-else:
-    import collections.abc as container_abcs
 
 
 def map2device(batch, device=torch.device('cpu')):
