@@ -14,6 +14,18 @@
 #include "dynet/gpu-ops.h"
 #endif
 
+
+#if defined(_WIN64)
+#define NODE_CONV_CAST(x) x
+#define NODE_CONV_CASTI(x) x
+#elif defined(_WIN32)
+#define NODE_CONV_CAST(x) static_cast<ptrdiff_t>(x)
+#define NODE_CONV_CASTI(x) static_cast<Eigen::DenseIndex>(x)
+#else
+#define NODE_CONV_CAST(x) x
+#define NODE_CONV_CASTI(x) x
+#endif
+
 using namespace std;
 
 inline string print_vec(const std::vector<float> & vec) {
@@ -887,7 +899,7 @@ void DropoutBatch::forward_dev_impl(const MyDevice & dev, const vector<const Ten
   Dim mask_dim({1},xs[0]->d.batch_elems());
   Tensor m(mask_dim, (float*)aux_mem, fx.device, DeviceMempool::FXS);
   TensorTools::randomize_bernoulli(m, (1.f-p), 1.f / (1.f-p));
-  Eigen::array<ptrdiff_t, 2> bcast = {xs[0]->d.batch_size(), 1};
+  Eigen::array<ptrdiff_t, 2> bcast = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1};
   fx.tbvec().device(*dev.edevice) = xs[0]->tbvec() * m.tbvec().broadcast(bcast);
 }
 
@@ -900,7 +912,7 @@ void DropoutBatch::backward_dev_impl(const MyDevice & dev,
                              Tensor& dEdxi) const {
   Dim mask_dim({1},xs[0]->d.batch_elems());
   Tensor m(mask_dim, (float*)aux_mem, fx.device, DeviceMempool::FXS);
-  Eigen::array<ptrdiff_t, 2> bcast = {xs[0]->d.batch_size(), 1};
+  Eigen::array<ptrdiff_t, 2> bcast = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1 };
   dEdxi.tbvec().device(*dev.edevice) += dEdf.tbvec() * m.tbvec().broadcast(bcast);
 }
 DYNET_NODE_INST_DEV_IMPL(DropoutBatch)
@@ -1256,7 +1268,7 @@ void LogSumExp::forward_dev_impl(const MyDevice & dev, const vector<const Tensor
     // TODO: Ideally we wouldn't need to allocate this memory permanently.
     //       We need a good method for allocating "scratch" memory that is only used temporarily.
     Tensor ms(fx.d, static_cast<float*>(aux_mem), fx.device, DeviceMempool::FXS);
-    Eigen::array<ptrdiff_t, 2> bcast = {1,fx.d.bd};
+    Eigen::array<ptrdiff_t, 2> bcast = { 1 , NODE_CONV_CAST(fx.d.bd) };
     // Calculate the max
     if(ms.d.bd == xs[0]->d.bd)
       ms.tvec().device(*dev.edevice) = xs[0]->tvec();
@@ -1300,7 +1312,7 @@ void LogSumExp::backward_dev_impl(const MyDevice & dev,
     if(fx.d.bd == xs[i]->d.bd) {
       dEdxi.tvec().device(*dev.edevice) += (xs[i]->tvec() - fx.tvec()).exp() * dEdf.tvec();
     } else {
-      Eigen::array<ptrdiff_t, 2> bcast = {1,fx.d.bd};
+      Eigen::array<ptrdiff_t, 2> bcast = {1, NODE_CONV_CAST(fx.d.bd)};
       Eigen::array<int, 1> red_axis = {1};
       dEdxi.tvec().device(*dev.edevice) += ((xs[i]->tbvec().broadcast(bcast) - fx.tbvec()).exp() * dEdf.tbvec()).sum(red_axis);
     }
@@ -2144,10 +2156,10 @@ void SquaredEuclideanDistance::forward_dev_impl(const MyDevice & dev, const vect
   if(xs[0]->d.bd == xs[1]->d.bd) {
     fx.tb<0>().device(*dev.edevice) = (xs[0]->tbvec() - xs[1]->tbvec()).square().sum(red_axis);
   } else if(xs[0]->d.bd == 1) {
-    Eigen::array<ptrdiff_t, 2> bcast = {1, xs[1]->d.bd};
+    Eigen::array<ptrdiff_t, 2> bcast = {1, NODE_CONV_CAST(xs[1]->d.bd)};
     fx.tb<0>().device(*dev.edevice) = (xs[0]->tbvec().broadcast(bcast) - xs[1]->tbvec()).square().sum(red_axis);
   } else {
-    Eigen::array<ptrdiff_t, 2> bcast = {1, xs[0]->d.bd};
+    Eigen::array<ptrdiff_t, 2> bcast = {1, NODE_CONV_CAST(xs[0]->d.bd)};
     fx.tb<0>().device(*dev.edevice) = (xs[0]->tbvec() - xs[1]->tbvec().broadcast(bcast)).square().sum(red_axis);
   }
 }
@@ -2165,19 +2177,19 @@ void SquaredEuclideanDistance::backward_dev_impl(const MyDevice & dev,
   if(xs[0]->d.bd == xs[1]->d.bd) {
     dEdxi.tbvec().device(*dev.edevice) += (xs[0]->tbvec() - xs[1]->tbvec()) * dEdf.tbvec().broadcast(bcast) * multiplier;
   } else if(xs[0]->d.bd == 1) {
-    Eigen::array<ptrdiff_t, 2> batchcast = {1, xs[1]->d.bd};
+    Eigen::array<ptrdiff_t, 2> batchcast = {1, NODE_CONV_CAST(xs[1]->d.bd) };
     if(i == 1) {
       dEdxi.tbvec().device(*dev.edevice) += (xs[0]->tbvec().broadcast(batchcast) - xs[1]->tbvec()) * dEdf.tbvec().broadcast(bcast) * multiplier;
     } else {
-      Eigen::array<ptrdiff_t, 1> red_axis = {1};
+      Eigen::array<ptrdiff_t, 1> red_axis = {1 };
       dEdxi.tvec().device(*dev.edevice) += ((xs[0]->tbvec().broadcast(batchcast) - xs[1]->tbvec()) * dEdf.tbvec().broadcast(bcast) * multiplier).sum(red_axis);
     }
   } else {
-    Eigen::array<ptrdiff_t, 2> batchcast = {1, xs[0]->d.bd};
+    Eigen::array<ptrdiff_t, 2> batchcast = {1, NODE_CONV_CAST(xs[0]->d.bd) };
     if(i == 0) {
       dEdxi.tbvec().device(*dev.edevice) += (xs[0]->tbvec() - xs[1]->tbvec().broadcast(batchcast)) * dEdf.tbvec().broadcast(bcast) * multiplier;
     } else {
-      Eigen::array<ptrdiff_t, 1> red_axis = {1};
+      Eigen::array<ptrdiff_t, 1> red_axis = {1 };
       dEdxi.tvec().device(*dev.edevice) += ((xs[0]->tbvec() - xs[1]->tbvec().broadcast(batchcast)) * dEdf.tbvec().broadcast(bcast) * multiplier).sum(red_axis);
     }
   }
@@ -2199,7 +2211,7 @@ void SquaredNorm::backward_dev_impl(const MyDevice & dev,
                              unsigned i,
                              Tensor& dEdxi) const {
   DYNET_ASSERT(i < 1, "Failed dimension check in SquaredNorm::backward");
-  Eigen::array<ptrdiff_t, 2> bcast = {xs[0]->d.batch_size(), 1};
+  Eigen::array<ptrdiff_t, 2> bcast = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1 };
   dEdxi.tbvec().device(*dev.edevice) += xs[0]->tbvec() * dEdf.tbvec().broadcast(bcast) * 2.0f;
 }
 DYNET_NODE_INST_DEV_IMPL(SquaredNorm)
@@ -2219,7 +2231,7 @@ void L2Norm::backward_dev_impl(const MyDevice & dev,
                              unsigned i,
                              Tensor& dEdxi) const {
   DYNET_ASSERT(i < 1, "Failed dimension check in L2Norm::backward");
-  Eigen::array<ptrdiff_t, 2> bcast = {xs[0]->d.batch_size(), 1};
+  Eigen::array<ptrdiff_t, 2> bcast = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1 };
   dEdxi.tbvec().device(*dev.edevice) += xs[0]->tbvec() * ((fx.tvec() / (float) xs[0]->d.batch_size()).binaryExpr(dEdf.tvec(), FSqrtBackward())).broadcast(bcast);
 
 }
@@ -2380,9 +2392,9 @@ DYNET_NODE_INST_DEV_IMPL(MomentElements)
 template<class MyDevice>
 void StdElements::forward_dev_impl(const MyDevice & dev, const vector<const Tensor*>& xs, Tensor& fx) const {
   DYNET_ASSERT(xs.size() == 1, "Failed dimension check in StdElements::forward");
-  Eigen::array<ptrdiff_t, 1> red_axis = {0};
-  Eigen::array<ptrdiff_t, 2> bcast = {xs[0]->d.batch_size(), 1};
-  Eigen::array<ptrdiff_t, 2> newaxis = {1, xs[0]->d.bd};
+  Eigen::array<ptrdiff_t, 1> red_axis = {0 };
+  Eigen::array<ptrdiff_t, 2> bcast = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1 };
+  Eigen::array<ptrdiff_t, 2> newaxis = {1, NODE_CONV_CAST(xs[0]->d.bd) };
   float n = (float) xs[0]->d.batch_size();
   fx.tb<0>().device(*dev.edevice) = ((xs[0]->tbvec() - (xs[0]->tbvec().sum(red_axis).reshape(newaxis) / n).broadcast(bcast)).square().sum(red_axis) / n).sqrt();
 }
@@ -2395,9 +2407,9 @@ void StdElements::backward_dev_impl(const MyDevice & dev,
                              unsigned i,
                              Tensor& dEdxi) const {
   DYNET_ASSERT(i < 1, "Failed dimension check in StdElements::backward");
-  Eigen::array<ptrdiff_t, 2> bcast = {xs[0]->d.batch_size(), 1};
-  Eigen::array<ptrdiff_t, 2> newaxis = {1, xs[0]->d.bd};
-  Eigen::array<ptrdiff_t, 1> red_axis = {0};
+  Eigen::array<ptrdiff_t, 2> bcast = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1};
+  Eigen::array<ptrdiff_t, 2> newaxis = {1, NODE_CONV_CAST(xs[0]->d.bd) };
+  Eigen::array<ptrdiff_t, 1> red_axis = { 0 };
   float n = (float) xs[0]->d.batch_size();
   dEdxi.tbvec().device(*dev.edevice) +=  (2 / n) * (xs[0]->tbvec() - (xs[0]->tbvec().sum(red_axis).reshape(newaxis) / n).broadcast(bcast)) * (fx.tbvec().binaryExpr(dEdf.tbvec(), FSqrtBackward())).broadcast(bcast);
 
@@ -2502,9 +2514,9 @@ DYNET_NODE_INST_DEV_IMPL(StdDimension)
 template<class MyDevice>
 void StdBatches::forward_dev_impl(const MyDevice & dev, const vector<const Tensor*>& xs, Tensor& fx) const {
   DYNET_ASSERT(xs.size() == 1, "Failed dimension check in StdBatches::forward");
-  Eigen::array<ptrdiff_t, 1> red_axis = {1};
-  Eigen::array<ptrdiff_t, 2> newaxis = {xs[0]->d.batch_size(), 1};
-  Eigen::array<ptrdiff_t, 2> bcast = {1, xs[0]->d.bd};
+  Eigen::array<ptrdiff_t, 1> red_axis = { 1 };
+  Eigen::array<ptrdiff_t, 2> newaxis = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1};
+  Eigen::array<ptrdiff_t, 2> bcast = {1, NODE_CONV_CAST(xs[0]->d.bd) };
   float n = (float)xs[0]->d.bd;
   fx.t<1>().device(*dev.edevice) = ((xs[0]->tbvec() - (xs[0]->tbvec().sum(red_axis).reshape(newaxis) / n).broadcast(bcast)).square().sum(red_axis) / n).sqrt();
 }
@@ -2518,8 +2530,8 @@ void StdBatches::backward_dev_impl(const MyDevice & dev,
                              Tensor& dEdxi) const {
   DYNET_ASSERT(i < 1, "Failed dimension check in StdBatches::backward");
   Eigen::array<ptrdiff_t, 1> red_axis = {1};
-  Eigen::array<ptrdiff_t, 2> bcast = {1, xs[0]->d.bd};
-  Eigen::array<ptrdiff_t, 2> newaxis = {xs[0]->d.batch_size(), 1};
+  Eigen::array<ptrdiff_t, 2> bcast = {1, NODE_CONV_CAST(xs[0]->d.bd)};
+  Eigen::array<ptrdiff_t, 2> newaxis = {NODE_CONV_CAST(xs[0]->d.batch_size()), 1};
   float n = (float)xs[0]->d.bd;
   dEdxi.tbvec().device(*dev.edevice) +=  (2 / n) * (xs[0]->tbvec() - (xs[0]->tbvec().sum(red_axis).reshape(newaxis) / n).broadcast(bcast)) * (fx.tbvec().binaryExpr(dEdf.tbvec(), FSqrtBackward())).broadcast(bcast);
 
@@ -2732,7 +2744,7 @@ void MaxDimension::forward_dev_impl(const MyDevice & dev, const vector<const Ten
   const unsigned first_dim_size = dim[0];
   const unsigned second_dim_size = dim[1];
   Eigen::TensorMap<Eigen::Tensor<Eigen::DenseIndex, 3>> locs(maxmap, first_dim_size, second_dim_size, batch_size);
-  const Eigen::array<Eigen::DenseIndex, 1> reduction_axis = {reduced_dim};
+  const Eigen::array<Eigen::DenseIndex, 1> reduction_axis = {NODE_CONV_CASTI(reduced_dim)};
   locs.device(*dev.edevice) = xs[0]->tb<3>().argmax(reduced_dim);
   fx.tb<2>().device(*dev.edevice) = xs[0]->tb<3>().maximum(reduction_axis);
 }
@@ -2781,7 +2793,7 @@ void MinDimension::forward_dev_impl(const MyDevice & dev, const vector<const Ten
   const unsigned first_dim_size = dim[0];
   const unsigned second_dim_size = dim[1];
   Eigen::TensorMap<Eigen::Tensor<Eigen::DenseIndex, 3>> locs(minmap, first_dim_size, second_dim_size, batch_size);
-  const Eigen::array<Eigen::DenseIndex, 1> reduction_axis = {reduced_dim};
+  const Eigen::array<Eigen::DenseIndex, 1> reduction_axis = {NODE_CONV_CASTI(reduced_dim)};
   locs.device(*dev.edevice) = xs[0]->tb<3>().argmin(reduced_dim);
   fx.tb<2>().device(*dev.edevice) = xs[0]->tb<3>().minimum(reduction_axis);
 }

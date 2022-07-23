@@ -16,6 +16,14 @@
 #include "dynet/gpu-ops.h"
 #endif
 
+#if defined(_WIN64)
+#define NODE_CONV_CASTI(x) x
+#elif defined(_WIN32)
+#define NODE_CONV_CASTI(x) static_cast<Eigen::DenseIndex>(x)
+#else
+#define NODE_CONV_CASTI(x) x
+#endif
+
 using namespace std;
 
 namespace dynet {
@@ -126,8 +134,8 @@ Dim KMaxPooling::dim_forward(const vector<Dim>& xs) const {
   DYNET_ARG_CHECK(xs[0].nd < 4,
                           "MaxDimension not currently supported for tensors of 4 or more dimensions.");
   DYNET_ARG_CHECK(k >= 1, "Bad bad k in KMaxPooling: " << k);
-  DYNET_ARG_CHECK(k <= xs[0][pooled_dim], 
-                          "Bad k in KMaxPooling: k = " << k << " bigger than the size of pooled dimension " 
+  DYNET_ARG_CHECK(k <= xs[0][pooled_dim],
+                          "Bad k in KMaxPooling: k = " << k << " bigger than the size of pooled dimension "
                           << pooled_dim << " with size = " << xs[0][pooled_dim]);
   Dim ret(xs[0]);
   ret.set(pooled_dim, k);
@@ -176,7 +184,7 @@ void AverageColumns::backward_dev_impl(const MyDevice & dev,
                              const Tensor& dEdf,
                              unsigned i,
                              Tensor& dEdxi) const {
-  const Eigen::array<Eigen::DenseIndex, 2> broadcasts = {1, xs[0]->d[1]};
+  const Eigen::array<Eigen::DenseIndex, 2> broadcasts = { 1, NODE_CONV_CASTI(xs[0]->d[1])};
   dEdxi.t<2>().device(*dev.edevice) += (dEdf.t<2>() / (float)xs[0]->d[1]).broadcast(broadcasts);
 }
 DYNET_NODE_INST_DEV_IMPL(AverageColumns)
@@ -319,8 +327,8 @@ void FoldRows::forward_dev_impl(const MyDevice & dev, const vector<const Tensor*
   unsigned orows = fx.d.rows();
   for (unsigned i = 0; i < orows; ++i) {
     fx.tb<2>().chip<0>(i).device(*dev.edevice) = xs[0]->tb<2>().chip<0>(i * nrows);
-    for (unsigned j = 1; j < nrows; ++j) 
-      fx.tb<2>().chip<0>(i).device(*dev.edevice) += xs[0]->tb<2>().chip<0>(i * nrows + j); 
+    for (unsigned j = 1; j < nrows; ++j)
+      fx.tb<2>().chip<0>(i).device(*dev.edevice) += xs[0]->tb<2>().chip<0>(i * nrows + j);
   }
   // TODO: This broadcasting should work?
   // array<ptrdiff_t, 1> broadcasts; broadcasts[0] = nrows;
@@ -334,7 +342,7 @@ void FoldRows::backward_dev_impl(const MyDevice & dev,
                              const Tensor& dEdf,
                              unsigned i,
                              Tensor& dEdxi) const {
-  const Eigen::array<Eigen::DenseIndex, 1> broadcasts = {nrows};
+  const Eigen::array<Eigen::DenseIndex, 1> broadcasts = { NODE_CONV_CASTI(nrows) };
   dEdxi.tvec().device(*dev.edevice) += dEdf.tvec().broadcast(broadcasts);
   // unsigned orows = fx.d.rows();
   // for (unsigned i = 0; i < orows; ++i)
@@ -383,7 +391,7 @@ void KMaxPooling::forward_dev_impl(const MyDevice & dev, const vector<const Tens
             ++tt;
             if (tt == k) break;  // could happen in case of ties
           }
-        } 
+        }
       }
     }
   }
@@ -414,13 +422,13 @@ void KMaxPooling::backward_dev_impl(const MyDevice & dev,
       for(unsigned i = 0; i < first_dim_size; ++i){
         for(unsigned l = 0; l < pooled_dim_size; ++l){
           if (pooled_dim > second_dim)
-            dEdxi.tb<3>().chip<3>(b).chip(locs(i, j, l, b), pooled_dim).chip(j, second_dim).chip(i, first_dim).device(*dev.edevice) 
+            dEdxi.tb<3>().chip<3>(b).chip(locs(i, j, l, b), pooled_dim).chip(j, second_dim).chip(i, first_dim).device(*dev.edevice)
               += dEdf.tb<3>().chip<3>(b).chip<2>(l).chip<1>(j).chip<0>(i);
           else if (pooled_dim > first_dim)
-            dEdxi.tb<3>().chip<3>(b).chip(j, second_dim).chip(locs(i, l, j, b), pooled_dim).chip(i, first_dim).device(*dev.edevice) 
+            dEdxi.tb<3>().chip<3>(b).chip(j, second_dim).chip(locs(i, l, j, b), pooled_dim).chip(i, first_dim).device(*dev.edevice)
               += dEdf.tb<3>().chip<3>(b).chip<2>(j).chip<1>(l).chip<0>(i);
           else
-            dEdxi.tb<3>().chip<3>(b).chip(j, second_dim).chip(i, first_dim).chip(locs(l, i, j, b), pooled_dim).device(*dev.edevice) 
+            dEdxi.tb<3>().chip<3>(b).chip(j, second_dim).chip(i, first_dim).chip(locs(l, i, j, b), pooled_dim).device(*dev.edevice)
               += dEdf.tb<3>().chip<3>(b).chip<2>(j).chip<1>(i).chip<0>(l);
         }
       }
