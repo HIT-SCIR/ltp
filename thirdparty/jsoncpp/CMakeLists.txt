@@ -1,6 +1,6 @@
 # vim: et ts=4 sts=4 sw=4 tw=0
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+cmake_minimum_required (VERSION 3.0)
 PROJECT(jsoncpp)
 
 OPTION(BUILD_SHARED_LIBS "Build jsoncpp_lib as a shared library." OFF)

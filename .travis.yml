@@ -2,6 +2,10 @@ sudo: required
 dist: precise
 language: cpp
 
+branches:
+  only:
+    - 3.X
+
 matrix:
   include:
     - compiler: gcc
