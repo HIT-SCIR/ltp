@@ -660,8 +660,8 @@ EIGEN_STRONG_INLINE Packet8d pabs(const Packet8d& a) {
 #ifdef EIGEN_VECTORIZE_AVX512DQ
 // AVX512F does not define _mm512_extractf32x8_ps to extract _m256 from _m512
 #define EIGEN_EXTRACT_8f_FROM_16f(INPUT, OUTPUT)                           \
-  __m256 OUTPUT##_0 = _mm512_extractf32x8_ps(INPUT, 0) __m256 OUTPUT##_1 = \
-      _mm512_extractf32x8_ps(INPUT, 1)
+  __m256 OUTPUT##_0 = _mm512_extractf32x8_ps(INPUT, 0);                    \
+  __m256 OUTPUT##_1 = _mm512_extractf32x8_ps(INPUT, 1);
 #else
 #define EIGEN_EXTRACT_8f_FROM_16f(INPUT, OUTPUT)                \
   __m256 OUTPUT##_0 = _mm256_insertf128_ps(                     \
