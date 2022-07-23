@@ -184,7 +184,7 @@ void AverageColumns::backward_dev_impl(const MyDevice & dev,
                              const Tensor& dEdf,
                              unsigned i,
                              Tensor& dEdxi) const {
-  const Eigen::array<Eigen::DenseIndex, 2> broadcasts = { 1, NODE_CONV_CASTI(xs[0]->d[1])};
+  const Eigen::array<Eigen::DenseIndex, 2> broadcasts = { NODE_CONV_CASTI(1), NODE_CONV_CASTI(xs[0]->d[1])};
   dEdxi.t<2>().device(*dev.edevice) += (dEdf.t<2>() / (float)xs[0]->d[1]).broadcast(broadcasts);
 }
 DYNET_NODE_INST_DEV_IMPL(AverageColumns)
