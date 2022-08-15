@@ -38,9 +38,7 @@ ltp = LTP()  # 默认加载 Small 模型
 # ltp = LTP(pretrained_model_name_or_path="LTP/small")
 # 另外也可以接受一些已注册可自动下载的模型名(https://huggingface.co/LTP):
 # 使用字典结果
-output = ltp.pipeline(
-    ["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"]
-)
+output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"])
 print(output.cws)
 print(output.pos)
 print(output.sdp)

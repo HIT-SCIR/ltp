@@ -105,10 +105,10 @@ class ModelOutput(OrderedDict):
 
 @dataclass
 class LTPOutput(ModelOutput):
-    cws = None
-    pos = None
-    ner = None
-    srl = None
-    dep = None
-    sdp = None
-    sdpg = None
+    cws: Optional[Union[List[str], List[List[str]]]] = None
+    pos: Optional[Union[List[str], List[List[str]]]] = None
+    ner: Optional[Union[List[str], List[List[str]]]] = None
+    srl: Optional[Union[List[str], List[List[str]]]] = None
+    dep: Optional[Union[List[str], List[List[str]]]] = None
+    sdp: Optional[Union[List[str], List[List[str]]]] = None
+    sdpg: Optional[Union[List[str], List[List[str]]]] = None
