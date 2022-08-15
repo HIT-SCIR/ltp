@@ -67,13 +67,13 @@ class LTP(BaseModule, ModelHubMixin):
     def _check(self):
         self.eval()
         for vocab, task in (
-            (self.cws_vocab, "cws"),
-            (self.pos_vocab, "pos"),
-            (self.ner_vocab, "ner"),
-            (self.srl_vocab, "srl"),
-            (self.dep_vocab, "dep"),
-            (self.sdp_vocab, "sdp"),
-            (self.sdp_vocab, "sdpg"),
+                (self.cws_vocab, "cws"),
+                (self.pos_vocab, "pos"),
+                (self.ner_vocab, "ner"),
+                (self.srl_vocab, "srl"),
+                (self.dep_vocab, "dep"),
+                (self.sdp_vocab, "sdp"),
+                (self.sdp_vocab, "sdpg"),
         ):
             if vocab is not None and len(vocab) > 0:
                 self.supported_tasks.add(task)
@@ -88,10 +88,10 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def pipeline(
-        self,
-        inputs: Union[str, List[str], List[List[str]]],
-        tasks: List[str] = None,
-        return_dict: bool = True,
+            self,
+            inputs: Union[str, List[str], List[List[str]]],
+            tasks: List[str] = None,
+            return_dict: bool = True,
     ):
         if tasks is None:
             tasks = ["cws", "pos", "ner", "srl", "dep", "sdp", "sdpg"]
@@ -135,7 +135,7 @@ class LTP(BaseModule, ModelHubMixin):
                 batch_first=True,
             )
             word_index = torch.nn.utils.rnn.pad_sequence(
-                [torch.as_tensor(index) for index in word_index],
+                [torch.as_tensor(index, device=self.device) for index in word_index],
                 batch_first=True,
             )
         else:
@@ -177,12 +177,12 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def _cws_post(
-        self,
-        result: TokenClassifierResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
+            self,
+            result: TokenClassifierResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
     ) -> LTPOutput:
         crf = result.crf
         logits = result.logits
@@ -200,7 +200,7 @@ class LTP(BaseModule, ModelHubMixin):
                 elif current[0] == current[1]:
                     continue
                 elif current != last:
-                    text[-1].append(raw_text[current[0] : current[1]])
+                    text[-1].append(raw_text[current[0]: current[1]])
                     char_idx[-1].append(idx)
                 last = current
         text = ["".join(t) for t in text]
@@ -222,7 +222,7 @@ class LTP(BaseModule, ModelHubMixin):
         entities = [[(e[1], e[2]) for e in se] for se in entities]
 
         words = [
-            [sent[e[0] : e[1] + 1] for e in sent_entities]
+            [sent[e[0]: e[1] + 1] for e in sent_entities]
             for sent, sent_entities in zip(text, entities)
         ]
 
@@ -239,7 +239,7 @@ class LTP(BaseModule, ModelHubMixin):
 
         words_idx = torch.nn.utils.rnn.pad_sequence(
             [
-                torch.as_tensor([char[e[0]] for e in sent_entities])
+                torch.as_tensor([char[e[0]] for e in sent_entities], device=self.device)
                 for char, sent_entities in zip(char_idx, entities)
             ],
             batch_first=True,
@@ -257,12 +257,12 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def _pos_post(
-        self,
-        result: TokenClassifierResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
+            self,
+            result: TokenClassifierResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
     ) -> LTPOutput:
         crf = result.crf
         logits = result.logits
@@ -285,12 +285,12 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def _ner_post(
-        self,
-        result: TokenClassifierResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
+            self,
+            result: TokenClassifierResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
     ) -> LTPOutput:
         crf = result.crf
         logits = result.logits
@@ -313,12 +313,12 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def _srl_post(
-        self,
-        result: TokenClassifierResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
+            self,
+            result: TokenClassifierResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
     ) -> LTPOutput:
         crf = result.crf
         logits = result.logits
@@ -359,12 +359,12 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def _dep_post(
-        self,
-        result: GraphResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
+            self,
+            result: GraphResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
     ) -> LTPOutput:
         from ltp_core.models.components.token import BiaffineTokenClassifier
 
@@ -389,13 +389,13 @@ class LTP(BaseModule, ModelHubMixin):
 
     @no_grad
     def _sdp_post(
-        self,
-        result: GraphResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
-        tree: bool = False,
+            self,
+            result: GraphResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
+            tree: bool = False,
     ) -> LTPOutput:
         s_arc = result.arc_logits
         s_rel = result.rel_logits
@@ -437,12 +437,12 @@ class LTP(BaseModule, ModelHubMixin):
         return pred_entities
 
     def _sdpg_post(
-        self,
-        result: GraphResult,
-        hidden: Dict[str, torch.Tensor],
-        store: Dict[str, Any],
-        inputs: List[str] = None,
-        tokenized: BatchEncoding = None,
+            self,
+            result: GraphResult,
+            hidden: Dict[str, torch.Tensor],
+            store: Dict[str, Any],
+            inputs: List[str] = None,
+            tokenized: BatchEncoding = None,
     ) -> LTPOutput:
         return self._sdp_post(result, hidden, store, inputs, tokenized, tree=False)
 
@@ -461,18 +461,18 @@ class LTP(BaseModule, ModelHubMixin):
 
     @classmethod
     def _from_pretrained(
-        cls,
-        model_id,
-        revision,
-        cache_dir,
-        force_download,
-        proxies,
-        resume_download,
-        local_files_only,
-        use_auth_token,
-        map_location="cpu",
-        strict=False,
-        **model_kwargs,
+            cls,
+            model_id,
+            revision,
+            cache_dir,
+            force_download,
+            proxies,
+            resume_download,
+            local_files_only,
+            use_auth_token,
+            map_location="cpu",
+            strict=False,
+            **model_kwargs,
     ):
         """Overwrite this method in case you wish to initialize your model in a different way."""
         map_location = torch.device(map_location)
