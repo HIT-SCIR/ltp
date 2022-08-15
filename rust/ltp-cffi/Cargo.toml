@@ -1,0 +1,23 @@
+[package]
+name = "ltp-cffi"
+version = "0.1.0"
+edition = "2021"
+authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
+description = "The C bindings for LTP."
+homepage = "https://github.com/HIT-SCIR/ltp"
+repository = "https://github.com/HIT-SCIR/ltp"
+keywords = ["ltp", "nlp"]
+exclude = [".github"]
+readme = "README.md"
+license-file = "LICENSE"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "ltp"
+path = "src/lib.rs"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+ltp = { version = "0.1.0", path = "../ltp", features = ["serialization"] }
+

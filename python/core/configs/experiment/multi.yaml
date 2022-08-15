@@ -1,0 +1,37 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: multi_datamodules.yaml
+  - override /model: multi_model.yaml
+  - override /callbacks: default.yaml
+  - override /trainer: gpu.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: [ "ltp" ]
+
+seed: 12345
+
+trainer:
+  min_epochs: 1
+  max_epochs: 10
+  gradient_clip_val: 1.0
+
+logger:
+  wandb:
+    tags: "${tags}"
+    name: "ltp-${oc.env:SLURM_JOB_ID,localhost}-${now:%Y-%m-%d_%H:%M:%S.%f}"
+
+callbacks:
+  model_checkpoint:
+    monitor: "val/mean_metric"
+    mode: "max"
+
+  early_stopping:
+    monitor: "val/mean_metric"
+    patience: 3
+    mode: "max"

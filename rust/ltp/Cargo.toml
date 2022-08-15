@@ -1,0 +1,60 @@
+[package]
+name = "ltp"
+version = "0.1.0"
+edition = "2021"
+authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
+description = "Language Technology Platform For Rust."
+homepage = "https://github.com/HIT-SCIR/ltp"
+repository = "https://github.com/HIT-SCIR/ltp"
+keywords = ["ltp", "nlp"]
+exclude = [".github"]
+readme = "README.md"
+license-file = "LICENSE"
+
+[[example]]
+name = "cws"
+path = "examples/cws.rs"
+required-features = ["serialization", "parallel"]
+
+[[example]]
+name = "pos"
+path = "examples/pos.rs"
+required-features = ["serialization", "parallel"]
+
+[[example]]
+name = "ner"
+path = "examples/ner.rs"
+required-features = ["serialization", "parallel"]
+
+[dependencies]
+anyhow = "1"
+num-traits = "0.2"
+itertools = "0.10"
+
+cedarwood = "0.4"
+
+# 断句避免过多内存申请
+smallvec = { version = "1" }
+# 数据集 shuffle
+rand = { version = "0.8" }
+# 特征裁剪
+binary-heap-plus = { version = "0.4.1" }
+
+# 并行
+rayon = { version = "1.5", optional = true }
+
+# 序列化
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+apache-avro = { version = "0.14.0", optional = true }
+
+[features]
+default = []
+parallel = ["rayon"]
+serialization = ["serde", "serde_json", "apache-avro"]
+
+[dev-dependencies]
+clap = { version = "3", features = ["derive"] }
+
+ndarray = "0.15"
+ndarray-npy = { version = "0.8", features = ["npz"] }

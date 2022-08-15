@@ -1,0 +1,12 @@
+_target_: ltp_core.datamodules.TaskDataModule
+
+tokenizer: ${model.model.backbone.pretrained_model_name_or_path}
+
+datamodules:
+  batch_size: 16
+  num_workers: 4
+  pin_memory: True
+  load:
+    _target_: ltp_core.datamodules.adapters.sentence_classification.build_dataset
+    _partial_: true
+    task_name: "cola"

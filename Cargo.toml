@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "rust/ltp",
+    "rust/ltp-cffi",
+    "python/extension",
+]
+
+[profile.release-lto]
+inherits = "release"
+lto = true

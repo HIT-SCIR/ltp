@@ -1,0 +1,9 @@
+# https://neptune.ai
+
+neptune:
+  _target_: pytorch_lightning.loggers.neptune.NeptuneLogger
+  api_key: ${oc.env:NEPTUNE_API_TOKEN} # api key is loaded from environment variable
+  project: "ltp"
+  # name: ""
+  log_model_checkpoints: True
+  prefix: ""

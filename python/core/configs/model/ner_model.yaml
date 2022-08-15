@@ -1,0 +1,52 @@
+_target_: ltp_core.models.lit_model.LTPLitModule
+
+optimizer:
+  _ltp_target_: torch.optim.AdamW
+  _ltp_partial_: true
+  lr: 2e-5
+  weight_decay: 0.0
+
+layer_lrs:
+  _ltp_target_: ltp_core.models.optimization.layer_lrs.get_layer_lrs_with_crf
+  _ltp_partial_: true
+  transformer_prefix: backbone
+  learning_rate: ${model.optimizer.lr}
+  layer_decay: 0.8  # 0.8 for Base/Small, 0.9 for Large
+  n_layers: 12
+  crf_prefix: 'crf'
+  crf_ratio: 10.0
+
+scheduler:
+  _ltp_target_: ltp_core.models.optimization.scheduler.compose_with_scheduler
+  _ltp_partial_: true
+  scheduler_type: "linear"
+  scheduler_args: null
+  warmup_ratio: 0.02
+  interval: "step"
+  frequency: 1
+
+criterions:
+  ner:
+    _ltp_target_: ltp_core.models.criterion.token.TokenLoss
+
+metrics:
+  ner:
+    _ltp_target_: ltp_core.models.metrics.token.SeqEvalF1
+    tags_or_path: ${datamodule.datamodules.ner.load.data_dir}/vocabs/bio.txt
+
+model:
+  _ltp_target_: ltp_core.models.ltp_model.LTPModule
+  backbone:
+    _ltp_target_: transformers.AutoModel.from_pretrained
+    pretrained_model_name_or_path: hfl/chinese-electra-180g-base-discriminator
+
+  processor:
+    ner:
+      _ltp_target_: ltp_core.models.processor.WordsOnly
+
+  heads:
+    ner:
+      _ltp_target_: ltp_core.models.components.token.MLPTokenClassifier
+      input_size: 768
+      num_labels: 13
+      dropout: 0.1

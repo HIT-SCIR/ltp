@@ -1,0 +1,119 @@
+_target_: ltp_core.models.lit_model.LTPLitModule
+
+optimizer:
+  _ltp_target_: torch.optim.AdamW
+  _ltp_partial_: true
+  lr: 2e-5
+  weight_decay: 0.0
+
+layer_lrs:
+  _ltp_target_: ltp_core.models.optimization.layer_lrs.get_layer_lrs_with_crf
+  _ltp_partial_: true
+  transformer_prefix: backbone
+  learning_rate: ${model.optimizer.lr}
+  layer_decay: 0.8  # 0.8 for Base/Small, 0.9 for Large
+  n_layers: 12
+  crf_prefix: 'crf'
+  crf_ratio: 10.0
+
+scheduler:
+  _ltp_target_: ltp_core.models.optimization.scheduler.compose_with_scheduler
+  _ltp_partial_: true
+  scheduler_type: "linear"
+  scheduler_args: null
+  warmup_ratio: 0.02
+  interval: "step"
+  frequency: 1
+
+criterions:
+  cws:
+    _ltp_target_: ltp_core.models.criterion.token.TokenLoss
+  pos:
+    _ltp_target_: ltp_core.models.criterion.token.TokenLoss
+  ner:
+    _ltp_target_: ltp_core.models.criterion.token.TokenLoss
+  srl:
+    _ltp_target_: ltp_core.models.criterion.token.SRLLoss
+  dep:
+    _ltp_target_: ltp_core.models.criterion.graph.DEPLoss
+  sdp:
+    _ltp_target_: ltp_core.models.criterion.graph.SDPLoss
+
+metrics:
+  cws:
+    _ltp_target_: ltp_core.models.metrics.token.SeqEvalF1
+    tags_or_path: [ "B", "M", "E", "S" ]
+  pos:
+    _ltp_target_: ltp_core.models.metrics.token.TokenAccuracy
+  ner:
+    _ltp_target_: ltp_core.models.metrics.token.SeqEvalF1
+    tags_or_path: ${datamodule.datamodules.ner.load.data_dir}/vocabs/bio.txt
+  srl:
+    _ltp_target_: ltp_core.models.metrics.token.SRLEvalF1
+    tags_or_path: ${datamodule.datamodules.srl.load.data_dir}/vocabs/arguments.txt
+  dep:
+    _ltp_target_: ltp_core.models.metrics.graph.DEPLas
+  sdp:
+    _ltp_target_: ltp_core.models.metrics.graph.SDPLas
+
+model:
+  _ltp_target_: ltp_core.models.ltp_model.LTPModule
+  backbone:
+    _ltp_target_: transformers.AutoModel.from_pretrained
+    pretrained_model_name_or_path: hfl/chinese-electra-180g-base-discriminator
+
+  processor:
+    cws:
+      _ltp_target_: ltp_core.models.processor.TokenOnly
+    pos:
+      _ltp_target_: ltp_core.models.processor.WordsOnly
+    ner:
+      _ltp_target_: ltp_core.models.processor.WordsOnly
+    srl:
+      _ltp_target_: ltp_core.models.processor.WordsOnly
+    dep:
+      _ltp_target_: ltp_core.models.processor.WordsWithHead
+    sdp:
+      _ltp_target_: ltp_core.models.processor.WordsWithHead
+
+  heads:
+    cws:
+      _ltp_target_: ltp_core.models.components.token.MLPTokenClassifier
+      input_size: 768
+      # use bi
+      # num_labels: 2
+      # use bmes
+      num_labels: 4
+      dropout: 0.1
+    pos:
+      _ltp_target_: ltp_core.models.components.token.MLPTokenClassifier
+      input_size: 768
+      num_labels: 27
+      dropout: 0.1
+    ner:
+      _ltp_target_: ltp_core.models.components.token.MLPTokenClassifier
+      input_size: 768
+      num_labels: 13
+      dropout: 0.1
+    srl:
+      _ltp_target_: ltp_core.models.components.token.BiaffineTokenClassifier
+      input_size: 768
+      hidden_size: 300
+      num_labels: 97
+      dropout: 0.1
+      use_crf: True
+    dep:
+      _ltp_target_: ltp_core.models.components.graph.BiaffineClassifier
+      input_size: 768
+      num_labels: 14
+      dropout: 0.1
+      arc_hidden_size: 100
+      rel_hidden_size: 100
+    sdp:
+      _ltp_target_: ltp_core.models.components.graph.BiaffineClassifier
+      input_size: 768
+      num_labels: 56
+      dropout: 0.1
+      arc_hidden_size: 100
+      rel_hidden_size: 500
+

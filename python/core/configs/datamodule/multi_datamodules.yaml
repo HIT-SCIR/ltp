@@ -1,0 +1,66 @@
+_target_: ltp_core.datamodules.MultiTaskDataModule
+
+tau: 0.8
+tokenizer: ${model.model.backbone.pretrained_model_name_or_path}
+
+datamodules:
+  cws:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: True
+    load:
+      _target_: ltp_core.datamodules.adapters.segmention.build_dataset
+      _partial_: true
+      task_name: "seg"
+      data_dir: "data/seg"
+      mode: 'bmes'
+
+  pos:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: True
+    load:
+      _target_: ltp_core.datamodules.adapters.postagger.build_dataset
+      _partial_: true
+      task_name: "pos"
+      data_dir: "data/pos"
+
+  ner:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: True
+    load:
+      _target_: ltp_core.datamodules.adapters.named_entity_recognition.build_dataset
+      _partial_: true
+      task_name: "ner"
+      data_dir: "data/ner"
+
+  srl:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: True
+    load:
+      _target_: ltp_core.datamodules.adapters.semantic_role_labeling.build_dataset
+      _partial_: true
+      task_name: "srl"
+      data_dir: "data/srl"
+
+  dep:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: True
+    load:
+      _target_: ltp_core.datamodules.adapters.dependency_parsing.build_dataset
+      _partial_: true
+      task_name: "dep"
+      data_dir: "data/dep"
+
+  sdp:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: True
+    load:
+      _target_: ltp_core.datamodules.adapters.semantic_dependency_parsing.build_dataset
+      _partial_: true
+      task_name: "sdp"
+      data_dir: "data/sdp"
