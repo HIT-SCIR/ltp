@@ -6,13 +6,13 @@ repos:
     rev: v4.3.0
     hooks:
       # list of supported hooks: https://pre-commit.com/hooks.html
+      # - id: check-executables-have-shebangs
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-docstring-first
       - id: check-yaml
       - id: debug-statements
       - id: detect-private-key
-      - id: check-executables-have-shebangs
       - id: check-toml
       - id: check-case-conflict
       - id: check-added-large-files
@@ -44,13 +44,6 @@ repos:
     hooks:
       - id: docformatter
         args: [--in-place, --wrap-summaries=99, --wrap-descriptions=99]
-
-  # python check (PEP8), programming errors and code complexity
-  - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
-    hooks:
-      - id: flake8
-        args: ["--ignore", "E501,F401,F841,W504", "--exclude", "logs/*,data/*"]
 
   # python security linter
   - repo: https://github.com/PyCQA/bandit
@@ -84,12 +77,3 @@ repos:
           - mdformat_frontmatter
           # - mdformat-toc
           # - mdformat-black
-
-  # word spelling linter
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.1.0
-    hooks:
-      - id: codespell
-        args:
-          - --skip=logs/**,data/**
-          # - --ignore-words-list=abc,def

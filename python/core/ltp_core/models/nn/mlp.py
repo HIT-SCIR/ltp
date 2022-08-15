@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
-from typing import Optional, Union, Callable, Sequence
+from typing import Callable, Optional, Sequence, Union
 
 from torch import nn
 from transformers.activations import get_activation

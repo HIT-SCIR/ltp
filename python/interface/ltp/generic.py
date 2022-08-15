@@ -1,17 +1,15 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 from collections import OrderedDict
 from dataclasses import dataclass, fields
-from typing import List, Tuple, Any, Union, Optional
+from typing import Any, List, Optional, Tuple, Union
 
 
 class ModelOutput(OrderedDict):
-    """
-    Base class for all model outputs as dataclass. Has a `__getitem__` that allows indexing by integer or slice (like a
-    tuple) or strings (like a dictionary) that will ignore the `None` attributes. Otherwise behaves like a regular
-    python dictionary.
+    """Base class for all model outputs as dataclass. Has a `__getitem__` that allows indexing by
+    integer or slice (like a tuple) or strings (like a dictionary) that will ignore the `None`
+    attributes. Otherwise behaves like a regular python dictionary.
 
     <Tip warning={true}>
 
@@ -53,9 +51,9 @@ class ModelOutput(OrderedDict):
             if first_field_iterator:
                 for element in iterator:
                     if (
-                            not isinstance(element, (list, tuple))
-                            or not len(element) == 2
-                            or not isinstance(element[0], str)
+                        not isinstance(element, (list, tuple))
+                        or not len(element) == 2
+                        or not isinstance(element[0], str)
                     ):
                         break
                     setattr(self, element[0], element[1])
@@ -70,24 +68,16 @@ class ModelOutput(OrderedDict):
                     self[field.name] = v
 
     def __delitem__(self, *args, **kwargs):
-        raise Exception(
-            f"You cannot use ``__delitem__`` on a {self.__class__.__name__} instance."
-        )
+        raise Exception(f"You cannot use ``__delitem__`` on a {self.__class__.__name__} instance.")
 
     def setdefault(self, *args, **kwargs):
-        raise Exception(
-            f"You cannot use ``setdefault`` on a {self.__class__.__name__} instance."
-        )
+        raise Exception(f"You cannot use ``setdefault`` on a {self.__class__.__name__} instance.")
 
     def pop(self, *args, **kwargs):
-        raise Exception(
-            f"You cannot use ``pop`` on a {self.__class__.__name__} instance."
-        )
+        raise Exception(f"You cannot use ``pop`` on a {self.__class__.__name__} instance.")
 
     def update(self, *args, **kwargs):
-        raise Exception(
-            f"You cannot use ``update`` on a {self.__class__.__name__} instance."
-        )
+        raise Exception(f"You cannot use ``update`` on a {self.__class__.__name__} instance.")
 
     def __getitem__(self, k):
         if isinstance(k, str):
@@ -109,9 +99,7 @@ class ModelOutput(OrderedDict):
         super().__setattr__(key, value)
 
     def to_tuple(self) -> Tuple[Any]:
-        """
-        Convert self to a tuple containing all the attributes/keys that are not `None`.
-        """
+        """Convert self to a tuple containing all the attributes/keys that are not `None`."""
         return tuple(self[k] for k in self.keys())
 
 

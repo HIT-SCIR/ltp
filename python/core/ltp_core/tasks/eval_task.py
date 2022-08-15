@@ -1,11 +1,10 @@
 from typing import List, Tuple
 
 import hydra
+from ltp import utils
 from omegaconf import DictConfig
 from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
-
-from ltp import utils
 
 log = utils.get_pylogger(__name__)
 

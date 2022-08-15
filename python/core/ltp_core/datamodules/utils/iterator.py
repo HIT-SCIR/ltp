@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import codecs
@@ -30,9 +29,7 @@ def iter_lines(filename: str, split=None, strip=None, skip: str = None):
 
 def iter_blocks(filename: str, split=None, strip=None, skip="#"):
     rows = []
-    for line_num, line_features in iter_lines(
-        filename, split=split, strip=strip, skip=skip
-    ):
+    for line_num, line_features in iter_lines(filename, split=split, strip=strip, skip=skip):
         if len(line_features):
             rows.append(line_features)
         else:

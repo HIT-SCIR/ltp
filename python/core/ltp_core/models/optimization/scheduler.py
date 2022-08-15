@@ -1,15 +1,15 @@
-from typing import Union, Optional
+from typing import Optional, Union
 
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import ExponentialLR
 from transformers.file_utils import ExplicitEnum
 from transformers.optimization import (
-    get_linear_schedule_with_warmup,
-    get_cosine_schedule_with_warmup,
-    get_cosine_with_hard_restarts_schedule_with_warmup,
-    get_polynomial_decay_schedule_with_warmup,
     get_constant_schedule,
     get_constant_schedule_with_warmup,
+    get_cosine_schedule_with_warmup,
+    get_cosine_with_hard_restarts_schedule_with_warmup,
+    get_linear_schedule_with_warmup,
+    get_polynomial_decay_schedule_with_warmup,
 )
 
 
@@ -48,8 +48,7 @@ def get_scheduler(
     lr_end: float = 1e-7,
     power: float = 1.0,
 ):
-    """
-    Unified API to get any scheduler from its name.
+    """Unified API to get any scheduler from its name.
 
     Args:
         name (`str` or `SchedulerType`):
@@ -73,18 +72,14 @@ def get_scheduler(
 
     # All other schedulers require `num_warmup_steps`
     if num_warmup_steps is None:
-        raise ValueError(
-            f"{name} requires `num_warmup_steps`, please provide that argument."
-        )
+        raise ValueError(f"{name} requires `num_warmup_steps`, please provide that argument.")
 
     if name == SchedulerType.CONSTANT_WITH_WARMUP:
         return schedule_func(optimizer, num_warmup_steps=num_warmup_steps)
 
     # All other schedulers require `num_training_steps`
     if num_training_steps is None:
-        raise ValueError(
-            f"{name} requires `num_training_steps`, please provide that argument."
-        )
+        raise ValueError(f"{name} requires `num_training_steps`, please provide that argument.")
 
     if name == SchedulerType.COSINE:
         num_cycles = 0.5 if num_cycles is None else num_cycles

@@ -2,7 +2,7 @@ def vocab_builder(func):
     from datasets import BuilderConfig
 
     def func_wrapper(config: BuilderConfig, **kwargs):
-        """We handle string, list and dicts in datafiles"""
+        """We handle string, list and dicts in datafiles."""
         if not config.data_files:
             raise ValueError(
                 f"At least one data file must be specified, but got data_files={config.data_files}"

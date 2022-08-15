@@ -1,10 +1,11 @@
-from typing import Any, List
 from copy import deepcopy
+from typing import Any, List
 
 import torch
-from torch.nn import ModuleDict
 from pytorch_lightning import LightningModule
-from torchmetrics import MetricCollection, MeanMetric
+from torch.nn import ModuleDict
+from torchmetrics import MeanMetric, MetricCollection
+
 from ltp_core.models.ltp_model import LTPModule
 from ltp_core.models.utils import instantiate_omega as instantiate
 
@@ -54,10 +55,7 @@ class LTPLitModule(LightningModule):
 
         # must use module dict
         metrics = ModuleDict(
-            {
-                task: MetricCollection(metric, prefix=f"{task}/")
-                for task, metric in metrics.items()
-            }
+            {task: MetricCollection(metric, prefix=f"{task}/") for task, metric in metrics.items()}
         )
         self.train_metrics = metrics
         self.val_metrics = deepcopy(metrics)

@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 # ref: https://github.com/kmkurn/pytorch-crf
@@ -38,9 +37,7 @@ class CRF(nn.Module):
     .. _Viterbi algorithm: https://en.wikipedia.org/wiki/Viterbi_algorithm
     """
 
-    def __init__(
-        self, num_tags: int, batch_first: bool = True, reduction: str = "sum"
-    ) -> None:
+    def __init__(self, num_tags: int, batch_first: bool = True, reduction: str = "sum") -> None:
         if num_tags <= 0:
             raise ValueError(f"invalid number of tags: {num_tags}")
         if reduction not in ("none", "sum", "mean", "token_mean"):
@@ -51,16 +48,15 @@ class CRF(nn.Module):
         self.batch_first = batch_first
         self.start_transitions = nn.Parameter(torch.empty(num_tags), requires_grad=True)
         self.end_transitions = nn.Parameter(torch.empty(num_tags), requires_grad=True)
-        self.transitions = nn.Parameter(
-            torch.empty(num_tags, num_tags), requires_grad=True
-        )
+        self.transitions = nn.Parameter(torch.empty(num_tags, num_tags), requires_grad=True)
 
         self.reset_parameters()
 
     def reset_parameters(self) -> None:
         """Initialize the transition parameters.
-        The parameters will be initialized randomly from a uniform distribution
-        between -0.1 and 0.1.
+
+        The parameters will be initialized randomly from a uniform distribution between -0.1 and
+        0.1.
         """
         nn.init.uniform_(self.start_transitions, -0.1, 0.1)
         nn.init.uniform_(self.end_transitions, -0.1, 0.1)
@@ -77,6 +73,7 @@ class CRF(nn.Module):
         reduction: Optional[str] = None,
     ) -> torch.Tensor:
         """Compute the conditional log likelihood of a sequence of tags given emission scores.
+
         Args:
             emissions (`~torch.Tensor`): Emission score tensor of size
                 ``(seq_length, batch_size, num_tags)`` if ``batch_first`` is ``False``,
@@ -128,6 +125,7 @@ class CRF(nn.Module):
         self, emissions: torch.FloatTensor, mask: Optional[torch.ByteTensor] = None
     ) -> List[List[int]]:
         """Find the most likely tag sequence using Viterbi algorithm.
+
         Args:
             emissions (`~torch.Tensor`): Emission score tensor of size
                 ``(seq_length, batch_size, num_tags)`` if ``batch_first`` is ``False``,
@@ -154,9 +152,7 @@ class CRF(nn.Module):
         mask: Optional[torch.ByteTensor] = None,
     ) -> None:
         if emissions.dim() != 3:
-            raise ValueError(
-                f"emissions must have dimension of 3, got {emissions.dim()}"
-            )
+            raise ValueError(f"emissions must have dimension of 3, got {emissions.dim()}")
         if emissions.size(2) != self.num_tags:
             raise ValueError(
                 f"expected last dimension of emissions is {self.num_tags}, "
@@ -220,9 +216,7 @@ class CRF(nn.Module):
 
         return score
 
-    def _compute_normalizer(
-        self, emissions: torch.Tensor, mask: torch.ByteTensor
-    ) -> torch.Tensor:
+    def _compute_normalizer(self, emissions: torch.Tensor, mask: torch.ByteTensor) -> torch.Tensor:
         # emissions: (seq_length, batch_size, num_tags)
         # mask: (seq_length, batch_size)
         assert emissions.dim() == 3 and mask.dim() == 2

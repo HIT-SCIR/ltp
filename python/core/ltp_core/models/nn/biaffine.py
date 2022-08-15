@@ -1,19 +1,17 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import math
+
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 
 
 class Biaffine(nn.Module):
     __constants__ = ["in1_features", "in2_features", "out_features", "bias_x", "bias_y"]
 
-    def __init__(
-        self, in1_features, in2_features, out_features, bias_x=True, bias_y=True
-    ):
-        super(Biaffine, self).__init__()
+    def __init__(self, in1_features, in2_features, out_features, bias_x=True, bias_y=True):
+        super().__init__()
         self.bias_x = bias_x
         self.bias_y = bias_y
         self.in1_features = in1_features

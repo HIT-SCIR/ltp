@@ -13,7 +13,7 @@ datamodules:
       _partial_: true
       task_name: "seg"
       data_dir: "data/seg"
-      mode: 'bmes'
+      mode: "bmes"
 
   pos:
     batch_size: 16

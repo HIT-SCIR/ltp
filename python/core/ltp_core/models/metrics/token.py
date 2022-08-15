@@ -1,9 +1,10 @@
-from typing import Union, List, Any, Optional
+from typing import Any, List, Optional, Union
 
 import torch
-from torch import Tensor, tensor
-from torchmetrics import Metric, Accuracy
 from ltp_extension.algorithms import get_entities
+from torch import Tensor, tensor
+from torchmetrics import Accuracy, Metric
+
 from ltp_core.models.components.token import TokenClassifierResult
 
 
@@ -19,7 +20,7 @@ class TokenAccuracy(Accuracy):
         preds = preds[attention_mask]
         labels = labels[attention_mask]
 
-        super(TokenAccuracy, self).update(preds, labels)
+        super().update(preds, labels)
 
 
 class SeqEvalF1(Metric):
@@ -97,9 +98,7 @@ class SRLEvalF1(SeqEvalF1):
         attention_mask = result.attention_mask
 
         # to expand
-        attention_mask = attention_mask.unsqueeze(-1).expand(
-            -1, -1, attention_mask.size(1)
-        )
+        attention_mask = attention_mask.unsqueeze(-1).expand(-1, -1, attention_mask.size(1))
         attention_mask = attention_mask & torch.transpose(attention_mask, -1, -2)
         attention_mask = attention_mask.flatten(end_dim=1)
 

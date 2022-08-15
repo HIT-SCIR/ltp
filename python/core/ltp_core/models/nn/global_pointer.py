@@ -9,10 +9,7 @@ INF = 1e12
 
 
 class GlobalPointer(nn.Module):
-    """全局指针模块
-    将序列的每个(start, end)作为整体来进行判断
-    参考：https://kexue.fm/archives/8373
-    """
+    """全局指针模块 将序列的每个(start, end)作为整体来进行判断 参考：https://kexue.fm/archives/8373."""
 
     def __init__(
         self,
@@ -55,18 +52,14 @@ class GlobalPointer(nn.Module):
         # RoPE编码
         if self.RoPE:
             sinusoidal_pos = self.rotary(inputs.shape[:2])[None, :, None, :]
-            qw, kw = RoFormerSelfAttention.apply_rotary_position_embeddings(
-                sinusoidal_pos, qw, kw
-            )
+            qw, kw = RoFormerSelfAttention.apply_rotary_position_embeddings(sinusoidal_pos, qw, kw)
 
         # 计算内积
         logits = torch.einsum("bmhd,bnhd->bhmn", qw, kw)
 
         # 排除padding
         if attention_mask is not None:  # huggingface's attention_mask
-            attn_mask = (
-                1 - attention_mask[:, None, None, :] * attention_mask[:, None, :, None]
-            )
+            attn_mask = 1 - attention_mask[:, None, None, :] * attention_mask[:, None, :, None]
             logits = logits - attn_mask * INF
 
         # 排除下三角
@@ -83,9 +76,7 @@ class GlobalPointer(nn.Module):
 
 
 class EfficientGlobalPointer(nn.Module):
-    """更加参数高效的GlobalPointer
-    参考：https://kexue.fm/archives/8877
-    """
+    """更加参数高效的GlobalPointer 参考：https://kexue.fm/archives/8877."""
 
     def __init__(
         self,
@@ -112,9 +103,7 @@ class EfficientGlobalPointer(nn.Module):
         # RoPE编码
         if self.RoPE:
             sinusoidal_pos = self.rotary(inputs.shape[:2])[None, :, :]
-            qw, kw = RoFormerSelfAttention.apply_rotary_position_embeddings(
-                sinusoidal_pos, qw, kw
-            )
+            qw, kw = RoFormerSelfAttention.apply_rotary_position_embeddings(sinusoidal_pos, qw, kw)
 
         # 计算内积
         logits = torch.einsum("bmd,bnd->bmn", qw, kw) / self.head_size**0.5
@@ -123,9 +112,7 @@ class EfficientGlobalPointer(nn.Module):
 
         # 排除padding
         if attention_mask is not None:  # huggingface's attention_mask
-            attn_mask = (
-                1 - attention_mask[:, None, None, :] * attention_mask[:, None, :, None]
-            )
+            attn_mask = 1 - attention_mask[:, None, None, :] * attention_mask[:, None, :, None]
             logits = logits - attn_mask * INF
 
         # 排除下三角

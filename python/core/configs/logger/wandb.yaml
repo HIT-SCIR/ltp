@@ -12,5 +12,5 @@ wandb:
   prefix: "" # a string to put at the beginning of metric keys
   # entity: "" # set to name of your wandb team
   group: ""
-  tags: [ ]
+  tags: []
   job_type: ""

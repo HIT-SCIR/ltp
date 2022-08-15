@@ -2,15 +2,14 @@ from typing import Callable
 
 import torch
 from torch import Tensor
-from torch.nn import Module, CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, Module
+
 from ltp_core.models.components.token import TokenClassifierResult
 from ltp_core.models.functional.distill import kd_ce_loss, kd_mse_loss
 
 
 class TokenLoss(Module):
-    def forward(
-        self, result: TokenClassifierResult, labels: Tensor, *args, **kwargs
-    ) -> Tensor:
+    def forward(self, result: TokenClassifierResult, labels: Tensor, *args, **kwargs) -> Tensor:
         loss = None
 
         crf = result.crf
@@ -35,9 +34,7 @@ class TokenLoss(Module):
 
 
 class SRLLoss(Module):
-    def forward(
-        self, result: TokenClassifierResult, labels: Tensor, *args, **kwargs
-    ) -> Tensor:
+    def forward(self, result: TokenClassifierResult, labels: Tensor, *args, **kwargs) -> Tensor:
         loss = None
 
         crf = result.crf
@@ -46,9 +43,7 @@ class SRLLoss(Module):
         attention_mask = result.attention_mask
 
         # to expand
-        attention_mask = attention_mask.unsqueeze(-1).expand(
-            -1, -1, attention_mask.size(1)
-        )
+        attention_mask = attention_mask.unsqueeze(-1).expand(-1, -1, attention_mask.size(1))
         attention_mask = attention_mask & torch.transpose(attention_mask, -1, -2)
         attention_mask = attention_mask.flatten(end_dim=1)
 

@@ -1,17 +1,19 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 # ref: https://github.com/fastnlp/TENER
 
 import math
+
 import torch
-from torch import Tensor, nn
 import torch.nn.functional as F
+from torch import Tensor, nn
+
 from ltp_core.models.nn.mlp import MLP
 
 
 class RelativeEmbedding(nn.Module):
     """This module produces sinusoidal positional embeddings of any length.
+
     Padding symbols are ignored.
     """
 
@@ -29,18 +31,17 @@ class RelativeEmbedding(nn.Module):
 
     def get_embedding(self, num_embeddings, embedding_dim):
         """Build sinusoidal embeddings.
-        This matches the implementation in tensor2tensor, but differs slightly
-        from the description in Section 3.5 of "Attention Is All You Need".
+
+        This matches the implementation in tensor2tensor, but differs slightly from the description
+        in Section 3.5 of "Attention Is All You Need".
         """
         half_dim = embedding_dim // 2
         emb = math.log(10000) / (half_dim - 1)
         emb = torch.exp(torch.arange(half_dim, dtype=torch.float) * -emb)
-        emb = torch.arange(
-            -num_embeddings // 2, num_embeddings // 2, dtype=torch.float
-        ).unsqueeze(1) * emb.unsqueeze(0)
-        emb = torch.cat([torch.sin(emb), torch.cos(emb)], dim=1).view(
-            num_embeddings, -1
-        )
+        emb = torch.arange(-num_embeddings // 2, num_embeddings // 2, dtype=torch.float).unsqueeze(
+            1
+        ) * emb.unsqueeze(0)
+        emb = torch.cat([torch.sin(emb), torch.cos(emb)], dim=1).view(num_embeddings, -1)
         if embedding_dim % 2 == 1:
             # zero pad
             emb = torch.cat([emb, torch.zeros(num_embeddings, 1)], dim=1)
@@ -105,9 +106,7 @@ class RelativeMultiHeadAttn(nn.Module):
         q, v = torch.chunk(qv, chunks=2, dim=-1)
         q = q.view(batch_size, max_len, self.n_head, -1).transpose(1, 2)
         k = x.view(batch_size, max_len, self.n_head, -1).transpose(1, 2)
-        v = v.view(batch_size, max_len, self.n_head, -1).transpose(
-            1, 2
-        )  # b x n x l x d
+        v = v.view(batch_size, max_len, self.n_head, -1).transpose(1, 2)  # b x n x l x d
 
         rw_head_q = q + self.r_r_bias[:, None]
         AC = torch.einsum("bnqd,bnkd->bnqk", rw_head_q, k)  # b x n x l x d, n是head
@@ -118,9 +117,7 @@ class RelativeMultiHeadAttn(nn.Module):
         B_ = torch.einsum(
             "bnqd,ld->bnql", q, pos_embed
         )  # bsz x head  x max_len x 2max_len，每个query对每个shift的偏移
-        BD = (
-            B_ + D_
-        )  # bsz x head x max_len x 2max_len, 要转换为bsz x head x max_len x max_len
+        BD = B_ + D_  # bsz x head x max_len x 2max_len, 要转换为bsz x head x max_len x max_len
         BD = self._shift(BD)
         attn = AC + BD
 
@@ -152,9 +149,7 @@ class RelativeMultiHeadAttn(nn.Module):
         BD = torch.cat([BD, zero_pad], dim=-1).view(
             bsz, n_head, -1, max_len
         )  # bsz x n_head x (2max_len+1) x max_len
-        BD = BD[:, :, :-1, :].view(
-            bsz, n_head, max_len, -1
-        )  # bsz x n_head x 2max_len x max_len
+        BD = BD[:, :, :-1, :].view(bsz, n_head, max_len, -1)  # bsz x n_head x 2max_len x max_len
         BD = BD[:, :, :, :max_len]
         return BD
 

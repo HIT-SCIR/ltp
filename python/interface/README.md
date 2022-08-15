@@ -9,6 +9,7 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 
 If you use any source codes included in this toolkit in your work, please kindly cite the following paper. The bibtex
 are listed below:
+
 <pre>
 @article{che2020n,
   title={N-LTP: A Open-source Neural Chinese Language Technology Platform with Pretrained Models},
@@ -29,7 +30,7 @@ from ltp import LTP
 
 ltp = LTP()  # 默认加载 Small 模型
 # ltp = LTP(pretrained_model_name_or_path="LTP/small")
-# 另外也可以接受一些已注册可自动下载的模型名(https://huggingface.co/LTP): 
+# 另外也可以接受一些已注册可自动下载的模型名(https://huggingface.co/LTP):
 # 使用字典结果
 output = ltp.pipeline(
     ["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"]
@@ -50,29 +51,29 @@ print(cws, pos, ner)
 
 ## 指标
 
-|    模型            | 分词    |  词性   |   命名实体   | 语义角色  | 依存句法  | 语义依存  |  速度(句/S)  |
-|:----------------:|:-----:|:-----:|:--------:|:-----:|:-----:|:-----:|:---------:|
-|  LTP 4.0 (Base)  | 98.7  | 98.5  |   95.4   | 80.6  | 89.5  | 75.2  |   39.12   |
-| LTP 4.0 (Base1)  | 99.22 | 98.73 |  96.39   | 79.28 | 89.57 | 76.57 |   --.--   |
-| LTP 4.0 (Base2)  | 99.18 | 98.69 |  95.97   | 79.49 | 90.19 | 76.62 |   --.--   |
-| LTP 4.0 (Small)  | 98.4  | 98.2  |   94.3   | 78.4  | 88.3  | 74.7  |   43.13   |
-|  LTP 4.0 (Tiny)  | 96.8  | 97.1  |   91.6   | 70.9  | 83.8  | 70.1  |   53.22   |
-| LTP 4.0 (Legacy) | 97.93 | 98.41 |  94.28   |  --   |  --   |  --   | [Bench]() |
+|        模型        |  分词   |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  |   速度(句/S)   |
+| :--------------: | :---: | :---: | :---: | :---: | :---: | :---: | :---------: |
+|  LTP 4.0 (Base)  | 98.7  | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |    39.12    |
+| LTP 4.0 (Base1)  | 99.22 | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |    --.--    |
+| LTP 4.0 (Base2)  | 99.18 | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |    --.--    |
+| LTP 4.0 (Small)  | 98.4  | 98.2  | 94.3  | 78.4  | 88.3  | 74.7  |    43.13    |
+|  LTP 4.0 (Tiny)  | 96.8  | 97.1  | 91.6  | 70.9  | 83.8  | 70.1  |    53.22    |
+| LTP 4.0 (Legacy) | 97.93 | 98.41 | 94.28 |  --   |  --   |  --   | [Bench](<>) |
 
 **[模型下载地址](https://huggingface.co/LTP)**
 
 ## 模型算法
 
-+ 分词: Electra <sup>[1](#RELTRANS)</sup> + Linear
-+ 词性: Electra + Linear
-+ 命名实体: Electra + Relative Transformer<sup>[2](#RELTRANS)</sup> + Linear
-+ 依存句法: Electra + BiAffine + Eisner<sup>[3](#Eisner)</sup>
-+ 语义依存: Electra + BiAffine
-+ 语义角色: Electra + BiAffine + CRF
+- 分词: Electra <sup>[1](#RELTRANS)</sup> + Linear
+- 词性: Electra + Linear
+- 命名实体: Electra + Relative Transformer<sup>[2](#RELTRANS)</sup> + Linear
+- 依存句法: Electra + BiAffine + Eisner<sup>[3](#Eisner)</sup>
+- 语义依存: Electra + BiAffine
+- 语义角色: Electra + BiAffine + CRF
 
 ## 作者信息
 
-+ 冯云龙 <<[ylfeng@ir.hit.edu.cn](mailto:ylfeng@ir.hit.edu.cn)>>
+- 冯云龙 \<\<[ylfeng@ir.hit.edu.cn](mailto:ylfeng@ir.hit.edu.cn)>>
 
 ## 开源协议
 
@@ -84,8 +85,8 @@ print(cws, pos, ner)
 
 ## 脚注
 
-+ <a name="RELTRANS">1</a>:: [Chinese-ELECTRA](https://github.com/ymcui/Chinese-ELECTRA)
-+ <a name="RELTRANS">
+- <a name="RELTRANS">1</a>:: [Chinese-ELECTRA](https://github.com/ymcui/Chinese-ELECTRA)
+- <a name="RELTRANS">
   2</a>:: [TENER: Adapting Transformer Encoder for Named Entity Recognition](https://arxiv.org/abs/1911.04474)
-+ <a name="Eisner">
+- <a name="Eisner">
   3</a>:: [A PyTorch implementation of "Deep Biaffine Attention for Neural Dependency Parsing"](https://github.com/yzhangcs/parser)

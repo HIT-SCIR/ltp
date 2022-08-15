@@ -12,7 +12,7 @@ pub struct PyHook {
 impl PyHook {
     #[new]
     pub fn new() -> PyResult<Self> {
-        return Ok(Self { hook: Hook::new() });
+        Ok(Self { hook: Hook::new() })
     }
 
     pub fn __len__(&self) -> usize {

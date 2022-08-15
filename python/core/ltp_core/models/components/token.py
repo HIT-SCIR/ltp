@@ -3,14 +3,12 @@ from typing import Optional
 
 from torch import nn
 
+from ltp_core.models.nn.biaffine import Biaffine
 from ltp_core.models.nn.crf import CRF
 from ltp_core.models.nn.mlp import MLP
 from ltp_core.models.nn.relative_transformer import RelativeTransformer
-from ltp_core.models.nn.biaffine import Biaffine
 
-TokenClassifierResult = namedtuple(
-    "TokenClassifierResult", ["logits", "attention_mask", "crf"]
-)
+TokenClassifierResult = namedtuple("TokenClassifierResult", ["logits", "attention_mask", "crf"])
 
 
 class MLPTokenClassifier(nn.Module):
@@ -27,9 +25,7 @@ class MLPTokenClassifier(nn.Module):
     ):
         super().__init__()
         if hidden_sizes is not None:
-            self.classifier = MLP(
-                [input_size, *hidden_sizes, num_labels], dropout=dropout
-            )
+            self.classifier = MLP([input_size, *hidden_sizes, num_labels], dropout=dropout)
         else:
             self.classifier = MLP([input_size, num_labels], dropout=dropout)
         if use_crf:
@@ -39,9 +35,7 @@ class MLPTokenClassifier(nn.Module):
 
     def forward(self, hidden_states, attention_mask=None) -> TokenClassifierResult:
         logits = self.classifier(hidden_states)
-        return TokenClassifierResult(
-            logits=logits, attention_mask=attention_mask, crf=self.crf
-        )
+        return TokenClassifierResult(logits=logits, attention_mask=attention_mask, crf=self.crf)
 
 
 class RelTransformerTokenClassifier(nn.Module):
@@ -77,9 +71,7 @@ class RelTransformerTokenClassifier(nn.Module):
     def forward(self, hidden_states, attention_mask=None) -> TokenClassifierResult:
         logits = self.relative_transformer(hidden_states, attention_mask)
         logits = self.classifier(logits)
-        return TokenClassifierResult(
-            logits=logits, attention_mask=attention_mask, crf=self.crf
-        )
+        return TokenClassifierResult(logits=logits, attention_mask=attention_mask, crf=self.crf)
 
 
 class BiaffineTokenClassifier(nn.Module):
@@ -101,9 +93,7 @@ class BiaffineTokenClassifier(nn.Module):
         else:
             layer_sizes = [input_size, hidden_size * 2]
         self.mlp = MLP(layer_sizes, output_dropout=dropout, output_activation=nn.ReLU)
-        self.atten = Biaffine(
-            hidden_size, hidden_size, num_labels, bias_x=True, bias_y=True
-        )
+        self.atten = Biaffine(hidden_size, hidden_size, num_labels, bias_x=True, bias_y=True)
         self.hidden_size = hidden_size
 
         if use_crf:
@@ -118,6 +108,4 @@ class BiaffineTokenClassifier(nn.Module):
         logits_h, logits_d = logits.unbind(axis=-2)
         logits = self.atten(logits_h, logits_d).permute(0, 2, 3, 1)
 
-        return TokenClassifierResult(
-            logits=logits, attention_mask=attention_mask, crf=self.crf
-        )
+        return TokenClassifierResult(logits=logits, attention_mask=attention_mask, crf=self.crf)

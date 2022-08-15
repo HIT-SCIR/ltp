@@ -1,15 +1,14 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import logging
-
 import os
 from collections import Counter
+from dataclasses import dataclass
+from os.path import join
 
 import datasets
-from os.path import join
-from dataclasses import dataclass
+
 from ltp_core.datamodules.utils.iterator import iter_blocks
 from ltp_core.datamodules.utils.vocab_helper import vocab_builder
 
@@ -47,7 +46,7 @@ def create_feature(file=None):
 
 @dataclass
 class BioConfig(datasets.BuilderConfig):
-    """BuilderConfig for Conll2003"""
+    """BuilderConfig for Conll2003."""
 
     bio: str = None
 
@@ -86,7 +85,7 @@ class Bio(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        """We handle string, list and dicts in datafiles"""
+        """We handle string, list and dicts in datafiles."""
         if not self.config.data_files:
             raise ValueError(
                 f"At least one data file must be specified, but got data_files={self.config.data_files}"
@@ -97,17 +96,13 @@ class Bio(datasets.GeneratorBasedBuilder):
             if isinstance(files, str):
                 files = [files]
             return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TRAIN, gen_kwargs={"files": files}
-                )
+                datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})
             ]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
                 files = [files]
-            splits.append(
-                datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files})
-            )
+            splits.append(datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
         return splits
 
     def _generate_examples(self, files):
@@ -115,7 +110,7 @@ class Bio(datasets.GeneratorBasedBuilder):
             logging.info("⏳ Generating examples from = %s", files)
             for line_num, block in iter_blocks(filename=filename):
                 # last example
-                words, bio = [list(value) for value in zip(*block)]
+                words, bio = (list(value) for value in zip(*block))
 
                 yield line_num, {"form": words, "bio": bio}
 

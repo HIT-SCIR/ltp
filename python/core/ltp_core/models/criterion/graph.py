@@ -1,6 +1,7 @@
 import torch
 from torch import Tensor
-from torch.nn import Module, CrossEntropyLoss, BCEWithLogitsLoss
+from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, Module
+
 from ltp_core.models.components.graph import GraphResult
 
 
@@ -30,10 +31,7 @@ class DEPLoss(Module):
 
         arc_loss = arc_loss(s_arc, active_heads)
         rel_loss = rel_loss(s_rel, active_labels)
-        loss = 2 * (
-            (1 - self.loss_interpolation) * arc_loss
-            + self.loss_interpolation * rel_loss
-        )
+        loss = 2 * ((1 - self.loss_interpolation) * arc_loss + self.loss_interpolation * rel_loss)
 
         return loss
 
@@ -61,10 +59,7 @@ class SDPLoss(Module):
         arc_loss = head_loss(s_arc[attention_mask], head[attention_mask].float())
         rel_loss = rel_loss(s_rel[head > 0], labels[head > 0])
 
-        loss = 2 * (
-            (1 - self.loss_interpolation) * arc_loss
-            + self.loss_interpolation * rel_loss
-        )
+        loss = 2 * ((1 - self.loss_interpolation) * arc_loss + self.loss_interpolation * rel_loss)
 
         return loss
 

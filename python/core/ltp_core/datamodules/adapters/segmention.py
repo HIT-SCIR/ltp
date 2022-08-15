@@ -1,5 +1,5 @@
-from ltp_core.datamodules.utils.datasets import load_dataset
 from ltp_core.datamodules.components.conllu import Conllu
+from ltp_core.datamodules.utils.datasets import load_dataset
 
 B = 0
 I = 1
@@ -62,9 +62,7 @@ def tokenize(examples, tokenizer, max_length, length2labels=length2bi):
     return result
 
 
-def build_dataset(
-    data_dir, task_name, tokenizer, max_length=512, mode="bmes", **kwargs
-):
+def build_dataset(data_dir, task_name, tokenizer, max_length=512, mode="bmes", **kwargs):
     dataset = load_dataset(Conllu, data_dir=data_dir, cache_dir=data_dir)
     dataset = dataset.remove_columns(
         ["id", "lemma", "upos", "xpos", "feats", "head", "deprel", "deps", "misc"]
@@ -93,9 +91,7 @@ def main():
     from transformers import AutoTokenizer
 
     tokenizer = AutoTokenizer.from_pretrained("hfl/chinese-macbert-base")
-    dataset = build_dataset(
-        data_dir="data/seg", task_name="seg", tokenizer=tokenizer, mode="bmes"
-    )
+    dataset = build_dataset(data_dir="data/seg", task_name="seg", tokenizer=tokenizer, mode="bmes")
     print(dataset)
 
 

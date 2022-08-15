@@ -11,9 +11,9 @@ layer_lrs:
   _ltp_partial_: true
   transformer_prefix: backbone
   learning_rate: ${model.optimizer.lr}
-  layer_decay: 0.8  # 0.8 for Base/Small, 0.9 for Large
+  layer_decay: 0.8 # 0.8 for Base/Small, 0.9 for Large
   n_layers: 12
-  crf_prefix: 'crf'
+  crf_prefix: "crf"
   crf_ratio: 10.0
 
 scheduler:

@@ -4,4 +4,3 @@
 
 export TOKENIZERS_PARALLELISM=false
 PYTHONPATH=. python ltp_core/train.py "$@"
-

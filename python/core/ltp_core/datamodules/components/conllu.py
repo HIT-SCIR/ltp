@@ -1,16 +1,15 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
-import logging
-
-import os
 import itertools
+import logging
+import os
 from collections import Counter
+from dataclasses import dataclass
+from os.path import join
 
 import datasets
-from os.path import join
-from dataclasses import dataclass
+
 from ltp_core.datamodules.utils.iterator import iter_blocks
 from ltp_core.datamodules.utils.vocab_helper import vocab_builder
 
@@ -26,8 +25,8 @@ _CITATION = """\
 """
 
 _DESCRIPTION = """\
-Universal Dependencies (UD) is a framework for consistent annotation of grammar (parts of speech, morphological 
-features, and syntactic dependencies) across different human languages. UD is an open community effort with over 
+Universal Dependencies (UD) is a framework for consistent annotation of grammar (parts of speech, morphological
+features, and syntactic dependencies) across different human languages. UD is an open community effort with over
 300 contributors producing more than 150 treebanks in 90 languages.
 """
 
@@ -51,12 +50,7 @@ def build_vocabs(data_dir, *files, min_freq=5):
         "deps": (8, Counter()),
     }
 
-    if any(
-        [
-            os.path.exists(os.path.join(data_dir, "vocabs", f"{key}.txt"))
-            for key in counters
-        ]
-    ):
+    if any([os.path.exists(os.path.join(data_dir, "vocabs", f"{key}.txt")) for key in counters]):
         return
 
     if not os.path.exists(os.path.join(data_dir, "vocabs")):
@@ -72,10 +66,7 @@ def build_vocabs(data_dir, *files, min_freq=5):
                 elif "deps" == name:
                     try:
                         deps = [
-                            [
-                                label.split(":", maxsplit=1)[1]
-                                for label in dep.split("|")
-                            ]
+                            [label.split(":", maxsplit=1)[1] for label in dep.split("|")]
                             for dep in values[row]
                         ]
                         counter.update(itertools.chain(*deps))
@@ -86,9 +77,7 @@ def build_vocabs(data_dir, *files, min_freq=5):
 
     for feat, (row, counter) in counters.items():
         if "word" in feat:
-            counter = Counter(
-                {word: count for word, count in counter.items() if count > min_freq}
-            )
+            counter = Counter({word: count for word, count in counter.items() if count > min_freq})
 
         with open(os.path.join(data_dir, "vocabs", f"{feat}.txt"), mode="w") as f:
             f.write("\n".join(sorted(counter.keys())))
@@ -102,7 +91,7 @@ def create_feature(file=None):
 
 @dataclass
 class ConlluConfig(datasets.BuilderConfig):
-    """BuilderConfig for Conllu"""
+    """BuilderConfig for Conllu."""
 
     upos: str = None
     xpos: str = None
@@ -174,7 +163,7 @@ class Conllu(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        """We handle string, list and dicts in datafiles"""
+        """We handle string, list and dicts in datafiles."""
         if not self.config.data_files:
             raise ValueError(
                 f"At least one data file must be specified, but got data_files={self.config.data_files}"
@@ -185,17 +174,13 @@ class Conllu(datasets.GeneratorBasedBuilder):
             if isinstance(files, str):
                 files = [files]
             return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TRAIN, gen_kwargs={"files": files}
-                )
+                datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})
             ]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
                 files = [files]
-            splits.append(
-                datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files})
-            )
+            splits.append(datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
         return splits
 
     def _generate_examples(self, files):
@@ -203,19 +188,15 @@ class Conllu(datasets.GeneratorBasedBuilder):
             logging.info("⏳ Generating examples from = %s", filename)
             for line_num, block in iter_blocks(filename=filename):
                 # last example
-                id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = [
+                id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = (
                     list(value) for value in zip(*block)
-                ]
+                )
                 if self.config.deps:
                     deps = [
-                        [label.split(":", maxsplit=1) for label in dep.split("|")]
-                        for dep in deps
+                        [label.split(":", maxsplit=1) for label in dep.split("|")] for dep in deps
                     ]
                     deps = [
-                        [
-                            {"id": depid, "head": int(label[0]), "rel": label[-1]}
-                            for label in dep
-                        ]
+                        [{"id": depid, "head": int(label[0]), "rel": label[-1]} for label in dep]
                         for depid, dep in enumerate(deps)
                     ]
                     deps = list(itertools.chain(*deps))

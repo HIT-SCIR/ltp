@@ -1,9 +1,10 @@
 from typing import Any, Optional
 
 import torch
-from torch import Tensor, tensor
 from ltp_extension.algorithms import eisner
+from torch import Tensor, tensor
 from torchmetrics import Metric
+
 from ltp_core.models.components.graph import GraphResult
 
 
@@ -34,10 +35,7 @@ class DEPLas(Metric):
 
         s_arc = s_arc.view(-1).cpu().numpy()
         length = torch.sum(word_cls_mask, dim=1).cpu().numpy()
-        arcs = [
-            tensor(sequence, device=self.device)
-            for sequence in eisner(s_arc, length, True)
-        ]
+        arcs = [tensor(sequence, device=self.device) for sequence in eisner(s_arc, length, True)]
         arcs = torch.nn.utils.rnn.pad_sequence(arcs, batch_first=True, padding_value=0)
 
         rels = torch.argmax(s_rel[:, 1:], dim=-1)

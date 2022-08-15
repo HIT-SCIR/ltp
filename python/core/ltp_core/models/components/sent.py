@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 from torch import nn
+
 from ltp_core.models.nn.mlp import MLP
 
 SentClassifierResult = namedtuple("SentClassifierResult", ["logits"])
@@ -16,9 +17,7 @@ class MLPClassifier(nn.Module):
     ):
         super().__init__()
         if hidden_sizes is not None:
-            self.classifier = MLP(
-                [input_size, *hidden_sizes, num_labels], dropout=dropout
-            )
+            self.classifier = MLP([input_size, *hidden_sizes, num_labels], dropout=dropout)
         else:
             self.classifier = MLP([input_size, num_labels], dropout=dropout)
 

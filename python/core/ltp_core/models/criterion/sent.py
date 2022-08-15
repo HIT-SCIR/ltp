@@ -1,5 +1,6 @@
 from torch import Tensor
-from torch.nn import Module, CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, Module
+
 from ltp_core.models.components.sent import SentClassifierResult
 
 

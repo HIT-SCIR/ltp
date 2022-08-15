@@ -1,14 +1,14 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
-import os
 import json
+import os
 from typing import List, Union
+
+from ltp.generic import LTPOutput
+from ltp.mixin import VOCAB_NAME, ModelHubMixin
 from ltp_extension.algorithms import Hook
 from ltp_extension.perceptron import Model
-from ltp.generic import LTPOutput
-from ltp.mixin import ModelHubMixin, VOCAB_NAME
 
 
 class LTP(ModelHubMixin):
@@ -37,7 +37,7 @@ class LTP(ModelHubMixin):
         if tasks is None:
             tasks = ["cws", "pos", "ner"]
         if not self.supported_tasks.issuperset(tasks):
-            raise ValueError("Unsupported tasks: {}".format(tasks))
+            raise ValueError(f"Unsupported tasks: {tasks}")
 
         # cws, pos, ner = None, None, None
         result = {}
@@ -53,7 +53,7 @@ class LTP(ModelHubMixin):
             elif task == "ner":
                 args = (*args, self.ner_model(*args, threads=threads))
             else:
-                raise ValueError("Invalid task: {}".format(task))
+                raise ValueError(f"Invalid task: {task}")
             result[task] = args[-1]
 
         if return_dict:
@@ -81,15 +81,13 @@ class LTP(ModelHubMixin):
         use_auth_token,
         **model_kwargs,
     ):
-        """
-        Overwrite this method in case you wish to initialize your model in a
-        different way.
-        """
+        """Overwrite this method in case you wish to initialize your model in a different way."""
 
         if os.path.isdir(model_id):
             print("Loading weights from local directory")
             model_files = {
-                task: os.path.join(model_id, model_file) for task, model_file in model_kwargs["config"]["tasks"].items()
+                task: os.path.join(model_id, model_file)
+                for task, model_file in model_kwargs["config"]["tasks"].items()
             }
         else:
             model_files = {

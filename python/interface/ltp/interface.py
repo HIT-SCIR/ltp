@@ -1,8 +1,13 @@
-import os, json
-from typing import Optional, Dict, Union
-from ltp.mixin import CONFIG_NAME
+import json
+import os
+from typing import Dict, Optional, Union
+
 from ltp.legacy import LTP as LTP_legacy
+from ltp.mixin import CONFIG_NAME
 from ltp.nerual import LTP as LTP_neural
+from ltp.utils import get_pylogger
+
+logger = get_pylogger()
 
 
 def LTP(
@@ -110,7 +115,7 @@ def LTP(
             config_file = None
 
     if config_file is not None:
-        with open(config_file, "r", encoding="utf-8") as f:
+        with open(config_file, encoding="utf-8") as f:
             config = json.load(f)
         model_kwargs.update({"config": config})
 

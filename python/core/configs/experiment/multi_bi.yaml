@@ -12,7 +12,7 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-tags: [ "ltp" ]
+tags: ["ltp"]
 
 seed: 12345
 
@@ -40,13 +40,13 @@ datamodule:
   datamodules:
     cws:
       load:
-        mode: 'bi'
+        mode: "bi"
 
 model:
   metrics:
     cws:
       _ltp_target_: ltp_core.models.metrics.token.SeqEvalF1
-      tags_or_path: [ "B", "I" ]
+      tags_or_path: ["B", "I"]
   model:
     heads:
       cws:

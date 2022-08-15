@@ -1,6 +1,7 @@
-from ltp_core.datamodules.utils.datasets import load_dataset
-from ltp_core.datamodules.components.srl import Srl
 import numpy
+
+from ltp_core.datamodules.components.srl import Srl
+from ltp_core.datamodules.utils.datasets import load_dataset
 
 
 def tokenize(examples, tokenizer, max_length):
@@ -46,9 +47,7 @@ def tokenize(examples, tokenizer, max_length):
 
 def build_dataset(data_dir, task_name, tokenizer, max_length=512, **kwargs):
     dataset = load_dataset(Srl, data_dir=data_dir, cache_dir=data_dir)
-    dataset = dataset.map(
-        lambda examples: tokenize(examples, tokenizer, max_length), batched=True
-    )
+    dataset = dataset.map(lambda examples: tokenize(examples, tokenizer, max_length), batched=True)
     dataset = dataset.filter(lambda x: not x["overflow"])
     dataset.set_format(
         type="torch",

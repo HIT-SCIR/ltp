@@ -5,7 +5,7 @@ name: Code Quality Main
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   code-quality:

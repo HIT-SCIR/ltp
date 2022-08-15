@@ -1,6 +1,7 @@
+import argparse
 import inspect
 import os
-import argparse
+
 import black
 
 INDENT = " " * 4
@@ -37,9 +38,7 @@ def member_sort(member):
 def fn_predicate(obj):
     value = inspect.ismethoddescriptor(obj) or inspect.isbuiltin(obj)
     if value:
-        return (
-            obj.__doc__ and obj.__text_signature__ and not obj.__name__.startswith("_")
-        )
+        return obj.__doc__ and obj.__text_signature__ and not obj.__name__.startswith("_")
     if inspect.isgetsetdescriptor(obj):
         return obj.__doc__ and not obj.__name__.startswith("_")
     return False
@@ -48,9 +47,7 @@ def fn_predicate(obj):
 def get_module_members(module, with_module=False):
     if with_module:
         members = [
-            member
-            for name, member in inspect.getmembers(module)
-            if not name.startswith("_")
+            member for name, member in inspect.getmembers(module) if not name.startswith("_")
         ]
     else:
         members = [
@@ -81,9 +78,7 @@ def pyi_file(obj, indent=""):
 
         body = ""
         if obj.__doc__:
-            body += (
-                f'{indent}"""\n{indent}{do_indent(obj.__doc__, indent)}\n{indent}"""\n'
-            )
+            body += f'{indent}"""\n{indent}{do_indent(obj.__doc__, indent)}\n{indent}"""\n'
 
         fns = inspect.getmembers(obj, fn_predicate)
 
@@ -147,9 +142,7 @@ def do_black(content, is_pyi):
 
 def write(module, directory, origin, check=False):
     submodules = [
-        (name, member)
-        for name, member in inspect.getmembers(module)
-        if inspect.ismodule(member)
+        (name, member) for name, member in inspect.getmembers(module) if inspect.ismodule(member)
     ]
 
     filename = os.path.join(directory, f"{origin}.pyi")
@@ -157,7 +150,7 @@ def write(module, directory, origin, check=False):
     pyi_content = do_black(pyi_content, is_pyi=True)
     os.makedirs(directory, exist_ok=True)
     if check:
-        with open(filename, "r") as f:
+        with open(filename) as f:
             data = f.read()
             assert (
                 data == pyi_content
@@ -175,14 +168,14 @@ def write(module, directory, origin, check=False):
     if not os.path.exists(filename):
         is_auto = True
     else:
-        with open(filename, "r") as f:
+        with open(filename) as f:
             line = f.readline()
             if line == GENERATED_COMMENT:
                 is_auto = True
 
     if is_auto:
         if check:
-            with open(filename, "r") as f:
+            with open(filename) as f:
                 data = f.read()
                 assert (
                     data == py_content
@@ -202,6 +195,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     import ltp_extension
 
-    write(
-        ltp_extension.ltp_extension, "ltp_extension", "ltp_extension", check=args.check
-    )
+    write(ltp_extension.ltp_extension, "ltp_extension", "ltp_extension", check=args.check)

@@ -7,9 +7,7 @@ class NOP(nn.Module):
         super().__init__()
         self.dropout = nn.Dropout(dropout)
 
-    def __call__(
-        self, outputs, attention_mask=None, word_index=None, word_attention_mask=None
-    ):
+    def __call__(self, outputs, attention_mask=None, word_index=None, word_attention_mask=None):
         return self.dropout(outputs.last_hidden_state), attention_mask == 1
 
 
@@ -18,9 +16,7 @@ class TokenOnly(nn.Module):
         super().__init__()
         self.dropout = nn.Dropout(dropout)
 
-    def __call__(
-        self, outputs, attention_mask=None, word_index=None, word_attention_mask=None
-    ):
+    def __call__(self, outputs, attention_mask=None, word_index=None, word_attention_mask=None):
         return (
             self.dropout(outputs.last_hidden_state[:, 1:-1]),
             attention_mask[:, 2:] == 1,
@@ -32,9 +28,7 @@ class WordsOnly(nn.Module):
         super().__init__()
         self.dropout = nn.Dropout(dropout)
 
-    def __call__(
-        self, outputs, attention_mask=None, word_index=None, word_attention_mask=None
-    ):
+    def __call__(self, outputs, attention_mask=None, word_index=None, word_attention_mask=None):
         hidden = outputs.last_hidden_state
         hidden = torch.gather(
             hidden[:, 1:-1, :],
@@ -49,9 +43,7 @@ class ClsOnly(nn.Module):
         super().__init__()
         self.dropout = nn.Dropout(dropout)
 
-    def __call__(
-        self, outputs, attention_mask=None, word_index=None, word_attention_mask=None
-    ):
+    def __call__(self, outputs, attention_mask=None, word_index=None, word_attention_mask=None):
         return self.dropout(outputs.last_hidden_state[:, 0]), None
 
 
@@ -60,9 +52,7 @@ class WordsWithHead(nn.Module):
         super().__init__()
         self.dropout = nn.Dropout(dropout)
 
-    def __call__(
-        self, outputs, attention_mask=None, word_index=None, word_attention_mask=None
-    ):
+    def __call__(self, outputs, attention_mask=None, word_index=None, word_attention_mask=None):
         hidden = outputs.last_hidden_state
         hidden = torch.cat(
             [

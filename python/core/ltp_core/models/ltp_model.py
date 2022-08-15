@@ -27,9 +27,7 @@ class LTPModule(nn.Module):
         word_index: torch.Tensor = None,
         word_attention_mask: torch.Tensor = None,
     ):
-        outputs: BaseModelOutput = self.backbone(
-            input_ids, attention_mask, token_type_ids
-        )
+        outputs: BaseModelOutput = self.backbone(input_ids, attention_mask, token_type_ids)
         hidden_state, attention_mask = self.processor[task_name](
             outputs, attention_mask, word_index, word_attention_mask
         )

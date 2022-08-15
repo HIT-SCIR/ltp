@@ -1,15 +1,14 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import logging
-
 import os
 from collections import Counter
+from dataclasses import dataclass
+from os.path import join
 
 import datasets
-from os.path import join
-from dataclasses import dataclass
+
 from ltp_core.datamodules.utils.iterator import iter_blocks
 from ltp_core.datamodules.utils.vocab_helper import vocab_builder
 
@@ -22,12 +21,7 @@ _TEST_FILE = "test.txt"
 def build_vocabs(data_dir, *files):
     counters = {"predicate": (1, Counter()), "arguments": (slice(2, None), Counter())}
 
-    if any(
-        [
-            os.path.exists(os.path.join(data_dir, "vocabs", f"{key}.txt"))
-            for key in counters
-        ]
-    ):
+    if any([os.path.exists(os.path.join(data_dir, "vocabs", f"{key}.txt")) for key in counters]):
         return
 
     if not os.path.exists(os.path.join(data_dir, "vocabs")):
@@ -63,7 +57,7 @@ def build_vocabs(data_dir, *files):
                     tags_backup = ["O", "B-V"]
                 else:
                     tags_backup = ["O"]
-                tags = sorted(set([tag[2:] for tag in tags]))
+                tags = sorted({tag[2:] for tag in tags})
                 tags = [f"B-{tag}" for tag in tags] + [f"I-{tag}" for tag in tags]
 
                 tags = tags_backup + tags
@@ -80,7 +74,7 @@ def create_feature(file=None):
 
 @dataclass
 class SrlConfig(datasets.BuilderConfig):
-    """BuilderConfig for Conll2003"""
+    """BuilderConfig for Conll2003."""
 
     predicate: str = None
     arguments: str = None
@@ -122,7 +116,7 @@ class Srl(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        """We handle string, list and dicts in datafiles"""
+        """We handle string, list and dicts in datafiles."""
         if not self.config.data_files:
             raise ValueError(
                 f"At least one data file must be specified, but got data_files={self.config.data_files}"
@@ -133,17 +127,13 @@ class Srl(datasets.GeneratorBasedBuilder):
             if isinstance(files, str):
                 files = [files]
             return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TRAIN, gen_kwargs={"files": files}
-                )
+                datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})
             ]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
                 files = [files]
-            splits.append(
-                datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files})
-            )
+            splits.append(datasets.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
         return splits
 
     def _generate_examples(self, files):
@@ -151,7 +141,7 @@ class Srl(datasets.GeneratorBasedBuilder):
             logging.info("⏳ Generating examples from = %s", filename)
             for line_num, block in iter_blocks(filename=filename):
                 # last example
-                words, predicate, *roles = [list(value) for value in zip(*block)]
+                words, predicate, *roles = (list(value) for value in zip(*block))
 
                 yield line_num, {
                     "form": words,

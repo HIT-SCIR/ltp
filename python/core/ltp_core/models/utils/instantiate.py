@@ -49,9 +49,7 @@ def instantiate(config, target="_ltp_target_", partial="_ltp_partial_"):
 def instantiate_omega(config, target="_ltp_target_", partial="_ltp_partial_"):
     from omegaconf import DictConfig
 
-    if (
-        isinstance(config, dict) or isinstance(config, DictConfig)
-    ) and target in config:
+    if (isinstance(config, dict) or isinstance(config, DictConfig)) and target in config:
         target_path = config.get(target)
         target_callable = find_callable(target_path)
 
@@ -75,7 +73,7 @@ def instantiate_omega(config, target="_ltp_target_", partial="_ltp_partial_"):
 def main():
     import yaml
 
-    with open("configs/model/model.yaml", "r") as stream:
+    with open("configs/model/model.yaml") as stream:
         try:
             config = yaml.safe_load(stream)
             model_config = config["model"]

@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 # REF: https://github.com/yzhangcs/parser/blob/master/parser/utils/alg.py
 

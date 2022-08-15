@@ -1,19 +1,19 @@
-import time
 import functools
+import time
 
 from ltp_extension.algorithms import StnSplit
 
 
 def clock(func):
-    """this is outer clock function"""
+    """this is outer clock function."""
 
     @functools.wraps(func)  # --> 4
     def clocked(*args, **kwargs):  # -- 1
-        """this is inner clocked function"""
+        """this is inner clocked function."""
         start_time = time.time()
         result = func(*args, **kwargs)  # --> 2
         time_cost = time.time() - start_time
-        print(func.__name__ + "({}s)".format(time_cost))
+        print(func.__name__ + f"({time_cost}s)")
         return result
 
     return clocked  # --> 3
@@ -51,7 +51,7 @@ def ltp_load(
     pos_model_path="../../data/models/pos_model.bin",
     ner_model_path="../../data/models/ner_model.bin",
 ):
-    from ltp_extension.perceptron import CWSModel, POSModel, NERModel
+    from ltp_extension.perceptron import CWSModel, NERModel, POSModel
 
     cws_model = CWSModel.load(cws_model_path)
     pos_model = POSModel.load(pos_model_path)

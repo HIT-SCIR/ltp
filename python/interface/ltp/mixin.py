@@ -3,17 +3,21 @@ import os
 from pathlib import Path
 from typing import Dict, Optional, Union
 
+from ltp.utils import get_pylogger
+
 VOCAB_NAME = "vocab.txt"
 CONFIG_NAME = "config.json"
 PYTORCH_WEIGHTS_NAME = "pytorch_model.bin"
 
+logger = get_pylogger()
+
 
 class ModelHubMixin:
-    """
-    A Generic Base Model Hub Mixin. Define your own mixin for anything by
-    inheriting from this class and overwriting `_from_pretrained` and
-    `_save_pretrained` to define custom logic for saving/loading your classes.
-    See `huggingface_hub.PyTorchModelHubMixin` for an example.
+    """A Generic Base Model Hub Mixin.
+
+    Define your own mixin for anything by inheriting from this class and overwriting
+    `_from_pretrained` and `_save_pretrained` to define custom logic for saving/loading your
+    classes. See `huggingface_hub.PyTorchModelHubMixin` for an example.
     """
 
     @staticmethod
@@ -113,7 +117,7 @@ class ModelHubMixin:
             import requests
 
             try:
-                config_file = hf_hub_download(
+                config_file = cls.download(
                     repo_id=model_id,
                     filename=CONFIG_NAME,
                     revision=revision,
@@ -129,7 +133,7 @@ class ModelHubMixin:
                 config_file = None
 
         if config_file is not None:
-            with open(config_file, "r", encoding="utf-8") as f:
+            with open(config_file, encoding="utf-8") as f:
                 config = json.load(f)
             model_kwargs.update({"config": config})
 
@@ -158,6 +162,5 @@ class ModelHubMixin:
         use_auth_token,
         **model_kwargs,
     ):
-        """Overwrite this method in subclass to define how to load your model from
-        pretrained"""
+        """Overwrite this method in subclass to define how to load your model from pretrained."""
         raise NotImplementedError

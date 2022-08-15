@@ -1,4 +1,5 @@
-from typing import Union, Optional
+from typing import Optional, Union
+
 import torch
 from torch.nn import Module
 
@@ -18,9 +19,7 @@ class BaseModule(Module):
     @dtype.setter
     def dtype(self, new_dtype: Union[str, torch.dtype]):
         # necessary to avoid infinite recursion
-        raise RuntimeError(
-            "Cannot set the dtype explicitly. Please use module.to(new_dtype)."
-        )
+        raise RuntimeError("Cannot set the dtype explicitly. Please use module.to(new_dtype).")
 
     @property
     def device(self) -> Union[str, torch.device]:
@@ -28,9 +27,7 @@ class BaseModule(Module):
 
     @device.setter
     def device(self, new_device: Union[str, torch.device]):
-        raise RuntimeError(
-            "Cannot set the device explicitly. Please use module.to(new_device)."
-        )
+        raise RuntimeError("Cannot set the device explicitly. Please use module.to(new_device).")
 
     def to(self, *args, **kwargs) -> Module:
         out = torch._C._nn._parse_to(*args, **kwargs)

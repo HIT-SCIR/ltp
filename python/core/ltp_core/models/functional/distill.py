@@ -2,12 +2,8 @@ import torch
 import torch.nn.functional as F
 
 
-def flsw_temperature_scheduler_builder(
-    beta=1, gamma=2, base_temperature=8, eps=1e-4, *args
-):
-    """
-    adapted from arXiv:1911.07471
-    """
+def flsw_temperature_scheduler_builder(beta=1, gamma=2, base_temperature=8, eps=1e-4, *args):
+    """adapted from arXiv:1911.07471."""
 
     def flsw_temperature_scheduler(logits_S, logits_T):
         v = logits_S.detach()
@@ -23,8 +19,7 @@ def flsw_temperature_scheduler_builder(
 
 
 def kd_ce_loss(logits_S, logits_T, temperature=1):
-    """
-    Calculate the cross entropy between logits_S and logits_T
+    """Calculate the cross entropy between logits_S and logits_T.
 
     :param logits_S: Tensor of shape (batch_size, length, num_labels) or (batch_size, num_labels)
     :param logits_T: Tensor of shape (batch_size, length, num_labels) or (batch_size, num_labels)
@@ -40,8 +35,7 @@ def kd_ce_loss(logits_S, logits_T, temperature=1):
 
 
 def kd_mse_loss(logits_S, logits_T, temperature=1):
-    """
-    Calculate the mse loss between logits_S and logits_T
+    """Calculate the mse loss between logits_S and logits_T.
 
     :param logits_S: Tensor of shape (batch_size, length, num_labels) or (batch_size, num_labels)
     :param logits_T: Tensor of shape (batch_size, length, num_labels) or (batch_size, num_labels)

@@ -1,7 +1,8 @@
 from typing import Any, Dict, Optional
+
 import datasets
-from torch.utils.data import DataLoader, Dataset
 from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer
 
 from ltp_core.datamodules.utils.collate import collate
@@ -36,9 +37,7 @@ class MultiTaskDataModule(LightningDataModule):
         https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
     """
 
-    def __init__(
-        self, tokenizer, datamodules, tau=0.8, num_workers=None, pin_memory=None
-    ):
+    def __init__(self, tokenizer, datamodules, tau=0.8, num_workers=None, pin_memory=None):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
@@ -48,20 +47,16 @@ class MultiTaskDataModule(LightningDataModule):
         # data transformations
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         self.datamodules = {
-            task: info.load(tokenizer=self.tokenizer)
-            for task, info in datamodules.items()
+            task: info.load(tokenizer=self.tokenizer) for task, info in datamodules.items()
         }
         self.data_train: Optional[Dict[str, Dataset]] = {
-            name: dataset[datasets.Split.TRAIN]
-            for name, dataset in self.datamodules.items()
+            name: dataset[datasets.Split.TRAIN] for name, dataset in self.datamodules.items()
         }
         self.data_val: Optional[Dict[str, Dataset]] = {
-            name: dataset[datasets.Split.VALIDATION]
-            for name, dataset in self.datamodules.items()
+            name: dataset[datasets.Split.VALIDATION] for name, dataset in self.datamodules.items()
         }
         self.data_test: Optional[Dict[str, Dataset]] = {
-            name: dataset[datasets.Split.TEST]
-            for name, dataset in self.datamodules.items()
+            name: dataset[datasets.Split.TEST] for name, dataset in self.datamodules.items()
         }
 
     @property
@@ -108,10 +103,8 @@ class MultiTaskDataModule(LightningDataModule):
                 dataset=dataset,
                 collate_fn=collate,
                 batch_size=self.hparams.datamodules[name].batch_size,
-                num_workers=self.hparams.num_workers
-                or self.hparams.datamodules[name].num_workers,
-                pin_memory=self.hparams.pin_memory
-                or self.hparams.datamodules[name].pin_memory,
+                num_workers=self.hparams.num_workers or self.hparams.datamodules[name].num_workers,
+                pin_memory=self.hparams.pin_memory or self.hparams.datamodules[name].pin_memory,
                 shuffle=False,
             )
             for name, dataset in self.data_val.items()
@@ -123,10 +116,8 @@ class MultiTaskDataModule(LightningDataModule):
                 dataset=dataset,
                 collate_fn=collate,
                 batch_size=self.hparams.datamodules[name].batch_size,
-                num_workers=self.hparams.num_workers
-                or self.hparams.datamodules[name].num_workers,
-                pin_memory=self.hparams.pin_memory
-                or self.hparams.datamodules[name].pin_memory,
+                num_workers=self.hparams.num_workers or self.hparams.datamodules[name].num_workers,
+                pin_memory=self.hparams.pin_memory or self.hparams.datamodules[name].pin_memory,
                 shuffle=False,
             )
             for name, dataset in self.data_test.items()
@@ -151,9 +142,7 @@ if __name__ == "__main__":
     import pyrootutils
 
     root = pyrootutils.setup_root(__file__, pythonpath=True)
-    cfg = omegaconf.OmegaConf.load(
-        root / "configs" / "datamodule" / "multi_task_datamodules.yaml"
-    )
+    cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "multi_task_datamodules.yaml")
     datamodule = hydra.utils.instantiate(cfg)
 
     val_dataloaders = datamodule.val_dataloader()

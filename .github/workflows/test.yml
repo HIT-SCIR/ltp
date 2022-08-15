@@ -9,7 +9,6 @@ name: Tests
 on:
   workflow_dispatch:
 
-
 jobs:
   run_tests:
     runs-on: ${{ matrix.os }}
@@ -17,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
-        python-version: [ "3.7", "3.8", "3.9", "3.10" ]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     timeout-minutes: 10
 

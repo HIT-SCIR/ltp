@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "cws",
+  "fields": [
+    {
+      "name": "definition",
+      "type": "record",
+      "fields": []
+    },
+    {
+      "name": "features",
+      "type": "map",
+      "values": "long",
+      "default": {}
+    },
+    {
+      "name": "parameters",
+      "type": "array",
+      "items": "double",
+      "default": []
+    }
+  ]
+}

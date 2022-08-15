@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "ner",
+  "fields": [
+    {
+      "name": "definition",
+      "type": "record",
+      "fields": [
+        {
+          "name": "to_labels",
+          "type": "array",
+          "items": "string",
+          "default": []
+        },
+        {
+          "name": "labels_to",
+          "type": "map",
+          "values": "long",
+          "default": {}
+        }
+      ]
+    },
+    {
+      "name": "features",
+      "type": "map",
+      "values": "long",
+      "default": {}
+    },
+    {
+      "name": "parameters",
+      "type": "array",
+      "items": "double",
+      "default": []
+    }
+  ]
+}

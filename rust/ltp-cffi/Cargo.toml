@@ -20,4 +20,3 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 ltp = { version = "0.1.0", path = "../ltp", features = ["serialization"] }
-

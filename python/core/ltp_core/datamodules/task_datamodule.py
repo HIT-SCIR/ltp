@@ -1,8 +1,10 @@
 from typing import Any, Dict, Optional
+
 import datasets
-from torch.utils.data import DataLoader, Dataset
 from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer
+
 from ltp_core.datamodules.utils.collate import collate
 
 
@@ -73,8 +75,7 @@ class TaskDataModule(LightningDataModule):
             dataset=self.data_train,
             collate_fn=collate,
             batch_size=self.hparams.datamodules.batch_size,
-            num_workers=self.hparams.num_workers
-            or self.hparams.datamodules.num_workers,
+            num_workers=self.hparams.num_workers or self.hparams.datamodules.num_workers,
             pin_memory=self.hparams.pin_memory or self.hparams.datamodules.pin_memory,
             shuffle=True,
         )
@@ -84,8 +85,7 @@ class TaskDataModule(LightningDataModule):
             dataset=self.data_val,
             collate_fn=collate,
             batch_size=self.hparams.datamodules.batch_size,
-            num_workers=self.hparams.num_workers
-            or self.hparams.datamodules.num_workers,
+            num_workers=self.hparams.num_workers or self.hparams.datamodules.num_workers,
             pin_memory=self.hparams.pin_memory or self.hparams.datamodules.pin_memory,
             shuffle=False,
         )
@@ -95,8 +95,7 @@ class TaskDataModule(LightningDataModule):
             dataset=self.data_test,
             collate_fn=collate,
             batch_size=self.hparams.datamodules.batch_size,
-            num_workers=self.hparams.num_workers
-            or self.hparams.datamodules.num_workers,
+            num_workers=self.hparams.num_workers or self.hparams.datamodules.num_workers,
             pin_memory=self.hparams.pin_memory or self.hparams.datamodules.pin_memory,
             shuffle=False,
         )
@@ -120,9 +119,7 @@ if __name__ == "__main__":
     import pyrootutils
 
     root = pyrootutils.setup_root(__file__, pythonpath=True)
-    cfg = omegaconf.OmegaConf.load(
-        root / "configs" / "datamodule" / "task_datamodules.yaml"
-    )
+    cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "task_datamodules.yaml")
     datamodule = hydra.utils.instantiate(cfg)
 
     val_dataloaders = datamodule.val_dataloader()

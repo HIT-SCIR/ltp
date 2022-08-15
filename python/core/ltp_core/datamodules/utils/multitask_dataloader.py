@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 import numpy as np
@@ -7,11 +6,10 @@ import numpy as np
 
 def cycle(iterable):
     while True:
-        for x in iterable:
-            yield x
+        yield from iterable
 
 
-class MultiTaskDataloader(object):
+class MultiTaskDataloader:
     def __init__(self, tau=1.0, **dataloaders):
         self.dataloaders = dataloaders
 

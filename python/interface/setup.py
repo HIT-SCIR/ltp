@@ -1,9 +1,10 @@
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 project_dir, _ = os.path.split(__file__)
 
-with open(os.path.join(project_dir, "README.md"), "r", encoding="utf-8") as fh:
+with open(os.path.join(project_dir, "README.md"), encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(

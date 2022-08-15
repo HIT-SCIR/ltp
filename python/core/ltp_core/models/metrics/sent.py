@@ -2,6 +2,7 @@ from typing import Optional
 
 from torch import Tensor
 from torchmetrics import Accuracy
+
 from ltp_core.models.components.sent import SentClassifierResult
 
 
@@ -12,4 +13,4 @@ class ClsAccuracy(Accuracy):
 
     def update(self, result: SentClassifierResult, labels: Tensor, **kwargs) -> None:
         preds = result.logits.argmax(dim=-1)
-        super(ClsAccuracy, self).update(preds, labels)
+        super().update(preds, labels)
