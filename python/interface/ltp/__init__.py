@@ -1,4 +1,4 @@
-__version__ = "4.2.0"
+__version__ = "4.2.2"
 
 from ltp_extension.algorithms import StnSplit
 
