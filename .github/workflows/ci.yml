@@ -161,8 +161,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: "startsWith(github.ref, 'refs/tags_or_path/')"
-    needs: [macos, windows, linux]
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: [macos, windows, linux, core]
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -177,18 +177,18 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD_CORE }}
         run: |
           pip install --upgrade twine
-          twine upload --skip-existing dist/ltp_core-*
+          twine upload --skip-existing ltp_core-*
 
       - name: Publish LTP Extension to PyPi
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD_EXT }}
         run: |
-          twine upload --skip-existing dist/ltp_extension-*
+          twine upload --skip-existing ltp_extension-*
 
       - name: Publish LTP to PyPi
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          twine upload --skip-existing dist/ltp-*
+          twine upload --skip-existing ltp-*

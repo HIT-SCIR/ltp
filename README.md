@@ -4,8 +4,8 @@
 
 | Language | version                                                                                       |
 | -------- | --------------------------------------------------------------------------------------------- |
-| Python   | [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP4%20ALPHA)](https://pypi.org/project/ltp/) |
-| Rust     |                                                                                               |
+| Python   | [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP4%20ALPHA)](https://pypi.org/project/ltp)  |
+| Rust     | [![LTP](https://img.shields.io/crates/d/ltp?label=LTP%20Alpha)](https://crates.io/crates/ltp) |
 
 # LTP 4
 
