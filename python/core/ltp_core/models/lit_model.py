@@ -25,13 +25,13 @@ class LTPLitModule(LightningModule):
     """
 
     def __init__(
-            self,
-            model,
-            metrics,
-            criterions,
-            layer_lrs,
-            optimizer,
-            scheduler,
+        self,
+        model,
+        metrics,
+        criterions,
+        layer_lrs,
+        optimizer,
+        scheduler,
     ):
         super().__init__()
 
@@ -67,13 +67,13 @@ class LTPLitModule(LightningModule):
         self.mean_metrics = MeanMetric()
 
     def forward(
-            self,
-            task_name: str,
-            input_ids: torch.Tensor,
-            attention_mask: torch.Tensor,
-            token_type_ids: torch.Tensor = None,
-            word_index: torch.Tensor = None,
-            word_attention_mask: torch.Tensor = None,
+        self,
+        task_name: str,
+        input_ids: torch.Tensor,
+        attention_mask: torch.Tensor,
+        token_type_ids: torch.Tensor = None,
+        word_index: torch.Tensor = None,
+        word_attention_mask: torch.Tensor = None,
     ):
         return self.model(
             task_name,
