@@ -32,7 +32,7 @@ criterions:
 metrics:
   srl:
     _ltp_target_: ltp_core.models.metrics.token.SRLEvalF1
-    tags_or_path: ${datamodule.datamodules.srl.load.data_dir}/vocabs/arguments.txt
+    tags_or_path: ${datamodule.datamodules.load.data_dir}/vocabs/arguments.txt
 
 model:
   _ltp_target_: ltp_core.models.ltp_model.LTPModule

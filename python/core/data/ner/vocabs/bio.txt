@@ -1,0 +1,13 @@
+O
+B-Nh
+B-Ni
+B-Ns
+E-Nh
+E-Ni
+E-Ns
+I-Nh
+I-Ni
+I-Ns
+S-Nh
+S-Ni
+S-Ns

@@ -18,7 +18,7 @@ seed: 12345
 
 trainer:
   min_epochs: 1
-  max_epochs: 1
+  max_epochs: 3
   gradient_clip_val: 1.0
 
 model:
@@ -31,20 +31,15 @@ model:
         num_labels: 4
       pos:
         input_size: 64
-        num_labels: 11
       ner:
         input_size: 64
-        num_labels: 4
       srl:
         input_size: 64
         hidden_size: 32
-        num_labels: 13
       dep:
         input_size: 64
-        num_labels: 10
       sdp:
         input_size: 64
-        num_labels: 14
 
 logger:
   wandb:
