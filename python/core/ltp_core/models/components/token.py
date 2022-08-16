@@ -15,13 +15,13 @@ class MLPTokenClassifier(nn.Module):
     crf: Optional[CRF]
 
     def __init__(
-        self,
-        input_size,
-        num_labels,
-        dropout=0.1,
-        hidden_sizes=None,
-        use_crf=False,
-        crf_reduction="sum",
+            self,
+            input_size,
+            num_labels,
+            dropout=0.1,
+            hidden_sizes=None,
+            use_crf=False,
+            crf_reduction="sum",
     ):
         super().__init__()
         if hidden_sizes is not None:
@@ -42,16 +42,16 @@ class RelTransformerTokenClassifier(nn.Module):
     crf: Optional[CRF]
 
     def __init__(
-        self,
-        input_size,
-        num_labels,
-        hidden_size=256,
-        dropout=0.1,
-        num_heads=4,
-        num_layers=2,
-        max_length=512,
-        use_crf=False,
-        crf_reduction="sum",
+            self,
+            input_size,
+            num_labels,
+            hidden_size=256,
+            dropout=0.1,
+            num_heads=4,
+            num_layers=2,
+            max_length=512,
+            use_crf=False,
+            crf_reduction="sum",
     ):
         super().__init__()
         self.relative_transformer = RelativeTransformer(
@@ -78,16 +78,18 @@ class BiaffineTokenClassifier(nn.Module):
     crf: Optional[CRF]
 
     def __init__(
-        self,
-        input_size,
-        hidden_size,
-        num_labels,
-        dropout=0.1,
-        hidden_sizes=None,
-        use_crf=False,
-        crf_reduction="sum",
+            self,
+            input_size,
+            num_labels,
+            dropout=0.1,
+            hidden_size=None,
+            hidden_sizes=None,
+            use_crf=False,
+            crf_reduction="sum",
     ):
         super().__init__()
+        if hidden_size is None:
+            hidden_size = input_size
         if hidden_sizes is not None:
             layer_sizes = [input_size, *hidden_sizes, hidden_size * 2]
         else:

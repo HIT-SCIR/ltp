@@ -10,4 +10,4 @@ datamodules:
     _target_: ltp_core.datamodules.adapters.postagger.build_dataset
     _partial_: true
     task_name: "pos"
-    data_dir: "data/pos"
+    data_dir: "data/conllu"

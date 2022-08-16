@@ -1,8 +1,0 @@
-# srl 格式文件
-百团大战	_	B-ARG0	O	O	O
-的	_	I-ARG0	O	O	O
-战略	_	I-ARG0	O	O	O
-目的	_	I-ARG0	O	O	O
-是	Y	O	O	O	O
-要	Y	B-ARG1	O	O	O
-打破	Y	I-ARG1	O	O	O

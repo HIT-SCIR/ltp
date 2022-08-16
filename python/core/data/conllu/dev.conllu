@@ -1,0 +1,8 @@
+1	他	_	_	r	_	3	SBV	3:AGT	_
+2	点头	_	_	v	_	3	ADV	3:MANN	_
+3	表示	_	_	v	_	0	HED	0:Root	_
+4	同意	_	_	v	_	3	VOB	3:dCONT	_
+5	我	_	_	r	_	7	ATT	7:FEAT	_
+6	的	_	_	u	_	5	RAD	5:mDEPD	_
+7	意见	_	_	n	_	4	VOB	4:CONT	_
+8	。	_	_	wp	_	3	WP	3:mPUNC	_

@@ -1,0 +1,17 @@
+请	Y	O	O	O
+守住	Y	O	O	O
+你	_	O	B-ARG1	O
+的	_	O	I-ARG1	O
+道德	_	O	I-ARG1	O
+底线	_	O	I-ARG1	O
+，	_	O	O	O
+即使	_	O	B-ARGM-ADV	B-ARGM-DIS
+你	_	O	I-ARGM-ADV	B-ARG0
+没有	Y	O	I-ARGM-ADV	O
+一	_	O	I-ARGM-ADV	B-ARG1
+个	_	O	I-ARGM-ADV	I-ARG1
+十几	_	O	I-ARGM-ADV	I-ARG1
+岁	_	O	I-ARGM-ADV	I-ARG1
+的	_	O	I-ARGM-ADV	I-ARG1
+女儿	_	O	I-ARGM-ADV	I-ARG1
+。	_	O	O	O

@@ -27,7 +27,7 @@ test-full: ## Run all tests
 	pytest
 
 train: ## Train the model
-	python ltp_core/train.py
+	python ltp_core/train.py experiment=example
 
 debug: ## Enter debugging mode with pdb
 	#

@@ -9,6 +9,6 @@ datamodules:
   load:
     _target_: ltp_core.datamodules.adapters.segmention.build_dataset
     _partial_: true
-    task_name: "seg"
-    data_dir: "data/seg"
+    task_name: "cws"
+    data_dir: "data/conllu"
     mode: "bmes"

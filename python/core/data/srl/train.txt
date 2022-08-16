@@ -1,0 +1,16 @@
+站	Y	O	O	B-ARGM-TPC	B-ARG0
+在	_	B-ARGM-ADV	O	I-ARGM-TPC	I-ARG0
+楼下	_	I-ARGM-ADV	O	I-ARGM-TPC	I-ARG0
+的	_	O	O	I-ARGM-TPC	I-ARG0
+居民	_	O	O	I-ARGM-TPC	I-ARG0
+很多	_	O	O	B-ARG0	B-ARG0
+人	_	O	O	I-ARG0	I-ARG0
+都	_	O	O	B-ARGM-ADV	B-ARGM-ADV
+是	Y	O	O	O	O
+捏	Y	O	O	O	O
+着	_	O	O	O	O
+鼻子	_	O	O	B-ARG1	O
+在	_	O	O	O	B-ARGM-LOC
+一旁	_	O	O	O	I-ARGM-LOC
+观看	Y	O	O	O	O
+。	_	O	O	O	O

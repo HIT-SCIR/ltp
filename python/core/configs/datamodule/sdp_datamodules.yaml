@@ -10,4 +10,4 @@ datamodules:
     _target_: ltp_core.datamodules.adapters.semantic_dependency_parsing.build_dataset
     _partial_: true
     task_name: "sdp"
-    data_dir: "data/sdp"
+    data_dir: "data/conllu"

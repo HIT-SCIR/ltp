@@ -1,8 +1,0 @@
-# bio 格式文件
-港	B-GPE
-台	B-GPE
-会师	O
-看	O
-新	O
-局	O
-：	O

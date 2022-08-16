@@ -1,10 +1,10 @@
 from typing import Any, List, Optional, Union
 
 import torch
-from ltp_extension.algorithms import get_entities
 from torch import Tensor, tensor
 from torchmetrics import Accuracy, Metric
 
+from ltp_core.algorithms import get_entities
 from ltp_core.models.components.token import TokenClassifierResult
 
 

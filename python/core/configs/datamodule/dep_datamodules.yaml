@@ -10,4 +10,4 @@ datamodules:
     _target_: ltp_core.datamodules.adapters.dependency_parsing.build_dataset
     _partial_: true
     task_name: "dep"
-    data_dir: "data/dep"
+    data_dir: "data/conllu"

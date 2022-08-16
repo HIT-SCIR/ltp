@@ -1,0 +1,7 @@
+1	他	_	_	r	_	2	SBV	2:AGT	_
+2	叫	_	_	v	_	0	HED	0:Root	_
+3	汤姆	_	_	nh	_	2	DBL	2:DATV|4:AGT	_
+4	去	_	_	v	_	2	VOB	2:eSUCC	_
+5	拿	_	_	v	_	4	COO	2:eSUCC|4:eSUCC	_
+6	外衣	_	_	n	_	5	VOB	5:PAT	_
+7	。	_	_	wp	_	2	WP	2:mPUNC	_

@@ -153,17 +153,27 @@ class LTP(BaseModule, ModelHubMixin):
         }
 
         store = {}
-        for task in ["cws", "pos", "ner", "srl", "dep", "sdp"]:
+        for task in ["cws", "pos", "ner", "srl", "dep", "sdp", "sdpg"]:
             if task not in tasks:
                 continue
-            cache_key = self.model.processor[task]._get_name()
-            if cache_key in cache:
-                hidden_state, attention_mask = cache[cache_key]
+            if task == "sdpg":
+                cache_key = self.model.processor['sdp']._get_name()
+                if cache_key in cache:
+                    hidden_state, attention_mask = cache[cache_key]
+                else:
+                    hidden_state, attention_mask = self.model.processor['sdp'](**hidden)
+                    cache[cache_key] = (hidden_state, attention_mask)
+                result = self.model.task_heads['sdp'](hidden_state, attention_mask)
+                store[task] = self.post[task](result, hidden, store, inputs, tokenized)
             else:
-                hidden_state, attention_mask = self.model.processor[task](**hidden)
-                cache[cache_key] = (hidden_state, attention_mask)
-            result = self.model.task_heads[task](hidden_state, attention_mask)
-            store[task] = self.post[task](result, hidden, store, inputs, tokenized)
+                cache_key = self.model.processor[task]._get_name()
+                if cache_key in cache:
+                    hidden_state, attention_mask = cache[cache_key]
+                else:
+                    hidden_state, attention_mask = self.model.processor[task](**hidden)
+                    cache[cache_key] = (hidden_state, attention_mask)
+                result = self.model.task_heads[task](hidden_state, attention_mask)
+                store[task] = self.post[task](result, hidden, store, inputs, tokenized)
 
         if is_batch:
             output = LTPOutput(**store)

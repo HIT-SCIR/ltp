@@ -49,6 +49,9 @@ class LTPLitModule(LightningModule):
         self.task_list = list(criterions.keys())
         self.criterions = ModuleDict(criterions)
 
+        assert len(self.task_list) > 0, "No task specified"
+        self.default_task = self.task_list[0]
+
         # use separate metric instance for train, val and test step
         # to ensure a proper reduction over the epoch
         metrics = instantiate(metrics)

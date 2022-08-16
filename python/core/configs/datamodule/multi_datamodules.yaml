@@ -11,8 +11,8 @@ datamodules:
     load:
       _target_: ltp_core.datamodules.adapters.segmention.build_dataset
       _partial_: true
-      task_name: "seg"
-      data_dir: "data/seg"
+      task_name: "cws"
+      data_dir: "data/conllu"
       mode: "bmes"
 
   pos:
@@ -23,7 +23,7 @@ datamodules:
       _target_: ltp_core.datamodules.adapters.postagger.build_dataset
       _partial_: true
       task_name: "pos"
-      data_dir: "data/pos"
+      data_dir: "data/conllu"
 
   ner:
     batch_size: 16
@@ -53,7 +53,7 @@ datamodules:
       _target_: ltp_core.datamodules.adapters.dependency_parsing.build_dataset
       _partial_: true
       task_name: "dep"
-      data_dir: "data/dep"
+      data_dir: "data/conllu"
 
   sdp:
     batch_size: 16
@@ -63,4 +63,4 @@ datamodules:
       _target_: ltp_core.datamodules.adapters.semantic_dependency_parsing.build_dataset
       _partial_: true
       task_name: "sdp"
-      data_dir: "data/sdp"
+      data_dir: "data/conllu"

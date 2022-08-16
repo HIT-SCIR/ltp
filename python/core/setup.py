@@ -9,7 +9,7 @@ with open(os.path.join(project_dir, "README.md"), encoding="utf-8") as fh:
 
 setup(
     name="ltp_core",
-    version="0.1.0",
+    version="0.1.1",
     author="Yunlong Feng",
     author_email="ylfeng@ir.hit.edu.cn",
     url="https://github.com/HIT-SCIR/ltp",
@@ -18,7 +18,6 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=[
         "torch>=1.0.0",
-        "ltp_extension>=0.1.0",
         "transformers>=4.0.0",
     ],
     extras_require={

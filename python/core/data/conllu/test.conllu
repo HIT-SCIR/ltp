@@ -1,0 +1,12 @@
+1	我们	_	_	r	_	7	SBV	7:AGT	_
+2	即将	_	_	d	_	7	ADV	7:mDEPD	_
+3	以	_	_	p	_	7	ADV	6:mRELA	_
+4	昂扬	_	_	a	_	6	ATT	6:FEAT	_
+5	的	_	_	u	_	4	RAD	4:mDEPD	_
+6	斗志	_	_	n	_	3	POB	7:DATV	_
+7	迎来	_	_	v	_	0	HED	0:Root	_
+8	新	_	_	a	_	11	ATT	11:FEAT	_
+9	的	_	_	u	_	8	RAD	8:mDEPD	_
+10	一	_	_	m	_	11	ATT	11:MEAS	_
+11	年	_	_	q	_	7	VOB	7:TIME	_
+12	。	_	_	wp	_	7	WP	7:mPUNC	_
