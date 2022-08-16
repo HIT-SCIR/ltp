@@ -32,6 +32,9 @@ def tokenize(examples, tokenizer, max_length):
 
 
 def build_dataset(data_dir, task_name, tokenizer, max_length=512, **kwargs):
+    import os
+
+    os.environ["TOKENIZERS_PARALLELISM"] = "true"
     dataset = load_dataset(Conllu, data_dir=data_dir, cache_dir=data_dir)
     dataset = dataset.remove_columns(["id", "lemma", "upos", "xpos", "feats", "deps", "misc"])
     dataset = dataset.rename_column("deprel", "labels")

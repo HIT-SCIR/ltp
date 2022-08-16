@@ -1,8 +1,8 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*_
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
 from collections import namedtuple
+
 from ltp import LTP
 
 
@@ -20,7 +20,7 @@ class Token:
         self.misc = misc
 
     def __str__(self):
-        return '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}'.format(
+        return "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
             self.id,
             self.form,
             self.lemma,
@@ -30,11 +30,11 @@ class Token:
             self.head,
             self.deprel,
             self.deps,
-            self.misc
+            self.misc,
         )
 
     def __repr__(self):
-        return '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}'.format(
+        return "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
             self.id,
             self.form,
             self.lemma,
@@ -44,32 +44,33 @@ class Token:
             self.head,
             self.deprel,
             self.deps,
-            self.misc
+            self.misc,
         )
 
 
 def main():
     ltp = LTP("LTP/tiny")
     batched_cws, batched_pos, batched_dep, batched_sdpg = ltp.pipeline(
-        ["他叫汤姆去拿外衣。", "他点头表示同意我的意见。", "我们即将以昂扬的斗志迎来新的一年。"],
-        ["cws", "pos", "dep", "sdpg"]
+        ["他叫汤姆去拿外衣。", "他点头表示同意我的意见。", "我们即将以昂扬的斗志迎来新的一年。"], ["cws", "pos", "dep", "sdpg"]
     ).to_tuple()
 
     for cws, pos, dep, sdpg in zip(batched_cws, batched_pos, batched_dep, batched_sdpg):
         sentence = []
-        for idx, (form, xpos, head, deprel) in enumerate(zip(cws, pos, dep['head'], dep['label'])):
-            sentence.append(Token(
-                id=idx + 1,
-                form=form,
-                lemma="_",
-                upos="_",
-                xpos=xpos,
-                feats="_",
-                head=head,
-                deprel=deprel,
-                deps='',
-                misc='_',
-            ))
+        for idx, (form, xpos, head, deprel) in enumerate(zip(cws, pos, dep["head"], dep["label"])):
+            sentence.append(
+                Token(
+                    id=idx + 1,
+                    form=form,
+                    lemma="_",
+                    upos="_",
+                    xpos=xpos,
+                    feats="_",
+                    head=head,
+                    deprel=deprel,
+                    deps="",
+                    misc="_",
+                )
+            )
 
         for id, head, tag in sdpg:
             if sentence[id - 1].deps:
@@ -84,5 +85,5 @@ def main():
         print("\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

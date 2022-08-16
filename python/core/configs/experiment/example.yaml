@@ -12,13 +12,13 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-tags: [ "ltp" ]
+tags: ["ltp"]
 
 seed: 12345
 
 trainer:
   min_epochs: 1
-  max_epochs: 10
+  max_epochs: 1
   gradient_clip_val: 1.0
 
 model:
