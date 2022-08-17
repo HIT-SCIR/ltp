@@ -30,7 +30,7 @@ pub trait Definition: Default + Debug + Clone {
     fn to_label(&self, index: usize) -> &str;
     fn parse_features(
         &self,
-        line: <Self::RawFeature as GenericItem>::Item,
+        raw: &<Self::RawFeature as GenericItem>::Item,
     ) -> (<Self::Fragment as GenericItem>::Item, Vec<Vec<String>>);
     fn parse_gold_features<R: Read>(&self, reader: R) -> Vec<Sample>;
     fn to_labels(&self, index: &[usize]) -> Vec<&str> {
@@ -38,6 +38,7 @@ pub trait Definition: Default + Debug + Clone {
     }
     fn predict(
         &self,
+        raw: &<Self::RawFeature as GenericItem>::Item,
         fragments: &<Self::Fragment as GenericItem>::Item,
         preds: &[usize],
     ) -> <Self::Prediction as GenericItem>::Item;

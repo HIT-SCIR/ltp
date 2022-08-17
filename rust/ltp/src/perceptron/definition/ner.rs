@@ -120,9 +120,9 @@ impl Definition for NERDefinition {
         &self.to_labels[index]
     }
 
-    fn parse_features<'a>(
+    fn parse_features(
         &self,
-        line: <Self::RawFeature as GenericItem>::Item,
+        line: &<Self::RawFeature as GenericItem>::Item,
     ) -> ((), Vec<Vec<String>>) {
         let (words, features) = line;
         let features = self.parse_words_features(words, features);
@@ -185,7 +185,12 @@ impl Definition for NERDefinition {
             .collect_vec()
     }
 
-    fn predict(&self, _: &(), predicts: &[usize]) -> Vec<&str> {
+    fn predict(
+        &self,
+        _: &<Self::RawFeature as GenericItem>::Item,
+        _: &<Self::Fragment as GenericItem>::Item,
+        predicts: &[usize],
+    ) -> Vec<&str> {
         self.to_labels(predicts)
     }
 

@@ -202,14 +202,14 @@ where
         &self,
         sentence: <Define::RawFeature as GenericItem>::Item,
     ) -> <Define::Prediction as GenericItem>::Item {
-        let (fragment, features) = self.definition.parse_features(sentence);
+        let (fragment, features) = self.definition.parse_features(&sentence);
         let features: Vec<_> = features
             .iter()
             .map(|f| self.features.get_vector(f))
             .collect();
         let preds = self.decode(&features);
 
-        self.definition.predict(&fragment, &preds)
+        self.definition.predict(&sentence, &fragment, &preds)
     }
 
     pub fn evaluate(&self, inputs: &[Vec<String>], labels: &[usize]) -> (usize, usize, usize) {

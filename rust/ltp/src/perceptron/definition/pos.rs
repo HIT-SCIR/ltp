@@ -164,7 +164,7 @@ impl Definition for POSDefinition {
         &self.to_labels[index]
     }
 
-    fn parse_features(&self, words: &[&str]) -> ((), Vec<Vec<String>>) {
+    fn parse_features(&self, words: &&[&str]) -> ((), Vec<Vec<String>>) {
         let features = self.parse_words_features(words);
         ((), features)
     }
@@ -220,7 +220,12 @@ impl Definition for POSDefinition {
             .collect_vec()
     }
 
-    fn predict(&self, _: &(), predicts: &[usize]) -> Vec<&str> {
+    fn predict(
+        &self,
+        _: &<Self::RawFeature as GenericItem>::Item,
+        _: &<Self::Fragment as GenericItem>::Item,
+        predicts: &[usize],
+    ) -> Vec<&str> {
         self.to_labels(predicts)
     }
 

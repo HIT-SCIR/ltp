@@ -28,63 +28,71 @@ impl CWSDefinition {
     // +--------------+----------------------------------------------------------------------+
     // | dul2char     | ch[-2]=ch[0]?                                                        |
     // +--------------+----------------------------------------------------------------------+
-    pub fn parse_char_features(&self, chars: &[char]) -> Vec<Vec<String>> {
+    pub fn parse_char_features(&self, sentence: &str) -> (Vec<usize>, Vec<Vec<String>>) {
         let char_null = '\u{0000}';
-        let chars_len = chars.len();
-        let mut features = Vec::with_capacity(chars_len);
-        for (idx, cur_char) in chars.iter().enumerate() {
-            // 剩余字符数
-            let last = chars_len - idx - 1;
-            let pre2_char = if idx > 1 { chars[idx - 2] } else { char_null };
-            let pre_char = if idx > 0 { chars[idx - 1] } else { char_null };
-            let next_char = if last > 0 { chars[idx + 1] } else { char_null };
-            let next2_char = if last > 1 { chars[idx + 2] } else { char_null };
+        let chars_len = sentence.len();
 
-            // todo: 优化容量设置
+        let mut index = Vec::with_capacity(chars_len);
+        let mut features = Vec::with_capacity(chars_len);
+
+        let mut pre_char = char_null;
+        let mut pre2_char = char_null;
+        let mut chars = sentence.char_indices().multipeek();
+        while let Some((char_idx, cur_char)) = chars.next() {
+            if cur_char == ' ' {
+                continue;
+            }
+
             let mut feature = Vec::with_capacity(12);
+
             feature.push(format!("2{}", cur_char));
-            if idx > 0 {
+
+            if pre_char != char_null {
                 feature.push(format!("1{}", pre_char)); // ch[-1]
                 feature.push(format!("6{}{}", pre_char, cur_char)); // ch[-1]ch[0]
 
-                if pre_char == *cur_char {
-                    feature.push("b".to_string()); // ch[-1]=ch[0]?
-                }
-
-                if idx > 1 {
+                if pre2_char != char_null {
                     feature.push(format!("0{}", pre2_char)); // ch[-2]
                     feature.push(format!("5{}{}", pre2_char, pre_char)); // ch[-2]ch[-1]
                     feature.push(format!("9{}{}", pre2_char, cur_char)); // ch[-2]ch[0]
+                }
 
-                    if pre2_char == *cur_char {
-                        feature.push("c".to_string()); // ch[-2]=ch[0]?
-                    }
+                if pre2_char == cur_char {
+                    feature.push("c".to_string()); // ch[-2]=ch[0]?
                 }
             } else {
                 feature.push("BOS".to_string());
             }
 
-            if last > 0 {
+            let next_char = if let Some((_, next_char)) = chars.peek() {
                 feature.push(format!("3{}", next_char)); // ch[+1]
                 feature.push(format!("7{}{}", cur_char, next_char)); // ch[0]ch[+1]
+                *next_char
+            } else {
+                ' '
+            };
 
-                if last > 1 {
-                    feature.push(format!("4{}", next2_char)); // ch[+2]
-                    feature.push(format!("8{}{}", next_char, next2_char)); // ch[+1]ch[+2]
-                    feature.push(format!("a{}{}", cur_char, next2_char)); // ch[0]ch[+2]
-                }
+            if let Some((_, next2_char)) = chars.peek() {
+                feature.push(format!("4{}", next2_char)); // ch[+2]
+                feature.push(format!("8{}{}", next_char, next2_char)); // ch[+1]ch[+2]
+                feature.push(format!("a{}{}", cur_char, next2_char)); // ch[0]ch[+2]
             }
 
+            pre2_char = pre_char;
+            pre_char = cur_char;
+
+            index.push(char_idx);
             features.push(feature);
         }
-        features
+        index.push(chars_len);
+        (index, features)
     }
 }
 
 impl Definition for CWSDefinition {
-    type Fragment = dyn for<'any> GenericItem<'any, Item = Vec<char>>;
-    type Prediction = dyn for<'any> GenericItem<'any, Item = Vec<String>>;
-    type RawFeature = dyn for<'any> GenericItem<'any, Item = &'any str>;
+    type Fragment = dyn for<'any> GenericItem<'any, Item=Vec<usize>>;
+    type Prediction = dyn for<'any> GenericItem<'any, Item=Vec<String>>;
+    type RawFeature = dyn for<'any> GenericItem<'any, Item=&'any str>;
 
     fn use_viterbi(&self) -> bool {
         true
@@ -123,16 +131,9 @@ impl Definition for CWSDefinition {
         }
     }
 
-    fn parse_features(&self, line: &str) -> (Vec<char>, Vec<Vec<String>>) {
-        let chars = line.chars().collect::<Vec<_>>();
-        let words = chars
-            .split(|&char| char.is_whitespace())
-            .filter(|&char| !char.is_empty())
-            .collect::<Vec<_>>();
-        let chars = words.concat();
-        let features = self.parse_char_features(&chars);
-
-        (chars, features)
+    fn parse_features(&self, sentence: &&str) -> (Vec<usize>, Vec<Vec<String>>) {
+        let (index, features) = self.parse_char_features(sentence);
+        (index, features)
     }
 
     #[cfg(feature = "parallel")]
@@ -144,51 +145,30 @@ impl Definition for CWSDefinition {
         lines
             .par_iter()
             .map(|sentence| {
-                let chars = sentence.chars().collect::<Vec<_>>();
-                let words = chars
-                    .split(|&char| char.is_whitespace())
-                    .filter(|&char| !char.is_empty())
-                    .collect::<Vec<_>>();
-                let chars = words.concat();
-                let features = self.parse_char_features(&chars);
-
+                let (_, features) = self.parse_char_features(sentence.as_str());
+                let mut labels = Vec::with_capacity(features.len());
                 // 构建标签序列
-                let mut labels = Vec::with_capacity(chars.len());
-                for word in words {
-                    match word.len() {
-                        1 => {
-                            labels.push(self.label_to("S"));
-                        }
-                        2 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("E"));
-                        }
-                        3 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("E"));
-                        }
-                        4 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("E"));
-                        }
-                        5 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("E"));
-                        }
-                        length => {
-                            labels.push(self.label_to("B"));
-                            for _ in 1..length - 1 {
-                                labels.push(self.label_to("M"));
-                            }
-                            labels.push(self.label_to("E"));
-                        }
+
+                let mut last_char = ' ';
+                let mut chars = sentence.chars().peekable();
+                while let Some(cur_char) = chars.next() {
+                    if cur_char == ' ' {
+                        last_char = cur_char;
+                        continue;
                     }
+                    if let Some(next_char) = chars.peek() {
+                        match (last_char, next_char) {
+                            (' ', ' ') => labels.push(self.label_to("S")),
+                            (' ', _nc) => labels.push(self.label_to("B")),
+                            (_lc, ' ') => labels.push(self.label_to("E")),
+                            (_lc, _nc) => labels.push(self.label_to("M")),
+                        }
+                    } else if last_char == ' ' {
+                        labels.push(self.label_to("S"));
+                    } else {
+                        labels.push(self.label_to("E"));
+                    }
+                    last_char = cur_char;
                 }
                 (features, labels)
             })
@@ -205,64 +185,46 @@ impl Definition for CWSDefinition {
         lines
             .iter()
             .map(|sentence| {
-                let chars = sentence.chars().collect::<Vec<_>>();
-                let words = chars
-                    .split(|&char| char.is_whitespace())
-                    .filter(|&char| !char.is_empty())
-                    .collect::<Vec<_>>();
-                let chars = words.concat();
-                let features = self.parse_char_features(&chars);
-
+                let (_, features) = self.parse_char_features(sentence.as_str());
+                let mut labels = Vec::with_capacity(features.len());
                 // 构建标签序列
-                let mut labels = Vec::with_capacity(chars.len());
-                for word in words {
-                    match word.len() {
-                        1 => {
-                            labels.push(self.label_to("S"));
-                        }
-                        2 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("E"));
-                        }
-                        3 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("E"));
-                        }
-                        4 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("E"));
-                        }
-                        5 => {
-                            labels.push(self.label_to("B"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("M"));
-                            labels.push(self.label_to("E"));
-                        }
-                        length => {
-                            labels.push(self.label_to("B"));
-                            for _ in 1..length - 1 {
-                                labels.push(self.label_to("M"));
-                            }
-                            labels.push(self.label_to("E"));
-                        }
+
+                let mut last_char = ' ';
+                let mut chars = sentence.chars().peekable();
+                while let Some(cur_char) = chars.next() {
+                    if cur_char == ' ' {
+                        last_char = cur_char;
+                        continue;
                     }
+                    if let Some(next_char) = chars.peek() {
+                        match (last_char, next_char) {
+                            (' ', ' ') => labels.push(self.label_to("S")),
+                            (' ', _nc) => labels.push(self.label_to("B")),
+                            (_lc, ' ') => labels.push(self.label_to("E")),
+                            (_lc, _nc) => labels.push(self.label_to("M")),
+                        }
+                    } else if last_char == ' ' {
+                        labels.push(self.label_to("S"));
+                    } else {
+                        labels.push(self.label_to("E"));
+                    }
+                    last_char = cur_char;
                 }
                 (features, labels)
             })
             .collect()
     }
 
-    fn predict(&self, fragments: &Vec<char>, predicts: &[usize]) -> Vec<String> {
+    fn predict(&self, sentence: &&str, fragments: &Vec<usize>, predicts: &[usize]) -> Vec<String> {
         let predicts = self.to_labels(predicts);
         let predicts = get_entities(&predicts);
-
         predicts
             .into_iter()
-            .map(|(_, start, end)| fragments.iter().take(end + 1).skip(start).collect())
+            .map(|(_, start, end)| {
+                let start = fragments[start];
+                let end = fragments[end + 1];
+                sentence[start..end].to_string()
+            })
             .collect::<Vec<_>>()
     }
 
