@@ -2,9 +2,9 @@
 ![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
 ![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp)
 
-| Language                             | version                                                                                      |
-| ------------------------------------ | -------------------------------------------------------------------------------------------- |
-| [Python](python/interface/README.md) | [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP)](https://pypi.org/project/ltp)  |
+| Language                             | version                                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------------------- |
+| [Python](python/interface/README.md) | [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP)](https://pypi.org/project/ltp)   |
 | [Rust](rust/ltp/README.md)           | [![LTP](https://img.shields.io/crates/d/ltp?label=LTP)](https://crates.io/crates/ltp) |
 
 # LTP 4
@@ -30,22 +30,22 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 
 ### 更新说明
 
-+ 4.2.0
-    - [新特性] 模型上传至 [Huggingface Hub](https://huggingface.co/LTP)，支持自动下载
-    - [破坏性变更] 改用 Pipeline API 进行推理，方便后续进行更深入的性能优化，可参见快速使用部分
-    - [结构性变化] 将 LTP 拆分成 2 个部分
-        - [深度学习模型] 即基于 Pytorch 实现的深度学习模型，支持全部的6大任务(
-          分词/词性/命名实体/语义角色/依存句法/语义依存)
-        - [Legacy 模型] 针对大部分用户对于推理速度的需求，使用 Rust 重写了基于感知机的算法，性能与 LTP3
-          版本相当，但仅支持分词、词性、命名实体三大任务
-    - [其他变化] 部分解码算法使用 Rust 实现，速度更快
-+ 4.1.0
-    - 提供了自定义分词等功能
-    - 修复了一些bug
-+ 4.0.0
-    - 基于Pytorch 开发，原生 Python 接口
-    - 可根据需要自由选择不同速度和指标的模型
-    - 分词、词性、命名实体、依存句法、语义角色、语义依存6大任务
+- 4.2.0
+  - \[新特性\] 模型上传至 [Huggingface Hub](https://huggingface.co/LTP)，支持自动下载
+  - \[破坏性变更\] 改用 Pipeline API 进行推理，方便后续进行更深入的性能优化，可参见快速使用部分
+  - \[结构性变化\] 将 LTP 拆分成 2 个部分
+    - \[深度学习模型\] 即基于 Pytorch 实现的深度学习模型，支持全部的6大任务(
+      分词/词性/命名实体/语义角色/依存句法/语义依存)
+    - \[Legacy 模型\] 针对大部分用户对于推理速度的需求，使用 Rust 重写了基于感知机的算法，性能与 LTP3
+      版本相当，但仅支持分词、词性、命名实体三大任务
+  - \[其他变化\] 部分解码算法使用 Rust 实现，速度更快
+- 4.1.0
+  - 提供了自定义分词等功能
+  - 修复了一些bug
+- 4.0.0
+  - 基于Pytorch 开发，原生 Python 接口
+  - 可根据需要自由选择不同速度和指标的模型
+  - 分词、词性、命名实体、依存句法、语义角色、语义依存6大任务
 
 ## 快速使用
 
@@ -106,17 +106,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## 模型性能以及下载地址
 
-|                       深度学习模型                       |  分词   |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  | 速度(句/S) |
-|:--------------------------------------------------:| :---: | :---: | :---: | :---: | :---: | :---: | :-----: |
-|      [Base](https://huggingface.co/LTP/base)       | 98.7  | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |  39.12  |
-|     [Base1](https://huggingface.co/LTP/base1)      | 99.22 | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |  --.--  |
-|     [Base2](https://huggingface.co/LTP/base2)      | 99.18 | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |  --.--  |
+|                  深度学习模型                   |  分词   |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  | 速度(句/S) |
+| :---------------------------------------: | :---: | :---: | :---: | :---: | :---: | :---: | :-----: |
+|  [Base](https://huggingface.co/LTP/base)  | 98.7  | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |  39.12  |
+| [Base1](https://huggingface.co/LTP/base1) | 99.22 | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |  --.--  |
+| [Base2](https://huggingface.co/LTP/base2) | 99.18 | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |  --.--  |
 | [Small](https://huggingface.co/LTP/small) | 98.4  | 98.2  | 94.3  | 78.4  | 88.3  | 74.7  |  43.13  |
 |  [Tiny](https://huggingface.co/LTP/tiny)  | 96.8  | 97.1  | 91.6  | 70.9  | 83.8  | 70.1  |  53.22  |
 
-|                       感知机算法模型                        |  分词   |  词性   | 命名实体  | 速度(句/s)  |
-|:----------------------------------------------------:| :---: | :---: | :---: |:--------:|
-|     [Legacy](https://huggingface.co/LTP/legacy)      | 97.93 | 98.41 | 94.28 | 11607.35 |
+|                   感知机算法模型                   |  分词   |  词性   | 命名实体  | 速度(句/s)  |
+| :-----------------------------------------: | :---: | :---: | :---: | :------: |
+| [Legacy](https://huggingface.co/LTP/legacy) | 97.93 | 98.41 | 94.28 | 11607.35 |
 
 **[感知机算法Benchmark](rust/ltp/README.md)**
 
