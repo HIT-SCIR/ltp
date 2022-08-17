@@ -6,13 +6,16 @@ pub mod stnsplit;
 pub mod viterbi;
 
 pub use perceptron::{
-    Algorithm, CWSDefinition, NERDefinition, POSDefinition, PaMode, Perceptron, Trainer, SerdeModel, SerdeCWSModel, SerdePOSModel, SerdeNERModel,
+    Algorithm, CWSDefinition, NERDefinition, POSDefinition, PaMode, Perceptron, Trainer,
 };
 #[cfg(feature = "serialization")]
-pub use perceptron::{Codec, Format, ModelSerde, Reader};
+pub use perceptron::{Codec, Format, ModelSerde, Reader, SerdeModel, SerdeCWSModel, SerdePOSModel, SerdeNERModel};
 
+#[cfg(feature = "serialization")]
 pub type CWSModel = SerdeCWSModel;
+#[cfg(feature = "serialization")]
 pub type POSModel = SerdePOSModel;
+#[cfg(feature = "serialization")]
 pub type NERModel = SerdeNERModel;
 
 pub use eisner::eisner;
