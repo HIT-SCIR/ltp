@@ -2,65 +2,133 @@
 ![VERSION](https://img.shields.io/pypi/pyversions/ltp)
 [![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://ltp.readthedocs.io/zh_CN/latest/?badge=latest)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/ltp)](https://pypi.python.org/pypi/ltp)
+![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp)
+![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
+![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp)
+
+| Language                             | version                                                                                      |
+| ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| [Python](python/interface/README.md) | [![LTP](https://img.shields.io/pypi/v/ltp?label=LTP)](https://pypi.org/project/ltp)  |
+| [Rust](rust/ltp/README.md)           | [![LTP](https://img.shields.io/crates/d/ltp?label=LTP)](https://crates.io/crates/ltp) |
 
 # LTP 4
 
 LTP（Language Technology Platform） 提供了一系列中文自然语言处理工具，用户可以使用这些工具对于中文文本进行分词、词性标注、句法分析等等工作。
 
-If you use any source codes included in this toolkit in your work, please kindly cite the following paper. The bibtex
-are listed below:
+## 引用
 
-<pre>
+如果您在工作中使用了 LTP，您可以引用这篇论文
+
+```bibtex
 @article{che2020n,
   title={N-LTP: A Open-source Neural Chinese Language Technology Platform with Pretrained Models},
   author={Che, Wanxiang and Feng, Yunlong and Qin, Libo and Liu, Ting},
   journal={arXiv preprint arXiv:2009.11616},
   year={2020}
 }
-</pre>
+```
 
 **参考书：**
 由哈工大社会计算与信息检索研究中心（HIT-SCIR）的多位学者共同编著的《[自然语言处理：基于预训练模型的方法](https://item.jd.com/13344628.html)
 》（作者：车万翔、郭江、崔一鸣；主审：刘挺）一书现已正式出版，该书重点介绍了新的基于预训练模型的自然语言处理技术，包括基础知识、预训练词向量和预训练模型三大部分，可供广大LTP用户学习参考。
 
+### 更新说明
+
++ 4.2.0
+    - [新特性] 模型上传至 [Huggingface Hub](https://huggingface.co/LTP)，支持自动下载
+    - [破坏性变更] 改用 Pipeline API 进行推理，方便后续进行更深入的性能优化，可参见快速使用部分
+    - [结构性变化] 将 LTP 拆分成 2 个部分
+        - [深度学习模型] 即基于 Pytorch 实现的深度学习模型，支持全部的6大任务(
+          分词/词性/命名实体/语义角色/依存句法/语义依存)
+        - [Legacy 模型] 针对大部分用户对于推理速度的需求，使用 Rust 重写了基于感知机的算法，性能与 LTP3
+          版本相当，但仅支持分词、词性、命名实体三大任务
+    - [其他变化] 部分解码算法使用 Rust 实现，速度更快
++ 4.1.0
+    - 提供了自定义分词等功能
+    - 修复了一些bug
++ 4.0.0
+    - 基于Pytorch 开发，原生 Python 接口
+    - 可根据需要自由选择不同速度和指标的模型
+    - 分词、词性、命名实体、依存句法、语义角色、语义依存6大任务
+
 ## 快速使用
+
+### [Python](python/interface/README.md)
+
+```bash
+pip install ltp # 安装 ltp
+```
 
 ```python
 from ltp import LTP
 
-ltp = LTP()  # 默认加载 Small 模型
-# ltp = LTP(pretrained_model_name_or_path="LTP/small")
-# 另外也可以接受一些已注册可自动下载的模型名(https://huggingface.co/LTP):
-# 使用字典结果
-output = ltp.pipeline(
-    ["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"]
-)
+ltp = LTP("LTP/small")  # 默认加载 Small 模型
+output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"])
+# 使用字典格式作为返回结果
 print(output.cws)
 print(output.pos)
 print(output.sdp)
 
-# 传统算法，比较快，但是精度略低
+# 使用感知机算法实现的分词、词性和命名实体识别，速度比较快，但是精度略低
 ltp = LTP("LTP/legacy")
 cws, pos, ner = ltp.pipeline(
     ["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner"]
 ).to_tuple()
+# 使用元组格式作为返回结果
 print(cws, pos, ner)
 ```
 
-**[详细说明](docs/quickstart.rst)**
+**[详细说明](python/interface/docs/quickstart.rst)**
 
-## 指标
+### [Rust](rust/ltp/README.md)
 
-|        模型        |  分词   |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  |   速度(句/S)   |
-| :--------------: | :---: | :---: | :---: | :---: | :---: | :---: | :---------: |
-|  LTP 4.0 (Base)  | 98.7  | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |    39.12    |
-| LTP 4.0 (Base1)  | 99.22 | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |    --.--    |
-| LTP 4.0 (Base2)  | 99.18 | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |    --.--    |
-| LTP 4.0 (Small)  | 98.4  | 98.2  | 94.3  | 78.4  | 88.3  | 74.7  |    43.13    |
-|  LTP 4.0 (Tiny)  | 96.8  | 97.1  | 91.6  | 70.9  | 83.8  | 70.1  |    53.22    |
-| LTP 4.0 (Legacy) | 97.93 | 98.41 | 94.28 |  --   |  --   |  --   | [Bench](<>) |
+```rust
+use std::fs::File;
+use apache_avro::Codec;
+use itertools::multizip;
+use ltp::{CWSModel, POSModel, NERModel, ModelSerde, Format};
 
-**[模型下载地址](https://huggingface.co/LTP)**
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let file = File::open("data/legacy-models/cws_model.bin")?;
+    let cws: CWSModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
+    let file = File::open("data/legacy-models/pos_model.bin")?;
+    let pos: POSModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
+    let file = File::open("data/legacy-models/ner_model.bin")?;
+    let ner: NERModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
+
+    let words = cws.predict("他叫汤姆去拿外衣。");
+    let pos = pos.predict(&words);
+    let ner = ner.predict((&words, &pos));
+
+    for (w, p, n) in multizip((words, pos, ner)) {
+        println!("{}/{}/{}", w, p, n);
+    }
+
+    Ok(())
+}
+```
+
+## 模型性能以及下载地址
+
+|                       深度学习模型                       |  分词   |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  | 速度(句/S) |
+|:--------------------------------------------------:| :---: | :---: | :---: | :---: | :---: | :---: | :-----: |
+|      [Base](https://huggingface.co/LTP/base)       | 98.7  | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |  39.12  |
+|     [Base1](https://huggingface.co/LTP/base1)      | 99.22 | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |  --.--  |
+|     [Base2](https://huggingface.co/LTP/base2)      | 99.18 | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |  --.--  |
+| [Small](https://huggingface.co/LTP/small) | 98.4  | 98.2  | 94.3  | 78.4  | 88.3  | 74.7  |  43.13  |
+|  [Tiny](https://huggingface.co/LTP/tiny)  | 96.8  | 97.1  | 91.6  | 70.9  | 83.8  | 70.1  |  53.22  |
+
+|                       感知机算法模型                        |  分词   |  词性   | 命名实体  | 速度(句/s)  |
+|:----------------------------------------------------:| :---: | :---: | :---: |:--------:|
+|     [Legacy](https://huggingface.co/LTP/legacy)      | 97.93 | 98.41 | 94.28 | 11607.35 |
+
+**[感知机算法Benchmark](rust/ltp/README.md)**
+
+## 构建 Wheel 包
+
+```shell script
+make bdist
+```
 
 ## 模型算法
 
@@ -70,6 +138,19 @@ print(cws, pos, ner)
 - 依存句法: Electra + BiAffine + Eisner<sup>[3](#Eisner)</sup>
 - 语义依存: Electra + BiAffine
 - 语义角色: Electra + BiAffine + CRF
+
+## 其他语言绑定
+
+**感知机算法**
+
+- [Rust](rust/ltp)
+- [C/C++](rust/ltp-cffi)
+
+**深度学习算法**
+
+- [Rust](https://github.com/HIT-SCIR/libltp/tree/master/ltp-rs)
+- [C++](https://github.com/HIT-SCIR/libltp/tree/master/ltp-cpp)
+- [Java](https://github.com/HIT-SCIR/libltp/tree/master/ltp-java)
 
 ## 作者信息
 
@@ -86,7 +167,5 @@ print(cws, pos, ner)
 ## 脚注
 
 - <a name="RELTRANS">1</a>:: [Chinese-ELECTRA](https://github.com/ymcui/Chinese-ELECTRA)
-- <a name="RELTRANS">
-  2</a>:: [TENER: Adapting Transformer Encoder for Named Entity Recognition](https://arxiv.org/abs/1911.04474)
-- <a name="Eisner">
-  3</a>:: [A PyTorch implementation of "Deep Biaffine Attention for Neural Dependency Parsing"](https://github.com/yzhangcs/parser)
+- <a name="RELTRANS">2</a>:: [TENER: Adapting Transformer Encoder for Named Entity Recognition](https://arxiv.org/abs/1911.04474)
+- <a name="Eisner">3</a>:: [A PyTorch implementation of "Deep Biaffine Attention for Neural Dependency Parsing"](https://github.com/yzhangcs/parser)

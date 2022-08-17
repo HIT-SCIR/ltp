@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Benchmark Compare with Jieba
 
-- File Size: 33.85 MB
+- File Size: 33.85 MB / 305041 lines
 - Hard Ware:
   - MacBook Pro (16-inch, 2019)
   - 处理器: 2.6 GHz 六核Intel Core i7
@@ -84,7 +84,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Benchmark Pipeline
 
-- File Size: 33.85 MB
+- File Size: 33.85 MB / 305041 lines
 - Hard Ware:
   - MacBook Pro (16-inch, 2019)
   - 处理器: 2.6 GHz 六核Intel Core i7
