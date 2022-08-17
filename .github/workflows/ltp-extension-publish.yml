@@ -1,15 +1,14 @@
-name: Upload Python Package
+name: Upload LTP Extension Python Package
 
 on:
-  release:
-    types: [created]
+  workflow_dispatch:
 
 jobs:
   macos:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: [ "3.7", "3.8", "3.9", "3.10" ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -56,7 +55,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        target: [x64, x86]
+        target: [ x64, x86 ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -97,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [x86_64, i686]
+        target: [ x86_64, i686 ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -137,32 +136,12 @@ jobs:
           name: wheels
           path: dist
 
-  core:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        target: [x86_64]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-          architecture: x64
-      - name: Build Wheels
-        run: |
-          pip wheel --no-deps -w dist python/core
-          pip wheel --no-deps -w dist python/interface
-      - name: Upload wheels
-        uses: actions/upload-artifact@v2
-        with:
-          name: wheels
-          path: dist
 
   release:
     name: Release
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [macos, windows, linux, core]
+    needs: [ macos, windows, linux ]
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -170,25 +149,9 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-
-      - name: Publish LTP Core to PyPi
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD_CORE }}
-        run: |
-          pip install --upgrade twine
-          twine upload --skip-existing ltp_core-*
-
       - name: Publish LTP Extension to PyPi
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD_EXT }}
         run: |
           twine upload --skip-existing ltp_extension-*
-
-      - name: Publish LTP to PyPi
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          twine upload --skip-existing ltp-*

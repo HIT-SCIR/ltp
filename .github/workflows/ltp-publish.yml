@@ -1,0 +1,45 @@
+name: Upload LTP Python Package
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  interface:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [ x86_64 ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+          architecture: x64
+      - name: Build Wheels
+        run: |
+          pip wheel --no-deps -w dist python/interface
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: [ interface ]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: wheels
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Publish LTP to PyPi
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine upload --skip-existing ltp-*
