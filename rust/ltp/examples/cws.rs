@@ -5,6 +5,7 @@ use ltp::{Algorithm, CWSDefinition as Definition, Codec, Format, ModelSerde, PaM
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
+use itertools::Itertools;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -144,7 +145,7 @@ fn main() -> Result<()> {
 
             let (p, r, f1) = trainer.evaluate(&model)?;
             let duration = start.elapsed().as_millis();
-            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}",);
+            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}", );
         }
         Args::Predict(mode) => {
             let file = File::open(&mode.model)?;
@@ -166,10 +167,10 @@ fn main() -> Result<()> {
                 datasets.push(sentence);
             }
             let start = std::time::Instant::now();
-            let result: Vec<Vec<String>> = datasets
+            let result = datasets
                 .iter()
                 .map(|sentence| model.predict(sentence))
-                .collect();
+                .collect_vec();
             let duration = start.elapsed();
             println!("{}ms", duration.as_millis());
             let mut file = File::create(mode.output)?;
