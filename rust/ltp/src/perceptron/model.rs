@@ -1,3 +1,4 @@
+use crate::perceptron::definition::CommonDefinePredict;
 use crate::perceptron::GenericItem;
 use crate::perceptron::{
     Definition, TraitFeature, TraitFeatureCompressUtils, TraitFeaturesTrainUtils, TraitParameter,
@@ -17,8 +18,8 @@ use std::mem::swap;
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq)]
 pub enum PaMode<Param>
-where
-    Param: TraitParameter,
+    where
+        Param: TraitParameter,
 {
     Pa,
     PaI(Param),
@@ -34,11 +35,11 @@ impl<Param: TraitParameter> Default for PaMode<Param> {
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
 #[derive(Default, Debug, Clone)]
 pub struct Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Define: Definition,
-    Feature: TraitFeature,
-    ParamStorage: TraitParameterStorage<Param>,
-    Param: TraitParameter,
+    where
+        Define: Definition,
+        Feature: TraitFeature,
+        ParamStorage: TraitParameterStorage<Param>,
+        Param: TraitParameter,
 {
     pub definition: Define,
     pub features: Feature,
@@ -48,12 +49,12 @@ where
 }
 
 impl<Define, Feature, ParamStorage, Param> Display
-    for Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Feature: TraitFeature,
-    Param: TraitParameter,
-    ParamStorage: TraitParameterStorage<Param>,
-    Define: Definition,
+for Perceptron<Define, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+        Define: Definition,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -66,30 +67,29 @@ where
 }
 
 unsafe impl<Define, Feature, ParamStorage, Param> Send
-    for Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Feature: TraitFeature,
-    Param: TraitParameter,
-    ParamStorage: TraitParameterStorage<Param>,
-    Define: Definition,
-{
-}
+for Perceptron<Define, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+        Define: Definition,
+{}
+
 unsafe impl<Define, Feature, ParamStorage, Param> Sync
-    for Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Feature: TraitFeature,
-    Param: TraitParameter,
-    ParamStorage: TraitParameterStorage<Param>,
-    Define: Definition,
-{
-}
+for Perceptron<Define, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+        Define: Definition,
+{}
 
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Feature: TraitFeature,
-    Param: TraitParameter,
-    ParamStorage: TraitParameterStorage<Param>,
-    Define: Definition,
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+        Define: Definition,
 {
     pub fn new_with_parameters(
         definition: Define,
@@ -198,6 +198,20 @@ where
         }
     }
 
+    pub fn evaluate(&self, inputs: &[Vec<String>], labels: &[usize]) -> (usize, usize, usize) {
+        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector(f)).collect();
+        let preds = self.decode(&features);
+        self.definition.evaluate(&preds, labels)
+    }
+}
+
+impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+        Define: Definition + CommonDefinePredict,
+{
     pub fn predict(
         &self,
         sentence: <Define::RawFeature as GenericItem>::Item,
@@ -211,21 +225,44 @@ where
 
         self.definition.predict(&sentence, &fragment, &preds)
     }
+}
 
-    pub fn evaluate(&self, inputs: &[Vec<String>], labels: &[usize]) -> (usize, usize, usize) {
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector(f)).collect();
+use crate::{get_entities, CWSDefinition};
+
+impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+{
+    pub fn predict<'a>(&self, sentence: &'a str) -> Vec<&'a str> {
+        let (fragments, features) = self.definition.parse_features(&sentence);
+        let features: Vec<_> = features
+            .iter()
+            .map(|f| self.features.get_vector(f))
+            .collect();
         let preds = self.decode(&features);
-        self.definition.evaluate(&preds, labels)
+
+        let preds = self.definition.to_labels(&preds);
+        let preds = get_entities(&preds);
+        preds
+            .into_iter()
+            .map(|(_, start, end)| {
+                let start = fragments[start];
+                let end = fragments[end + 1];
+                &sentence[start..end]
+            })
+            .collect::<Vec<_>>()
     }
 }
 
 // 模型训练
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Feature: TraitFeature + TraitFeaturesTrainUtils,
-    Param: TraitParameter,
-    ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
-    Define: Definition,
+    where
+        Feature: TraitFeature + TraitFeaturesTrainUtils,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
+        Define: Definition,
 {
     // 被动攻击算法
     pub fn pa_train_iter(
@@ -425,11 +462,11 @@ where
 
 // 模型压缩
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-where
-    Feature: TraitFeature + TraitFeaturesTrainUtils + TraitFeatureCompressUtils,
-    Param: TraitParameter,
-    ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageCompressUtils<Param>,
-    Define: Definition,
+    where
+        Feature: TraitFeature + TraitFeaturesTrainUtils + TraitFeatureCompressUtils,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageCompressUtils<Param>,
+        Define: Definition,
 {
     fn param_score(parameters: &ParamStorage, label_num: usize, feature: usize) -> Param {
         let mut score = Param::zero();

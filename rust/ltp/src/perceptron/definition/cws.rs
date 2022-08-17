@@ -1,4 +1,3 @@
-use crate::get_entities;
 use crate::perceptron::definition::GenericItem;
 use crate::perceptron::{Definition, Sample};
 use itertools::Itertools;
@@ -91,7 +90,7 @@ impl CWSDefinition {
 
 impl Definition for CWSDefinition {
     type Fragment = dyn for<'any> GenericItem<'any, Item=Vec<usize>>;
-    type Prediction = dyn for<'any> GenericItem<'any, Item=Vec<String>>;
+    type Prediction = dyn for<'any> GenericItem<'any, Item=Vec<&'any str>>;
     type RawFeature = dyn for<'any> GenericItem<'any, Item=&'any str>;
 
     fn use_viterbi(&self) -> bool {
@@ -215,17 +214,8 @@ impl Definition for CWSDefinition {
             .collect()
     }
 
-    fn predict(&self, sentence: &&str, fragments: &Vec<usize>, predicts: &[usize]) -> Vec<String> {
-        let predicts = self.to_labels(predicts);
-        let predicts = get_entities(&predicts);
-        predicts
-            .into_iter()
-            .map(|(_, start, end)| {
-                let start = fragments[start];
-                let end = fragments[end + 1];
-                sentence[start..end].to_string()
-            })
-            .collect::<Vec<_>>()
+    fn predict(&self, _: &&str, _: &Vec<usize>, predicts: &[usize]) -> Vec<&str> {
+        self.to_labels(predicts)
     }
 
     fn evaluate(&self, predicts: &[usize], labels: &[usize]) -> (usize, usize, usize) {

@@ -12,6 +12,12 @@ pub use cws::CWSDefinition;
 pub use ner::NERDefinition;
 pub use pos::POSDefinition;
 
+pub trait CommonDefinePredict {}
+
+impl CommonDefinePredict for POSDefinition {}
+
+impl CommonDefinePredict for NERDefinition {}
+
 pub trait GenericItem<'a> {
     type Item;
 }

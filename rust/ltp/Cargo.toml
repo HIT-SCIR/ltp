@@ -1,6 +1,6 @@
 [package]
 name = "ltp"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
 description = "Language Technology Platform For Rust."
@@ -24,6 +24,11 @@ required-features = ["serialization", "parallel"]
 [[example]]
 name = "ner"
 path = "examples/ner.rs"
+required-features = ["serialization", "parallel"]
+
+[[example]]
+name = "simple"
+path = "examples/simple.rs"
 required-features = ["serialization", "parallel"]
 
 [dependencies]
