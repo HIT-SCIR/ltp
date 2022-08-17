@@ -2,14 +2,14 @@ name: Upload LTP Python Package
 
 on:
   release:
-    types: [ created ]
+    types: [created]
 
 jobs:
   interface:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [ x86_64 ]
+        target: [x86_64]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -29,7 +29,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [ interface ]
+    needs: [interface]
     steps:
       - uses: actions/download-artifact@v2
         with:
