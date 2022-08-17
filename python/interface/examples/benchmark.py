@@ -33,7 +33,7 @@ def convert2raw(input_file, output_file):
 def jieba_load():
     import jieba
 
-    _force_load = list(jieba.cut("我来到北京清华大学"))
+    jieba.initialize()
     return jieba
 
 
