@@ -74,7 +74,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
 | Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- |--------:|------------:|
+| -------------- | ------: | ----------: |
 | Jieba cut      |   35.29 |      982.49 |
 | LTP legacy(1)  |   40.51 |      855.65 |
 | LTP legacy(2)  |   20.89 |     1659.28 |
@@ -92,7 +92,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
 | Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- |--------:|------------:|
+| -------------- | ------: | ----------: |
 | LTP legacy(1)  |  108.96 |      318.12 |
 | LTP legacy(2)  |   56.03 |      618.64 |
 | LTP legacy(4)  |   32.81 |     1056.46 |
