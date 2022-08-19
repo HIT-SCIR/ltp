@@ -199,7 +199,7 @@ impl PyModel {
                 PyList::new(
                     py,
                     model
-                        .predict(text)
+                        .predict_alloc(text)?
                         .into_iter()
                         .map(|s| PyString::new(py, &s)),
                 )
@@ -210,7 +210,7 @@ impl PyModel {
                 PyList::new(
                     py,
                     model
-                        .predict(&words)
+                        .predict_alloc(&words)?
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
@@ -222,7 +222,7 @@ impl PyModel {
                 PyList::new(
                     py,
                     model
-                        .predict((&words, &tags))
+                        .predict_alloc((&words, &tags))?
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
@@ -243,14 +243,14 @@ impl PyModel {
         let result = match &self.model {
             EnumModel::CWS(model) => {
                 let batch_text: Vec<_> = args.get_item(0)?.extract()?;
-                let result: Vec<Vec<_>> = pool.install(|| {
+                let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
                     batch_text
                         .into_par_iter()
-                        .map(|text| model.predict(text))
+                        .map(|text| model.predict_alloc(text))
                         .collect()
                 });
                 let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-                for snt in result {
+                for snt in result? {
                     let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
                     for tag in snt {
                         snt_res.append(PyString::new(py, &tag))?;
@@ -261,14 +261,14 @@ impl PyModel {
             }
             EnumModel::POS(model) => {
                 let batch_words: Vec<Vec<&str>> = args.get_item(0)?.extract()?;
-                let result: Vec<Vec<_>> = pool.install(|| {
+                let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
                     batch_words
                         .into_par_iter()
-                        .map(|words| model.predict(&words))
+                        .map(|words| model.predict_alloc(&words))
                         .collect()
                 });
                 let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-                for snt in result {
+                for snt in result? {
                     let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
                     for tag in snt {
                         snt_res.append(PyString::new(py, tag))?;
@@ -280,15 +280,15 @@ impl PyModel {
             EnumModel::NER(model) => {
                 let batch_words: Vec<Vec<&str>> = args.get_item(0)?.extract()?;
                 let batch_pos: Vec<Vec<&str>> = args.get_item(1)?.extract()?;
-                let result: Vec<Vec<_>> = pool.install(|| {
+                let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
                     batch_words
                         .into_par_iter()
                         .zip(batch_pos)
-                        .map(|(words, tags)| model.predict((&words, &tags)))
+                        .map(|(words, tags)| model.predict_alloc((&words, &tags)))
                         .collect()
                 });
                 let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-                for snt in result {
+                for snt in result? {
                     let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
                     for tag in snt {
                         snt_res.append(PyString::new(py, tag))?;

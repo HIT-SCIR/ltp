@@ -58,7 +58,7 @@ impl PyPOSModel {
         Ok(PyList::new(
             py,
             self.model
-                .predict(&words)
+                .predict_alloc(&words)?
                 .into_iter()
                 .map(|s| PyString::new(py, s)),
         )
@@ -78,14 +78,14 @@ impl PyPOSModel {
             .num_threads(threads)
             .build()
             .unwrap();
-        let result = pool.install(|| {
+        let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
             batch_words
                 .into_par_iter()
-                .map(|text| self.model.predict(&text))
-                .collect::<Vec<_>>()
+                .map(|text| self.model.predict_alloc(&text))
+                .collect()
         });
         let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-        for snt in result {
+        for snt in result? {
             let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
             for tag in snt {
                 snt_res.append(PyString::new(py, tag))?;

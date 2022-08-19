@@ -19,4 +19,4 @@ path = "src/lib.rs"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-ltp = { version = "0.1.0", path = "../ltp", features = ["serialization"] }
+ltp = { version = "*", path = "../ltp", features = ["serialization"] }

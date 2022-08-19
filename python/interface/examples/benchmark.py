@@ -47,9 +47,9 @@ def ltp_cws_load(model_path):
 
 @clock
 def ltp_load(
-    cws_model_path="../../data/models/cws_model.bin",
-    pos_model_path="../../data/models/pos_model.bin",
-    ner_model_path="../../data/models/ner_model.bin",
+    cws_model_path="../../data/legacy-models/cws_model.bin",
+    pos_model_path="../../data/legacy-models/pos_model.bin",
+    ner_model_path="../../data/legacy-models/ner_model.bin",
 ):
     from ltp_extension.perceptron import CWSModel, NERModel, POSModel
 
@@ -70,26 +70,26 @@ def ltp_cut(model, sentences, threads=1):
 
 
 def cws_benchmark():
-    with open("../data/models/pku-all.txt") as fi:
+    with open("../../data/benchmark/pku-all.txt") as fi:
         sentences = [line.strip() for line in fi.readlines()]
 
-    # 1.1205673217773438e-05s
+    # 0.7831432819366455s
     jieba_model = jieba_load()
-    # 3.067751884460449s
-    ltp_model = ltp_cws_load("../data/models/cws_model.bin")
+    # 2.6060619354248047s
+    ltp_model = ltp_cws_load("../../data/legacy-models/cws_model.bin")
 
-    # 35.27866315841675s
+    # 37.776106119155884s
     jieba_cut(jieba_model, sentences)
 
-    # 58.64469790458679s
+    # 40.51021385192871s
     ltp_cut(ltp_model, sentences, threads=1)
-    # 30.638360023498535s
+    # 20.893296003341675s
     ltp_cut(ltp_model, sentences, threads=2)
-    # 17.13770890235901s
+    # 11.615908145904541s
     ltp_cut(ltp_model, sentences, threads=4)
-    # 11.386134147644043s
+    # 7.489930868148804s
     ltp_cut(ltp_model, sentences, threads=8)
-    # 9.87795615196228s
+    # 6.337162971496582s
     ltp_cut(ltp_model, sentences, threads=16)
 
 
@@ -103,7 +103,7 @@ def ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1):
 
 
 def pipeline_benchmark():
-    with open("../data/models/pku-all.txt") as fi:
+    with open("../../data/benchmark/pku-all.txt") as fi:
         sentences = [line.strip() for line in fi.readlines()]
 
     # 11.27102518081665s
@@ -172,10 +172,10 @@ def stn_split():
 
 
 def main():
-    simple_example()
+    # simple_example()
     # stn_split()
     # cws_benchmark()
-    # pipeline_benchmark()
+    pipeline_benchmark()
 
 
 if __name__ == "__main__":

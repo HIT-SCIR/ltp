@@ -4,7 +4,14 @@ use std::sync::Arc;
 
 pub trait TraitFeature {
     fn get_with_key(&self, key: &str) -> Option<usize>;
-    fn get_vector(&self, key: &[String]) -> Vec<usize> {
+    fn get_vector_str(&self, key: &[&str]) -> Vec<usize> {
+        key.iter()
+            .map(|k| self.get_with_key(k))
+            .into_iter()
+            .flatten()
+            .collect()
+    }
+    fn get_vector_string(&self, key: &[String]) -> Vec<usize> {
         key.iter()
             .map(|k| self.get_with_key(k))
             .into_iter()

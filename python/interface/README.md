@@ -119,7 +119,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 |                    感知机算法                    |  分词   |  词性   | 命名实体  | 速度(句/s)  |             备注             |
 | :-----------------------------------------: | :---: | :---: | :---: | :------: | :------------------------: |
-| [Legacy](https://huggingface.co/LTP/legacy) | 97.93 | 98.41 | 94.28 | 11607.35 | [性能详情](rust/ltp/README.md) |
+| [Legacy](https://huggingface.co/LTP/legacy) | 97.93 | 98.41 | 94.28 | 15954.03 | [性能详情](rust/ltp/README.md) |
 
 ## 构建 Wheel 包
 

@@ -4,6 +4,7 @@ use crate::perceptron::{
     Definition, TraitFeature, TraitFeatureCompressUtils, TraitFeaturesTrainUtils, TraitParameter,
     TraitParameterStorage, TraitParameterStorageCompressUtils, TraitParameterStorageTrainUtils,
 };
+use anyhow::Result;
 use binary_heap_plus::BinaryHeap;
 use itertools::Itertools;
 use num_traits::NumCast;
@@ -199,7 +200,7 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
     }
 
     pub fn evaluate(&self, inputs: &[Vec<String>], labels: &[usize]) -> (usize, usize, usize) {
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector(f)).collect();
+        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
         let preds = self.decode(&features);
         self.definition.evaluate(&preds, labels)
     }
@@ -219,15 +220,54 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
         let (fragment, features) = self.definition.parse_features(&sentence);
         let features: Vec<_> = features
             .iter()
-            .map(|f| self.features.get_vector(f))
+            .map(|f| self.features.get_vector_string(f))
             .collect();
         let preds = self.decode(&features);
 
         self.definition.predict(&sentence, &fragment, &preds)
     }
+
+    pub fn predict_with_buffer(
+        &self,
+        sentence: <Define::RawFeature as GenericItem>::Item,
+        buffer: &mut Vec<u8>,
+    ) -> Result<<Define::Prediction as GenericItem>::Item> {
+        let (fragment, features) = self.definition.parse_features_with_buffer(&sentence, buffer)?;
+        let features: Vec<_> = features
+            .iter()
+            .map(|f| self.features.get_vector_str(f))
+            .collect();
+        let preds = self.decode(&features);
+
+        Ok(self.definition.predict(&sentence, &fragment, &preds))
+    }
 }
 
-use crate::{get_entities, CWSDefinition};
+impl<Feature, ParamStorage, Param> Perceptron<POSDefinition, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+{
+    pub fn predict_alloc(&self, sentence: &[&str]) -> Result<Vec<&str>> {
+        let mut buffer = Vec::with_capacity(sentence.len() * 180);
+        self.predict_with_buffer(sentence, &mut buffer)
+    }
+}
+
+impl<Feature, ParamStorage, Param> Perceptron<NERDefinition, Feature, ParamStorage, Param>
+    where
+        Feature: TraitFeature,
+        Param: TraitParameter,
+        ParamStorage: TraitParameterStorage<Param>,
+{
+    pub fn predict_alloc(&self, sentence: (&[&str], &[&str])) -> Result<Vec<&str>> {
+        let mut buffer = Vec::with_capacity(sentence.0.len() * 150);
+        self.predict_with_buffer(sentence, &mut buffer)
+    }
+}
+
+use crate::{get_entities, CWSDefinition, POSDefinition, NERDefinition};
 
 impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStorage, Param>
     where
@@ -239,7 +279,7 @@ impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStora
         let (fragments, features) = self.definition.parse_features(&sentence);
         let features: Vec<_> = features
             .iter()
-            .map(|f| self.features.get_vector(f))
+            .map(|f| self.features.get_vector_string(f))
             .collect();
         let preds = self.decode(&features);
 
@@ -253,6 +293,31 @@ impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStora
                 &sentence[start..end]
             })
             .collect::<Vec<_>>()
+    }
+
+    pub fn predict_alloc<'a>(&self, sentence: &'a str) -> Result<Vec<&'a str>> {
+        let mut buffer = Vec::with_capacity(sentence.len() * 25);
+        self.predict_with_buffer(sentence, &mut buffer)
+    }
+
+    pub fn predict_with_buffer<'a>(&self, sentence: &'a str, buffer: &mut Vec<u8>) -> Result<Vec<&'a str>> {
+        let (fragments, features) = self.definition.parse_features_with_buffer(&sentence, buffer)?;
+        let features: Vec<_> = features
+            .iter()
+            .map(|f| self.features.get_vector_str(f))
+            .collect();
+        let preds = self.decode(&features);
+
+        let preds = self.definition.to_labels(&preds);
+        let preds = get_entities(&preds);
+        Ok(preds
+            .into_iter()
+            .map(|(_, start, end)| {
+                let start = fragments[start];
+                let end = fragments[end + 1];
+                &sentence[start..end]
+            })
+            .collect::<Vec<_>>())
     }
 }
 
@@ -275,7 +340,7 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
         mode: &PaMode<Param>,
     ) {
         let label_num = self.definition.label_num();
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector(f)).collect();
+        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
         let preds = self.decode(&features);
 
         if labels.ne(&preds) {
@@ -384,7 +449,7 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
         current: usize,
     ) {
         let label_num = self.definition.label_num();
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector(f)).collect();
+        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
         let preds = self.decode(&features);
 
         if labels.ne(&preds) {
@@ -435,7 +500,7 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
     // 并行 averaged perceptron 算法
     pub fn ap_train_parallel_iter(&mut self, inputs: &[Vec<String>], labels: &[usize]) {
         let label_num = self.definition.label_num();
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector(f)).collect();
+        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
         let preds = self.decode(&features);
 
         if labels.ne(&preds) {

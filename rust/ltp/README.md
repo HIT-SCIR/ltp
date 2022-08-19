@@ -74,13 +74,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
 | Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- | ------: | ----------: |
+| -------------- |--------:|------------:|
 | Jieba cut      |   35.29 |      982.49 |
-| LTP legacy(1)  |   58.64 |      591.04 |
-| LTP legacy(2)  |   30.64 |     1131.30 |
-| LTP legacy(4)  |   17.14 |     2022.50 |
-| LTP legacy(8)  |   11.39 |     3044.15 |
-| LTP legacy(16) |    9.88 |     3508.93 |
+| LTP legacy(1)  |   40.51 |      855.65 |
+| LTP legacy(2)  |   20.89 |     1659.28 |
+| LTP legacy(4)  |   11.62 |     2982.99 |
+| LTP legacy(8)  |    7.49 |     4627.82 |
+| LTP legacy(16) |    6.34 |     5467.25 |
 
 ## Benchmark Pipeline
 
@@ -92,9 +92,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
 | Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- | ------: | ----------: |
-| LTP legacy(1)  |  139.70 |      248.11 |
-| LTP legacy(2)  |   75.18 |      461.04 |
-| LTP legacy(4)  |   42.96 |      806.76 |
-| LTP legacy(8)  |   29.34 |     1181.39 |
-| LTP legacy(16) |   26.28 |     1318.84 |
+| -------------- |--------:|------------:|
+| LTP legacy(1)  |  108.96 |      318.12 |
+| LTP legacy(2)  |   56.03 |      618.64 |
+| LTP legacy(4)  |   32.81 |     1056.46 |
+| LTP legacy(8)  |   21.41 |     1618.98 |
+| LTP legacy(16) |   19.12 |     1812.89 |

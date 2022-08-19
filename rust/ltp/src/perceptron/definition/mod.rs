@@ -2,6 +2,7 @@ mod cws;
 mod ner;
 mod pos;
 
+use anyhow::Result;
 use std::collections::HashSet;
 use std::fmt::Debug;
 use std::io::Read;
@@ -11,6 +12,15 @@ use crate::perceptron::Sample;
 pub use cws::CWSDefinition;
 pub use ner::NERDefinition;
 pub use pos::POSDefinition;
+
+#[macro_export]
+macro_rules! buf_feature {
+    ($dst:expr, $feat:tt, $($arg:tt)*) => {
+        write!($dst, $($arg)*)?;
+        $feat.push($dst.len());
+    };
+}
+
 
 pub trait CommonDefinePredict {}
 
@@ -38,6 +48,11 @@ pub trait Definition: Default + Debug + Clone {
         &self,
         raw: &<Self::RawFeature as GenericItem>::Item,
     ) -> (<Self::Fragment as GenericItem>::Item, Vec<Vec<String>>);
+    fn parse_features_with_buffer<'a>(
+        &self,
+        raw: &<Self::RawFeature as GenericItem>::Item,
+        buf: &'a mut Vec<u8>,
+    ) -> Result<(<Self::Fragment as GenericItem>::Item, Vec<Vec<&'a str>>)>;
     fn parse_gold_features<R: Read>(&self, reader: R) -> Vec<Sample>;
     fn to_labels(&self, index: &[usize]) -> Vec<&str> {
         index.iter().map(|&p| self.to_label(p)).collect()
