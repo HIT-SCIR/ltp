@@ -376,8 +376,6 @@ class LTP(BaseModule, ModelHubMixin):
         inputs: List[str] = None,
         tokenized: BatchEncoding = None,
     ) -> LTPOutput:
-        from ltp_core.models.components.token import BiaffineTokenClassifier
-
         s_arc = result.arc_logits
         s_rel = result.rel_logits
         attention_mask = result.attention_mask
@@ -405,7 +403,7 @@ class LTP(BaseModule, ModelHubMixin):
         store: Dict[str, Any],
         inputs: List[str] = None,
         tokenized: BatchEncoding = None,
-        tree: bool = False,
+        tree: bool = True,
     ) -> LTPOutput:
         s_arc = result.arc_logits
         s_rel = result.rel_logits
@@ -429,7 +427,7 @@ class LTP(BaseModule, ModelHubMixin):
         if tree:
             rels = torch.argmax(s_rel[:, 1:], dim=-1).cpu().numpy()
             rels = [
-                [self.dep_vocab[rels[s, t, a]] for t, a in enumerate(arc)]
+                [self.sdp_vocab[rels[s, t, a]] for t, a in enumerate(arc)]
                 for s, arc in enumerate(e_arcs)
             ]
             return [{"head": arc, "label": rel} for arc, rel in zip(e_arcs, rels)]
