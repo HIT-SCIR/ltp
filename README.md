@@ -61,14 +61,14 @@ from ltp import LTP
 ltp = LTP("LTP/small")  # 默认加载 Small 模型
 output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"])
 # 使用字典格式作为返回结果
-print(output.cws) # print(output[0]) / print(output['cws']) # 也可以使用下标访问
+print(output.cws)  # print(output[0]) / print(output['cws']) # 也可以使用下标访问
 print(output.pos)
 print(output.sdp)
 
 # 使用感知机算法实现的分词、词性和命名实体识别，速度比较快，但是精度略低
 ltp = LTP("LTP/legacy")
 # cws, pos, ner = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "ner"]).to_tuple() # error: NER 需要 词性标注任务的结果
-cws, pos, ner = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner"]).to_tuple() # to tuple 可以自动转换为元组格式
+cws, pos, ner = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner"]).to_tuple()  # to tuple 可以自动转换为元组格式
 # 使用元组格式作为返回结果
 print(cws, pos, ner)
 ```
@@ -115,7 +115,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 |                    感知机算法                    |  分词   |  词性   | 命名实体  | 速度(句/s)  |             备注             |
 | :-----------------------------------------: | :---: | :---: | :---: | :------: | :------------------------: |
-| [Legacy](https://huggingface.co/LTP/legacy) | 97.93 | 98.41 | 94.28 | 15954.03 | [性能详情](rust/ltp/README.md) |
+| [Legacy](https://huggingface.co/LTP/legacy) | 97.93 | 98.41 | 94.28 | 17954.97 | [性能详情](rust/ltp/README.md) |
+
+**注：感知机算法速度为开启16线程速度**
 
 ## 构建 Wheel 包
 

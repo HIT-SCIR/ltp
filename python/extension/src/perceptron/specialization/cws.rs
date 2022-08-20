@@ -50,9 +50,9 @@ impl PyCWSModel {
         Ok(PyList::new(
             py,
             self.model
-                .predict_alloc(text)?
+                .predict(text)?
                 .into_iter()
-                .map(|s| PyString::new(py, &s)),
+                .map(|s| PyString::new(py, s)),
         )
         .into())
     }
@@ -73,14 +73,14 @@ impl PyCWSModel {
         let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
             batch_text
                 .par_iter()
-                .map(|text| self.model.predict_alloc(text))
+                .map(|text| self.model.predict(text))
                 .collect()
         });
         let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
         for snt in result? {
             let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
             for tag in snt {
-                snt_res.append(PyString::new(py, &tag))?;
+                snt_res.append(PyString::new(py, tag))?;
             }
             res.append(snt_res)?;
         }

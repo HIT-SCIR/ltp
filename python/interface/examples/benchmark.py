@@ -81,15 +81,15 @@ def cws_benchmark():
     # 37.776106119155884s
     jieba_cut(jieba_model, sentences)
 
-    # 40.51021385192871s
+    # 36.3308470249176s
     ltp_cut(ltp_model, sentences, threads=1)
-    # 20.893296003341675s
+    # 19.406927824020386s
     ltp_cut(ltp_model, sentences, threads=2)
-    # 11.615908145904541s
+    # 10.735687971115112s
     ltp_cut(ltp_model, sentences, threads=4)
-    # 7.489930868148804s
+    # 7.068112134933472s
     ltp_cut(ltp_model, sentences, threads=8)
-    # 6.337162971496582s
+    # 5.8947789669036865s
     ltp_cut(ltp_model, sentences, threads=16)
 
 
@@ -110,15 +110,15 @@ def pipeline_benchmark():
     cws_model, pos_model, ner_model = ltp_load()
 
     # multi threads
-    # 139.701030254364s
+    # 90.66057300567627s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1)
-    # 75.1799750328064s
+    # 49.43109393119812s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=2)
-    # 42.96349382400513s
+    # 27.981503009796143s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=4)
-    # 29.339277029037476s
+    # 20.109108924865723s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=8)
-    # 26.281506061553955s
+    # 16.989219903945923s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=16)
 
 
@@ -174,7 +174,7 @@ def stn_split():
 def main():
     # simple_example()
     # stn_split()
-    # cws_benchmark()
+    cws_benchmark()
     pipeline_benchmark()
 
 

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[pyclass(module = "ltp_extension.algorithms", name = "StnSplit", subclass)]
 #[pyo3(text_signature = "(self)")]
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, Eq)]
 pub struct StnSplit {
     pub options: SplitOptions,
 }

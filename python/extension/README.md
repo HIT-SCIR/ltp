@@ -14,7 +14,7 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 - [x] 任务
   - [x] 中文分词(cws)
     - [ ] 对数字、英文、网址、邮件的处理
-    - [ ] 支持自定义词典
+    - [x] 支持自定义词典
   - [x] 词性标注(pos)
     - [ ] 支持自定义词典
   - [x] 命名实体识别(ner)
@@ -39,15 +39,15 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 | Algorithm      | Time(s) | Speed(KB/s) |
 | -------------- | ------: | ----------: |
 | Jieba cut      |   35.29 |      982.49 |
-| LTP legacy(1)  |   58.64 |      591.04 |
-| LTP legacy(2)  |   30.64 |     1131.30 |
-| LTP legacy(4)  |   17.14 |     2022.50 |
-| LTP legacy(8)  |   11.39 |     3044.15 |
-| LTP legacy(16) |    9.88 |     3508.93 |
+| LTP legacy(1)  |   36.33 |      954.08 |
+| LTP legacy(2)  |   19.41 |     1786.08 |
+| LTP legacy(4)  |   10.74 |     3228.71 |
+| LTP legacy(8)  |    7.07 |     4904.05 |
+| LTP legacy(16) |    5.89 |     5880.19 |
 
 ## Benchmark Pipeline
 
-- File Size: 33.85 MB
+- File Size: 33.85 MB / 305041 lines
 - Hard Ware:
   - MacBook Pro (16-inch, 2019)
   - 处理器: 2.6 GHz 六核Intel Core i7
@@ -56,8 +56,8 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 
 | Algorithm      | Time(s) | Speed(KB/s) |
 | -------------- | ------: | ----------: |
-| LTP legacy(1)  |  139.70 |      248.11 |
-| LTP legacy(2)  |   75.18 |      461.04 |
-| LTP legacy(4)  |   42.96 |      806.76 |
-| LTP legacy(8)  |   29.34 |     1181.39 |
-| LTP legacy(16) |   26.28 |     1318.84 |
+| LTP legacy(1)  |   90.66 |      382.33 |
+| LTP legacy(2)  |   49.43 |      701.23 |
+| LTP legacy(4)  |   27.98 |     1238.76 |
+| LTP legacy(8)  |   20.11 |     1723.72 |
+| LTP legacy(16) |   16.99 |     2040.26 |

@@ -131,17 +131,20 @@ pub extern "C" fn model_cws_predict(
     let sentence = String::from_utf8_lossy(sentence);
 
     if let EnumModel::CWS(ref model) = unsafe { &(*model).model } {
-        let results = model.predict(&sentence);
-        for (idx, result) in results.iter().enumerate() {
-            (callback.call)(
-                callback.state,
-                result.as_ptr(),
-                result.len(),
-                idx,
-                results.len(),
-            );
+        if let Ok(results) = model.predict(&sentence) {
+            for (idx, result) in results.iter().enumerate() {
+                (callback.call)(
+                    callback.state,
+                    result.as_ptr(),
+                    result.len(),
+                    idx,
+                    results.len(),
+                );
+            }
+            results.len()
+        } else {
+            0
         }
-        results.len()
     } else {
         0
     }
@@ -167,17 +170,20 @@ pub extern "C" fn model_pos_predict(
         .collect::<Vec<_>>();
 
     if let EnumModel::POS(ref model) = unsafe { &(*model).model } {
-        let results = model.predict(&words);
-        for (idx, result) in results.iter().enumerate() {
-            (callback.call)(
-                callback.state,
-                result.as_ptr(),
-                result.len(),
-                idx,
-                results.len(),
-            );
+        if let Ok(results) = model.predict(&words) {
+            for (idx, result) in results.iter().enumerate() {
+                (callback.call)(
+                    callback.state,
+                    result.as_ptr(),
+                    result.len(),
+                    idx,
+                    results.len(),
+                );
+            }
+            results.len()
+        } else {
+            0
         }
-        results.len()
     } else {
         0
     }
@@ -215,17 +221,20 @@ pub extern "C" fn model_ner_predict(
         .collect::<Vec<_>>();
 
     if let EnumModel::NER(ref model) = unsafe { &(*model).model } {
-        let results = model.predict((&words, &pos));
-        for (idx, result) in results.iter().enumerate() {
-            (callback.call)(
-                callback.state,
-                result.as_ptr(),
-                result.len(),
-                idx,
-                results.len(),
-            );
+        if let Ok(results) = model.predict((&words, &pos)) {
+            for (idx, result) in results.iter().enumerate() {
+                (callback.call)(
+                    callback.state,
+                    result.as_ptr(),
+                    result.len(),
+                    idx,
+                    results.len(),
+                );
+            }
+            results.len()
+        } else {
+            0
         }
-        results.len()
     } else {
         0
     }

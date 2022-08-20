@@ -20,7 +20,7 @@ use std::sync::{Arc, RwLock};
 use std::thread;
 
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Algorithm<Param: TraitParameter> {
     AP(usize),
     PA(PaMode<Param>),
@@ -54,9 +54,9 @@ impl<Param: TraitParameter> Default for Algorithm<Param> {
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
 #[derive(Default, Debug, Clone)]
 pub struct Trainer<Define, Param = f64>
-where
-    Define: Definition,
-    Param: TraitParameter + Display,
+    where
+        Define: Definition,
+        Param: TraitParameter + Display,
 {
     pub definition: Define,
     pub epoch: usize,
@@ -86,9 +86,9 @@ macro_rules! impl_set_param {
 }
 
 impl<Define, Param> Trainer<Define, Param>
-where
-    Param: TraitParameter + Display + Sync + Send + 'static,
-    Define: Definition + Sync + Send + 'static,
+    where
+        Param: TraitParameter + Display + Sync + Send + 'static,
+        Define: Definition + Sync + Send + 'static,
 {
     pub fn new() -> Self {
         Self {
@@ -154,15 +154,15 @@ where
         &self,
         model: &Perceptron<Define, Feature, ParamStorage, Param>,
     ) -> Result<(f64, f64, f64)>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
-        Define: Definition,
+        where
+            Feature: TraitFeature,
+            Param: TraitParameter,
+            ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
+            Define: Definition,
     {
         if let Some(eval_set) = &self.eval_set {
             #[cfg(feature = "parallel")]
-            let result = {
+                let result = {
                 let pool = rayon::ThreadPoolBuilder::new()
                     .num_threads(self.eval_threads)
                     .build()
@@ -183,7 +183,7 @@ where
                 })
             };
             #[cfg(not(feature = "parallel"))]
-            let result = eval_set
+                let result = eval_set
                 .iter()
                 .map(|(feature, labels)| model.evaluate(feature, labels))
                 .reduce(
@@ -209,17 +209,17 @@ where
     pub fn build<Feature, ParamStorage>(
         &self,
     ) -> Result<Perceptron<Define, Feature, ParamStorage, Param>>
-    where
-        ParamStorage: TraitParameterStorage<Param>
+        where
+            ParamStorage: TraitParameterStorage<Param>
             + TraitParameterStorageTrainUtils<Param>
             + TraitParameterStorageCompressUtils<Param>
             + Send
             + Sync
             + 'static,
-        Feature: TraitFeature
+            Feature: TraitFeature
             + TraitFeaturesTrainUtils
             + TraitFeatureCompressUtils
-            + ToOwned<Owned = Feature>
+            + ToOwned<Owned=Feature>
             + Send
             + Sync
             + 'static,
@@ -280,9 +280,9 @@ where
         &self,
         features: Feature,
     ) -> Result<Perceptron<Define, Feature, ParamStorage, Param>>
-    where
-        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
-        Feature: TraitFeature + TraitFeaturesTrainUtils,
+        where
+            ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
+            Feature: TraitFeature + TraitFeaturesTrainUtils,
     {
         let label_num = self.definition.label_num();
         let bias = if self.definition.use_viterbi() {
@@ -343,9 +343,9 @@ where
         features: Feature,
         pa_mode: &PaMode<Param>,
     ) -> Result<Perceptron<Define, Feature, ParamStorage, Param>>
-    where
-        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
-        Feature: TraitFeature + TraitFeaturesTrainUtils,
+        where
+            ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
+            Feature: TraitFeature + TraitFeaturesTrainUtils,
     {
         let label_num = self.definition.label_num();
         let bias = if self.definition.use_viterbi() {
@@ -412,16 +412,16 @@ where
         features: Feature,
         threads: usize,
     ) -> Result<Perceptron<Define, Feature, ParamStorage, Param>>
-    where
-        ParamStorage: TraitParameterStorage<Param>
+        where
+            ParamStorage: TraitParameterStorage<Param>
             + TraitParameterStorageTrainUtils<Param>
             + Send
             + Sync
             + 'static,
-        Feature: TraitFeature
+            Feature: TraitFeature
             + TraitFeaturesTrainUtils
             + TraitFeatureCompressUtils
-            + ToOwned<Owned = Feature>
+            + ToOwned<Owned=Feature>
             + Send
             + Sync
             + 'static,
@@ -516,9 +516,9 @@ where
 }
 
 impl<Define, Param> Display for Trainer<Define, Param>
-where
-    Define: Definition,
-    Param: TraitParameter + Display,
+    where
+        Define: Definition,
+        Param: TraitParameter + Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Trainer {{")?;

@@ -164,7 +164,8 @@ impl NERDefinition {
         for feature_end in features {
             let mut feature = Vec::with_capacity(feature_end.len());
             for end in feature_end {
-                feature.push(std::str::from_utf8(&buffer[start..end])?);
+                // Safety : all write are valid utf8
+                feature.push(unsafe { std::str::from_utf8_unchecked(&buffer[start..end]) });
                 start = end;
             }
             result.push(feature);

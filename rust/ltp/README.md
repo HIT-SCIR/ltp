@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - [x] 任务
   - [x] 中文分词(cws)
     - [ ] 对数字、英文、网址、邮件的处理
-    - [ ] 支持自定义词典
+    - [x] 支持自定义词典
   - [x] 词性标注(pos)
     - [ ] 支持自定义词典
   - [x] 命名实体识别(ner)
@@ -76,11 +76,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 | Algorithm      | Time(s) | Speed(KB/s) |
 | -------------- | ------: | ----------: |
 | Jieba cut      |   35.29 |      982.49 |
-| LTP legacy(1)  |   40.51 |      855.65 |
-| LTP legacy(2)  |   20.89 |     1659.28 |
-| LTP legacy(4)  |   11.62 |     2982.99 |
-| LTP legacy(8)  |    7.49 |     4627.82 |
-| LTP legacy(16) |    6.34 |     5467.25 |
+| LTP legacy(1)  |   36.33 |      954.08 |
+| LTP legacy(2)  |   19.41 |     1786.08 |
+| LTP legacy(4)  |   10.74 |     3228.71 |
+| LTP legacy(8)  |    7.07 |     4904.05 |
+| LTP legacy(16) |    5.89 |     5880.19 |
+
+**注：括号内为线程数量**
 
 ## Benchmark Pipeline
 
@@ -93,8 +95,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 | Algorithm      | Time(s) | Speed(KB/s) |
 | -------------- | ------: | ----------: |
-| LTP legacy(1)  |  108.96 |      318.12 |
-| LTP legacy(2)  |   56.03 |      618.64 |
-| LTP legacy(4)  |   32.81 |     1056.46 |
-| LTP legacy(8)  |   21.41 |     1618.98 |
-| LTP legacy(16) |   19.12 |     1812.89 |
+| LTP legacy(1)  |   90.66 |      382.33 |
+| LTP legacy(2)  |   49.43 |      701.23 |
+| LTP legacy(4)  |   27.98 |     1238.76 |
+| LTP legacy(8)  |   20.11 |     1723.72 |
+| LTP legacy(16) |   16.99 |     2040.26 |
+
+**注：括号内为线程数量**

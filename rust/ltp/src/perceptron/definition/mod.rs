@@ -48,6 +48,8 @@ pub trait Definition: Default + Debug + Clone {
         &self,
         raw: &<Self::RawFeature as GenericItem>::Item,
     ) -> (<Self::Fragment as GenericItem>::Item, Vec<Vec<String>>);
+
+    #[allow(clippy::type_complexity)]
     fn parse_features_with_buffer<'a>(
         &self,
         raw: &<Self::RawFeature as GenericItem>::Item,

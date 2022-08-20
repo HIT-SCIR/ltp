@@ -67,7 +67,7 @@ impl PyNERModel {
         Ok(PyList::new(
             py,
             self.model
-                .predict((&words, &pos))
+                .predict((&words, &pos))?
                 .into_iter()
                 .map(|s| PyString::new(py, s)),
         )
@@ -92,7 +92,7 @@ impl PyNERModel {
             batch_words
                 .into_par_iter()
                 .zip(batch_pos)
-                .map(|(words, pos)| self.model.predict_alloc((&words, &pos)))
+                .map(|(words, pos)| self.model.predict((&words, &pos)))
                 .collect()
         });
         let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));

@@ -131,6 +131,11 @@ class Model:
         Save Model to a path
         """
         pass
+    def specialize(self):
+        """
+        Specialize the Model
+        """
+        pass
 
 class ModelType:
     def __init__(self, model_type=None):

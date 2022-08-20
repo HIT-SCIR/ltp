@@ -17,7 +17,7 @@ use std::iter::zip;
 use std::mem::swap;
 
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PaMode<Param>
     where
         Param: TraitParameter,
@@ -213,20 +213,6 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
         ParamStorage: TraitParameterStorage<Param>,
         Define: Definition + CommonDefinePredict,
 {
-    pub fn predict(
-        &self,
-        sentence: <Define::RawFeature as GenericItem>::Item,
-    ) -> <Define::Prediction as GenericItem>::Item {
-        let (fragment, features) = self.definition.parse_features(&sentence);
-        let features: Vec<_> = features
-            .iter()
-            .map(|f| self.features.get_vector_string(f))
-            .collect();
-        let preds = self.decode(&features);
-
-        self.definition.predict(&sentence, &fragment, &preds)
-    }
-
     pub fn predict_with_buffer(
         &self,
         sentence: <Define::RawFeature as GenericItem>::Item,
@@ -249,7 +235,7 @@ impl<Feature, ParamStorage, Param> Perceptron<POSDefinition, Feature, ParamStora
         Param: TraitParameter,
         ParamStorage: TraitParameterStorage<Param>,
 {
-    pub fn predict_alloc(&self, sentence: &[&str]) -> Result<Vec<&str>> {
+    pub fn predict(&self, sentence: &[&str]) -> Result<Vec<&str>> {
         let mut buffer = Vec::with_capacity(sentence.len() * 180);
         self.predict_with_buffer(sentence, &mut buffer)
     }
@@ -261,7 +247,7 @@ impl<Feature, ParamStorage, Param> Perceptron<NERDefinition, Feature, ParamStora
         Param: TraitParameter,
         ParamStorage: TraitParameterStorage<Param>,
 {
-    pub fn predict_alloc(&self, sentence: (&[&str], &[&str])) -> Result<Vec<&str>> {
+    pub fn predict(&self, sentence: (&[&str], &[&str])) -> Result<Vec<&str>> {
         let mut buffer = Vec::with_capacity(sentence.0.len() * 150);
         self.predict_with_buffer(sentence, &mut buffer)
     }
@@ -275,27 +261,7 @@ impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStora
         Param: TraitParameter,
         ParamStorage: TraitParameterStorage<Param>,
 {
-    pub fn predict<'a>(&self, sentence: &'a str) -> Vec<&'a str> {
-        let (fragments, features) = self.definition.parse_features(&sentence);
-        let features: Vec<_> = features
-            .iter()
-            .map(|f| self.features.get_vector_string(f))
-            .collect();
-        let preds = self.decode(&features);
-
-        let preds = self.definition.to_labels(&preds);
-        let preds = get_entities(&preds);
-        preds
-            .into_iter()
-            .map(|(_, start, end)| {
-                let start = fragments[start];
-                let end = fragments[end + 1];
-                &sentence[start..end]
-            })
-            .collect::<Vec<_>>()
-    }
-
-    pub fn predict_alloc<'a>(&self, sentence: &'a str) -> Result<Vec<&'a str>> {
+    pub fn predict<'a>(&self, sentence: &'a str) -> Result<Vec<&'a str>> {
         let mut buffer = Vec::with_capacity(sentence.len() * 25);
         self.predict_with_buffer(sentence, &mut buffer)
     }

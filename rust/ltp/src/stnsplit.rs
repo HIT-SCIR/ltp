@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SplitOptions {
     pub use_zh: bool,
     pub use_en: bool,
@@ -135,9 +135,9 @@ pub fn stn_split_with_options<'a, 'b>(text: &'a str, options: &'b SplitOptions) 
                         if let Some(quote) = quotes.pop() {
                             match (quote, ch) {
                                 ('“', '”') | ('‘', '’') | ('『', '』') | ('﹃', '﹄') =>
-                                {
-                                    // do nothing
-                                }
+                                    {
+                                        // do nothing
+                                    }
                                 _ => {
                                     // todo: error: maybe need todo something ?
                                     // pop until find the quote pair
@@ -293,9 +293,9 @@ mod tests {
         // dotted sentence
         assert_eq!(
             stn_split(concat!(
-                "那孩子含着泪唱着：“……世上只有妈妈好，没妈的孩子像根草……”",
-                "各种鲜花争奇斗艳：菊花、玫瑰、马蹄莲、郁金香……",
-                "他吃力地张开嘴：“你……要……坚持……下……去……”",
+            "那孩子含着泪唱着：“……世上只有妈妈好，没妈的孩子像根草……”",
+            "各种鲜花争奇斗艳：菊花、玫瑰、马蹄莲、郁金香……",
+            "他吃力地张开嘴：“你……要……坚持……下……去……”",
             )),
             vec![
                 "那孩子含着泪唱着：“……世上只有妈妈好，没妈的孩子像根草……”",
@@ -310,10 +310,10 @@ mod tests {
         // special quote sentence
         assert_eq!(
             stn_split(concat!(
-                "林小姐哭丧着脸说：“妈呀，全是东洋货！明儿叫我穿什么衣服？”",
-                "“妈呀，全是东洋货！明儿叫我穿什么衣服？”林小姐哭丧着脸说。",
-                "“妈呀，”林小姐哭丧着脸说，“全是东洋货！明儿叫我穿什么衣服？”",
-                "“全是东洋货！妈呀，”林小姐哭丧着脸说，“明儿叫我穿什么衣服？”",
+            "林小姐哭丧着脸说：“妈呀，全是东洋货！明儿叫我穿什么衣服？”",
+            "“妈呀，全是东洋货！明儿叫我穿什么衣服？”林小姐哭丧着脸说。",
+            "“妈呀，”林小姐哭丧着脸说，“全是东洋货！明儿叫我穿什么衣服？”",
+            "“全是东洋货！妈呀，”林小姐哭丧着脸说，“明儿叫我穿什么衣服？”",
             )),
             vec![
                 "林小姐哭丧着脸说：“妈呀，全是东洋货！明儿叫我穿什么衣服？”",
@@ -330,11 +330,11 @@ mod tests {
         // chinese & english & point number
         assert_eq!(
             stn_split(concat!(
-                "中文和外文同时大量混排（如讲解英语语法的中文书），为避免中文小圆圈的句号“。”和西文小圆点儿的句号“.”穿插使用的不便，可以统统采用西文句号“.”。",
-                "这个句子应当翻译成He loves sports.",
-                "焦耳定律的公式是：Q = I2RT.",
-                "计算所得的结果是48.2%.",
-                "“‘”应该和“’”成对使用。",
+            "中文和外文同时大量混排（如讲解英语语法的中文书），为避免中文小圆圈的句号“。”和西文小圆点儿的句号“.”穿插使用的不便，可以统统采用西文句号“.”。",
+            "这个句子应当翻译成He loves sports.",
+            "焦耳定律的公式是：Q = I2RT.",
+            "计算所得的结果是48.2%.",
+            "“‘”应该和“’”成对使用。",
             )),
             vec![
                 "中文和外文同时大量混排（如讲解英语语法的中文书），为避免中文小圆圈的句号“。”和西文小圆点儿的句号“.”穿插使用的不便，可以统统采用西文句号“.”。",
