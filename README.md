@@ -79,9 +79,8 @@ print(cws, pos, ner)
 
 ```rust
 use std::fs::File;
-use apache_avro::Codec;
 use itertools::multizip;
-use ltp::{CWSModel, POSModel, NERModel, ModelSerde, Format};
+use ltp::{CWSModel, POSModel, NERModel, ModelSerde, Format, Codec};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open("data/legacy-models/cws_model.bin")?;

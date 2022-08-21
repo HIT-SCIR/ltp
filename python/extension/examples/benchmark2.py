@@ -1,4 +1,5 @@
 import functools
+import os
 import time
 
 
@@ -29,6 +30,7 @@ def convert2raw(input_file, output_file):
 
 # ======================= 结巴分词 =======================
 
+
 @clock
 def jieba_load():
     import jieba
@@ -44,9 +46,11 @@ def jieba_cut(model, sentences):
 
 # ======================= PKUSEG =======================
 
+
 @clock
 def pkuseg_load():
     import pkuseg
+
     return pkuseg.pkuseg()
 
 
@@ -59,6 +63,7 @@ def pkuseg_cut(model, sentences):
 @clock
 def thulac_load():
     import thulac
+
     thulac = thulac.thulac(seg_only=True)
     return thulac
 
@@ -75,6 +80,7 @@ def thulac_fast_cut(model, sentences):
 
 # ======================= LTP 3 =======================
 
+
 @clock
 def ltp3_cws_load(model_path="../../data/legacy-models-v3/cws.model"):
     from pyltp import Segmentor
@@ -90,11 +96,11 @@ def ltp3_cut(model, sentences):
 
 @clock
 def ltp3_load(
-        cws_model_path="../../data/legacy-models-v3/cws.model",
-        pos_model_path="../../data/legacy-models-v3/pos.model",
-        ner_model_path="../../data/legacy-models-v3/ner.model",
+    cws_model_path="../../data/legacy-models-v3/cws.model",
+    pos_model_path="../../data/legacy-models-v3/pos.model",
+    ner_model_path="../../data/legacy-models-v3/ner.model",
 ):
-    from pyltp import Segmentor, Postagger, NamedEntityRecognizer
+    from pyltp import NamedEntityRecognizer, Postagger, Segmentor
 
     cws_model = Segmentor(cws_model_path)
     pos_model = Postagger(pos_model_path)
@@ -127,100 +133,53 @@ def ltp_cut(model, sentences, threads=1):
     return model.batch_predict(sentences, threads)
 
 
-@clock
-def ltp_load(
-        cws_model_path="../../data/legacy-models/cws_model.bin",
-        pos_model_path="../../data/legacy-models/pos_model.bin",
-        ner_model_path="../../data/legacy-models/ner_model.bin",
-):
-    from ltp_extension.perceptron import CWSModel, NERModel, POSModel
-
-    cws_model = CWSModel.load(cws_model_path)
-    pos_model = POSModel.load(pos_model_path)
-    ner_model = NERModel.load(ner_model_path)
-    return cws_model, pos_model, ner_model
-
-
-@clock
-def ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1):
-    batch_words = cws_model.batch_predict(sentences, threads)
-    batch_pos = pos_model.batch_predict(batch_words, threads)
-    batch_ner = ner_model.batch_predict(batch_words, batch_pos, threads)
-
-    return batch_words, batch_pos, batch_ner
-
-
 # ==================== Benchmark ====================
 
 
-def cws_benchmark():
-    with open("../../data/benchmark/pku-all.txt") as fi:
+def cws_benchmark(input_file, output_dir):
+    with open(input_file) as fi:
         sentences = [line.strip() for line in fi.readlines()]
+        sentences = [sentence for sentence in sentences if sentence]
 
-    # 0.7831432819366455s
     jieba_model = jieba_load()
-    # 37.776106119155884s
-    jieba_cut(jieba_model, sentences)
+    res = jieba_cut(jieba_model, sentences)
+    with open(os.path.join(output_dir, "jieba.txt"), "w") as fo:
+        for sentence in res:
+            fo.write(" ".join(sentence) + "\n")
 
-    # 9.232479095458984s
     pkuseg = pkuseg_load()
-    # 315.90687012672424s
-    pkuseg_cut(pkuseg, sentences)
+    res = pkuseg_cut(pkuseg, sentences)
+    with open(os.path.join(output_dir, "pkuseg.txt"), "w") as fo:
+        for sentence in res:
+            fo.write(" ".join(sentence) + "\n")
 
-    # 0.9187619686126709s
     thulac_model = thulac_load()
-    # 720.1864020824432s
-    thulac_cut(thulac_model, sentences)
-    # 30.58756685256958s
-    thulac_fast_cut(thulac_model, sentences)
+    res = thulac_fast_cut(thulac_model, sentences)
+    with open(os.path.join(output_dir, "thulac.txt"), "w") as fo:
+        for sentence in res:
+            fo.write(sentence + "\n")
 
-    # 0.17265582084655762s
     ltp3_model = ltp3_cws_load()
-    # 76.8230140209198s
-    ltp3_cut(ltp3_model, sentences)
+    res = ltp3_cut(ltp3_model, sentences)
+    with open(os.path.join(output_dir, "ltp3.txt"), "w") as fo:
+        for sentence in res:
+            fo.write(" ".join(sentence) + "\n")
 
-    # 2.6060619354248047s
     ltp_model = ltp_cws_load()
-    # 36.3308470249176s
-    ltp_cut(ltp_model, sentences, threads=1)
-    # 19.406927824020386s
-    ltp_cut(ltp_model, sentences, threads=2)
-    # 10.735687971115112s
-    ltp_cut(ltp_model, sentences, threads=4)
-    # 7.068112134933472s
-    ltp_cut(ltp_model, sentences, threads=8)
-    # 5.8947789669036865s
-    ltp_cut(ltp_model, sentences, threads=16)
-
-
-def pipeline_benchmark():
-    with open("../../data/benchmark/pku-all.txt") as fi:
-        sentences = [line.strip() for line in fi.readlines()]
-
-    # 11.27102518081665s
-    cws_model, pos_model, ner_model = ltp_load()
-
-    # multi threads
-    # 90.66057300567627s
-    ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1)
-    # 49.43109393119812s
-    ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=2)
-    # 27.981503009796143s
-    ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=4)
-    # 20.109108924865723s
-    ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=8)
-    # 16.989219903945923s
-    ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=16)
-
-    # 0.8289380073547363s
-    cws_model_3, pos_model_3, ner_model_3 = ltp3_load()
-    # 226.40391397476196s
-    ltp3_pipeline(cws_model_3, pos_model_3, ner_model_3, sentences)
+    res = ltp_cut(ltp_model, sentences, threads=16)
+    with open(os.path.join(output_dir, "ltp.txt"), "w") as fo:
+        for sentence in res:
+            fo.write(" ".join(sentence) + "\n")
 
 
 def main():
-    cws_benchmark()
-    pipeline_benchmark()
+    output_dir = "../../data/icwb2-data/predict/pku"
+    os.makedirs(output_dir, exist_ok=True)
+    cws_benchmark("../../data/icwb2-data/testing/pku_test.utf8", output_dir)
+
+    output_dir = "../../data/icwb2-data/predict/msr"
+    os.makedirs(output_dir, exist_ok=True)
+    cws_benchmark("../../data/icwb2-data/testing/msr_test.utf8", output_dir)
 
 
 if __name__ == "__main__":
