@@ -72,7 +72,7 @@ impl PyCWSModel {
             .unwrap();
         let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
             batch_text
-                .par_iter()
+                .into_par_iter()
                 .map(|text| self.model.predict(text))
                 .collect()
         });

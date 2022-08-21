@@ -42,61 +42,7 @@ impl NERDefinition {
     // +----------------+------------------------------------------------------------+
     // | postag-bigram  | p[-1]p[0],p[0]p[1]                                         |
     // +----------------+------------------------------------------------------------+
-    pub fn parse_words_features(&self, words: &[&str], poses: &[&str]) -> Vec<Vec<String>> {
-        let word_null = "";
-        let words_len = words.len();
-        let mut features = Vec::with_capacity(words_len);
-
-        for (idx, &cur_word) in words.iter().enumerate() {
-            // 剩余字符数
-            let last = words_len - idx - 1;
-            let pre2_word = if idx > 1 { words[idx - 2] } else { word_null };
-            let pre_word = if idx > 0 { words[idx - 1] } else { word_null };
-            let next_word = if last > 0 { words[idx + 1] } else { word_null };
-            let next2_word = if last > 1 { words[idx + 2] } else { word_null };
-
-            // todo: 优化容量设置
-            let mut feature = Vec::with_capacity(18);
-
-            // w[0]
-            feature.push(format!("2{}", words[idx]));
-
-            // p[0]
-            feature.push(format!("d{}", poses[idx]));
-
-            if idx > 0 {
-                feature.push(format!("1{}", pre_word)); // w[-1]
-                feature.push(format!("6{}{}", pre_word, cur_word)); // w[-1]w[0]
-                feature.push(format!("c{}", poses[idx - 1])); // p[-1]
-                feature.push(format!("g{}{}", poses[idx - 1], poses[idx])); // p[-1]p[0]
-                if idx > 1 {
-                    feature.push(format!("0{}", pre2_word)); // w[-2]
-                    feature.push(format!("5{}{}", pre2_word, pre_word)); // w[-2]w[-1]
-                    feature.push(format!("9{}{}", pre2_word, cur_word)); // w[-2]w[0]
-
-                    feature.push(format!("b{}", poses[idx - 2])); // p[-2]
-                }
-            }
-
-            if last > 0 {
-                feature.push(format!("3{}", next_word)); // w[+1]
-                feature.push(format!("7{}{}", cur_word, next_word)); // w[0]w[+1]
-                feature.push(format!("e{}", poses[idx + 1])); // p[+1]
-                feature.push(format!("h{}{}", poses[idx], poses[idx + 1])); // p[0]p[+1]
-                if last > 1 {
-                    feature.push(format!("4{}", next2_word)); // w[+2]
-                    feature.push(format!("8{}{}", next_word, next2_word)); // w[+1]w[+2]
-                    feature.push(format!("a{}{}", cur_word, next2_word)); // w[0]w[+2]
-                    feature.push(format!("f{}", poses[idx + 2])); // p[+2]
-                }
-            }
-
-            features.push(feature);
-        }
-        features
-    }
-
-    pub fn parse_words_features_with_buffer<'a>(&self, words: &[&str], poses: &[&str], buffer: &'a mut Vec<u8>) -> Result<Vec<Vec<&'a str>>> {
+    pub fn parse_words_features_with_buffer<'a>(&self, words: &[&str], poses: &[&str], buffer: &'a mut Vec<u8>) -> Result<Vec<Vec<usize>>> {
         let word_null = "";
         let words_len = words.len();
         let mut features = Vec::with_capacity(words_len);
@@ -159,6 +105,30 @@ impl NERDefinition {
             features.push(feature);
         }
 
+        Ok(features)
+    }
+
+    pub fn parse_words_features(&self, words: &[&str], poses: &[&str]) -> Result<Vec<Vec<String>>> {
+        let mut buffer = Vec::with_capacity(words.len() * 150);
+        let features = self.parse_words_features_with_buffer(words, poses, &mut buffer)?;
+
+        let mut start = 0usize;
+        let mut result = Vec::with_capacity(features.len());
+        for feature_end in features {
+            let mut feature = Vec::with_capacity(feature_end.len());
+            for end in feature_end {
+                // Safety : all write are valid utf8
+                feature.push(String::from_utf8_lossy(&buffer[start..end]).to_string());
+                start = end;
+            }
+            result.push(feature);
+        }
+        Ok(result)
+    }
+
+    pub fn parse_words_features_with_buffer_str<'a>(&self, words: &[&str], poses: &[&str], buffer: &'a mut Vec<u8>) -> Result<Vec<Vec<&'a str>>> {
+        let features = self.parse_words_features_with_buffer(words, poses, buffer)?;
+
         let mut start = 0usize;
         let mut result = Vec::with_capacity(features.len());
         for feature_end in features {
@@ -203,27 +173,27 @@ impl Definition for NERDefinition {
     fn parse_features(
         &self,
         line: &<Self::RawFeature as GenericItem>::Item,
-    ) -> ((), Vec<Vec<String>>) {
+    ) -> Result<((), Vec<Vec<String>>)> {
         let (words, features) = line;
-        let features = self.parse_words_features(words, features);
+        let features = self.parse_words_features(words, features)?;
 
-        ((), features)
+        Ok(((), features))
     }
+
     fn parse_features_with_buffer<'a>(
         &self,
         line: &<Self::RawFeature as GenericItem>::Item,
         buf: &'a mut Vec<u8>,
     ) -> Result<((), Vec<Vec<&'a str>>)> {
         let (words, features) = line;
-        let features = self.parse_words_features_with_buffer(words, features, buf)?;
+        let features = self.parse_words_features_with_buffer_str(words, features, buf)?;
         Ok(((), features))
     }
 
     #[cfg(feature = "parallel")]
-    fn parse_gold_features<R: Read>(&self, reader: R) -> Vec<Sample> {
+    fn parse_gold_features<R: Read>(&self, reader: R) -> Result<Vec<Sample>> {
         let lines = BufReader::new(reader).lines();
         let lines = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
-        let mut result = Vec::with_capacity(lines.len());
 
         lines
             .par_iter()
@@ -240,16 +210,13 @@ impl Definition for NERDefinition {
                     poses.push(pos);
                     labels.push(self.label_to(label));
                 }
-                let features = self.parse_words_features(&words, &poses);
-                (features, labels)
+                self.parse_words_features(&words, &poses).map(|features| { (features, labels) })
             })
-            .collect_into_vec(&mut result);
-
-        result
+            .collect()
     }
 
     #[cfg(not(feature = "parallel"))]
-    fn parse_gold_features<R: Read>(&self, reader: R) -> Vec<Sample> {
+    fn parse_gold_features<R: Read>(&self, reader: R) -> Result<Vec<Sample>> {
         let lines = BufReader::new(reader).lines();
         let lines = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
 
@@ -268,10 +235,9 @@ impl Definition for NERDefinition {
                     poses.push(pos);
                     labels.push(self.label_to(label));
                 }
-                let features = self.parse_words_features(&words, &poses);
-                (features, labels)
+                self.parse_words_features(&words, &poses).map(|features| { (features, labels) })
             })
-            .collect_vec()
+            .collect()
     }
 
     fn predict(
@@ -301,8 +267,8 @@ mod tests {
         let sentence = vec!["桂林", "警备区", "从", "一九九○年", "以来", "，", "先后", "修建", "水电站", "十五", "座", "，", "整修", "水渠", "六千七百四十", "公里", "，", "兴修", "水利", "一千五百六十五", "处", "，", "修建", "机耕路", "一百二十六", "公里", "，", "修建", "人", "畜", "饮水", "工程", "二百六十五", "处", "，", "解决", "饮水", "人口", "六点五万", "人", "，", "使", "八万", "多", "壮", "、", "瑶", "、", "苗", "、", "侗", "、", "回", "等", "民族", "的", "群众", "脱", "了", "贫", "，", "占", "桂林", "地", "、", "市", "脱贫", "人口", "总数", "的", "百分之三十七点六", "。"];
         let pos = vec!["ns", "n", "p", "nt", "nd", "wp", "d", "v", "n", "m", "q", "wp", "v", "n", "m", "q", "wp", "v", "n", "m", "q", "wp", "v", "n", "m", "q", "wp", "v", "n", "n", "n", "n", "m", "q", "wp", "v", "n", "n", "m", "n", "wp", "v", "m", "m", "j", "wp", "j", "wp", "j", "wp", "j", "wp", "j", "u", "n", "u", "n", "v", "u", "a", "wp", "v", "ns", "n", "wp", "n", "v", "n", "n", "u", "m", "wp"];
         let define = Define::default();
-        let no_buffer = define.parse_words_features(&sentence, &pos);
-        let with_buffer = define.parse_words_features_with_buffer(&sentence, &pos, &mut buffer)?;
+        let no_buffer = define.parse_words_features(&sentence, &pos)?;
+        let with_buffer = define.parse_words_features_with_buffer_str(&sentence, &pos, &mut buffer)?;
 
         for (a, b) in zip(no_buffer, with_buffer) {
             for (c, d) in zip(a, b) {

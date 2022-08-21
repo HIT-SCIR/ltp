@@ -48,103 +48,7 @@ impl POSDefinition {
     // +----------------------+-----------------------------------------------------------+
     // | suffix               | ch[0,n-2:n],ch[0,n-1:n],ch[0,n]                           |
     // +----------------------+-----------------------------------------------------------+
-    pub fn parse_words_features(&self, words: &[&str]) -> Vec<Vec<String>> {
-        let word_null = "";
-        let words_len = words.len();
-        let mut features = Vec::with_capacity(words_len);
-
-        let chars = words
-            .iter()
-            .map(|w| SmallVec::<[char; 4]>::from_iter(w.chars()))
-            .collect_vec();
-
-        for (idx, &cur_word) in words.iter().enumerate() {
-            // 剩余字符数
-            let last = words_len - idx - 1;
-            let pre2_word = if idx > 1 { words[idx - 2] } else { word_null };
-            let pre_word = if idx > 0 { words[idx - 1] } else { word_null };
-            let next_word = if last > 0 { words[idx + 1] } else { word_null };
-            let next2_word = if last > 1 { words[idx + 2] } else { word_null };
-
-            // todo: 优化容量设置
-            let mut feature = Vec::with_capacity(22);
-
-            // w[0]
-            feature.push(format!("2{}", words[idx]));
-            // ch[0,0]ch[0,n]
-            feature.push(format!(
-                "c{}{}",
-                chars[idx][0],
-                chars[idx][chars[idx].len() - 1]
-            ));
-            // length
-            feature.push(format!("f{}", chars[idx].len()));
-            // prefix => ch[0,0]ch[0,0:1]ch[0,0:2]
-
-            let prefix_id = &['c', 'd', 'e'];
-            chars[idx]
-                .iter()
-                .take(3)
-                .enumerate()
-                .for_each(|(bias, prefix)| {
-                    feature.push(format!("{}{}", prefix_id[bias], prefix));
-                });
-            // suffix => ch[0,n-2:n],ch[0,n-1:n],ch[0,n]
-            let suffix_id = &['f', 'g', 'h'];
-            chars[idx]
-                .iter()
-                .rev()
-                .take(3)
-                .enumerate()
-                .for_each(|(bias, suffix)| {
-                    feature.push(format!("{}{}", suffix_id[bias], suffix));
-                });
-
-            if idx > 0 {
-                feature.push(format!("1{}", pre_word)); // w[-1]
-                feature.push(format!("6{}{}", pre_word, cur_word)); // w[-1]w[0]
-                feature.push(format!(
-                    // ch[-1,n]ch[0,0]
-                    "d{}{}",
-                    chars[idx - 1][chars[idx - 1].len() - 1],
-                    chars[idx][0]
-                ));
-
-                if idx > 1 {
-                    feature.push(format!("0{}", pre2_word)); // w[-2]
-                    feature.push(format!("5{}{}", pre2_word, pre_word)); // w[-2]w[-1]
-                    feature.push(format!("9{}{}", pre2_word, cur_word)); // w[-2]w[0]
-                }
-            }
-
-            if last > 0 {
-                feature.push(format!("3{}", next_word)); // w[+1]
-                feature.push(format!("7{}{}", cur_word, next_word)); // w[0]w[+1]
-                feature.push(format!(
-                    // ch[0,-1]ch[1,0]
-                    "e{}{}",
-                    chars[idx][chars[idx].len() - 1],
-                    chars[idx + 1][0],
-                ));
-
-                if last > 1 {
-                    feature.push(format!("4{}", next2_word)); // w[+2]
-                    feature.push(format!("8{}{}", next_word, next2_word)); // w[+1]w[+2]
-                    feature.push(format!("a{}{}", cur_word, next2_word)); // w[0]w[+2]
-                }
-            }
-
-            if idx > 0 && last > 0 {
-                // w[-1]w[0]w[+1]
-                feature.push(format!("b{}{}{}", pre_word, cur_word, next_word));
-            }
-
-            features.push(feature);
-        }
-        features
-    }
-
-    pub fn parse_words_features_with_buffer<'a>(&self, words: &[&str], buffer: &'a mut Vec<u8>) -> Result<Vec<Vec<&'a str>>> {
+    pub fn parse_words_features_with_buffer<'a>(&self, words: &[&str], buffer: &'a mut Vec<u8>) -> Result<Vec<Vec<usize>>> {
         let word_null = "";
         let words_len = words.len();
         let mut features = Vec::with_capacity(words_len);
@@ -234,6 +138,29 @@ impl POSDefinition {
             }
             features.push(feature);
         }
+        Ok(features)
+    }
+
+    pub fn parse_words_features(&self, words: &[&str]) -> Result<Vec<Vec<String>>> {
+        let mut buffer = Vec::with_capacity(words.len() * 180);
+        let features = self.parse_words_features_with_buffer(words, &mut buffer)?;
+
+        let mut start = 0usize;
+        let mut result = Vec::with_capacity(features.len());
+        for feature_end in features {
+            let mut feature = Vec::with_capacity(feature_end.len());
+            for end in feature_end {
+                // Safety : all write are valid utf8
+                feature.push(String::from_utf8_lossy(&buffer[start..end]).to_string());
+                start = end;
+            }
+            result.push(feature);
+        }
+        Ok(result)
+    }
+
+    pub fn parse_words_features_with_buffer_str<'a>(&self, words: &[&str], buffer: &'a mut Vec<u8>) -> Result<Vec<Vec<&'a str>>> {
+        let features = self.parse_words_features_with_buffer(words, buffer)?;
 
         let mut start = 0usize;
         let mut result = Vec::with_capacity(features.len());
@@ -271,9 +198,9 @@ impl Definition for POSDefinition {
         &self.to_labels[index]
     }
 
-    fn parse_features(&self, words: &&[&str]) -> ((), Vec<Vec<String>>) {
-        let features = self.parse_words_features(words);
-        ((), features)
+    fn parse_features(&self, words: &&[&str]) -> Result<((), Vec<Vec<String>>)> {
+        let features = self.parse_words_features(words)?;
+        Ok(((), features))
     }
 
     fn parse_features_with_buffer<'a>(
@@ -281,15 +208,14 @@ impl Definition for POSDefinition {
         words: &&[&str],
         buf: &'a mut Vec<u8>,
     ) -> Result<((), Vec<Vec<&'a str>>)> {
-        let features = self.parse_words_features_with_buffer(words, buf)?;
+        let features = self.parse_words_features_with_buffer_str(words, buf)?;
         Ok(((), features))
     }
 
     #[cfg(feature = "parallel")]
-    fn parse_gold_features<R: Read>(&self, reader: R) -> Vec<Sample> {
+    fn parse_gold_features<R: Read>(&self, reader: R) -> Result<Vec<Sample>> {
         let lines = BufReader::new(reader).lines();
         let lines = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
-        let mut result = Vec::with_capacity(lines.len());
 
         lines
             .par_iter()
@@ -304,16 +230,13 @@ impl Definition for POSDefinition {
                     words.push(word);
                     labels.push(self.label_to(label));
                 }
-                let features = self.parse_words_features(&words);
-                (features, labels)
+                self.parse_words_features(&words).map(|features| (features, labels))
             })
-            .collect_into_vec(&mut result);
-
-        result
+            .collect()
     }
 
     #[cfg(not(feature = "parallel"))]
-    fn parse_gold_features<R: Read>(&self, reader: R) -> Vec<Sample> {
+    fn parse_gold_features<R: Read>(&self, reader: R) -> Result<Vec<Sample>> {
         let lines = BufReader::new(reader).lines();
         let lines = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
 
@@ -330,10 +253,9 @@ impl Definition for POSDefinition {
                     words.push(word);
                     labels.push(self.label_to(label));
                 }
-                let features = self.parse_words_features(&words);
-                (features, labels)
+                self.parse_words_features(&words).map(|features| (features, labels))
             })
-            .collect_vec()
+            .collect()
     }
 
     fn predict(
@@ -363,8 +285,8 @@ mod tests {
 
         let sentence = vec!["桂林", "警备区", "从", "一九九○年", "以来", "，", "先后", "修建", "水电站", "十五", "座", "，", "整修", "水渠", "六千七百四十", "公里", "，", "兴修", "水利", "一千五百六十五", "处", "，", "修建", "机耕路", "一百二十六", "公里", "，", "修建", "人", "畜", "饮水", "工程", "二百六十五", "处", "，", "解决", "饮水", "人口", "六点五万", "人", "，", "使", "八万", "多", "壮", "、", "瑶", "、", "苗", "、", "侗", "、", "回", "等", "民族", "的", "群众", "脱", "了", "贫", "，", "占", "桂林", "地", "、", "市", "脱贫", "人口", "总数", "的", "百分之三十七点六", "。"];
         let define = Define::default();
-        let no_buffer = define.parse_words_features(&sentence);
-        let with_buffer = define.parse_words_features_with_buffer(&sentence, &mut buffer)?;
+        let no_buffer = define.parse_words_features(&sentence)?;
+        let with_buffer = define.parse_words_features_with_buffer_str(&sentence, &mut buffer)?;
 
         for (a, b) in zip(no_buffer, with_buffer) {
             for (c, d) in zip(a, b) {

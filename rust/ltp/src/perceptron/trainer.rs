@@ -129,7 +129,7 @@ impl<Define, Param> Trainer<Define, Param>
 
     pub fn load_dataset<P: AsRef<Path>>(&self, path: P) -> Result<Vec<Sample>> {
         let file = File::open(path)?;
-        let dataset = self.definition.parse_gold_features(file);
+        let dataset = self.definition.parse_gold_features(file)?;
         Ok(dataset)
     }
 
