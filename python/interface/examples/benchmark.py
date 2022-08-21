@@ -1,8 +1,6 @@
 import functools
 import time
 
-from ltp_extension.algorithms import StnSplit
-
 
 def clock(func):
     """this is outer clock function."""
@@ -29,6 +27,8 @@ def convert2raw(input_file, output_file):
                 fo.write(line + "\n")
 
 
+# ======================= 结巴分词 =======================
+
 @clock
 def jieba_load():
     import jieba
@@ -38,7 +38,84 @@ def jieba_load():
 
 
 @clock
-def ltp_cws_load(model_path):
+def jieba_cut(model, sentences):
+    return [list(model.cut(sentence)) for sentence in sentences]
+
+
+# ======================= PKUSEG =======================
+
+@clock
+def pkuseg_load():
+    import pkuseg
+    return pkuseg.pkuseg()
+
+
+@clock
+def pkuseg_cut(model, sentences):
+    return [model.cut(sentence) for sentence in sentences]
+
+
+# ======================= THULAC =======================
+@clock
+def thulac_load():
+    import thulac
+    thulac = thulac.thulac(seg_only=True)
+    return thulac
+
+
+@clock
+def thulac_cut(model, sentences):
+    return [model.cut(sentence, text=True) for sentence in sentences]
+
+
+@clock
+def thulac_fast_cut(model, sentences):
+    return [model.fast_cut(sentence, text=True) for sentence in sentences]
+
+
+# ======================= LTP 3 =======================
+
+@clock
+def ltp3_cws_load(model_path="../../data/legacy-models-v3/cws.model"):
+    from pyltp import Segmentor
+
+    model = Segmentor(model_path)
+    return model
+
+
+@clock
+def ltp3_cut(model, sentences):
+    return [list(model.segment(sentence)) for sentence in sentences]
+
+
+@clock
+def ltp3_load(
+        cws_model_path="../../data/legacy-models-v3/cws.model",
+        pos_model_path="../../data/legacy-models-v3/pos.model",
+        ner_model_path="../../data/legacy-models-v3/ner.model",
+):
+    from pyltp import Segmentor, Postagger, NamedEntityRecognizer
+
+    cws_model = Segmentor(cws_model_path)
+    pos_model = Postagger(pos_model_path)
+    ner_model = NamedEntityRecognizer(ner_model_path)
+    return cws_model, pos_model, ner_model
+
+
+@clock
+def ltp3_pipeline(cws_model, pos_model, ner_model, sentences):
+    batch_words = [cws_model.segment(sentence) for sentence in sentences]
+    batch_pos = [pos_model.postag(words) for words in batch_words]
+    batch_ner = [ner_model.recognize(words, pos) for (words, pos) in zip(batch_words, batch_pos)]
+
+    return batch_words, batch_pos, batch_ner
+
+
+# ======================= LTP =======================
+
+
+@clock
+def ltp_cws_load(model_path="../../data/legacy-models/cws_model.bin"):
     from ltp_extension.perceptron import CWSModel
 
     model = CWSModel.load(model_path)
@@ -46,10 +123,15 @@ def ltp_cws_load(model_path):
 
 
 @clock
+def ltp_cut(model, sentences, threads=1):
+    return model.batch_predict(sentences, threads)
+
+
+@clock
 def ltp_load(
-    cws_model_path="../../data/legacy-models/cws_model.bin",
-    pos_model_path="../../data/legacy-models/pos_model.bin",
-    ner_model_path="../../data/legacy-models/ner_model.bin",
+        cws_model_path="../../data/legacy-models/cws_model.bin",
+        pos_model_path="../../data/legacy-models/pos_model.bin",
+        ner_model_path="../../data/legacy-models/ner_model.bin",
 ):
     from ltp_extension.perceptron import CWSModel, NERModel, POSModel
 
@@ -60,13 +142,15 @@ def ltp_load(
 
 
 @clock
-def jieba_cut(model, sentences):
-    return [list(model.cut(sentence)) for sentence in sentences]
+def ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1):
+    batch_words = cws_model.batch_predict(sentences, threads)
+    batch_pos = pos_model.batch_predict(batch_words, threads)
+    batch_ner = ner_model.batch_predict(batch_words, batch_pos, threads)
+
+    return batch_words, batch_pos, batch_ner
 
 
-@clock
-def ltp_cut(model, sentences, threads=1):
-    return model.batch_predict(sentences, threads)
+# ==================== Benchmark ====================
 
 
 def cws_benchmark():
@@ -75,12 +159,28 @@ def cws_benchmark():
 
     # 0.7831432819366455s
     jieba_model = jieba_load()
-    # 2.6060619354248047s
-    ltp_model = ltp_cws_load("../../data/legacy-models/cws_model.bin")
-
     # 37.776106119155884s
     jieba_cut(jieba_model, sentences)
 
+    # 9.232479095458984s
+    pkuseg = pkuseg_load()
+    # 315.90687012672424s
+    pkuseg_cut(pkuseg, sentences)
+
+    # 0.9187619686126709s
+    thulac_model = thulac_load()
+    # 720.1864020824432s
+    thulac_cut(thulac_model, sentences)
+    # 30.58756685256958s
+    thulac_fast_cut(thulac_model, sentences)
+
+    # 0.17265582084655762s
+    ltp3_model = ltp3_cws_load()
+    # 76.8230140209198s
+    ltp3_cut(ltp3_model, sentences)
+
+    # 2.6060619354248047s
+    ltp_model = ltp_cws_load()
     # 36.3308470249176s
     ltp_cut(ltp_model, sentences, threads=1)
     # 19.406927824020386s
@@ -91,15 +191,6 @@ def cws_benchmark():
     ltp_cut(ltp_model, sentences, threads=8)
     # 5.8947789669036865s
     ltp_cut(ltp_model, sentences, threads=16)
-
-
-@clock
-def ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1):
-    batch_words = cws_model.batch_predict(sentences, threads)
-    batch_pos = pos_model.batch_predict(batch_words, threads)
-    batch_ner = ner_model.batch_predict(batch_words, batch_pos, threads)
-
-    return batch_words, batch_pos, batch_ner
 
 
 def pipeline_benchmark():
@@ -121,59 +212,13 @@ def pipeline_benchmark():
     # 16.989219903945923s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=16)
 
-
-@clock
-def simple_pipeline(cws_model, pos_model, ner_model, sentence):
-    words = cws_model.predict(sentence)
-    pos = pos_model.predict(words)
-    ner = ner_model.predict(words, pos)
-
-    return words, pos, ner
-
-
-def simple_example():
-    # 11.27102518081665s
-    cws_model, pos_model, ner_model = ltp_load()
-
-    # simple and single thread
-    sentence = "他叫汤姆去拿外衣。"
-    # 0.0003898143768310547s
-    words, pos, ner = simple_pipeline(cws_model, pos_model, ner_model, sentence)
-
-    print(words)
-    print(pos)
-    print(ner)
-
-
-@clock
-def ltp_split(model: StnSplit, sentences, threads=1):
-    return model.batch_split(sentences, threads)
-
-
-def stn_split():
-    split = StnSplit()
-    with open("../data/corpus/data.txt") as fi:
-        sentences = []
-        for line in fi.readlines():
-            line = line.strip()
-            if line:
-                sentences.append(line)
-
-    # ltp_split(0.024084091186523438s)
-    ltp_split(split, sentences, threads=1)
-    # ltp_split(0.015919923782348633s)
-    ltp_split(split, sentences, threads=2)
-    # ltp_split(0.0134429931640625s)
-    ltp_split(split, sentences, threads=4)
-    # ltp_split(0.012565135955810547s)
-    ltp_split(split, sentences, threads=8)
-    # ltp_split(0.012076854705810547s)
-    ltp_split(split, sentences, threads=16)
+    # 0.8289380073547363s
+    cws_model_3, pos_model_3, ner_model_3 = ltp3_load()
+    # 226.40391397476196s
+    ltp3_pipeline(cws_model_3, pos_model_3, ner_model_3, sentences)
 
 
 def main():
-    # simple_example()
-    # stn_split()
     cws_benchmark()
     pipeline_benchmark()
 

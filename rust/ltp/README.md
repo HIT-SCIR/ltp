@@ -64,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - [ ] 在线学习
 - [ ] 增量学习
 
-## Benchmark Compare with Jieba
+## Benchmark Compare
 
 - File Size: 33.85 MB / 305041 lines
 - Hard Ware:
@@ -73,18 +73,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   - 内存: 16 GB 2667 MHz DDR4
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
-| Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- | ------: | ----------: |
-| Jieba cut      |   35.29 |      982.49 |
-| LTP legacy(1)  |   36.33 |      954.08 |
-| LTP legacy(2)  |   19.41 |     1786.08 |
-| LTP legacy(4)  |   10.74 |     3228.71 |
-| LTP legacy(8)  |    7.07 |     4904.05 |
-| LTP legacy(16) |    5.89 |     5880.19 |
+| Algorithm      | Time(s) |       Speed(KB/s) |
+|----------------|--------:|------------------:|
+| Jieba cut      |   35.29 |            982.49 |
+| Pkuseg         |  315.91 |            109.72 |
+| Thulac         |  720.19 |             48.13 |
+| Thulac(Fast)   |   30.59 |           1133.21 |
+| LTP 3          |   76.82 |            451.20 |
+| LTP legacy(1)  |   36.33 |            954.08 |
+| LTP legacy(2)  |   19.41 |           1786.08 |
+| LTP legacy(4)  |   10.74 |           3228.71 |
+| LTP legacy(8)  |    7.07 |           4904.05 |
+| LTP legacy(16) |    5.89 |           5880.19 |
 
 **注：括号内为线程数量**
 
-## Benchmark Pipeline
+## Benchmark Pipeline (CWS/POS/NER)
 
 - File Size: 33.85 MB / 305041 lines
 - Hard Ware:
@@ -94,7 +98,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
 | Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- | ------: | ----------: |
+| -------------- |--------:|------------:|
+| LTP 3          |  226.40 |      153.10 |
 | LTP legacy(1)  |   90.66 |      382.33 |
 | LTP legacy(2)  |   49.43 |      701.23 |
 | LTP legacy(4)  |   27.98 |     1238.76 |
