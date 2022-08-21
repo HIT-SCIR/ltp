@@ -41,20 +41,20 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
   - 内存: 16 GB 2667 MHz DDR4
   - 图形卡: Intel UHD Graphics 630 1536 MB
 
-| Algorithm                                                                   | Time(s) | Speed(KB/s) | PKU(F1) | MSR(F1) |
-| --------------------------------------------------------------------------- | ------: | ----------: | ------: | ------: |
-| [Jieba](https://github.com/fxsjy/jieba)                                     |   35.29 |      982.49 |    81.8 |    81.3 |
-| [Pkuseg](https://github.com/lancopku/pkuseg-python)                         |  315.91 |      109.72 |    93.4 |    87.3 |
-| [Thulac](https://github.com/thunlp/THULAC-Python)                           |  720.19 |       48.13 |    94.0 |    87.9 |
-| Thulac(Fast)                                                                |   30.59 |     1133.21 |    --.- |    --.- |
-| [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                           |   76.82 |      451.20 |    95.3 |    88.3 |
-| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) |   36.33 |      954.08 |    95.2 |    87.7 |
-| LTP legacy(2)                                                               |   19.41 |     1786.08 |    --.- |    --.- |
-| LTP legacy(4)                                                               |   10.74 |     3228.71 |    --.- |    --.- |
-| LTP legacy(8)                                                               |    7.07 |     4904.05 |    --.- |    --.- |
-| LTP legacy(16)                                                              |    5.89 |     5880.19 |    --.- |    --.- |
+| Algorithm                                                                   |  Time(s) | Speed(KB/s) |  PKU(F1) |  MSR(F1) |
+| --------------------------------------------------------------------------- | -------: | ----------: | -------: | -------: |
+| [Jieba](https://github.com/fxsjy/jieba)                                     |    35.29 |      982.49 |     81.8 |     81.3 |
+| [Pkuseg](https://github.com/lancopku/pkuseg-python)                         |   315.91 |      109.72 |     93.4 |     87.3 |
+| [Thulac](https://github.com/thunlp/THULAC-Python)                           |   720.19 |       48.13 |     94.0 |     87.9 |
+| Thulac\[Fast\]                                                              |    30.59 |     1133.21 |     --.- |     --.- |
+| [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                           |    76.82 |      451.20 | **95.3** | **88.3** |
+| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) |    36.33 |      954.08 |     95.2 |     87.7 |
+| LTP legacy(2)                                                               |    19.41 |     1786.08 |     --.- |     --.- |
+| LTP legacy(4)                                                               |    10.74 |     3228.71 |     --.- |     --.- |
+| LTP legacy(8)                                                               |     7.07 |     4904.05 |     --.- |     --.- |
+| LTP legacy(16)                                                              | **5.89** | **5880.19** |     --.- |     --.- |
 
-**注：括号内为线程数量，指标在 [ICBWB2](http://sighan.cs.uchicago.edu/bakeoff2005/) 上面进行测试**
+**注：括号内为线程数量**
 
 ## Benchmark Pipeline (CWS/POS/NER)
 
