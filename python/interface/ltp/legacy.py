@@ -33,6 +33,9 @@ class LTP(ModelHubMixin):
             if model is not None:
                 self.supported_tasks.add(task)
 
+    def __call__(self, *args, **kwargs):
+        return self.pipeline(*args, **kwargs)
+
     def pipeline(self, *args, tasks: List[str] = None, threads: int = 8, return_dict: bool = True):
         if tasks is None:
             tasks = ["cws", "pos", "ner"]

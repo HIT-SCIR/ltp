@@ -86,6 +86,9 @@ class LTP(BaseModule, ModelHubMixin):
     def version(self):
         return "4.2.0"
 
+    def __call__(self, *args, **kwargs):
+        return self.pipeline(*args, **kwargs)
+
     @no_grad
     def pipeline(
         self,

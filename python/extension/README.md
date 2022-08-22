@@ -41,6 +41,8 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 - 处理器: 2.6 GHz 六核Intel Core i7
 - 内存: 16 GB 2667 MHz DDR4
 
+> 注: 速度测试文件大小为 33.85 MB / 305041 行
+
 ### 分词
 
 我们选择Jieba、Pkuseg、Thulac等国内代表分词软件与 LTP 做性能比较，根据第二届国际汉语分词测评发布的国际中文分词测评标准，对不同软件进行了速度和准确率测试。
@@ -53,17 +55,17 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 我们在统一测试环境下，对若干流行分词软件和 LTP 进行了测试，使用的模型为各分词软件自带模型。在PKU和MSR测试集评测结果如下：
 
 | Algorithm                                                                    | Speed(KB/s) |  PKU(F1) |  MSR(F1) |
-| ---------------------------------------------------------------------------- |------------:| -------: | -------: |
+| ---------------------------------------------------------------------------- | ----------: | -------: | -------: |
 | [Jieba](https://github.com/fxsjy/jieba)                                      |      982.49 |     81.8 |     81.3 |
 | [Pkuseg](https://github.com/lancopku/pkuseg-python)                          |      109.72 |     93.4 |     87.3 |
 | [Thulac](https://github.com/thunlp/THULAC-Python)                            |       48.13 |     94.0 |     87.9 |
 | [Thulac\[Fast\]](https://github.com/thunlp/THULAC-Python)                    |     1133.21 |       同上 |       同上 |
 | [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                            |      451.20 | **95.3** | **88.3** |
-| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  | **1206.14** |     95.2 |     87.7 |
-| [LTP legacy(2)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     2192.58 |       同上 |       同上 |
-| [LTP legacy(4)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     3771.35 |       同上 |       同上 |
-| [LTP legacy(8)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     5763.14 |       同上 |       同上 |
-| [LTP legacy(16)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) | **7113.26** |       同上 |       同上 |
+| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  | **1603.63** |     95.2 |     87.7 |
+| [LTP legacy(2)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     2869.42 |       同上 |       同上 |
+| [LTP legacy(4)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     4949.38 |       同上 |       同上 |
+| [LTP legacy(8)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     6803.88 |       同上 |       同上 |
+| [LTP legacy(16)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) | **7745.16** |       同上 |       同上 |
 
 > **注：括号内为线程数量**
 
@@ -76,11 +78,11 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 | Algorithm                                                                    | Speed(KB/s) |
 | ---------------------------------------------------------------------------- | ----------: |
 | [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                            |      153.10 |
-| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |      382.33 |
-| [LTP legacy(2)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |      701.23 |
-| [LTP legacy(4)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     1238.76 |
-| [LTP legacy(8)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     1723.72 |
-| [LTP legacy(16)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) |     2040.26 |
+| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |      508.74 |
+| [LTP legacy(2)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |      899.25 |
+| [LTP legacy(4)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     1598.03 |
+| [LTP legacy(8)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     2267.48 |
+| [LTP legacy(16)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) |     2452.34 |
 
 > **注：括号内为线程数量**
 

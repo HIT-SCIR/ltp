@@ -184,17 +184,17 @@ def cws_benchmark():
     # 76.8230140209198s
     ltp3_cut(ltp3_model, sentences)
 
-    # 2.6060619354248047s
+    # 1.3583240509033203s
     ltp_model = ltp_cws_load()
-    # 30.007874965667725s
+    # 21.614962100982666s
     ltp_cut(ltp_model, sentences, threads=1)
-    # 15.808966875076294s
+    # 12.079923868179321s
     ltp_cut(ltp_model, sentences, threads=2)
-    # 9.190986156463623s
+    # 7.003376007080078s
     ltp_cut(ltp_model, sentences, threads=4)
-    # 6.014494895935059s
+    # 5.0945048332214355s
     ltp_cut(ltp_model, sentences, threads=8)
-    # 4.872926950454712s
+    # 4.475361108779907s
     ltp_cut(ltp_model, sentences, threads=16)
 
 
@@ -202,19 +202,19 @@ def pipeline_benchmark():
     with open("../../data/benchmark/pku-all.txt") as fi:
         sentences = [line.strip() for line in fi.readlines()]
 
-    # 11.27102518081665s
+    # 11.260580062866211s
     cws_model, pos_model, ner_model = ltp_load()
 
     # multi threads
-    # 90.66057300567627s
+    # 68.13384127616882s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=1)
-    # 49.43109393119812s
+    # 38.54593205451965s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=2)
-    # 27.981503009796143s
+    # 21.6906418800354s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=4)
-    # 20.109108924865723s
+    # 15.286723136901855s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=8)
-    # 16.989219903945923s
+    # 14.134387016296387s
     ltp_pipeline(cws_model, pos_model, ner_model, sentences, threads=16)
 
     # 0.8289380073547363s
@@ -224,7 +224,7 @@ def pipeline_benchmark():
 
 
 def main():
-    cws_benchmark()
+    # cws_benchmark()
     pipeline_benchmark()
 
 

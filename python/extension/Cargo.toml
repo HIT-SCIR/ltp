@@ -1,6 +1,6 @@
 [package]
 name = "ltp-extension"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
 description = "Rust Extension For Language Technology Platform(Python)."
@@ -25,3 +25,6 @@ pyo3 = { version = "0.16", features = ["extension-module", "anyhow", "serde"] }
 version = "*"
 path = "../../rust/ltp"
 features = ["serialization", "parallel"]
+
+[target.'cfg(not(target_env = "musl"))'.dependencies]
+mimalloc = { version = "0.1", default-features = false }
