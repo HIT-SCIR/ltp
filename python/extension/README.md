@@ -32,46 +32,56 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 - [ ] 在线学习
 - [ ] 增量学习
 
-## Benchmark Compare
+## 性能测试
 
-- File Size: 33.85 MB / 305041 lines
-- Hard Ware:
-  - MacBook Pro (16-inch, 2019)
-  - 处理器: 2.6 GHz 六核Intel Core i7
-  - 内存: 16 GB 2667 MHz DDR4
-  - 图形卡: Intel UHD Graphics 630 1536 MB
+### 评测环境
 
-| Algorithm                                                                   |  Time(s) | Speed(KB/s) |  PKU(F1) |  MSR(F1) |
-| --------------------------------------------------------------------------- | -------: | ----------: | -------: | -------: |
-| [Jieba](https://github.com/fxsjy/jieba)                                     |    35.29 |      982.49 |     81.8 |     81.3 |
-| [Pkuseg](https://github.com/lancopku/pkuseg-python)                         |   315.91 |      109.72 |     93.4 |     87.3 |
-| [Thulac](https://github.com/thunlp/THULAC-Python)                           |   720.19 |       48.13 |     94.0 |     87.9 |
-| Thulac\[Fast\]                                                              |    30.59 |     1133.21 |     --.- |     --.- |
-| [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                           |    76.82 |      451.20 | **95.3** | **88.3** |
-| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) |    36.33 |      954.08 |     95.2 |     87.7 |
-| LTP legacy(2)                                                               |    19.41 |     1786.08 |     --.- |     --.- |
-| LTP legacy(4)                                                               |    10.74 |     3228.71 |     --.- |     --.- |
-| LTP legacy(8)                                                               |     7.07 |     4904.05 |     --.- |     --.- |
-| LTP legacy(16)                                                              | **5.89** | **5880.19** |     --.- |     --.- |
+- Python 3.10
+- MacBook Pro (16-inch, 2019)
+- 处理器: 2.6 GHz 六核Intel Core i7
+- 内存: 16 GB 2667 MHz DDR4
 
-**注：括号内为线程数量**
+### 分词
 
-## Benchmark Pipeline (CWS/POS/NER)
+我们选择Jieba、Pkuseg、Thulac等国内代表分词软件与 LTP 做性能比较，根据第二届国际汉语分词测评发布的国际中文分词测评标准，对不同软件进行了速度和准确率测试。
 
-- File Size: 33.85 MB / 305041 lines
-- Hard Ware:
-  - MacBook Pro (16-inch, 2019)
-  - 处理器: 2.6 GHz 六核Intel Core i7
-  - 内存: 16 GB 2667 MHz DDR4
-  - 图形卡: Intel UHD Graphics 630 1536 MB
+在第二届国际汉语分词测评中，共有四家单位提供的测试语料（Academia Sinica、 City University 、Peking University(PKU)
+、Microsoft Research(MSR)）, 在评测提供的资源[icwb2-data](http://sighan.cs.uchicago.edu/bakeoff2005/)
+中包含了来自这四家单位的训练集（icwb2-data/training）、测试集（icwb2-data/testing）,
+以及根据各自分词标准而提供的相应测试集的标准答案（icwb2-data/gold）．在icwb2-data/scripts目录下含有对分词进行自动评分的perl脚本score。
 
-| Algorithm      | Time(s) | Speed(KB/s) |
-| -------------- | ------: | ----------: |
-| LTP 3          |  226.40 |      153.10 |
-| LTP legacy(1)  |   90.66 |      382.33 |
-| LTP legacy(2)  |   49.43 |      701.23 |
-| LTP legacy(4)  |   27.98 |     1238.76 |
-| LTP legacy(8)  |   20.11 |     1723.72 |
-| LTP legacy(16) |   16.99 |     2040.26 |
+我们在统一测试环境下，对若干流行分词软件和 LTP 进行了测试，使用的模型为各分词软件自带模型。在PKU和MSR测试集评测结果如下：
 
-**注：括号内为线程数量**
+| Algorithm                                                                    | Speed(KB/s) |  PKU(F1) |  MSR(F1) |
+| ---------------------------------------------------------------------------- |------------:| -------: | -------: |
+| [Jieba](https://github.com/fxsjy/jieba)                                      |      982.49 |     81.8 |     81.3 |
+| [Pkuseg](https://github.com/lancopku/pkuseg-python)                          |      109.72 |     93.4 |     87.3 |
+| [Thulac](https://github.com/thunlp/THULAC-Python)                            |       48.13 |     94.0 |     87.9 |
+| [Thulac\[Fast\]](https://github.com/thunlp/THULAC-Python)                    |     1133.21 |       同上 |       同上 |
+| [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                            |      451.20 | **95.3** | **88.3** |
+| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  | **1206.14** |     95.2 |     87.7 |
+| [LTP legacy(2)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     2192.58 |       同上 |       同上 |
+| [LTP legacy(4)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     3771.35 |       同上 |       同上 |
+| [LTP legacy(8)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     5763.14 |       同上 |       同上 |
+| [LTP legacy(16)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) | **7113.26** |       同上 |       同上 |
+
+> **注：括号内为线程数量**
+
+> **注2：Jieba的词表是在人民日报数据集上统计的**
+
+### 流水线
+
+除了分词以外，我们也测试了 LTP 三个任务（分词、词性标注、命名实体识别）流水线的速度：
+
+| Algorithm                                                                    | Speed(KB/s) |
+| ---------------------------------------------------------------------------- | ----------: |
+| [LTP 3(pyltp)](https://github.com/HIT-SCIR/pyltp)                            |      153.10 |
+| [LTP legacy(1)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |      382.33 |
+| [LTP legacy(2)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |      701.23 |
+| [LTP legacy(4)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     1238.76 |
+| [LTP legacy(8)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension)  |     1723.72 |
+| [LTP legacy(16)](https://github.com/HIT-SCIR/ltp/tree/main/python/extension) |     2040.26 |
+
+> **注：括号内为线程数量**
+
+> **注2：速度数据在人民日报命名实体测试数据上获得，速度计算方式均为所有任务顺序执行的结果。**

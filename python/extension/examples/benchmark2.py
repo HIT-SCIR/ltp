@@ -94,29 +94,6 @@ def ltp3_cut(model, sentences):
     return [list(model.segment(sentence)) for sentence in sentences]
 
 
-@clock
-def ltp3_load(
-    cws_model_path="../../data/legacy-models-v3/cws.model",
-    pos_model_path="../../data/legacy-models-v3/pos.model",
-    ner_model_path="../../data/legacy-models-v3/ner.model",
-):
-    from pyltp import NamedEntityRecognizer, Postagger, Segmentor
-
-    cws_model = Segmentor(cws_model_path)
-    pos_model = Postagger(pos_model_path)
-    ner_model = NamedEntityRecognizer(ner_model_path)
-    return cws_model, pos_model, ner_model
-
-
-@clock
-def ltp3_pipeline(cws_model, pos_model, ner_model, sentences):
-    batch_words = [cws_model.segment(sentence) for sentence in sentences]
-    batch_pos = [pos_model.postag(words) for words in batch_words]
-    batch_ner = [ner_model.recognize(words, pos) for (words, pos) in zip(batch_words, batch_pos)]
-
-    return batch_words, batch_pos, batch_ner
-
-
 # ======================= LTP =======================
 
 

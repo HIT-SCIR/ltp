@@ -9,6 +9,53 @@ use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::io::{Write, BufRead, BufReader, Read};
 
+
+/// Character type.
+#[cfg(feature = "char-type")]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[repr(u8)]
+pub enum CharacterType {
+    /// Digit character. (e.g. 0, 1, 2, ...)
+    Digit = 1,
+
+    /// Roman character. (e.g. A, B, C, ...)
+    Roman = 2,
+
+    /// Japanese Hiragana character. (e.g. あ, い, う, ...)
+    Hiragana = 3,
+
+    /// Japanese Katakana character. (e.g. ア, イ, ウ, ...)
+    Katakana = 4,
+
+    /// Kanji (a.k.a. Hanzi or Hanja) character. (e.g. 漢, 字, ...)
+    Kanji = 5,
+
+    /// Other character.
+    Other = 6,
+}
+
+#[cfg(feature = "char-type")]
+impl CharacterType {
+    pub fn get_type(c: char) -> Self {
+        match u32::from(c) {
+            0x30..=0x39 | 0xFF10..=0xFF19 => Self::Digit,
+            0x41..=0x5A | 0x61..=0x7A | 0xFF21..=0xFF3A | 0xFF41..=0xFF5A => Self::Roman,
+            0x3040..=0x3096 => Self::Hiragana,
+            0x30A0..=0x30FA | 0x30FC..=0x30FF | 0xFF66..=0xFF9F => Self::Katakana,
+            0x3400..=0x4DBF      // CJK Unified Ideographs Extension A
+            | 0x4E00..=0x9FFF    // CJK Unified Ideographs
+            | 0xF900..=0xFAFF    // CJK Compatibility Ideographs
+            | 0x20000..=0x2A6DF  // CJK Unified Ideographs Extension B
+            | 0x2A700..=0x2B73F  // CJK Unified Ideographs Extension C
+            | 0x2B740..=0x2B81F  // CJK Unified Ideographs Extension D
+            | 0x2B820..=0x2CEAF  // CJK Unified Ideographs Extension E
+            | 0x2F800..=0x2FA1F  // CJK Compatibility Ideographs Supplement
+            => Self::Kanji,
+            _ => Self::Other,
+        }
+    }
+}
+
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct CWSDefinition {}
@@ -44,29 +91,33 @@ impl CWSDefinition {
                 continue;
             }
 
-            let mut feature = Vec::with_capacity(12);
+            let mut feature = Vec::with_capacity(13);
             // ch[0]
             buf_feature!(buffer, feature, "2{}", cur_char);
+            // TYPE(ch[0])
+            #[cfg(feature = "char-type")]
+            buf_feature!(buffer, feature, "b{}", CharacterType::get_type(cur_char) as u8);
             if pre_char != char_null {
                 // ch[-1]
                 buf_feature!(buffer, feature, "1{}", pre_char);
                 // ch[-1]ch[0]
                 buf_feature!(buffer, feature, "6{}{}", pre_char, cur_char);
-
+                // TYPE(ch[-1])
+                #[cfg(feature = "char-type")]
+                buf_feature!(buffer, feature, "c{}", CharacterType::get_type(pre_char) as u8);
                 if pre2_char != char_null {
                     // ch[-2]
                     buf_feature!(buffer, feature, "0{}", pre2_char);
                     // ch[-2]ch[-1]
                     buf_feature!(buffer, feature, "5{}{}", pre2_char, pre_char);
                     // ch[-2]ch[0]
+                    #[cfg(feature = "cross-char")]
                     buf_feature!(buffer, feature, "9{}{}", pre2_char, cur_char);
                 }
 
                 if pre2_char == cur_char {
                     buf_feature!(buffer, feature, "c"); // ch[-2]=ch[0]?
                 }
-            } else {
-                buf_feature!(buffer, feature, "BOS");
             }
 
             let next_char = if let Some((_, next_char)) = chars.peek() {
@@ -74,6 +125,9 @@ impl CWSDefinition {
                 buf_feature!(buffer, feature, "3{}", next_char);
                 // ch[0]ch[+1]
                 buf_feature!(buffer, feature, "7{}{}", cur_char, next_char);
+                // TYPE(ch[1])
+                #[cfg(feature = "char-type")]
+                buf_feature!(buffer, feature, "d{}", CharacterType::get_type(*next_char) as u8);
                 *next_char
             } else {
                 ' '
@@ -85,6 +139,7 @@ impl CWSDefinition {
                 // ch[+1]ch[+2]
                 buf_feature!(buffer, feature, "8{}{}", next_char, next2_char);
                 // ch[0]ch[+2]
+                #[cfg(feature = "cross-char")]
                 buf_feature!(buffer, feature, "a{}{}", cur_char, next2_char);
             }
 
@@ -99,7 +154,7 @@ impl CWSDefinition {
     }
 
     pub fn parse_char_features(&self, sentence: &str) -> Result<(Vec<usize>, Vec<Vec<String>>)> {
-        let mut buffer = Vec::with_capacity(sentence.len() * 25);
+        let mut buffer = Vec::with_capacity(sentence.len() * 20);
         let (index, features) = self.parse_char_features_with_buffer(sentence, &mut buffer)?;
 
         let mut start = 0usize;
@@ -196,7 +251,8 @@ impl Definition for CWSDefinition {
         lines
             .par_iter()
             .map(|sentence| {
-                self.parse_char_features(sentence.as_str()).map(|(_, features)| {
+                let sentence_raw: String = sentence.chars().filter(|c| !c.is_whitespace()).collect();
+                self.parse_char_features(&sentence_raw).map(|(_, features)| {
                     let mut labels = Vec::with_capacity(features.len());
                     // 构建标签序列
 
@@ -235,7 +291,8 @@ impl Definition for CWSDefinition {
         lines
             .iter()
             .map(|sentence| {
-                self.parse_char_features(sentence.as_str()).map(|(_, features)| {
+                let sentence_raw: String = sentence.chars().filter(|c| !c.is_whitespace()).collect();
+                self.parse_char_features(&sentence_raw).map(|(_, features)| {
                     let mut labels = Vec::with_capacity(features.len());
                     // 构建标签序列
                     let mut last_char = ' ';

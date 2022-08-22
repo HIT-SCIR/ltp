@@ -1,6 +1,5 @@
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
-use itertools::Itertools;
 use ltp::perceptron::SerdePOSModel;
 use ltp::{Algorithm, Codec, Format, ModelSerde, POSDefinition as Definition, PaMode, Trainer};
 use std::collections::HashMap;
@@ -153,7 +152,7 @@ fn main() -> Result<()> {
 
             let (p, r, f1) = trainer.evaluate(&model)?;
             let duration = start.elapsed().as_millis();
-            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}",);
+            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}", );
         }
         Args::Predict(mode) => {
             let file = File::open(&mode.model)?;
@@ -169,15 +168,15 @@ fn main() -> Result<()> {
 
             let sentences = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
             let start = std::time::Instant::now();
-            let result = sentences
+            let result: Result<Vec<Vec<&str>>> = sentences
                 .iter()
                 .map(|sentence| sentence.split_whitespace().collect_vec())
                 .map(|sentence| model.predict(&sentence))
-                .collect_vec();
+                .collect();
             let duration = start.elapsed();
             println!("{}ms", duration.as_millis());
             let mut file = File::create(mode.output)?;
-            result.iter().for_each(|sentence| {
+            result?.iter().for_each(|sentence| {
                 writeln!(file, "{}", sentence.join(" ")).expect("Write Failed!");
             });
         }

@@ -259,9 +259,10 @@ impl PyModel {
                         .map(|text| model.predict(text))
                         .collect()
                 });
-                let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-                for snt in result? {
-                    let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
+                let result = result?;
+                let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
+                for snt in result {
+                    let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(snt.len()));
                     for tag in snt {
                         snt_res.append(PyString::new(py, tag))?;
                     }
@@ -277,9 +278,10 @@ impl PyModel {
                         .map(|words| model.predict(&words))
                         .collect()
                 });
-                let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-                for snt in result? {
-                    let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
+                let result = result?;
+                let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
+                for snt in result {
+                    let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(snt.len()));
                     for tag in snt {
                         snt_res.append(PyString::new(py, tag))?;
                     }
@@ -297,9 +299,10 @@ impl PyModel {
                         .map(|(words, tags)| model.predict((&words, &tags)))
                         .collect()
                 });
-                let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-                for snt in result? {
-                    let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
+                let result = result?;
+                let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
+                for snt in result {
+                    let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(snt.len()));
                     for tag in snt {
                         snt_res.append(PyString::new(py, tag))?;
                     }

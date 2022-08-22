@@ -186,15 +186,15 @@ def cws_benchmark():
 
     # 2.6060619354248047s
     ltp_model = ltp_cws_load()
-    # 36.3308470249176s
+    # 30.007874965667725s
     ltp_cut(ltp_model, sentences, threads=1)
-    # 19.406927824020386s
+    # 15.808966875076294s
     ltp_cut(ltp_model, sentences, threads=2)
-    # 10.735687971115112s
+    # 9.190986156463623s
     ltp_cut(ltp_model, sentences, threads=4)
-    # 7.068112134933472s
+    # 6.014494895935059s
     ltp_cut(ltp_model, sentences, threads=8)
-    # 5.8947789669036865s
+    # 4.872926950454712s
     ltp_cut(ltp_model, sentences, threads=16)
 
 

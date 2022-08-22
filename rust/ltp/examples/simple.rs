@@ -10,9 +10,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open("data/legacy-models/ner_model.bin")?;
     let ner: NERModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
 
-    let words = cws.predict("他叫汤姆去拿外衣。");
-    let pos = pos.predict(&words);
-    let ner = ner.predict((&words, &pos));
+    let words = cws.predict("他叫汤姆去拿外衣。")?;
+    let pos = pos.predict(&words)?;
+    let ner = ner.predict((&words, &pos))?;
 
     for (w, p, n) in multizip((words, pos, ner)) {
         println!("{}/{}/{}", w, p, n);

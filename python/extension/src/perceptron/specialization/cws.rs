@@ -54,7 +54,7 @@ impl PyCWSModel {
                 .into_iter()
                 .map(|s| PyString::new(py, s)),
         )
-        .into())
+            .into())
     }
 
     /// Predict batched sentences
@@ -70,15 +70,16 @@ impl PyCWSModel {
             .num_threads(threads)
             .build()
             .unwrap();
-        let result: Result<Vec<Vec<_>>,_> = pool.install(|| {
+        let result: Result<Vec<Vec<_>>, _> = pool.install(|| {
             batch_text
                 .into_par_iter()
                 .map(|text| self.model.predict(text))
                 .collect()
         });
-        let res = PyList::new(py, Vec::<&PyList>::with_capacity(0));
-        for snt in result? {
-            let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(0));
+        let result = result?;
+        let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
+        for snt in result {
+            let snt_res = PyList::new(py, Vec::<&PyString>::with_capacity(snt.len()));
             for tag in snt {
                 snt_res.append(PyString::new(py, tag))?;
             }

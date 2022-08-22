@@ -5,7 +5,6 @@ use ltp::{Algorithm, CWSDefinition as Definition, Codec, Format, ModelSerde, PaM
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
-use itertools::Itertools;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -167,14 +166,14 @@ fn main() -> Result<()> {
                 datasets.push(sentence);
             }
             let start = std::time::Instant::now();
-            let result = datasets
+            let result: Result<Vec<Vec<&str>>> = datasets
                 .iter()
                 .map(|sentence| model.predict(sentence))
-                .collect_vec();
+                .collect();
             let duration = start.elapsed();
             println!("{}ms", duration.as_millis());
             let mut file = File::create(mode.output)?;
-            result.iter().for_each(|sentence| {
+            result?.iter().for_each(|sentence| {
                 writeln!(file, "{}", sentence.join(" ")).expect("Write Failed!");
             });
         }

@@ -531,7 +531,7 @@ impl<Define, Param> Display for Trainer<Define, Param>
         if self.compress {
             writeln!(
                 f,
-                "  compress: {{ ratio: {} threshold:{} }}",
+                "  compress: {{ ratio: {} threshold: {} }}",
                 self.ratio, self.threshold
             )?;
         }

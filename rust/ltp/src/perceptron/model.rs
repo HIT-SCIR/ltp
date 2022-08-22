@@ -262,7 +262,7 @@ impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStora
         ParamStorage: TraitParameterStorage<Param>,
 {
     pub fn predict<'a>(&self, sentence: &'a str) -> Result<Vec<&'a str>> {
-        let mut buffer = Vec::with_capacity(sentence.len() * 25);
+        let mut buffer = Vec::with_capacity(sentence.len() * 20);
         self.predict_with_buffer(sentence, &mut buffer)
     }
 
