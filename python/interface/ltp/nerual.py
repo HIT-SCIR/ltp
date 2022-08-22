@@ -216,7 +216,6 @@ class LTP(BaseModule, ModelHubMixin):
                     text[-1].append(raw_text[current[0] : current[1]])
                     char_idx[-1].append(idx)
                 last = current
-        text = ["".join(t) for t in text]
 
         if crf is None:
             decoded = logits.argmax(dim=-1)
@@ -235,7 +234,7 @@ class LTP(BaseModule, ModelHubMixin):
         entities = [[(e[1], e[2]) for e in se] for se in entities]
 
         words = [
-            [sent[e[0] : e[1] + 1] for e in sent_entities]
+            ["".join(sent[e[0] : e[1] + 1]) for e in sent_entities]
             for sent, sent_entities in zip(text, entities)
         ]
 
@@ -529,7 +528,7 @@ class LTP(BaseModule, ModelHubMixin):
 
 
 def main():
-    ltp: LTP = LTP.from_pretrained("models/neo-tiny")
+    ltp: LTP = LTP.from_pretrained("LTP/tiny")
     ltp.add_word("姆去拿", 2)
     words, pos, ner, srl, dep, sdp = ltp.pipeline(
         ["他叫汤姆去拿外衣。", "韓語：한국의 단오", "我"],

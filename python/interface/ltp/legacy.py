@@ -114,7 +114,7 @@ class LTP(ModelHubMixin):
 
 
 def main():
-    ltp = LTP.from_pretrained("models/legacy")
+    ltp = LTP.from_pretrained("LTP/legacy")
     ltp.add_word("姆去拿", 2)
     words, pos, ner = ltp.pipeline("他叫汤姆去拿外衣。").to_tuple()
     print(words, pos, ner)
