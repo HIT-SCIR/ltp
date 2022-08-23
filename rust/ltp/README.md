@@ -74,6 +74,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - 内存: 16 GB 2667 MHz DDR4
 
 > 注: 速度测试文件大小为 33.85 MB / 305041 行
+> 注: 速度测试为 Python 版本 LTP-Extension 的速度
 
 ### 分词
 

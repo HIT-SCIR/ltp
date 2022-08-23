@@ -1,6 +1,6 @@
 [package]
 name = "ltp-extension"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
 description = "Rust Extension For Language Technology Platform(Python)."

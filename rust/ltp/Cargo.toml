@@ -1,6 +1,6 @@
 [package]
 name = "ltp"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
 description = "Language Technology Platform For Rust."
@@ -52,6 +52,10 @@ rayon = { version = "1.5", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 apache-avro = { version = "0.14.0", optional = true }
+
+# Todo: Nocopy Serialize 更快地加载速度
+compact_str = { version = "0.6", optional = true }
+rkyv = { version = "0.7", optional = true }
 
 [features]
 default = []

@@ -19,4 +19,8 @@ path = "src/lib.rs"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-ltp = { version = "*", path = "../ltp", features = ["serialization"] }
+rayon = { version = "1.5" }
+ltp = { version = "*", path = "../ltp", features = ["serialization", "parallel"] }
+
+[target.'cfg(not(target_env = "musl"))'.dependencies]
+mimalloc = { version = "0.1", default-features = false }

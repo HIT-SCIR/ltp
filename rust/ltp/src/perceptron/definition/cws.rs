@@ -1,14 +1,13 @@
+use crate::buf_feature;
 use crate::perceptron::definition::GenericItem;
 use crate::perceptron::{Definition, Sample};
-use crate::buf_feature;
 use anyhow::Result;
 use itertools::Itertools;
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
 #[cfg(feature = "serialization")]
 use serde::{Deserialize, Serialize};
-use std::io::{Write, BufRead, BufReader, Read};
-
+use std::io::{BufRead, BufReader, Read, Write};
 
 /// Character type.
 #[cfg(feature = "char-type")]
@@ -76,7 +75,11 @@ impl CWSDefinition {
     // +--------------+----------------------------------------------------------------------+
     // | dul2char     | ch[-2]=ch[0]?                                                        |
     // +--------------+----------------------------------------------------------------------+
-    pub fn parse_char_features_with_buffer<'a>(&self, sentence: &str, buffer: &'a mut Vec<u8>) -> Result<(Vec<usize>, Vec<Vec<usize>>)> {
+    pub fn parse_char_features_with_buffer<'a>(
+        &self,
+        sentence: &str,
+        buffer: &'a mut Vec<u8>,
+    ) -> Result<(Vec<usize>, Vec<Vec<usize>>)> {
         let char_null = '\u{0000}';
         let chars_len = sentence.len();
 
@@ -85,18 +88,22 @@ impl CWSDefinition {
 
         let mut pre_char = char_null;
         let mut pre2_char = char_null;
-        let mut chars = sentence.char_indices().multipeek();
+        let mut chars = sentence
+            .char_indices()
+            .filter(|(_, ch)| !ch.is_whitespace())
+            .multipeek();
         while let Some((char_idx, cur_char)) = chars.next() {
-            if cur_char == ' ' {
-                continue;
-            }
-
             let mut feature = Vec::with_capacity(13);
             // ch[0]
             buf_feature!(buffer, feature, "2{}", cur_char);
             // TYPE(ch[0])
             #[cfg(feature = "char-type")]
-            buf_feature!(buffer, feature, "b{}", CharacterType::get_type(cur_char) as u8);
+            buf_feature!(
+                buffer,
+                feature,
+                "b{}",
+                CharacterType::get_type(cur_char) as u8
+            );
             if pre_char != char_null {
                 // ch[-1]
                 buf_feature!(buffer, feature, "1{}", pre_char);
@@ -104,7 +111,12 @@ impl CWSDefinition {
                 buf_feature!(buffer, feature, "6{}{}", pre_char, cur_char);
                 // TYPE(ch[-1])
                 #[cfg(feature = "char-type")]
-                buf_feature!(buffer, feature, "c{}", CharacterType::get_type(pre_char) as u8);
+                buf_feature!(
+                    buffer,
+                    feature,
+                    "c{}",
+                    CharacterType::get_type(pre_char) as u8
+                );
                 if pre2_char != char_null {
                     // ch[-2]
                     buf_feature!(buffer, feature, "0{}", pre2_char);
@@ -127,7 +139,12 @@ impl CWSDefinition {
                 buf_feature!(buffer, feature, "7{}{}", cur_char, next_char);
                 // TYPE(ch[1])
                 #[cfg(feature = "char-type")]
-                buf_feature!(buffer, feature, "d{}", CharacterType::get_type(*next_char) as u8);
+                buf_feature!(
+                    buffer,
+                    feature,
+                    "d{}",
+                    CharacterType::get_type(*next_char) as u8
+                );
                 *next_char
             } else {
                 ' '
@@ -172,7 +189,11 @@ impl CWSDefinition {
         Ok((index, result))
     }
 
-    pub fn parse_char_features_with_buffer_str<'a>(&self, sentence: &str, buffer: &'a mut Vec<u8>) -> Result<(Vec<usize>, Vec<Vec<&'a str>>)> {
+    pub fn parse_char_features_with_buffer_str<'a>(
+        &self,
+        sentence: &str,
+        buffer: &'a mut Vec<u8>,
+    ) -> Result<(Vec<usize>, Vec<Vec<&'a str>>)> {
         let (index, features) = self.parse_char_features_with_buffer(sentence, buffer)?;
 
         let mut start = 0usize;
@@ -192,9 +213,9 @@ impl CWSDefinition {
 }
 
 impl Definition for CWSDefinition {
-    type Fragment = dyn for<'any> GenericItem<'any, Item=Vec<usize>>;
-    type Prediction = dyn for<'any> GenericItem<'any, Item=Vec<&'any str>>;
-    type RawFeature = dyn for<'any> GenericItem<'any, Item=&'any str>;
+    type Fragment = dyn for<'any> GenericItem<'any, Item = Vec<usize>>;
+    type Prediction = dyn for<'any> GenericItem<'any, Item = Vec<&'any str>>;
+    type RawFeature = dyn for<'any> GenericItem<'any, Item = &'any str>;
 
     fn use_viterbi(&self) -> bool {
         true
@@ -238,7 +259,11 @@ impl Definition for CWSDefinition {
         Ok((index, features))
     }
 
-    fn parse_features_with_buffer<'a>(&self, sentence: &&str, buf: &'a mut Vec<u8>) -> Result<(Vec<usize>, Vec<Vec<&'a str>>)> {
+    fn parse_features_with_buffer<'a>(
+        &self,
+        sentence: &&str,
+        buf: &'a mut Vec<u8>,
+    ) -> Result<(Vec<usize>, Vec<Vec<&'a str>>)> {
         let (index, features) = self.parse_char_features_with_buffer_str(sentence, buf)?;
         Ok((index, features))
     }
@@ -251,8 +276,7 @@ impl Definition for CWSDefinition {
         lines
             .par_iter()
             .map(|sentence| {
-                let sentence_raw: String = sentence.chars().filter(|c| !c.is_whitespace()).collect();
-                self.parse_char_features(&sentence_raw).map(|(_, features)| {
+                self.parse_char_features(sentence).map(|(_, features)| {
                     let mut labels = Vec::with_capacity(features.len());
                     // 构建标签序列
 
@@ -291,8 +315,7 @@ impl Definition for CWSDefinition {
         lines
             .iter()
             .map(|sentence| {
-                let sentence_raw: String = sentence.chars().filter(|c| !c.is_whitespace()).collect();
-                self.parse_char_features(&sentence_raw).map(|(_, features)| {
+                self.parse_char_features(sentence).map(|(_, features)| {
                     let mut labels = Vec::with_capacity(features.len());
                     // 构建标签序列
                     let mut last_char = ' ';
@@ -333,9 +356,9 @@ impl Definition for CWSDefinition {
 
 #[cfg(test)]
 mod tests {
-    use std::iter::zip;
     use super::CWSDefinition as Define;
     use anyhow::Result;
+    use std::iter::zip;
 
     #[test]
     fn test_vec_buffer() -> Result<()> {
@@ -352,7 +375,12 @@ mod tests {
             }
         }
 
-        println!("{}/{}/{}", sentence.len(), buffer.len(), buffer.len() / sentence.len());
+        println!(
+            "{}/{}/{}",
+            sentence.len(),
+            buffer.len(),
+            buffer.len() / sentence.len()
+        );
 
         Ok(())
     }
