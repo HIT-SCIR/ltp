@@ -1,5 +1,13 @@
+#[cfg(not(target_env = "musl"))]
+use mimalloc::MiMalloc;
+
+#[cfg(not(target_env = "musl"))]
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
+use itertools::Itertools;
 use ltp::perceptron::SerdeCWSModel;
 use ltp::{Algorithm, CWSDefinition as Definition, Codec, Format, ModelSerde, PaMode, Trainer};
 use std::collections::HashMap;
@@ -27,7 +35,7 @@ enum AlgorithmArg {
 struct Train {
     #[clap(long, value_parser, default_value_t = 10)]
     epoch: usize,
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, default_value_t = true)]
     shuffle: bool,
     #[clap(arg_enum, value_parser, default_value_t = AlgorithmArg::Ap)]
     algorithm: AlgorithmArg,
@@ -144,7 +152,7 @@ fn main() -> Result<()> {
 
             let (p, r, f1) = trainer.evaluate(&model)?;
             let duration = start.elapsed().as_millis();
-            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}", );
+            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}",);
         }
         Args::Predict(mode) => {
             let file = File::open(&mode.model)?;
@@ -154,17 +162,9 @@ fn main() -> Result<()> {
                 Format::AVRO(Codec::Deflate)
             };
             let model: SerdeCWSModel = ModelSerde::load(file, format)?;
-
             let file = File::open(mode.input)?;
             let lines = BufReader::new(file).lines();
-
-            let mut datasets = Vec::new();
-            for sentence in lines.flatten() {
-                if sentence.is_empty() {
-                    continue;
-                }
-                datasets.push(sentence);
-            }
+            let datasets = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
             let start = std::time::Instant::now();
             let result: Result<Vec<Vec<&str>>> = datasets
                 .iter()

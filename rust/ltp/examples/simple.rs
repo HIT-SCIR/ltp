@@ -1,6 +1,13 @@
-use std::fs::File;
+#[cfg(not(target_env = "musl"))]
+use mimalloc::MiMalloc;
+
+#[cfg(not(target_env = "musl"))]
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 use itertools::multizip;
-use ltp::{CWSModel, POSModel, NERModel, ModelSerde, Format, Codec};
+use ltp::{CWSModel, Codec, Format, ModelSerde, NERModel, POSModel};
+use std::fs::File;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open("data/legacy-models/cws_model.bin")?;

@@ -1,5 +1,13 @@
+#[cfg(not(target_env = "musl"))]
+use mimalloc::MiMalloc;
+
+#[cfg(not(target_env = "musl"))]
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
+use itertools::Itertools;
 use ltp::perceptron::SerdeNERModel;
 use ltp::{Algorithm, Codec, Format, ModelSerde, NERDefinition as Definition, PaMode, Trainer};
 use std::collections::HashMap;
@@ -153,7 +161,7 @@ fn main() -> Result<()> {
 
             let (p, r, f1) = trainer.evaluate(&model)?;
             let duration = start.elapsed().as_millis();
-            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}", );
+            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}",);
         }
         Args::Predict(mode) => {
             let file = File::open(&mode.model)?;
@@ -163,16 +171,14 @@ fn main() -> Result<()> {
                 Format::AVRO(Codec::Deflate)
             };
             let model: SerdeNERModel = ModelSerde::load(file, format)?;
-
             let file = File::open(mode.input)?;
             let lines = BufReader::new(file).lines();
 
-            let mut all_words = vec![];
-            let mut all_pos = vec![];
-            let sentences = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
-            for sentence in &sentences {
+            let datasets = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
+            let mut all_words: Vec<Vec<&str>> = Vec::with_capacity(datasets.len());
+            let mut all_pos: Vec<Vec<&str>> = Vec::with_capacity(datasets.len());
+            for sentence in &datasets {
                 let words_tags = sentence.split_whitespace().collect_vec();
-
                 let mut sentence_words = Vec::with_capacity(words_tags.len());
                 let mut sentence_pos = Vec::with_capacity(words_tags.len());
                 for word_tag in words_tags {
@@ -188,7 +194,7 @@ fn main() -> Result<()> {
             let result: Result<Vec<Vec<&str>>> = all_words
                 .into_iter()
                 .zip(all_pos.into_iter())
-                .map(|(words, pos)| model.predict((words.as_slice(), pos.as_slice())))
+                .map(|(words, pos)| model.predict((&words, &pos)))
                 .collect();
             let duration = start.elapsed();
             println!("{}ms", duration.as_millis());

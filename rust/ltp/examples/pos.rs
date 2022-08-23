@@ -1,5 +1,13 @@
+#[cfg(not(target_env = "musl"))]
+use mimalloc::MiMalloc;
+
+#[cfg(not(target_env = "musl"))]
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
+use itertools::Itertools;
 use ltp::perceptron::SerdePOSModel;
 use ltp::{Algorithm, Codec, Format, ModelSerde, POSDefinition as Definition, PaMode, Trainer};
 use std::collections::HashMap;
@@ -152,7 +160,7 @@ fn main() -> Result<()> {
 
             let (p, r, f1) = trainer.evaluate(&model)?;
             let duration = start.elapsed().as_millis();
-            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}", );
+            println!("[{duration}ms] precision: {p}, recall: {r}, f1: {f1}",);
         }
         Args::Predict(mode) => {
             let file = File::open(&mode.model)?;
@@ -162,13 +170,11 @@ fn main() -> Result<()> {
                 Format::AVRO(Codec::Deflate)
             };
             let model: SerdePOSModel = ModelSerde::load(file, format)?;
-
             let file = File::open(mode.input)?;
             let lines = BufReader::new(file).lines();
-
-            let sentences = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
+            let datasets = lines.flatten().filter(|s| !s.is_empty()).collect_vec();
             let start = std::time::Instant::now();
-            let result: Result<Vec<Vec<&str>>> = sentences
+            let result: Result<Vec<Vec<&str>>> = datasets
                 .iter()
                 .map(|sentence| sentence.split_whitespace().collect_vec())
                 .map(|sentence| model.predict(&sentence))
