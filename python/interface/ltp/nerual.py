@@ -94,6 +94,7 @@ class LTP(BaseModule, ModelHubMixin):
         self,
         inputs: Union[str, List[str], List[List[str]]],
         tasks: List[str] = None,
+        raw_format=False,
         return_dict: bool = True,
     ):
         if tasks is None:
@@ -177,6 +178,40 @@ class LTP(BaseModule, ModelHubMixin):
                     cache[cache_key] = (hidden_state, attention_mask)
                 result = self.model.task_heads[task](hidden_state, attention_mask)
                 store[task] = self.post[task](result, hidden, store, inputs, tokenized)
+
+            if not raw_format:
+                if is_split_into_words:
+                    sentences = inputs
+                else:
+                    sentences = store["cws"]
+
+                if task == "ner":
+                    new_store = []
+                    for idx, sent in enumerate(store[task]):
+                        words = sentences[idx]
+                        new_store.append(
+                            [
+                                (tag, "".join(words[start : end + 1]))
+                                for tag, start, end in get_entities(sent)
+                            ]
+                        )
+                    store[task] = new_store
+                if task == "srl":
+                    new_store = []
+                    for idx, sent in enumerate(store[task]):
+                        words = sentences[idx]
+                        new_store.append([])
+
+                        for item, predicate in enumerate(words):
+                            arguments = [
+                                (tag, "".join(words[start : end + 1]))
+                                for tag, start, end in get_entities(sent[item])
+                            ]
+                            if arguments:
+                                new_store[-1].append(
+                                    {"predicate": predicate, "arguments": arguments}
+                                )
+                    store[task] = new_store
 
         if is_batch:
             output = LTPOutput(**store)

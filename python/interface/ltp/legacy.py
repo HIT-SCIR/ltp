@@ -6,8 +6,8 @@ import os
 from typing import List, Union
 
 from ltp.generic import LTPOutput
-from ltp.mixin import VOCAB_NAME, ModelHubMixin
-from ltp_extension.algorithms import Hook
+from ltp.mixin import ModelHubMixin
+from ltp_extension.algorithms import Hook, get_entities
 from ltp_extension.perceptron import Model
 
 
@@ -36,7 +36,14 @@ class LTP(ModelHubMixin):
     def __call__(self, *args, **kwargs):
         return self.pipeline(*args, **kwargs)
 
-    def pipeline(self, *args, tasks: List[str] = None, threads: int = 8, return_dict: bool = True):
+    def pipeline(
+        self,
+        *args,
+        tasks: List[str] = None,
+        threads: int = 8,
+        raw_format=False,
+        return_dict: bool = True,
+    ):
         if tasks is None:
             tasks = ["cws", "pos", "ner"]
         if not self.supported_tasks.issuperset(tasks):
@@ -54,7 +61,28 @@ class LTP(ModelHubMixin):
             elif task == "pos":
                 args = (*args, self.pos_model(*args, threads=threads))
             elif task == "ner":
-                args = (*args, self.ner_model(*args, threads=threads))
+                ner = self.ner_model(*args, threads=threads)
+                if not raw_format:
+                    if isinstance(ner[0], list):
+                        # Batch result
+                        sentences = args[0]
+                        new_store = []
+                        for idx, sent in enumerate(ner):
+                            words = sentences[idx]
+                            new_store.append(
+                                [
+                                    (tag, "".join(words[start : end + 1]))
+                                    for tag, start, end in get_entities(sent)
+                                ]
+                            )
+                        ner = new_store
+                    else:
+                        words = args[0]
+                        ner = [
+                            (tag, "".join(words[start : end + 1]))
+                            for tag, start, end in get_entities(ner)
+                        ]
+                args = (*args, ner)
             else:
                 raise ValueError(f"Invalid task: {task}")
             result[task] = args[-1]
