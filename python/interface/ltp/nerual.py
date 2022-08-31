@@ -20,8 +20,6 @@ from ltp_core.models.components.token import TokenClassifierResult
 from ltp_core.models.ltp_model import LTPModule
 from ltp_core.models.utils import instantiate
 
-Edge = namedtuple("Edge", ["s", "t", "l"])
-
 
 def no_grad(func):
     def wrapper(*args, **kwargs):

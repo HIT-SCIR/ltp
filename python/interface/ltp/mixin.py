@@ -136,6 +136,8 @@ class ModelHubMixin:
             with open(config_file, encoding="utf-8") as f:
                 config = json.load(f)
             model_kwargs.update({"config": config})
+        else:
+            raise FileNotFoundError(f"{CONFIG_NAME} not found in {model_id}")
 
         return cls._from_pretrained(
             model_id,

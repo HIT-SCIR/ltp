@@ -118,6 +118,8 @@ def LTP(
         with open(config_file, encoding="utf-8") as f:
             config = json.load(f)
         model_kwargs.update({"config": config})
+    else:
+        raise FileNotFoundError(f"{CONFIG_NAME} not found in {model_id}")
 
     if config["nerual"]:
         return LTP_neural._from_pretrained(
