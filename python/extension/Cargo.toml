@@ -19,7 +19,7 @@ crate-type = ["cdylib"]
 rayon = { version = "1.5" }
 anyhow = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
-pyo3 = { version = "0.16", features = ["extension-module", "anyhow", "serde"] }
+pyo3 = { version = "0.17", features = ["extension-module", "anyhow", "serde"] }
 
 [dependencies.ltp]
 version = "*"
