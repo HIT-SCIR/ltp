@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 
-import json
 import os
-from typing import List, Union
+from typing import Iterable, List, Union
 
 from ltp.generic import LTPOutput
 from ltp.mixin import ModelHubMixin
@@ -21,8 +20,21 @@ class LTP(ModelHubMixin):
         self.supported_tasks = set()
         self._check()
 
+    @property
+    def version(self):
+        from ltp import __version__
+
+        return __version__
+
     def add_word(self, word: str, freq: int = 1):
         self.hook.add_word(word, freq)
+
+    def add_words(self, words: Union[str, List[str]], freq: int = 2):
+        if isinstance(words, str):
+            self.hook.add_word(words, freq)
+        elif isinstance(words, Iterable):
+            for word in words:
+                self.hook.add_word(word, freq)
 
     def _check(self):
         for model, task in (

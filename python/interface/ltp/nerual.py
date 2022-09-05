@@ -1,14 +1,13 @@
 #! /usr/bin/env python
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
-import json
+
 import os
-from collections import namedtuple
-from typing import Any, Dict, List, Mapping, Union
+from typing import Any, Dict, Iterable, List, Mapping, Union
 
 import numpy as np
 import torch
 from ltp.generic import LTPOutput
-from ltp.mixin import PYTORCH_WEIGHTS_NAME, VOCAB_NAME, ModelHubMixin
+from ltp.mixin import PYTORCH_WEIGHTS_NAME, ModelHubMixin
 from ltp.module import BaseModule
 from ltp_extension.algorithms import Hook, eisner, get_entities
 from transformers import AutoTokenizer, BatchEncoding, TensorType
@@ -62,6 +61,13 @@ class LTP(BaseModule, ModelHubMixin):
     def add_word(self, word: str, freq: int = 1):
         self.hook.add_word(word, freq)
 
+    def add_words(self, words: Union[str, List[str]], freq: int = 2):
+        if isinstance(words, str):
+            self.hook.add_word(words, freq)
+        elif isinstance(words, Iterable):
+            for word in words:
+                self.hook.add_word(word, freq)
+
     def _check(self):
         self.eval()
         for vocab, task in (
@@ -82,7 +88,9 @@ class LTP(BaseModule, ModelHubMixin):
 
     @property
     def version(self):
-        return "4.2.0"
+        from ltp import __version__
+
+        return __version__
 
     def __call__(self, *args, **kwargs):
         return self.pipeline(*args, **kwargs)
@@ -272,15 +280,20 @@ class LTP(BaseModule, ModelHubMixin):
         ]
 
         if len(self.hook):
-            words = [self.hook.hook(t, w) for t, w in zip(text, words)]
+            words = [self.hook.hook("".join(t), w) for t, w in zip(text, words)]
             entities = []
-            for he in [np.cumsum([len(w) for w in s]) for s in words]:
+
+            char_len_cumsum = [np.cumsum([len(c) for c in s]) for s in text]
+            words_len_cumsum = [np.cumsum([len(w) for w in s]) for s in words]
+
+            for char_end, word_end in zip(char_len_cumsum, words_len_cumsum):
                 entities.append([])
-                for i, e in enumerate(he):
+                char_index = {cl: idx for idx, cl in enumerate(char_end)}
+                for i, e in enumerate(word_end):
                     if i == 0:
-                        entities[-1].append((0, e - 1))
+                        entities[-1].append((0, char_index[e]))
                     else:
-                        entities[-1].append((he[i - 1], e - 1))
+                        entities[-1].append((char_index[word_end[i - 1]] + 1, char_index[e]))
 
         words_idx = torch.nn.utils.rnn.pad_sequence(
             [

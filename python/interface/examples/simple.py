@@ -7,6 +7,7 @@ def legacy():
         ["他叫汤姆去拿外衣。", "树上停着一些小鸟。先飞走了19只，又飞走了15只。两次共飞走了多少只小鸟？"],
         tasks=["cws", "pos", "ner"],
     )
+    ltp.add_word("汤姆去")
     print(result.cws)
     print(result.pos)
     print(result.ner)
@@ -14,18 +15,7 @@ def legacy():
 
 def neural():
     ltp = LTP("LTP/tiny")
-
-    # 已经分词的文本
-    result = ltp.pipeline(
-        [["他", "叫", "汤姆", "去", "拿", "外衣", "。"], ["가을동", "叫", "1993", "年", "的", "Ameri", "·"]],
-        # 注意这里移除了 "cws" 任务
-        tasks=["pos", "ner", "srl", "dep", "sdp"],
-    )
-    print(result.pos)
-    print(result.ner)
-    print(result.srl)
-    print(result.dep)
-    print(result.sdp)
+    ltp.add_word("汤姆去")
 
     # 未分词的文本
     result = ltp.pipeline(
@@ -33,6 +23,18 @@ def neural():
         tasks=["cws", "pos", "ner", "srl", "dep", "sdp"],
     )
     print(result.cws)
+    print(result.pos)
+    print(result.ner)
+    print(result.srl)
+    print(result.dep)
+    print(result.sdp)
+
+    # 已经分词的文本
+    result = ltp.pipeline(
+        [["他", "叫", "汤姆", "去", "拿", "外衣", "。"], ["가을동", "叫", "1993", "年", "的", "Ameri", "·"]],
+        # 注意这里移除了 "cws" 任务
+        tasks=["pos", "ner", "srl", "dep", "sdp"],
+    )
     print(result.pos)
     print(result.ner)
     print(result.srl)
@@ -53,7 +55,7 @@ def neural():
 
 
 def main():
-    legacy()
+    # legacy()
     neural()
 
 
