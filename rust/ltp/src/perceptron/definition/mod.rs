@@ -49,6 +49,7 @@ pub trait Definition: Default + Debug + Clone {
 
     fn to_label(&self, index: usize) -> &str;
 
+    #[allow(clippy::type_complexity)]
     fn parse_features(
         &self,
         raw: &<Self::RawFeature as GenericItem>::Item,

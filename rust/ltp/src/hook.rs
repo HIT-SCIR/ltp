@@ -82,7 +82,7 @@ impl Hook {
                 let haystack = &sentence[byte_start + byte_start_bias..];
 
                 // Char
-                let cur_char_len = char_indices.peek().map(|(_, ci)| ci.len_utf8());
+                let cur_char_len = char_indices.peek().map(|(next_start, _)| next_start - byte_start);
                 // 外部分词结果
                 let mut nch_flag = cur_char_len.is_none();
                 let mut per_flag = !is_first;
@@ -318,6 +318,19 @@ mod tests {
         hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
         println!("{:?}", words);
         assert_eq!(words, ["他", "叫", "汤", "姆去拿", "外衣", "。"]);
+    }
+
+    #[test]
+    fn test_sep() {
+        let sentence = "通讯系统[SEP]";
+        let cut_words = ["通讯", "系统[SEP]"];
+        let hook = Hook::new();
+
+        let mut words = Vec::with_capacity(5);
+        let mut route = Vec::with_capacity(5);
+
+        let mut dag = Dag::with_size_hint(5);
+        hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
     }
 
     #[test]
