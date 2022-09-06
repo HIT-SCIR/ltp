@@ -28,3 +28,7 @@ features = ["serialization", "parallel"]
 
 [target.'cfg(not(target_env = "musl"))'.dependencies]
 mimalloc = { version = "0.1", default-features = false }
+
+[features]
+default = ["abi3"]
+abi3 = ["pyo3/abi3", "pyo3/abi3-py37"]

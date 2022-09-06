@@ -6,9 +6,6 @@ on:
 jobs:
   macos:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -36,15 +33,19 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           target: x86_64
-          args: -i python --release --out dist -m python/extension/Cargo.toml
-      - name: Build wheels - universal2
-        if: ${{ matrix.python-version >= '3.8' || matrix.python-version == '3.10' }}
-        uses: messense/maturin-action@v1
-        with:
-          args: -i python --release --universal2 --out dist -m python/extension/Cargo.toml
+          args: --release --out dist --sdist -m python/extension/Cargo.toml
       - name: Install built wheel - x86_64
         run: |
-          pip install ltp_extension --find-links dist --force-reinstall
+          pip3 install ltp_extension --no-index --find-links dist --force-reinstall
+          python3 -c "import ltp_extension"
+      - name: Build wheels - universal2
+        uses: messense/maturin-action@v1
+        with:
+          args: --release --universal2 --out dist -m python/extension/Cargo.toml
+      - name: Install built wheel - universal2
+        run: |
+          pip3 install ltp_extension --no-index --find-links dist --force-reinstall
+          python3 -c "import ltp_extension"
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -55,7 +56,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        target: [x64, x86]
+        target: [ x64, x86 ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -85,7 +86,8 @@ jobs:
           args: --release --out dist -m python/extension/Cargo.toml
       - name: Install built wheel
         run: |
-          pip install ltp_extension --find-links dist --force-reinstall
+          pip3 install ltp_extension --no-index --find-links dist --force-reinstall
+          python3 -c "import ltp_extension"
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -96,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [x86_64, i686]
+        target: [ x86_64, i686 ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -129,7 +131,118 @@ jobs:
       - name: Install built wheel
         if: matrix.target == 'x86_64'
         run: |
-          pip install ltp_extension --find-links dist --force-reinstall
+          pip3 install ltp_extension --no-index --find-links dist --force-reinstall
+          python3 -c "import ltp_extension"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+  linux-cross:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [ aarch64, armv7, s390x, ppc64le, ppc64 ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: auto
+          args: --release --out dist -m python/extension/Cargo.toml
+      - uses: uraimo/run-on-arch-action@v2.0.5
+        if: matrix.target != 'ppc64'
+        name: Install built wheel
+        with:
+          arch: ${{ matrix.target }}
+          distro: ubuntu20.04
+          githubToken: ${{ github.token }}
+          install: |
+            apt-get update
+            apt-get install -y --no-install-recommends python3 python3-pip
+            pip3 install -U pip
+          run: |
+            pip3 install ltp_extension --no-index --find-links dist --force-reinstall
+            python3 -c "import ltp_extension"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+  musllinux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-musl
+          - i686-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+          architecture: x64
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: musllinux_1_2
+          args: --release --out dist -m python/extension/Cargo.toml
+      - name: Install built wheel
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        uses: addnab/docker-run-action@v3
+        with:
+          image: alpine:latest
+          options: -v ${{ github.workspace }}:/io -w /io
+          run: |
+            apk add py3-pip
+            pip3 install -U pip
+            pip3 install ltp_extension --no-index --find-links /io/dist/ --force-reinstall
+            python3 -c "import ltp_extension"
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+  musllinux-cross:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - target: aarch64-unknown-linux-musl
+            arch: aarch64
+          - target: armv7-unknown-linux-musleabihf
+            arch: armv7
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          manylinux: musllinux_1_2
+          args: --release --out dist -m python/extension/Cargo.toml
+      - uses: uraimo/run-on-arch-action@master
+        name: Install built wheel
+        with:
+          arch: ${{ matrix.platform.arch }}
+          distro: alpine_latest
+          githubToken: ${{ github.token }}
+          install: |
+            apk add py3-pip
+            pip3 install -U pip
+          run: |
+            pip3 install ltp_extension --no-index --find-links dist --force-reinstall
+            python3 -c "import ltp_extension"
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
@@ -139,7 +252,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: [macos, windows, linux]
+    needs: [ macos, windows, linux, linux-cross, musllinux, musllinux-cross ]
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -152,5 +265,5 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD_EXT }}
         run: |
-          pip install --upgrade twine
+          pip3 install --upgrade twine
           twine upload --skip-existing ltp_extension-*
