@@ -21,6 +21,8 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 rayon = { version = "1.5" }
 ltp = { version = "*", path = "../ltp", features = ["serialization", "parallel"] }
+mimalloc = { version = "0.1", default-features = false, optional = true }
 
-[target.'cfg(not(target_env = "musl"))'.dependencies]
-mimalloc = { version = "0.1", default-features = false }
+[features]
+malloc = ["mimalloc"]
+secure = ["mimalloc/secure"]

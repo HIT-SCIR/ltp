@@ -1,7 +1,7 @@
-#[cfg(not(target_env = "musl"))]
+#[cfg(feature = "malloc")]
 use mimalloc::MiMalloc;
 
-#[cfg(not(target_env = "musl"))]
+#[cfg(feature = "malloc")]
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 

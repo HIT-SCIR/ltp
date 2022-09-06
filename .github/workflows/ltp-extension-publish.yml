@@ -33,7 +33,7 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           target: x86_64
-          args: --release --out dist --sdist -m python/extension/Cargo.toml
+          args: --release --out dist --sdist -m python/extension/Cargo.toml --features="malloc"
       - name: Install built wheel - x86_64
         run: |
           pip3 install ltp_extension --no-index --find-links dist --force-reinstall
@@ -41,7 +41,7 @@ jobs:
       - name: Build wheels - universal2
         uses: messense/maturin-action@v1
         with:
-          args: --release --universal2 --out dist -m python/extension/Cargo.toml
+          args: --release --universal2 --out dist -m python/extension/Cargo.toml --features="malloc"
       - name: Install built wheel - universal2
         run: |
           pip3 install ltp_extension --no-index --find-links dist --force-reinstall
@@ -83,7 +83,7 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist -m python/extension/Cargo.toml
+          args: --release --out dist -m python/extension/Cargo.toml --features="malloc"
       - name: Install built wheel
         run: |
           pip3 install ltp_extension --no-index --find-links dist --force-reinstall
@@ -127,7 +127,7 @@ jobs:
           rust-toolchain: nightly
           target: ${{ matrix.target }}
           manylinux: auto
-          args: --release --out dist -m python/extension/Cargo.toml
+          args: --release --out dist -m python/extension/Cargo.toml --features="malloc"
       - name: Install built wheel
         if: matrix.target == 'x86_64'
         run: |

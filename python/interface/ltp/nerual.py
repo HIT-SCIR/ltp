@@ -434,7 +434,7 @@ class LTP(BaseModule, ModelHubMixin):
 
         s_arc = s_arc.view(-1).cpu().numpy()
         length = torch.sum(attention_mask, dim=1).view(-1).cpu().numpy() + 1
-        arcs = [sequence for sequence in eisner(s_arc, length, True)]
+        arcs = [sequence for sequence in eisner(s_arc.tolist(), length.tolist(), True)]
         rels = torch.argmax(s_rel[:, 1:], dim=-1).cpu().numpy()
         rels = [
             [self.dep_vocab[rels[s, t, a]] for t, a in enumerate(arc)]
@@ -470,7 +470,7 @@ class LTP(BaseModule, ModelHubMixin):
         # eisner 解码
         e_arcs = s_arc.view(-1).cpu().numpy()
         length = torch.sum(attention_mask, dim=1).view(-1).cpu().numpy() + 1
-        e_arcs = [sequence for sequence in eisner(e_arcs, length, True)]
+        e_arcs = [sequence for sequence in eisner(e_arcs.tolist(), length.tolist(), True)]
 
         if tree:
             rels = torch.argmax(s_rel[:, 1:], dim=-1).cpu().numpy()

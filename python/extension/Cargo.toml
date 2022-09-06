@@ -20,15 +20,15 @@ rayon = { version = "1.5" }
 anyhow = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
 pyo3 = { version = "0.17", features = ["extension-module", "anyhow", "serde"] }
+mimalloc = { version = "0.1", default-features = false, optional = true }
 
 [dependencies.ltp]
 version = "*"
 path = "../../rust/ltp"
 features = ["serialization", "parallel"]
 
-[target.'cfg(not(target_env = "musl"))'.dependencies]
-mimalloc = { version = "0.1", default-features = false }
-
 [features]
 default = ["abi3"]
 abi3 = ["pyo3/abi3", "pyo3/abi3-py37"]
+malloc = ["mimalloc"]
+secure = ["mimalloc/secure"]

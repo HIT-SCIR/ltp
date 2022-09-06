@@ -11,7 +11,7 @@ try:
         result = torch.nn.utils.rnn.pad_sequence(
             [
                 torch.tensor(sequence, device=mask.device)
-                for sequence in rust_eisner(scores, length, remove_root)
+                for sequence in rust_eisner(scores.tolist(), length.tolist(), remove_root)
             ],
             batch_first=True,
             padding_value=0,

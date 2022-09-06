@@ -9,7 +9,7 @@ with open(os.path.join(project_dir, "README.md"), encoding="utf-8") as fh:
 
 setup(
     name="ltp_core",
-    version="0.1.1",
+    version="0.1.2",
     author="Yunlong Feng",
     author_email="ylfeng@ir.hit.edu.cn",
     url="https://github.com/HIT-SCIR/ltp",
