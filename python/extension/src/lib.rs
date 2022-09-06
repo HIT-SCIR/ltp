@@ -1,7 +1,7 @@
-#[cfg(feature = "malloc")]
+#[cfg(feature = "mimalloc")]
 use mimalloc::MiMalloc;
 
-#[cfg(feature = "malloc")]
+#[cfg(feature = "mimalloc")]
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 

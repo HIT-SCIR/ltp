@@ -69,6 +69,3 @@ clap = { version = "3", features = ["derive"] }
 
 ndarray = "0.15"
 ndarray-npy = { version = "0.8", features = ["npz"] }
-
-[target.'cfg(not(target_env = "musl"))'.dependencies]
-mimalloc = { version = "0.1", default-features = false }

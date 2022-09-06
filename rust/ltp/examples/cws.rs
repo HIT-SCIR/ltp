@@ -1,10 +1,3 @@
-#[cfg(not(target_env = "musl"))]
-use mimalloc::MiMalloc;
-
-#[cfg(not(target_env = "musl"))]
-#[global_allocator]
-static GLOBAL: MiMalloc = MiMalloc;
-
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
 use itertools::Itertools;

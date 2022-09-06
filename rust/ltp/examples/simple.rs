@@ -1,10 +1,3 @@
-#[cfg(not(target_env = "musl"))]
-use mimalloc::MiMalloc;
-
-#[cfg(not(target_env = "musl"))]
-#[global_allocator]
-static GLOBAL: MiMalloc = MiMalloc;
-
 use itertools::multizip;
 use ltp::{CWSModel, Codec, Format, ModelSerde, NERModel, POSModel};
 use std::fs::File;
