@@ -61,9 +61,16 @@ pip install ltp # 安装 ltp
 ```
 
 ```python
+import torch
 from ltp import LTP
 
 ltp = LTP("LTP/small")  # 默认加载 Small 模型
+
+# 将模型移动到 GPU 上
+if torch.cuda.is_available():
+    # ltp.cuda()
+    ltp.to("cuda")
+
 output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"])
 # 使用字典格式作为返回结果
 print(output.cws) # print(output[0]) / print(output['cws']) # 也可以使用下标访问
