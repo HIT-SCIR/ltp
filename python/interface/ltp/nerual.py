@@ -9,15 +9,14 @@ import torch
 from ltp.generic import LTPOutput
 from ltp.mixin import PYTORCH_WEIGHTS_NAME, ModelHubMixin
 from ltp.module import BaseModule
-from ltp_extension.algorithms import Hook, eisner, get_entities
-from transformers import AutoTokenizer, BatchEncoding, TensorType
-from transformers.tokenization_utils_base import TruncationStrategy
-from transformers.utils import PaddingStrategy
-
 from ltp_core.models.components.graph import GraphResult
 from ltp_core.models.components.token import TokenClassifierResult
 from ltp_core.models.ltp_model import LTPModule
 from ltp_core.models.utils import instantiate
+from ltp_extension.algorithms import Hook, eisner, get_entities
+from transformers import AutoTokenizer, BatchEncoding, TensorType
+from transformers.tokenization_utils_base import TruncationStrategy
+from transformers.utils import PaddingStrategy
 
 
 def no_grad(func):
@@ -382,7 +381,7 @@ class LTP(BaseModule, ModelHubMixin):
         logits = result.logits
         attention_mask = result.attention_mask
 
-        length = torch.sum(attention_mask, dim=-1)
+        lengths = torch.sum(attention_mask, dim=-1)
 
         # to expand
         attention_mask = attention_mask.unsqueeze(-1).expand(-1, -1, attention_mask.size(1))
@@ -406,12 +405,12 @@ class LTP(BaseModule, ModelHubMixin):
             decoded = crf.decode(logits, attention_mask)
             decoded = [[self.srl_vocab[tag] for tag in tags] for tags in decoded]
 
-        length = length.cpu().numpy()
+        lengths = lengths.cpu().numpy()
 
         res = []
-        for l in length:
-            res.append(decoded[:l])
-            decoded = decoded[l:]
+        for length in lengths:
+            res.append(decoded[:length])
+            decoded = decoded[length:]
 
         return res
 

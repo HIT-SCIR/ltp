@@ -1,8 +1,7 @@
 import torch
+from ltp_core.models.components.graph import GraphResult
 from torch import Tensor
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, Module
-
-from ltp_core.models.components.graph import GraphResult
 
 
 class DEPLoss(Module):

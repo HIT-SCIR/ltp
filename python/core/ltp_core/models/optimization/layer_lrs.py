@@ -28,7 +28,7 @@ def get_layer_lrs_with_crf(
         elif m.group(1) == "encoder":
             depth = int(m.group(3)) + 1
         else:
-            raise Exception("Not Recommand!!!")
+            raise Exception("Not Recommend!!!")
 
         if is_transformer and any(
             x in name for x in ["bias", "LayerNorm.bias", "LayerNorm.weight"]

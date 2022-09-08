@@ -1,35 +1,35 @@
 from ltp_core.datamodules.components.conllu import Conllu
 from ltp_core.datamodules.utils.datasets import load_dataset
 
-B = 0
-I = 1
-M = 1
-E = 2
-S = 3
+PREFIX_B = 0
+PREFIX_I = 1
+PREFIX_M = 1
+PREFIX_E = 2
+PREFIX_S = 3
 
 
 def length2bi(length):
     if length == 0:
         return []
     elif length == 1:
-        return [B]
+        return [PREFIX_B]
     elif length == 2:
-        return [B, I]
+        return [PREFIX_B, PREFIX_I]
     else:
-        return [B] + [I] * (length - 1)
+        return [PREFIX_B] + [PREFIX_I] * (length - 1)
 
 
 def length2bmes(length):
     if length == 0:
         return []
     elif length == 1:
-        return [S]
+        return [PREFIX_S]
     elif length == 2:
-        return [B, E]
+        return [PREFIX_B, PREFIX_E]
     elif length == 3:
-        return [B, M, E]
+        return [PREFIX_B, PREFIX_M, PREFIX_E]
     else:
-        return [B] + [M] * (length - 2) + [E]
+        return [PREFIX_B] + [PREFIX_M] * (length - 2) + [PREFIX_E]
 
 
 def tokenize(examples, tokenizer, max_length, length2labels=length2bi):

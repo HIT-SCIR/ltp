@@ -1,12 +1,11 @@
 from collections import namedtuple
 from typing import Optional
 
-from torch import nn
-
 from ltp_core.models.nn.biaffine import Biaffine
 from ltp_core.models.nn.crf import CRF
 from ltp_core.models.nn.mlp import MLP
 from ltp_core.models.nn.relative_transformer import RelativeTransformer
+from torch import nn
 
 TokenClassifierResult = namedtuple("TokenClassifierResult", ["logits", "attention_mask", "crf"])
 

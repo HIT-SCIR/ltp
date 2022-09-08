@@ -97,8 +97,8 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --skip=logs/**,data/**,*.ipynb
-          # - --ignore-words-list=abc,def
+          - --skip=logs/**,data/**,*.ipynb,rust/**,python/extension/**,python/core/data/**,python/interface/docs/**
+          - --ignore-words-list=nd,hist
 
   # jupyter notebook cell output clearing
   - repo: https://github.com/kynan/nbstripout

@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from os.path import join
 
 import datasets
-
 from ltp_core.datamodules.utils.iterator import iter_blocks
 from ltp_core.datamodules.utils.vocab_helper import vocab_builder
 
@@ -70,7 +69,7 @@ def build_vocabs(data_dir, *files, min_freq=5):
                             for dep in values[row]
                         ]
                         counter.update(itertools.chain(*deps))
-                    except:
+                    except Exception as e:
                         counter.update("_")
                 else:
                     counter.update(values[row])

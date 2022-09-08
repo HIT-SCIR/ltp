@@ -1,8 +1,7 @@
 from collections import namedtuple
 
-from torch import nn
-
 from ltp_core.models.nn.mlp import MLP
+from torch import nn
 
 SentClassifierResult = namedtuple("SentClassifierResult", ["logits"])
 
