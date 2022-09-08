@@ -53,8 +53,10 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 ### [Python](python/interface/README.md)
 
 ```bash
-pip install ltp # 安装 ltp
+pip install -U ltp ltp-core ltp-extension -i https://pypi.org/simple # 安装 ltp
 ```
+
+**注：** 如果遇到任何错误，请尝试使用上述命令重新安装 ltp，如果依然报错，请在 Github issues 中反馈。
 
 ```python
 import torch
