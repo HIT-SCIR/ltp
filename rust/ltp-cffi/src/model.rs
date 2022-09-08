@@ -17,13 +17,8 @@ pub struct Model {
     model: EnumModel,
 }
 
-#[no_mangle]
-#[allow(clippy::not_unsafe_ptr_arg_deref)]
-pub extern "C" fn model_load(model_path: *const u8, model_path_len: usize) -> *mut Model {
+fn rs_model_load(model_path: &str) -> *mut Model {
     use ltp::perceptron::{ModelSerde, Reader, Schema};
-    let model_path =
-        unsafe { str::from_utf8_unchecked(slice::from_raw_parts(model_path, model_path_len)) };
-
     let file = match std::fs::File::open(model_path) {
         Ok(file) => file,
         Err(err) => {
@@ -73,21 +68,31 @@ pub extern "C" fn model_load(model_path: *const u8, model_path_len: usize) -> *m
 
 #[no_mangle]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "C" fn model_load(model_path: *const u8) -> *mut Model {
+    let model_path = unsafe { std::ffi::CStr::from_ptr(model_path as *const _) };
+    rs_model_load(&model_path.to_string_lossy())
+}
+
+#[no_mangle]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "C" fn model_load_s(model_path: *const u8, model_path_len: usize) -> *mut Model {
+    let model_path =
+        unsafe { str::from_utf8_unchecked(slice::from_raw_parts(model_path, model_path_len)) };
+    rs_model_load(model_path)
+}
+
+#[no_mangle]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub extern "C" fn model_release(model: *mut *mut Model) {
     let _ = unsafe { Box::from_raw(*model) };
     unsafe { *model = std::ptr::null_mut() };
 }
 
-#[no_mangle]
-#[allow(clippy::not_unsafe_ptr_arg_deref)]
-pub extern "C" fn model_save(
+pub extern "C" fn rs_model_save(
     model: *const Model,
-    model_path: *const u8,
-    model_path_len: usize,
+    model_path: &str,
 ) -> bool {
     use ltp::perceptron::ModelSerde;
-    let model_path =
-        unsafe { str::from_utf8_unchecked(slice::from_raw_parts(model_path, model_path_len)) };
 
     let file = match std::fs::File::open(model_path) {
         Ok(file) => file,
@@ -117,6 +122,29 @@ pub extern "C" fn model_save(
         }
     }
 }
+
+#[no_mangle]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "C" fn model_save(
+    model: *const Model,
+    model_path: *const u8,
+) -> bool {
+    let model_path = unsafe { std::ffi::CStr::from_ptr(model_path as *const _) };
+    rs_model_save(model, &model_path.to_string_lossy())
+}
+
+#[no_mangle]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "C" fn model_save_s(
+    model: *const Model,
+    model_path: *const u8,
+    model_path_len: usize,
+) -> bool {
+    let model_path =
+        unsafe { str::from_utf8_unchecked(slice::from_raw_parts(model_path, model_path_len)) };
+    rs_model_save(model, model_path)
+}
+
 
 #[no_mangle]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
