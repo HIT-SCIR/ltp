@@ -27,7 +27,8 @@ class LTP(ModelHubMixin):
         return __version__
 
     def add_word(self, word: str, freq: int = 1):
-        self.hook.add_word(word, freq)
+        if len(word) > 0:
+            self.hook.add_word(word, freq)
 
     def add_words(self, words: Union[str, List[str]], freq: int = 2):
         if isinstance(words, str):
