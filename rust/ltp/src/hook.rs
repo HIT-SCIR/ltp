@@ -87,15 +87,16 @@ impl Hook {
                 let mut nch_flag = cur_char_len.is_none();
                 let mut per_flag = !is_first;
                 for (_, end_index) in self.cedar.common_prefix_iter(haystack) {
-                    if is_first && end_index + 1 == word_len {
+                    let white_space_len = haystack[end_index + 1..].chars().take_while(|ch| ch.is_whitespace()).count();
+                    if is_first && end_index + white_space_len + 1 == word_len {
                         per_flag = true;
                     }
                     if let Some(char_len) = cur_char_len {
-                        if end_index + 1 == char_len {
+                        if end_index + white_space_len + 1 == char_len {
                             nch_flag = true;
                         }
                     }
-                    dag.insert(byte_start_bias + byte_start + end_index + 1);
+                    dag.insert(byte_start_bias + byte_start + end_index + white_space_len + 1);
                 }
                 if !nch_flag {
                     dag.insert(byte_start_bias + byte_start + cur_char_len.unwrap());
@@ -331,6 +332,21 @@ mod tests {
 
         let mut dag = Dag::with_size_hint(5);
         hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
+    }
+
+    #[test]
+    fn test_space() {
+        let sentence = "[ENT] Info";
+        let cut_words = ["[", "ENT", "] Info"];
+        let mut hook = Hook::new();
+        hook.add_word("[ENT]", Some(2));
+
+        let mut words = Vec::with_capacity(5);
+        let mut route = Vec::with_capacity(5);
+
+        let mut dag = Dag::with_size_hint(5);
+        hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
+        println!("{:?}", words);
     }
 
     #[test]

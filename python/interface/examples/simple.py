@@ -48,9 +48,19 @@ def neural():
     print(result.sdp)
 
 
+def bug590():
+    ltp = LTP("LTP/tiny")
+    ltp.add_words(words=["[ENT]"])
+    print(ltp.pipeline(["[ENT] Info"], tasks=["cws"]))
+
+    ltp.add_words(words=["[EOS]"])
+    print(ltp.pipeline(["[EOS] Info"], tasks=["cws"]))
+
+
 def main():
-    legacy()
-    neural()
+    # legacy()
+    # neural()
+    bug590()
 
 
 if __name__ == "__main__":
