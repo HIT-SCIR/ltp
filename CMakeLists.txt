@@ -40,6 +40,7 @@ add_subdirectory (thirdparty)
 
 # -- compile source code
 add_subdirectory (src)
+add_subdirectory (examples)
 
 # testing section
 # -- generate configure file for ltp_test
