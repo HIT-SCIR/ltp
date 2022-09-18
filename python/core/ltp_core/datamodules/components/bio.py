@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from os.path import join
 
 import datasets
+
 from ltp_core.datamodules.utils.iterator import iter_blocks
 from ltp_core.datamodules.utils.vocab_helper import vocab_builder
 

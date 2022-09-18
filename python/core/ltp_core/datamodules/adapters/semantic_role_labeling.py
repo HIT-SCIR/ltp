@@ -1,4 +1,5 @@
 import numpy
+
 from ltp_core.datamodules.components.srl import Srl
 from ltp_core.datamodules.utils.datasets import load_dataset
 

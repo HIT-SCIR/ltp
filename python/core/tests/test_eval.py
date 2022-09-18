@@ -2,9 +2,10 @@ import os
 
 import pytest
 from hydra.core.hydra_config import HydraConfig
+from omegaconf import open_dict
+
 from ltp_core.eval import evaluate
 from ltp_core.train import train
-from omegaconf import open_dict
 
 
 @pytest.mark.slow

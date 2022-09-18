@@ -2,8 +2,9 @@ import os
 
 import pytest
 from hydra.core.hydra_config import HydraConfig
-from ltp_core.train import train
 from omegaconf import open_dict
+
+from ltp_core.train import train
 from tests.helpers.run_if import RunIf
 
 

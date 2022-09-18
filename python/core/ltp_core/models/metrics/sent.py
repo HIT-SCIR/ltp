@@ -1,8 +1,9 @@
 from typing import Optional
 
-from ltp_core.models.components.sent import SentClassifierResult
 from torch import Tensor
 from torchmetrics import Accuracy
+
+from ltp_core.models.components.sent import SentClassifierResult
 
 
 class ClsAccuracy(Accuracy):
