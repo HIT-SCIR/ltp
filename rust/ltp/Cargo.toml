@@ -65,7 +65,7 @@ parallel = ["rayon"]
 serialization = ["serde", "serde_json", "apache-avro"]
 
 [dev-dependencies]
-clap = { version = "3", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
 
 ndarray = "0.15"
 ndarray-npy = { version = "0.8", features = ["npz"] }
