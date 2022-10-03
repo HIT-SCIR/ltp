@@ -9,15 +9,14 @@ import torch
 from ltp.generic import LTPOutput
 from ltp.mixin import PYTORCH_WEIGHTS_NAME, ModelHubMixin
 from ltp.module import BaseModule
-from ltp_extension.algorithms import Hook, eisner, get_entities
-from transformers import AutoTokenizer, BatchEncoding, TensorType
-from transformers.tokenization_utils_base import TruncationStrategy
-from transformers.utils import PaddingStrategy
-
 from ltp_core.models.components.graph import GraphResult
 from ltp_core.models.components.token import TokenClassifierResult
 from ltp_core.models.ltp_model import LTPModule
 from ltp_core.models.utils import instantiate
+from ltp_extension.algorithms import Hook, eisner, get_entities
+from transformers import AutoTokenizer, BatchEncoding, TensorType
+from transformers.tokenization_utils_base import TruncationStrategy
+from transformers.utils import PaddingStrategy
 
 
 def no_grad(func):

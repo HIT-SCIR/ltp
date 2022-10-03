@@ -1,5 +1,5 @@
 use anyhow::Result;
-use clap::{ArgEnum, Parser};
+use clap::{Parser, ValueEnum};
 use itertools::Itertools;
 use ltp::perceptron::SerdeCWSModel;
 use ltp::{Algorithm, CWSDefinition as Definition, Codec, Format, ModelSerde, PaMode, Trainer};
@@ -15,7 +15,7 @@ enum Args {
     Predict(Predict),
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum AlgorithmArg {
     Ap,
     Pa,
@@ -30,7 +30,7 @@ struct Train {
     epoch: usize,
     #[clap(short, long, value_parser, default_value_t = true)]
     shuffle: bool,
-    #[clap(arg_enum, value_parser, default_value_t = AlgorithmArg::Ap)]
+    #[clap(value_enum, value_parser, default_value_t = AlgorithmArg::Ap)]
     algorithm: AlgorithmArg,
     #[clap(long, value_parser, default_value_t = 8)]
     ap_threads: usize,

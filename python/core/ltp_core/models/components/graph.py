@@ -2,10 +2,9 @@
 # Author: Yunlong Feng <ylfeng@ir.hit.edu.cn>
 from collections import namedtuple
 
-from torch import nn
-
 from ltp_core.models.nn.biaffine import Biaffine
 from ltp_core.models.nn.mlp import MLP
+from torch import nn
 
 GraphResult = namedtuple("GraphResult", ["arc_logits", "rel_logits", "attention_mask"])
 

@@ -1,6 +1,6 @@
 [package]
 name = "ltp"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 authors = ["ylfeng <ylfeng@ir.hit.edu.cn>"]
 description = "Language Technology Platform For Rust."
@@ -43,7 +43,7 @@ smallvec = { version = "1" }
 # 数据集 shuffle
 rand = { version = "0.8" }
 # 特征裁剪
-binary-heap-plus = { version = "0.4.1" }
+binary-heap-plus = { version = "0.5" }
 
 # 并行
 rayon = { version = "1.5", optional = true }
@@ -65,7 +65,7 @@ parallel = ["rayon"]
 serialization = ["serde", "serde_json", "apache-avro"]
 
 [dev-dependencies]
-clap = { version = "3", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
 
 ndarray = "0.15"
 ndarray-npy = { version = "0.8", features = ["npz"] }

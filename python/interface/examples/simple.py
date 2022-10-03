@@ -1,4 +1,5 @@
 import torch
+
 from ltp import LTP
 
 
