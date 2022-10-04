@@ -20,11 +20,21 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 如果您在工作中使用了 LTP，您可以引用这篇论文
 
 ```bibtex
-@article{che2020n,
-  title={N-LTP: A Open-source Neural Chinese Language Technology Platform with Pretrained Models},
-  author={Che, Wanxiang and Feng, Yunlong and Qin, Libo and Liu, Ting},
-  journal={arXiv preprint arXiv:2009.11616},
-  year={2020}
+@inproceedings{che-etal-2021-n,
+    title = "N-{LTP}: An Open-source Neural Language Technology Platform for {C}hinese",
+    author = "Che, Wanxiang  and
+      Feng, Yunlong  and
+      Qin, Libo  and
+      Liu, Ting",
+    booktitle = "Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
+    month = nov,
+    year = "2021",
+    address = "Online and Punta Cana, Dominican Republic",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.emnlp-demo.6",
+    doi = "10.18653/v1/2021.emnlp-demo.6",
+    pages = "42--49",
+    abstract = "We introduce N-LTP, an open-source neural language technology platform supporting six fundamental Chinese NLP tasks: lexical analysis (Chinese word segmentation, part-of-speech tagging, and named entity recognition), syntactic parsing (dependency parsing), and semantic parsing (semantic dependency parsing and semantic role labeling). Unlike the existing state-of-the-art toolkits, such as Stanza, that adopt an independent model for each task, N-LTP adopts the multi-task framework by using a shared pre-trained model, which has the advantage of capturing the shared knowledge across relevant Chinese tasks. In addition, a knowledge distillation method (Clark et al., 2019) where the single-task model teaches the multi-task model is further introduced to encourage the multi-task model to surpass its single-task teacher. Finally, we provide a collection of easy-to-use APIs and a visualization tool to make users to use and view the processing results more easily and directly. To the best of our knowledge, this is the first toolkit to support six Chinese NLP fundamental tasks. Source code, documentation, and pre-trained models are available at https://github.com/HIT-SCIR/ltp.",
 }
 ```
 
