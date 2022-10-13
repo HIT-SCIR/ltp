@@ -1,11 +1,12 @@
 from typing import Any, Dict, Optional
 
 import datasets
-from ltp_core.datamodules.utils.collate import collate
-from ltp_core.datamodules.utils.multitask_dataloader import MultiTaskDataloader
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer
+
+from ltp_core.datamodules.utils.collate import collate
+from ltp_core.datamodules.utils.multitask_dataloader import MultiTaskDataloader
 
 
 class MultiTaskDataModule(LightningDataModule):

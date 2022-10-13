@@ -1,11 +1,4 @@
-from ltp_extension.perceptron import (
-    Algorithm,
-    CWSModel,
-    CWSTrainer,
-    Model,
-    ModelType,
-    Trainer,
-)
+from ltp_extension.perceptron import Algorithm, CWSModel, CWSTrainer, Model, ModelType, Trainer
 
 
 def train_cws():

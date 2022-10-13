@@ -1,10 +1,11 @@
 from typing import Any, Dict, Optional
 
 import datasets
-from ltp_core.datamodules.utils.collate import collate
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer
+
+from ltp_core.datamodules.utils.collate import collate
 
 
 class TaskDataModule(LightningDataModule):

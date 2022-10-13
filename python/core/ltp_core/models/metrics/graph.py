@@ -1,10 +1,11 @@
 from typing import Any, Optional
 
 import torch
-from ltp_core.algorithms import eisner
-from ltp_core.models.components.graph import GraphResult
 from torch import Tensor, tensor
 from torchmetrics import Metric
+
+from ltp_core.algorithms import eisner
+from ltp_core.models.components.graph import GraphResult
 
 
 class DEPLas(Metric):

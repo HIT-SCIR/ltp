@@ -37,10 +37,11 @@ root = pyrootutils.setup_root(
 from typing import List, Tuple
 
 import hydra
-from ltp_core import utils
 from omegaconf import DictConfig
 from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
+
+from ltp_core import utils
 
 log = utils.get_pylogger(__name__)
 

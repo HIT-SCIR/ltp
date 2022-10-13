@@ -2,11 +2,12 @@ from copy import deepcopy
 from typing import Any, List
 
 import torch
-from ltp_core.models.ltp_model import LTPModule
-from ltp_core.models.utils import instantiate_omega as instantiate
 from pytorch_lightning import LightningModule
 from torch.nn import ModuleDict
 from torchmetrics import MeanMetric, MetricCollection
+
+from ltp_core.models.ltp_model import LTPModule
+from ltp_core.models.utils import instantiate_omega as instantiate
 
 
 class LTPLitModule(LightningModule):
