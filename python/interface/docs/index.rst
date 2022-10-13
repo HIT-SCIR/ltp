@@ -16,6 +16,8 @@ API文档
     quickstart
     performance
 
+    api/*
+
     appendix
 
 
