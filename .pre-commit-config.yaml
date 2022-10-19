@@ -59,11 +59,11 @@ repos:
           ]
 
   # python security linter
-  - repo: https://github.com/PyCQA/bandit
-    rev: "1.7.1"
-    hooks:
-      - id: bandit
-        args: ["-s", "B101"]
+  # - repo: https://github.com/PyCQA/bandit
+  #   rev: "1.7.1"
+  #   hooks:
+  #     - id: bandit
+  #       args: ["-s", "B101"]
 
   # yaml formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
