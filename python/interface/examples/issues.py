@@ -23,9 +23,18 @@ def issue592():
     print(neural_ltp.pipeline(["SCSGIP地址"], tasks=["cws"]))
 
 
+def issue600():
+    legacy_ltp = LTP("LTP/legacy")
+    print(legacy_ltp.pipeline("他叫汤姆去拿外衣。", tasks=["cws"], return_dict=False))
+
+    neural_ltp = LTP("LTP/tiny")
+    print(neural_ltp.pipeline("他叫汤姆去拿外衣。", tasks=["cws"], return_dict=False))
+
+
 def main():
     issue590()
     issue592()
+    issue600()
 
 
 if __name__ == "__main__":
