@@ -13,9 +13,44 @@ class Algorithm:
 class CWSModel:
     def __init__(self, path):
         pass
+    def add_feature_rule(self, core, feature, s, b, m, e):
+        """
+        自定义新feature
+        """
+        pass
     def batch_predict(self, batch_text, threads=8):
         """
         Predict batched sentences
+        """
+        pass
+    def disable_cut(self, a, b):
+        """
+        关闭连续不同类型之间的强制切分
+        """
+        pass
+    def disable_cut_d(self, a, b):
+        """
+        关闭连续不同类型之间的强制切分
+        """
+        pass
+    def disable_feature_rule(self, core, feature, s, b, m, e):
+        """
+        移除自定义新 feature
+        """
+        pass
+    def enable_cut(self, a, b):
+        """
+        开启连续不同类型之间的强制切分
+        """
+        pass
+    def enable_cut_d(self, a, b):
+        """
+        开启连续不同类型之间的强制切分
+        """
+        pass
+    def enable_feature_rule(self, core, feature):
+        """
+        启用自定义新 feature
         """
         pass
     @staticmethod
@@ -106,6 +141,16 @@ class CWSTrainer:
         Get the value of the verbose parameter.
         """
         pass
+
+class CharacterType:
+    """
+    Digit: Digit character. (e.g. 0, 1, 2, ...)
+    Roman: Roman character. (e.g. A, B, C, ...)
+    Hiragana: Japanese Hiragana character. (e.g. あ, い, う, ...)
+    Katakana: Japanese Katakana character. (e.g. ア, イ, ウ, ...)
+    Kanji: Kanji (a.k.a. Hanzi or Hanja) character. (e.g. 漢, 字, ...)
+    Other: Other character.
+    """
 
 class Model:
     def __init__(self, path, model_type=ModelType.Auto):

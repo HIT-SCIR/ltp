@@ -4,6 +4,7 @@ from .. import perceptron
 Algorithm = perceptron.Algorithm
 CWSModel = perceptron.CWSModel
 CWSTrainer = perceptron.CWSTrainer
+CharacterType = perceptron.CharacterType
 Model = perceptron.Model
 ModelType = perceptron.ModelType
 NERModel = perceptron.NERModel

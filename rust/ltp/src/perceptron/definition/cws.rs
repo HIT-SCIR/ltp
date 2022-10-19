@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader, Read, Write};
 
 /// Character type.
-#[cfg(feature = "char-type")]
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[repr(u8)]
 pub enum CharacterType {
@@ -33,7 +32,6 @@ pub enum CharacterType {
     Other = 6,
 }
 
-#[cfg(feature = "char-type")]
 impl CharacterType {
     pub fn get_type(c: char) -> Self {
         match u32::from(c) {
@@ -117,6 +115,16 @@ impl CWSDefinition {
                     "c{}",
                     CharacterType::get_type(pre_char) as u8
                 );
+
+                // TYPE(ch[-1]) TYPE(ch[0])
+                buf_feature!(
+                    buffer,
+                    feature,
+                    "d{}{}",
+                    CharacterType::get_type(pre_char) as u8,
+                    CharacterType::get_type(cur_char) as u8
+                );
+
                 if pre2_char != char_null {
                     // ch[-2]
                     buf_feature!(buffer, feature, "0{}", pre2_char);
@@ -381,6 +389,20 @@ mod tests {
             buffer.len(),
             buffer.len() / sentence.len()
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_features() -> Result<()> {
+        let define = Define::default();
+        let (_, num_han) = define.parse_char_features("1汉")?;
+        let (_, roman_han) = define.parse_char_features("a汉")?;
+        let (_, num_roman) = define.parse_char_features("1a")?;
+
+        println!("数字+汉字: {:?}", num_han);
+        println!("字母+汉字: {:?}", roman_han);
+        println!("数字+字母: {:?}", num_roman);
 
         Ok(())
     }

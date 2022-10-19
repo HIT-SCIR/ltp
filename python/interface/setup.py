@@ -17,8 +17,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=[
-        "ltp_core>=0.1.0",
-        "ltp_extension>=0.1.0",
+        "ltp_core>=0.1.2",
+        "ltp_extension>=0.1.9",
         "huggingface_hub>=0.8.0",
     ],
     classifiers=[

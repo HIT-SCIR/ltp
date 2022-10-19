@@ -19,8 +19,8 @@ use std::mem::swap;
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PaMode<Param>
-    where
-        Param: TraitParameter,
+where
+    Param: TraitParameter,
 {
     Pa,
     PaI(Param),
@@ -36,11 +36,11 @@ impl<Param: TraitParameter> Default for PaMode<Param> {
 #[cfg_attr(feature = "serialization", derive(Serialize, Deserialize))]
 #[derive(Default, Debug, Clone)]
 pub struct Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Define: Definition,
-        Feature: TraitFeature,
-        ParamStorage: TraitParameterStorage<Param>,
-        Param: TraitParameter,
+where
+    Define: Definition,
+    Feature: TraitFeature,
+    ParamStorage: TraitParameterStorage<Param>,
+    Param: TraitParameter,
 {
     pub definition: Define,
     pub features: Feature,
@@ -50,12 +50,12 @@ pub struct Perceptron<Define, Feature, ParamStorage, Param>
 }
 
 impl<Define, Feature, ParamStorage, Param> Display
-for Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
-        Define: Definition,
+    for Perceptron<Define, Feature, ParamStorage, Param>
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
+    Define: Definition,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -68,29 +68,31 @@ for Perceptron<Define, Feature, ParamStorage, Param>
 }
 
 unsafe impl<Define, Feature, ParamStorage, Param> Send
-for Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
-        Define: Definition,
-{}
+    for Perceptron<Define, Feature, ParamStorage, Param>
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
+    Define: Definition,
+{
+}
 
 unsafe impl<Define, Feature, ParamStorage, Param> Sync
-for Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
-        Define: Definition,
-{}
+    for Perceptron<Define, Feature, ParamStorage, Param>
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
+    Define: Definition,
+{
+}
 
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
-        Define: Definition,
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
+    Define: Definition,
 {
     pub fn new_with_parameters(
         definition: Define,
@@ -200,25 +202,30 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
     }
 
     pub fn evaluate(&self, inputs: &[Vec<String>], labels: &[usize]) -> (usize, usize, usize) {
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
+        let features: Vec<_> = inputs
+            .iter()
+            .map(|f| self.features.get_vector_string(f))
+            .collect();
         let preds = self.decode(&features);
         self.definition.evaluate(&preds, labels)
     }
 }
 
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
-        Define: Definition + CommonDefinePredict,
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
+    Define: Definition + CommonDefinePredict,
 {
     pub fn predict_with_buffer(
         &self,
         sentence: <Define::RawFeature as GenericItem>::Item,
         buffer: &mut Vec<u8>,
     ) -> Result<<Define::Prediction as GenericItem>::Item> {
-        let (fragment, features) = self.definition.parse_features_with_buffer(&sentence, buffer)?;
+        let (fragment, features) = self
+            .definition
+            .parse_features_with_buffer(&sentence, buffer)?;
         let features: Vec<_> = features
             .iter()
             .map(|f| self.features.get_vector_str(f))
@@ -230,10 +237,10 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
 }
 
 impl<Feature, ParamStorage, Param> Perceptron<POSDefinition, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
 {
     pub fn predict(&self, sentence: &[&str]) -> Result<Vec<&str>> {
         let mut buffer = Vec::with_capacity(sentence.len() * 180);
@@ -242,10 +249,10 @@ impl<Feature, ParamStorage, Param> Perceptron<POSDefinition, Feature, ParamStora
 }
 
 impl<Feature, ParamStorage, Param> Perceptron<NERDefinition, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
 {
     pub fn predict(&self, sentence: (&[&str], &[&str])) -> Result<Vec<&str>> {
         let mut buffer = Vec::with_capacity(sentence.0.len() * 150);
@@ -253,21 +260,31 @@ impl<Feature, ParamStorage, Param> Perceptron<NERDefinition, Feature, ParamStora
     }
 }
 
-use crate::{get_entities, CWSDefinition, POSDefinition, NERDefinition};
+use crate::{get_entities, CWSDefinition, NERDefinition, POSDefinition};
 
 impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param>,
+where
+    Feature: TraitFeature,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param>,
 {
+    pub fn check_feature(&self, feature: &str) -> Option<usize> {
+        self.features.get_with_key(feature)
+    }
+
     pub fn predict<'a>(&self, sentence: &'a str) -> Result<Vec<&'a str>> {
         let mut buffer = Vec::with_capacity(sentence.len() * 20);
         self.predict_with_buffer(sentence, &mut buffer)
     }
 
-    pub fn predict_with_buffer<'a>(&self, sentence: &'a str, buffer: &mut Vec<u8>) -> Result<Vec<&'a str>> {
-        let (fragments, features) = self.definition.parse_features_with_buffer(&sentence, buffer)?;
+    pub fn predict_with_buffer<'a>(
+        &self,
+        sentence: &'a str,
+        buffer: &mut Vec<u8>,
+    ) -> Result<Vec<&'a str>> {
+        let (fragments, features) = self
+            .definition
+            .parse_features_with_buffer(&sentence, buffer)?;
         let features: Vec<_> = features
             .iter()
             .map(|f| self.features.get_vector_str(f))
@@ -287,13 +304,43 @@ impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStora
     }
 }
 
+impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStorage, Param>
+where
+    Feature: TraitFeature + TraitFeaturesTrainUtils,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageCompressUtils<Param>,
+{
+    pub fn add_core_rule(&mut self, key: &str, s: Param, b: Param, m: Param, e: Param) {
+        if self.features.get_with_key(key).is_none() {
+            let feature_num = self.parameters.len() / 4;
+            self.features.insert_feature(String::from(key), feature_num);
+
+            // S B M E
+            self.parameters.push(s);
+            self.parameters.push(b);
+            self.parameters.push(m);
+            self.parameters.push(e);
+        }
+    }
+
+    pub fn enable_feature_rule(&mut self, key: &str, feature: &str) {
+        if let Some(index) = self.features.get_with_key(key) {
+            self.features.insert_feature(feature.to_string(), index);
+        }
+    }
+
+    pub fn disable_feature_rule(&mut self, feature: &str) -> Option<usize> {
+        self.features.remove_feature(feature)
+    }
+}
+
 // 模型训练
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature + TraitFeaturesTrainUtils,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
-        Define: Definition,
+where
+    Feature: TraitFeature + TraitFeaturesTrainUtils,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageTrainUtils<Param>,
+    Define: Definition,
 {
     // 被动攻击算法
     pub fn pa_train_iter(
@@ -306,7 +353,10 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
         mode: &PaMode<Param>,
     ) {
         let label_num = self.definition.label_num();
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
+        let features: Vec<_> = inputs
+            .iter()
+            .map(|f| self.features.get_vector_string(f))
+            .collect();
         let preds = self.decode(&features);
 
         if labels.ne(&preds) {
@@ -415,7 +465,10 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
         current: usize,
     ) {
         let label_num = self.definition.label_num();
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
+        let features: Vec<_> = inputs
+            .iter()
+            .map(|f| self.features.get_vector_string(f))
+            .collect();
         let preds = self.decode(&features);
 
         if labels.ne(&preds) {
@@ -466,7 +519,10 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
     // 并行 averaged perceptron 算法
     pub fn ap_train_parallel_iter(&mut self, inputs: &[Vec<String>], labels: &[usize]) {
         let label_num = self.definition.label_num();
-        let features: Vec<_> = inputs.iter().map(|f| self.features.get_vector_string(f)).collect();
+        let features: Vec<_> = inputs
+            .iter()
+            .map(|f| self.features.get_vector_string(f))
+            .collect();
         let preds = self.decode(&features);
 
         if labels.ne(&preds) {
@@ -493,11 +549,11 @@ impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStor
 
 // 模型压缩
 impl<Define, Feature, ParamStorage, Param> Perceptron<Define, Feature, ParamStorage, Param>
-    where
-        Feature: TraitFeature + TraitFeaturesTrainUtils + TraitFeatureCompressUtils,
-        Param: TraitParameter,
-        ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageCompressUtils<Param>,
-        Define: Definition,
+where
+    Feature: TraitFeature + TraitFeaturesTrainUtils + TraitFeatureCompressUtils,
+    Param: TraitParameter,
+    ParamStorage: TraitParameterStorage<Param> + TraitParameterStorageCompressUtils<Param>,
+    Define: Definition,
 {
     fn param_score(parameters: &ParamStorage, label_num: usize, feature: usize) -> Param {
         let mut score = Param::zero();

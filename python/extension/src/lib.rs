@@ -14,11 +14,11 @@ use crate::perceptron::{ModelType, PyModel, PyTrainer};
 pub use algorithms::{py_eisner, py_get_entities, py_viterbi_decode_postprocess};
 use hook::PyHook;
 pub use perceptron::{
-    PyAlgorithm, PyCWSModel, PyCWSTrainer, PyNERModel, PyNERTrainer, PyPOSModel, PyPOSTrainer,
+    CharacterType, PyAlgorithm, PyCWSModel, PyCWSTrainer, PyNERModel, PyNERTrainer, PyPOSModel,
+    PyPOSTrainer,
 };
 use pyo3::prelude::*;
 use stnsplit::StnSplit;
-
 
 /// LTP Module
 #[pymodule]
@@ -41,6 +41,7 @@ fn ltp_extension(py: Python, m: &PyModule) -> PyResult<()> {
     perceptron.add_class::<PyTrainer>()?;
     perceptron.add_class::<PyAlgorithm>()?;
 
+    perceptron.add_class::<CharacterType>()?;
     perceptron.add_class::<PyCWSModel>()?;
     perceptron.add_class::<PyCWSTrainer>()?;
 

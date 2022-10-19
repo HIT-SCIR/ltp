@@ -17,11 +17,110 @@ pub struct PyCWSModel {
 
 impl_model!(PyCWSModel);
 
+/// Digit: Digit character. (e.g. 0, 1, 2, ...)
+/// Roman: Roman character. (e.g. A, B, C, ...)
+/// Hiragana: Japanese Hiragana character. (e.g. あ, い, う, ...)
+/// Katakana: Japanese Katakana character. (e.g. ア, イ, ウ, ...)
+/// Kanji: Kanji (a.k.a. Hanzi or Hanja) character. (e.g. 漢, 字, ...)
+/// Other: Other character.
+#[allow(clippy::upper_case_acronyms)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[pyclass(module = "ltp_extension.perceptron", name = "CharacterType")]
+pub enum CharacterType {
+    /// Digit character. (e.g. 0, 1, 2, ...)
+    Digit = 1,
+
+    /// Roman character. (e.g. A, B, C, ...)
+    Roman = 2,
+
+    /// Japanese Hiragana character. (e.g. あ, い, う, ...)
+    Hiragana = 3,
+
+    /// Japanese Katakana character. (e.g. ア, イ, ウ, ...)
+    Katakana = 4,
+
+    /// Kanji (a.k.a. Hanzi or Hanja) character. (e.g. 漢, 字, ...)
+    Kanji = 5,
+
+    /// Other character.
+    Other = 6,
+}
+
 #[pymethods]
 impl PyCWSModel {
     #[new]
     pub fn new(path: &str) -> PyResult<Self> {
         Ok(Self::inner_load(path)?)
+    }
+
+    /// 自定义新feature
+    #[pyo3(text_signature = "(self, core, feature, s, b, m, e)")]
+    pub fn add_feature_rule(&mut self, core: &str, s: f64, b: f64, m: f64, e: f64) -> PyResult<()> {
+        self.model.add_core_rule(core, s, b, m, e);
+        Ok(())
+    }
+
+    /// 启用自定义新 feature
+    #[pyo3(text_signature = "(self, core, feature)")]
+    pub fn enable_feature_rule(&mut self, core: &str, feature: &str) -> PyResult<()> {
+        self.model.enable_feature_rule(core, feature);
+        Ok(())
+    }
+
+    /// 移除自定义新 feature
+    #[pyo3(text_signature = "(self, core, feature, s, b, m, e)")]
+    pub fn disable_feature_rule(&mut self, feature: &str) -> PyResult<()> {
+        self.model.disable_feature_rule(feature);
+        Ok(())
+    }
+
+    /// 开启连续不同类型之间的强制切分
+    #[pyo3(text_signature = "(self, a, b)")]
+    pub fn enable_type_cut(&mut self, a: CharacterType, b: CharacterType) -> PyResult<()> {
+        self.add_feature_rule("[FORCE_CUT]", 500.0, 500.0, -500.0, -500.0)?;
+        self.enable_feature_rule("[FORCE_CUT]", &format!("d{}{}", a as u8, b as u8))?;
+        Ok(())
+    }
+
+    /// 开启连续不同类型之间的强制切分(双向)
+    #[pyo3(text_signature = "(self, a, b)")]
+    pub fn enable_type_cut_d(&mut self, a: CharacterType, b: CharacterType) -> PyResult<()> {
+        self.add_feature_rule("[FORCE_CUT]", 500.0, 500.0, -500.0, -500.0)?;
+        self.enable_feature_rule("[FORCE_CUT]", &format!("d{}{}", a as u8, b as u8))?;
+        self.enable_feature_rule("[FORCE_CUT]", &format!("d{}{}", b as u8, a as u8))?;
+        Ok(())
+    }
+
+    /// 开启连续不同类型之间的强制连接
+    #[pyo3(text_signature = "(self, a, b)")]
+    pub fn enable_type_concat(&mut self, a: CharacterType, b: CharacterType) -> PyResult<()> {
+        self.add_feature_rule("[FORCE_CONCAT]", -500.0, -500.0, 500.0, 500.0)?;
+        self.enable_feature_rule("[FORCE_CONCAT]", &format!("d{}{}", a as u8, b as u8))?;
+        Ok(())
+    }
+
+    /// 开启连续不同类型之间的强制连接(双向)
+    #[pyo3(text_signature = "(self, a, b)")]
+    pub fn enable_type_concat_d(&mut self, a: CharacterType, b: CharacterType) -> PyResult<()> {
+        self.add_feature_rule("[FORCE_CONCAT]", -500.0, -500.0, 500.0, 500.0)?;
+        self.enable_feature_rule("[FORCE_CONCAT]", &format!("d{}{}", a as u8, b as u8))?;
+        self.enable_feature_rule("[FORCE_CONCAT]", &format!("d{}{}", b as u8, a as u8))?;
+        Ok(())
+    }
+
+    /// 关闭连续不同类型之间的强制连接/切分
+    #[pyo3(text_signature = "(self, a, b)")]
+    pub fn disable_type_rule(&mut self, a: CharacterType, b: CharacterType) -> PyResult<()> {
+        self.disable_feature_rule(&format!("d{}{}", a as u8, b as u8))?;
+        Ok(())
+    }
+
+    /// 关闭连续不同类型之间的强制连接/切分(双向)
+    #[pyo3(text_signature = "(self, a, b)")]
+    pub fn disable_type_rule_d(&mut self, a: CharacterType, b: CharacterType) -> PyResult<()> {
+        self.disable_feature_rule(&format!("d{}{}", a as u8, b as u8))?;
+        self.disable_feature_rule(&format!("d{}{}", b as u8, a as u8))?;
+        Ok(())
     }
 
     #[args(args = "*", threads = 8)]
@@ -54,7 +153,7 @@ impl PyCWSModel {
                 .into_iter()
                 .map(|s| PyString::new(py, s)),
         )
-            .into())
+        .into())
     }
 
     /// Predict batched sentences

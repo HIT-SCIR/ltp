@@ -35,7 +35,9 @@ where
 pub trait TraitFeaturesTrainUtils: Clone {
     fn feature_num(&self) -> usize;
     fn insert_feature(&mut self, key: String, value: usize);
+    fn remove_feature(&mut self, key: &str) -> Option<usize>;
     fn put_feature(&mut self, key: String, value: usize);
+    fn del_feature(&mut self, key: &str) -> Option<usize>;
 }
 
 impl<T> TraitFeature for &T
@@ -68,8 +70,16 @@ where
         self.deref().put_feature(key, value)
     }
 
+    fn remove_feature(&mut self, key: &str) -> Option<usize> {
+        self.deref().del_feature(key)
+    }
+
     fn put_feature(&mut self, key: String, value: usize) {
         self.deref().insert_feature(key, value)
+    }
+
+    fn del_feature(&mut self, key: &str) -> Option<usize> {
+        self.deref().remove_feature(key)
     }
 }
 
@@ -80,11 +90,21 @@ where
     fn feature_num(&self) -> usize {
         self.deref().feature_num()
     }
+
     fn insert_feature(&mut self, key: String, value: usize) {
+        self.deref().put_feature(key, value)
+    }
+
+    fn remove_feature(&mut self, key: &str) -> Option<usize> {
+        self.deref().del_feature(key)
+    }
+
+    fn put_feature(&mut self, key: String, value: usize) {
         self.deref().insert_feature(key, value)
     }
-    fn put_feature(&mut self, key: String, value: usize) {
-        self.deref().put_feature(key, value)
+
+    fn del_feature(&mut self, key: &str) -> Option<usize> {
+        self.deref().remove_feature(key)
     }
 }
 
@@ -105,7 +125,15 @@ impl TraitFeaturesTrainUtils for HashMap<String, usize> {
         self.insert(key, value);
     }
 
+    fn remove_feature(&mut self, key: &str) -> Option<usize> {
+        self.remove(key)
+    }
+
     fn put_feature(&mut self, key: String, value: usize) {
         self.insert(key, value);
+    }
+
+    fn del_feature(&mut self, key: &str) -> Option<usize> {
+        self.remove(key)
     }
 }

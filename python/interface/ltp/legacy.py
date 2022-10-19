@@ -7,14 +7,14 @@ from typing import Iterable, List, Union
 from ltp.generic import LTPOutput
 from ltp.mixin import ModelHubMixin
 from ltp_extension.algorithms import Hook, get_entities
-from ltp_extension.perceptron import Model
+from ltp_extension.perceptron import CWSModel, POSModel, NERModel, CharacterType
 
 
 class LTP(ModelHubMixin):
     def __init__(self, cws: str = None, pos: str = None, ner: str = None):
-        self.cws_model = Model.load(cws) if cws else None
-        self.pos_model = Model.load(pos) if pos else None
-        self.ner_model = Model.load(ner) if ner else None
+        self.cws_model = CWSModel.load(cws) if cws else None
+        self.pos_model = POSModel.load(pos) if pos else None
+        self.ner_model = NERModel.load(ner) if ner else None
         self.hook = Hook()
 
         self.supported_tasks = set()
@@ -37,11 +37,29 @@ class LTP(ModelHubMixin):
             for word in words:
                 self.hook.add_word(word, freq)
 
+    def enable_type_cut(self, a, b):
+        self.cws_model.enable_type_cut(a, b)
+
+    def enable_type_cut_d(self, a, b):
+        self.cws_model.enable_type_cut_d(a, b)
+
+    def enable_type_concat(self, a, b):
+        self.cws_model.enable_type_concat(a, b)
+
+    def enable_type_concat_d(self, a, b):
+        self.cws_model.enable_type_concat_d(a, b)
+
+    def disable_rule(self, a, b):
+        self.cws_model.disable_type_rule(a, b)
+
+    def disable_rule_d(self, a, b):
+        self.cws_model.disable_type_rule_d(a, b)
+
     def _check(self):
         for model, task in (
-            (self.cws_model, "cws"),
-            (self.pos_model, "pos"),
-            (self.ner_model, "ner"),
+                (self.cws_model, "cws"),
+                (self.pos_model, "pos"),
+                (self.ner_model, "ner"),
         ):
             if model is not None:
                 self.supported_tasks.add(task)
@@ -50,12 +68,12 @@ class LTP(ModelHubMixin):
         return self.pipeline(*args, **kwargs)
 
     def pipeline(
-        self,
-        *args,
-        tasks: List[str] = None,
-        threads: int = 8,
-        raw_format=False,
-        return_dict: bool = True,
+            self,
+            *args,
+            tasks: List[str] = None,
+            threads: int = 8,
+            raw_format=False,
+            return_dict: bool = True,
     ):
         if tasks is None:
             tasks = ["cws", "pos", "ner"]
@@ -84,7 +102,7 @@ class LTP(ModelHubMixin):
                             words = sentences[idx]
                             new_store.append(
                                 [
-                                    (tag, "".join(words[start : end + 1]))
+                                    (tag, "".join(words[start: end + 1]))
                                     for tag, start, end in get_entities(sent)
                                 ]
                             )
@@ -92,7 +110,7 @@ class LTP(ModelHubMixin):
                     else:
                         words = args[0]
                         ner = [
-                            (tag, "".join(words[start : end + 1]))
+                            (tag, "".join(words[start: end + 1]))
                             for tag, start, end in get_entities(ner)
                         ]
                 args = (*args, ner)
@@ -114,16 +132,16 @@ class LTP(ModelHubMixin):
 
     @classmethod
     def _from_pretrained(
-        cls,
-        model_id,
-        revision,
-        cache_dir,
-        force_download,
-        proxies,
-        resume_download,
-        local_files_only,
-        use_auth_token,
-        **model_kwargs,
+            cls,
+            model_id,
+            revision,
+            cache_dir,
+            force_download,
+            proxies,
+            resume_download,
+            local_files_only,
+            use_auth_token,
+            **model_kwargs,
     ):
         """Overwrite this method in case you wish to initialize your model in a different way."""
 

@@ -21,7 +21,6 @@ macro_rules! buf_feature {
     };
 }
 
-
 pub trait CommonDefinePredict {}
 
 impl CommonDefinePredict for POSDefinition {}
