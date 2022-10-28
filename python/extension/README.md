@@ -18,7 +18,7 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 ```bash
 maturin build --release -m python/extension/Cargo.toml --out dist --no-default-features --features="malloc"
 # or 针对cpu优化
-maturin build --release -m python/extension/Cargo.toml --out dist --no-default-features --features="malloc" --rustc-extra-args="-C target-cpu=native"
+maturin build --release -m python/extension/Cargo.toml --out dist --no-default-features --features="malloc" -- -C target-cpu=native
 ```
 
 ## features
