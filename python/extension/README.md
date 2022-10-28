@@ -13,6 +13,14 @@ LTP for Rust 对 Python 的绑定，用于提升 LTP 的速度，以及加入传
 | pos    | 98.35        | 98.41 | 98.30 | 98.39 | 98.39     | 98.38      |
 | ner    | 94.17        | 94.28 | 93.42 | 94.02 | 94.06     | 93.95      |
 
+## 自行编译安装
+
+```bash
+maturin build --release -m python/extension/Cargo.toml --out dist --no-default-features --features="malloc"
+# or 针对cpu优化
+maturin build --release -m python/extension/Cargo.toml --out dist --no-default-features --features="malloc" --rustc-extra-args="-C target-cpu=native"
+```
+
 ## features
 
 - [x] 分句

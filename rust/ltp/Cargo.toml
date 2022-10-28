@@ -61,6 +61,7 @@ rkyv = { version = "0.7", optional = true }
 default = []
 char-type = []
 cross-char = []
+near-char-type = []
 parallel = ["rayon"]
 serialization = ["serde", "serde_json", "apache-avro"]
 

@@ -28,7 +28,10 @@ path = "../../rust/ltp"
 features = ["serialization", "parallel"]
 
 [features]
-default = ["abi3"]
-abi3 = ["pyo3/abi3", "pyo3/abi3-py37"]
+default = ["abi3", "near-char-type"]
 malloc = ["mimalloc"]
 secure = ["mimalloc/secure"]
+char-type = ["ltp/char-type"]
+cross-char = ["ltp/cross-char"]
+near-char-type = ["ltp/near-char-type"]
+abi3 = ["pyo3/abi3", "pyo3/abi3-py37"]

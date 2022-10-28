@@ -10,6 +10,11 @@ use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader, Read, Write};
 
 /// Character type.
+#[cfg(any(
+    feature = "char-type",
+    feature = "cross-char",
+    feature = "near-char-type"
+))]
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[repr(u8)]
 pub enum CharacterType {
@@ -32,6 +37,11 @@ pub enum CharacterType {
     Other = 6,
 }
 
+#[cfg(any(
+    feature = "char-type",
+    feature = "cross-char",
+    feature = "near-char-type"
+))]
 impl CharacterType {
     pub fn get_type(c: char) -> Self {
         match u32::from(c) {
@@ -117,6 +127,7 @@ impl CWSDefinition {
                 );
 
                 // TYPE(ch[-1]) TYPE(ch[0])
+                #[cfg(feature = "near-char-type")]
                 buf_feature!(
                     buffer,
                     feature,
