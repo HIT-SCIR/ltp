@@ -2,6 +2,24 @@ import torch
 from ltp import LTP
 
 
+def stn_split():
+    from ltp import StnSplit
+    sents = StnSplit().split("汤姆生病了。他去了医院。")
+    print(sents)
+    # [
+    #   "汤姆生病了。",
+    #   "他去了医院。"
+    # ]
+
+    sents = StnSplit().batch_split(["他叫汤姆去拿外衣。", "汤姆生病了。他去了医院。"])
+    print(sents)
+    # [
+    #   "他叫汤姆去拿外衣。",
+    #   "汤姆生病了。",
+    #   "他去了医院。"
+    # ]
+
+
 def legacy():
     ltp = LTP("LTP/legacy")
     ltp.add_word("汤姆去")
@@ -48,6 +66,7 @@ def neural():
 
 
 def main():
+    stn_split()
     legacy()
     neural()
 

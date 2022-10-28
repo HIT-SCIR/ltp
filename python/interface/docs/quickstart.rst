@@ -22,12 +22,18 @@
 分句
 --------------------------
 
-使用LTP分句只需要调用ltp.sent_split函数
+使用LTP分句只需要使用 StnSplit
 
 .. code-block:: python
 
     from ltp import StnSplit
-    sents = StnSplit().sent_split(["他叫汤姆去拿外衣。", "汤姆生病了。他去了医院。"])
+    sents = StnSplit().split("汤姆生病了。他去了医院。")
+    # [
+    #   "汤姆生病了。",
+    #   "他去了医院。"
+    # ]
+
+    sents = StnSplit().batch_split(["他叫汤姆去拿外衣。", "汤姆生病了。他去了医院。"])
 
     # [
     #   "他叫汤姆去拿外衣。",
