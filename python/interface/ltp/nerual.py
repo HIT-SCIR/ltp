@@ -425,8 +425,8 @@ class LTP(BaseModule, ModelHubMixin):
         inputs: List[str] = None,
         tokenized: BatchEncoding = None,
     ) -> LTPOutput:
-        s_arc = result.arc_logits
-        s_rel = result.rel_logits
+        s_arc = result.arc_logits.contiguous()
+        s_rel = result.rel_logits.contiguous()
         attention_mask = result.attention_mask
 
         # mask root 和 对角线部分
@@ -454,8 +454,8 @@ class LTP(BaseModule, ModelHubMixin):
         tokenized: BatchEncoding = None,
         tree: bool = True,
     ) -> LTPOutput:
-        s_arc = result.arc_logits
-        s_rel = result.rel_logits
+        s_arc = result.arc_logits.contiguous()
+        s_rel = result.rel_logits.contiguous()
         attention_mask = result.attention_mask
 
         # mask padding 的部分
