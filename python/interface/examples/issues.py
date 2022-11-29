@@ -31,10 +31,24 @@ def issue600():
     print(neural_ltp.pipeline("他叫汤姆去拿外衣。", tasks=["cws"], return_dict=False))
 
 
+def issue612():
+    legacy_ltp = LTP("LTP/legacy")
+    legacy_ltp.add_words(words=["五星武器"])
+    print(legacy_ltp.pipeline("80 抽两五星武器给我吧哥", tasks=["cws"], return_dict=False))
+
+    neural_ltp = LTP("LTP/tiny")
+    neural_ltp.add_words(words=["五星武器"])
+    print(neural_ltp.pipeline("80 抽两五星武器给我吧哥", tasks=["cws"], return_dict=False))
+
+
+def issue613():
+    import cProfile
+    from pstats import SortKey
+    cProfile.run('LTP("LTP/legacy", local_files_only=True)', sort=SortKey.CUMULATIVE)
+
+
 def main():
-    issue590()
-    issue592()
-    issue600()
+    issue613()
 
 
 if __name__ == "__main__":
