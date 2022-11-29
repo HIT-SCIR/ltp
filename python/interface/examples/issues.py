@@ -44,6 +44,7 @@ def issue612():
 def issue613():
     import cProfile
     from pstats import SortKey
+
     cProfile.run('LTP("LTP/legacy", local_files_only=True)', sort=SortKey.CUMULATIVE)
 
 
