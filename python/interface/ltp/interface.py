@@ -95,7 +95,7 @@ def LTP(
     if os.path.isdir(model_id) and CONFIG_NAME in os.listdir(model_id):
         config_file = os.path.join(model_id, CONFIG_NAME)
     else:
-        import requests
+        from requests import RequestException
         from huggingface_hub.file_download import hf_hub_download
 
         try:
@@ -110,7 +110,7 @@ def LTP(
                 use_auth_token=use_auth_token,
                 local_files_only=local_files_only,
             )
-        except requests.exceptions.RequestException:
+        except RequestException:
             logger.warning(f"{CONFIG_NAME} not found in HuggingFace Hub")
             config_file = None
 
