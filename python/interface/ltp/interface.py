@@ -95,8 +95,8 @@ def LTP(
     if os.path.isdir(model_id) and CONFIG_NAME in os.listdir(model_id):
         config_file = os.path.join(model_id, CONFIG_NAME)
     else:
-        from requests import RequestException
         from huggingface_hub.file_download import hf_hub_download
+        from requests import RequestException
 
         try:
             config_file = hf_hub_download(
