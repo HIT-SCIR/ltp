@@ -10,9 +10,7 @@ from ltp.generic import LTPOutput
 from ltp.mixin import PYTORCH_WEIGHTS_NAME, ModelHubMixin
 from ltp.module import BaseModule
 from ltp_extension.algorithms import Hook, eisner, get_entities
-from transformers import AutoTokenizer, BatchEncoding, TensorType
-from transformers.tokenization_utils_base import TruncationStrategy
-from transformers.utils import PaddingStrategy
+from transformers import AutoTokenizer, BatchEncoding
 
 from ltp_core.models.components.graph import GraphResult
 from ltp_core.models.components.token import TokenClassifierResult
@@ -124,9 +122,9 @@ class LTP(BaseModule, ModelHubMixin):
         tokenized = self.tokenizer.batch_encode_plus(
             inputs,
             max_length=512,
-            padding=PaddingStrategy.LONGEST,
-            truncation=TruncationStrategy.LONGEST_FIRST,
-            return_tensors=TensorType.PYTORCH,
+            padding="longest",  # PaddingStrategy.LONGEST,
+            truncation="longest_first",  # TruncationStrategy.LONGEST_FIRST,
+            return_tensors="pt",  # TensorType.PYTORCH,
             is_split_into_words=is_split_into_words,
         )
 
