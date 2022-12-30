@@ -1,9 +1,9 @@
 use crate::impl_model;
 use crate::perceptron::{Perceptron, PyAlgorithm};
+use crate::utils::parallelism::MaybeParallelIterator;
 use ltp::perceptron::{NERDefinition as Definition, Trainer};
 use pyo3::prelude::*;
 use pyo3::types::{PyList, PyString, PyTuple};
-use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
 pub type Model = Perceptron<Definition>;
@@ -24,8 +24,8 @@ impl PyNERModel {
         Ok(Self::inner_load(path)?)
     }
 
-    #[args(args = "*", threads = 8)]
-    pub fn __call__(&self, py: Python, args: &PyTuple, threads: usize) -> PyResult<PyObject> {
+    #[args(args = "*", parallelism = true)]
+    pub fn __call__(&self, py: Python, args: &PyTuple, parallelism: bool) -> PyResult<PyObject> {
         let first = args.get_item(0)?;
         let is_single = match first.get_type().name()? {
             "list" => match first.get_item(0)?.get_type().name()? {
@@ -56,7 +56,7 @@ impl PyNERModel {
                 py,
                 args.get_item(0)?.extract()?,
                 args.get_item(1)?.extract()?,
-                threads,
+                parallelism,
             ),
         }
     }
@@ -71,30 +71,24 @@ impl PyNERModel {
                 .into_iter()
                 .map(|s| PyString::new(py, s)),
         )
-            .into())
+        .into())
     }
 
     /// Predict batched sentences
-    #[args(threads = "8")]
-    #[pyo3(text_signature = "(self, batch_words, batch_pos , threads=8)")]
+    #[args(parallelism = true)]
+    #[pyo3(text_signature = "(self, batch_words, batch_pos , parallelism=True)")]
     pub fn batch_predict(
         &self,
         py: Python,
         batch_words: Vec<Vec<&str>>,
         batch_pos: Vec<Vec<&str>>,
-        threads: usize,
+        parallelism: bool,
     ) -> PyResult<PyObject> {
-        let pool = rayon::ThreadPoolBuilder::new()
-            .num_threads(threads)
-            .build()
-            .unwrap();
-        let result: Result<Vec<Vec<_>>, _> = pool.install(|| {
-            batch_words
-                .into_par_iter()
-                .zip(batch_pos)
-                .map(|(words, pos)| self.model.predict((&words, &pos)))
-                .collect()
-        });
+        let result: Result<Vec<Vec<_>>, _> = batch_words
+            .into_maybe_par_iter_cond(parallelism)
+            .zip(batch_pos)
+            .map(|(words, pos)| self.model.predict((&words, &pos)))
+            .collect();
         let result = result?;
         let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
         for snt in result {

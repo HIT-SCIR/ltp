@@ -1,8 +1,8 @@
 use crate::perceptron::Perceptron;
+use crate::utils::parallelism::MaybeParallelIterator;
 use ltp::{CWSDefinition, ModelSerde, NERDefinition, POSDefinition};
 use pyo3::prelude::*;
 use pyo3::types::{PyList, PyString, PyTuple};
-use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
 
@@ -136,9 +136,18 @@ impl PyModel {
     #[pyo3(text_signature = "(self)")]
     pub fn specialize(&self, py: Python) -> PyResult<PyObject> {
         match &self.model {
-            EnumModel::CWS(model) => Ok(crate::perceptron::specialization::PyCWSModel { model: model.clone() }.into_py(py)),
-            EnumModel::POS(model) => Ok(crate::perceptron::specialization::PyPOSModel { model: model.clone() }.into_py(py)),
-            EnumModel::NER(model) => Ok(crate::perceptron::specialization::PyNERModel { model: model.clone() }.into_py(py)),
+            EnumModel::CWS(model) => Ok(crate::perceptron::specialization::PyCWSModel {
+                model: model.clone(),
+            }
+            .into_py(py)),
+            EnumModel::POS(model) => Ok(crate::perceptron::specialization::PyPOSModel {
+                model: model.clone(),
+            }
+            .into_py(py)),
+            EnumModel::NER(model) => Ok(crate::perceptron::specialization::PyNERModel {
+                model: model.clone(),
+            }
+            .into_py(py)),
         }
     }
 
@@ -159,8 +168,8 @@ impl PyModel {
         Ok(())
     }
 
-    #[args(args = "*", threads = 8)]
-    pub fn __call__(&self, py: Python, args: &PyTuple, threads: usize) -> PyResult<PyObject> {
+    #[args(args = "*", parallelism = true)]
+    pub fn __call__(&self, py: Python, args: &PyTuple, parallelism: bool) -> PyResult<PyObject> {
         let first = args.get_item(0)?;
         let is_single = match &self.model {
             EnumModel::CWS(_) => match first.get_type().name()? {
@@ -195,7 +204,7 @@ impl PyModel {
 
         match is_single {
             true => self.predict(py, args),
-            false => self.batch_predict(py, args, threads),
+            false => self.batch_predict(py, args, parallelism),
         }
     }
 
@@ -213,7 +222,7 @@ impl PyModel {
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
-                    .into()
+                .into()
             }
             EnumModel::POS(model) => {
                 let words: Vec<&str> = args.get_item(0)?.extract()?;
@@ -224,7 +233,7 @@ impl PyModel {
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
-                    .into()
+                .into()
             }
             EnumModel::NER(model) => {
                 let words: Vec<&str> = args.get_item(0)?.extract()?;
@@ -236,29 +245,27 @@ impl PyModel {
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
-                    .into()
+                .into()
             }
         })
     }
 
     /// Predict batched sentences
-    #[pyo3(text_signature = "(self, *args, threads=8)")]
-    #[args(args = "*", threads = "8")]
-    pub fn batch_predict(&self, py: Python, args: &PyTuple, threads: usize) -> PyResult<PyObject> {
-        let pool = rayon::ThreadPoolBuilder::new()
-            .num_threads(threads)
-            .build()
-            .unwrap();
-
+    #[pyo3(text_signature = "(self, *args, parallelism = True)")]
+    #[args(args = "*", parallelism = true)]
+    pub fn batch_predict(
+        &self,
+        py: Python,
+        args: &PyTuple,
+        parallelism: bool,
+    ) -> PyResult<PyObject> {
         let result = match &self.model {
             EnumModel::CWS(model) => {
                 let batch_text: Vec<_> = args.get_item(0)?.extract()?;
-                let result: Result<Vec<Vec<_>>, _> = pool.install(|| {
-                    batch_text
-                        .into_par_iter()
-                        .map(|text| model.predict(text))
-                        .collect()
-                });
+                let result: Result<Vec<Vec<_>>, _> = batch_text
+                    .into_maybe_par_iter_cond(parallelism)
+                    .map(|text| model.predict(text))
+                    .collect();
                 let result = result?;
                 let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
                 for snt in result {
@@ -272,12 +279,10 @@ impl PyModel {
             }
             EnumModel::POS(model) => {
                 let batch_words: Vec<Vec<&str>> = args.get_item(0)?.extract()?;
-                let result: Result<Vec<Vec<_>>, _> = pool.install(|| {
-                    batch_words
-                        .into_par_iter()
-                        .map(|words| model.predict(&words))
-                        .collect()
-                });
+                let result: Result<Vec<Vec<_>>, _> = batch_words
+                    .into_maybe_par_iter_cond(parallelism)
+                    .map(|words| model.predict(&words))
+                    .collect();
                 let result = result?;
                 let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
                 for snt in result {
@@ -292,13 +297,11 @@ impl PyModel {
             EnumModel::NER(model) => {
                 let batch_words: Vec<Vec<&str>> = args.get_item(0)?.extract()?;
                 let batch_pos: Vec<Vec<&str>> = args.get_item(1)?.extract()?;
-                let result: Result<Vec<Vec<_>>, _> = pool.install(|| {
-                    batch_words
-                        .into_par_iter()
-                        .zip(batch_pos)
-                        .map(|(words, tags)| model.predict((&words, &tags)))
-                        .collect()
-                });
+                let result: Result<Vec<Vec<_>>, _> = batch_words
+                    .into_maybe_par_iter_cond(parallelism)
+                    .zip(batch_pos)
+                    .map(|(words, tags)| model.predict((&words, &tags)))
+                    .collect();
                 let result = result?;
                 let res = PyList::new(py, Vec::<&PyList>::with_capacity(result.len()));
                 for snt in result {

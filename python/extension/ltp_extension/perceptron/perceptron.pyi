@@ -18,19 +18,9 @@ class CWSModel:
         自定义新feature
         """
         pass
-    def batch_predict(self, batch_text, threads=8):
+    def batch_predict(self, batch_text, parallelism=True):
         """
         Predict batched sentences
-        """
-        pass
-    def disable_cut(self, a, b):
-        """
-        关闭连续不同类型之间的强制切分
-        """
-        pass
-    def disable_cut_d(self, a, b):
-        """
-        关闭连续不同类型之间的强制切分
         """
         pass
     def disable_feature_rule(self, core, feature, s, b, m, e):
@@ -38,19 +28,39 @@ class CWSModel:
         移除自定义新 feature
         """
         pass
-    def enable_cut(self, a, b):
+    def disable_type_rule(self, a, b):
         """
-        开启连续不同类型之间的强制切分
+        关闭连续不同类型之间的强制连接/切分
         """
         pass
-    def enable_cut_d(self, a, b):
+    def disable_type_rule_d(self, a, b):
         """
-        开启连续不同类型之间的强制切分
+        关闭连续不同类型之间的强制连接/切分(双向)
         """
         pass
     def enable_feature_rule(self, core, feature):
         """
         启用自定义新 feature
+        """
+        pass
+    def enable_type_concat(self, a, b):
+        """
+        开启连续不同类型之间的强制连接
+        """
+        pass
+    def enable_type_concat_d(self, a, b):
+        """
+        开启连续不同类型之间的强制连接(双向)
+        """
+        pass
+    def enable_type_cut(self, a, b):
+        """
+        开启连续不同类型之间的强制切分
+        """
+        pass
+    def enable_type_cut_d(self, a, b):
+        """
+        开启连续不同类型之间的强制切分(双向)
         """
         pass
     @staticmethod
@@ -155,7 +165,7 @@ class CharacterType:
 class Model:
     def __init__(self, path, model_type=ModelType.Auto):
         pass
-    def batch_predict(self, *args, threads=8):
+    def batch_predict(self, *args, parallelism=True):
         """
         Predict batched sentences
         """
@@ -189,7 +199,7 @@ class ModelType:
 class NERModel:
     def __init__(self, path):
         pass
-    def batch_predict(self, batch_words, batch_pos, threads=8):
+    def batch_predict(self, batch_words, batch_pos, parallelism=True):
         """
         Predict batched sentences
         """
@@ -286,7 +296,7 @@ class NERTrainer:
 class POSModel:
     def __init__(self, path):
         pass
-    def batch_predict(self, batch_words, threads=8):
+    def batch_predict(self, batch_words, parallelism=True):
         """
         Predict batched sentences
         """

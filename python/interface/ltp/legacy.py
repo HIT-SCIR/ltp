@@ -57,9 +57,9 @@ class LTP(ModelHubMixin):
 
     def _check(self):
         for model, task in (
-            (self.cws_model, "cws"),
-            (self.pos_model, "pos"),
-            (self.ner_model, "ner"),
+                (self.cws_model, "cws"),
+                (self.pos_model, "pos"),
+                (self.ner_model, "ner"),
         ):
             if model is not None:
                 self.supported_tasks.add(task)
@@ -68,12 +68,12 @@ class LTP(ModelHubMixin):
         return self.pipeline(*args, **kwargs)
 
     def pipeline(
-        self,
-        *args,
-        tasks: List[str] = None,
-        threads: int = 8,
-        raw_format=False,
-        return_dict: bool = True,
+            self,
+            *args,
+            tasks: List[str] = None,
+            raw_format=False,
+            parallelism=True,
+            return_dict: bool = True,
     ):
         if tasks is None:
             tasks = ["cws", "pos", "ner"]
@@ -86,13 +86,13 @@ class LTP(ModelHubMixin):
             if task not in tasks:
                 continue
             if task == "cws":
-                args = (self.cws_model(*args, threads=threads),)
+                args = (self.cws_model(*args, parallelism=parallelism),)
                 if len(self.hook):
                     args = (self.auto_hook(*args),)
             elif task == "pos":
-                args = (*args, self.pos_model(*args, threads=threads))
+                args = (*args, self.pos_model(*args, parallelism=parallelism))
             elif task == "ner":
-                ner = self.ner_model(*args, threads=threads)
+                ner = self.ner_model(*args, parallelism=parallelism)
                 if not raw_format:
                     if isinstance(ner[0], list):
                         # Batch result
@@ -102,7 +102,7 @@ class LTP(ModelHubMixin):
                             words = sentences[idx]
                             new_store.append(
                                 [
-                                    (tag, "".join(words[start : end + 1]))
+                                    (tag, "".join(words[start: end + 1]))
                                     for tag, start, end in get_entities(sent)
                                 ]
                             )
@@ -110,7 +110,7 @@ class LTP(ModelHubMixin):
                     else:
                         words = args[0]
                         ner = [
-                            (tag, "".join(words[start : end + 1]))
+                            (tag, "".join(words[start: end + 1]))
                             for tag, start, end in get_entities(ner)
                         ]
                 args = (*args, ner)
@@ -132,16 +132,16 @@ class LTP(ModelHubMixin):
 
     @classmethod
     def _from_pretrained(
-        cls,
-        model_id,
-        revision,
-        cache_dir,
-        force_download,
-        proxies,
-        resume_download,
-        local_files_only,
-        use_auth_token,
-        **model_kwargs,
+            cls,
+            model_id,
+            revision,
+            cache_dir,
+            force_download,
+            proxies,
+            resume_download,
+            local_files_only,
+            use_auth_token,
+            **model_kwargs,
     ):
         """Overwrite this method in case you wish to initialize your model in a different way."""
 
