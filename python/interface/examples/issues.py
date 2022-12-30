@@ -48,15 +48,18 @@ def issue613():
     cProfile.run('LTP("LTP/legacy", local_files_only=True)', sort=SortKey.CUMULATIVE)
 
 
-from tqdm import trange
 from matplotlib import pyplot as plt
+from tqdm import trange
 
 
 def issue623():
     ltp = LTP("LTP/legacy")
 
     def get_current_memory() -> int:
-        import os, psutil
+        import os
+
+        import psutil
+
         # 获取当前进程内存占用。
         pid = os.getpid()
         p = psutil.Process(pid)
@@ -68,7 +71,7 @@ def issue623():
     for _ in trange(10000):
         # ltp.pipeline('他叫汤姆去拿外衣。')
         # ltp.pipeline('台湾是中国领土不可分割的一部分。')
-        ltp.pipeline(['他叫汤姆去拿外衣。', "台湾是中国领土不可分割的一部分。"])
+        ltp.pipeline(["他叫汤姆去拿外衣。", "台湾是中国领土不可分割的一部分。"])
         memory.append(get_current_memory())
 
     memory.append(get_current_memory())
