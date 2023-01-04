@@ -128,4 +128,4 @@ def start_of_chunk(prev_tag, tag, prev_type, type_):
     if tag != "O" and tag != "." and prev_type != type_:
         chunk_start = True
 
-    return
+    return chunk_start
