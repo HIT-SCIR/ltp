@@ -20,7 +20,6 @@ pub enum ModelType {
 #[pymethods]
 impl ModelType {
     #[new]
-    #[args(model_type = "None")]
     pub fn new(model_type: Option<&str>) -> PyResult<Self> {
         Ok(match model_type {
             Some("cws") => ModelType::CWS,
@@ -80,7 +79,6 @@ pub struct PyModel {
 #[pymethods]
 impl PyModel {
     #[new]
-    #[args(model_type = "ModelType::Auto")]
     pub fn new(path: &str, model_type: ModelType) -> PyResult<Self> {
         Self::load(path, model_type)
     }
@@ -88,7 +86,6 @@ impl PyModel {
     /// Load Model from a path
     #[staticmethod]
     #[pyo3(text_signature = "(path, model_type=ModelType.Auto)")]
-    #[args(model_type = "ModelType::Auto")]
     pub fn load(path: &str, model_type: ModelType) -> PyResult<Self> {
         let file = std::fs::File::open(path)?;
         let format = if path.ends_with(".json") {
@@ -139,15 +136,15 @@ impl PyModel {
             EnumModel::CWS(model) => Ok(crate::perceptron::specialization::PyCWSModel {
                 model: model.clone(),
             }
-            .into_py(py)),
+                .into_py(py)),
             EnumModel::POS(model) => Ok(crate::perceptron::specialization::PyPOSModel {
                 model: model.clone(),
             }
-            .into_py(py)),
+                .into_py(py)),
             EnumModel::NER(model) => Ok(crate::perceptron::specialization::PyNERModel {
                 model: model.clone(),
             }
-            .into_py(py)),
+                .into_py(py)),
         }
     }
 
@@ -168,7 +165,6 @@ impl PyModel {
         Ok(())
     }
 
-    #[args(args = "*", parallelism = true)]
     pub fn __call__(&self, py: Python, args: &PyTuple, parallelism: bool) -> PyResult<PyObject> {
         let first = args.get_item(0)?;
         let is_single = match &self.model {
@@ -210,7 +206,6 @@ impl PyModel {
 
     /// Predict a sentence
     #[pyo3(text_signature = "(self, *args)")]
-    #[args(args = "*")]
     pub fn predict(&self, py: Python, args: &PyTuple) -> PyResult<PyObject> {
         Ok(match &self.model {
             EnumModel::CWS(model) => {
@@ -222,7 +217,7 @@ impl PyModel {
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
-                .into()
+                    .into()
             }
             EnumModel::POS(model) => {
                 let words: Vec<&str> = args.get_item(0)?.extract()?;
@@ -233,7 +228,7 @@ impl PyModel {
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
-                .into()
+                    .into()
             }
             EnumModel::NER(model) => {
                 let words: Vec<&str> = args.get_item(0)?.extract()?;
@@ -245,14 +240,13 @@ impl PyModel {
                         .into_iter()
                         .map(|s| PyString::new(py, s)),
                 )
-                .into()
+                    .into()
             }
         })
     }
 
     /// Predict batched sentences
     #[pyo3(text_signature = "(self, *args, parallelism = True)")]
-    #[args(args = "*", parallelism = true)]
     pub fn batch_predict(
         &self,
         py: Python,

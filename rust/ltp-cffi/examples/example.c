@@ -33,11 +33,11 @@ int main() {
   const char *pos_model_path = "data/legacy-models/pos_model.bin";
   const char *ner_model_path = "data/legacy-models/ner_model.bin";
   Model *cws_model = NULL;
-  cws_model = model_load(cws_model_path, strlen(cws_model_path));
+  cws_model = model_load(cws_model_path);
   Model *pos_model = NULL;
-  pos_model = model_load(pos_model_path, strlen(pos_model_path));
+  pos_model = model_load(pos_model_path);
   Model *ner_model = NULL;
-  ner_model = model_load(ner_model_path, strlen(ner_model_path));
+  ner_model = model_load(ner_model_path);
 
   const char *sentence = "他叫汤姆去拿外衣";
   size_t word_length[MAX_WORD_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};

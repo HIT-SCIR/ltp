@@ -24,7 +24,6 @@ impl PyPOSModel {
         Ok(Self::inner_load(path)?)
     }
 
-    #[args(args = "*", parallelism = true)]
     pub fn __call__(&self, py: Python, args: &PyTuple, parallelism: bool) -> PyResult<PyObject> {
         let first = args.get_item(0)?;
         let is_single = match first.get_type().name()? {
@@ -62,11 +61,10 @@ impl PyPOSModel {
                 .into_iter()
                 .map(|s| PyString::new(py, s)),
         )
-        .into())
+            .into())
     }
 
     /// Predict batched sentences
-    #[args(parallelism = true)]
     #[pyo3(text_signature = "(self, batch_words, parallelism=True)")]
     pub fn batch_predict(
         &self,

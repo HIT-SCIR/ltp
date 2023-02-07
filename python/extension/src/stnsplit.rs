@@ -39,7 +39,6 @@ impl StnSplit {
     }
 
     /// batch split to sentences
-    #[args(threads = "8")]
     #[pyo3(text_signature = "(self, batch_text, threads=8)")]
     pub fn batch_split(
         &self,
