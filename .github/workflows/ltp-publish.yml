@@ -1,6 +1,7 @@
 name: Upload LTP Python Package
 
 on:
+  workflow_dispatch:
   release:
     types: [created]
 
