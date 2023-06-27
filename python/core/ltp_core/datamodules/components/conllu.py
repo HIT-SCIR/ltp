@@ -16,7 +16,8 @@ from ltp_core.datamodules.utils.vocab_helper import vocab_builder
 _CITATION = """\
 @misc{nivre2020universal,
     title={Universal Dependencies v2: An Evergrowing Multilingual Treebank Collection},
-    author={Joakim Nivre and Marie-Catherine de Marneffe and Filip Ginter and Jan Hajič and Christopher D. Manning and Sampo Pyysalo and Sebastian Schuster and Francis Tyers and Daniel Zeman},
+    author={Joakim Nivre and Marie-Catherine de Marneffe and Filip Ginter and Jan Hajič and \
+    Christopher D. Manning and Sampo Pyysalo and Sebastian Schuster and Francis Tyers and Daniel Zeman},
     year={2020},
     eprint={2004.10643},
     archivePrefix={arXiv},
