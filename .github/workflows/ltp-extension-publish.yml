@@ -41,7 +41,7 @@ jobs:
       - name: Build wheels - universal2
         uses: messense/maturin-action@v1
         with:
-          args: --release --universal2 --out dist -m python/extension/Cargo.toml --features="malloc"
+          args: --release --target universal2-apple-darwin --out dist -m python/extension/Cargo.toml --features="malloc"
       - name: Install built wheel - universal2
         run: |
           pip3 install ltp_extension --no-index --find-links dist --force-reinstall
