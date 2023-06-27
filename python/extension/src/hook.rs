@@ -2,7 +2,6 @@ use ltp::hook::Hook;
 use pyo3::prelude::*;
 
 #[pyclass(module = "ltp_extension.algorithms", name = "Hook", subclass)]
-#[pyo3(text_signature = "(self)")]
 #[derive(Clone, Debug)]
 pub struct PyHook {
     pub hook: Hook,
@@ -11,6 +10,7 @@ pub struct PyHook {
 #[pymethods]
 impl PyHook {
     #[new]
+    #[pyo3(text_signature = "(self)")]
     pub fn new() -> PyResult<Self> {
         Ok(Self { hook: Hook::new() })
     }

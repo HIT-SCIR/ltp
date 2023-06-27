@@ -48,6 +48,6 @@ setup(
     ],
     packages=find_packages(),
     include_dirs=["ltp_core"],
-    python_requires=">=3.6.*, <4",
+    python_requires=">=3.6, <4",
     zip_safe=True,
 )

@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 pub type Model = Perceptron<Definition>;
 
 #[pyclass(module = "ltp_extension.perceptron", name = "CWSModel", subclass)]
-#[pyo3(text_signature = "(self, path)")]
 #[derive(Clone, Serialize, Deserialize, Default, Debug)]
 pub struct PyCWSModel {
     pub model: Model,
@@ -49,6 +48,7 @@ pub enum CharacterType {
 #[pymethods]
 impl PyCWSModel {
     #[new]
+    #[pyo3(text_signature = "(self, path)")]
     pub fn new(path: &str) -> PyResult<Self> {
         Ok(Self::inner_load(path)?)
     }
@@ -198,7 +198,6 @@ impl PyCWSModel {
 }
 
 #[pyclass(module = "ltp_extension.perceptron", name = "CWSTrainer", subclass)]
-#[pyo3(text_signature = "(self)")]
 #[derive(Clone, Serialize, Deserialize, Default, Debug)]
 pub struct PyCWSTrainer {
     pub trainer: Trainer<Definition>,
@@ -207,6 +206,7 @@ pub struct PyCWSTrainer {
 #[pymethods]
 impl PyCWSTrainer {
     #[new]
+    #[pyo3(text_signature = "(self)")]
     pub fn new() -> PyResult<Self> {
         Ok(Self {
             trainer: Trainer::new(),

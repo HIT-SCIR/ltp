@@ -30,7 +30,6 @@ impl Display for EnumTrainer {
 }
 
 #[pyclass(module = "ltp_extension.perceptron", name = "Trainer", subclass)]
-#[pyo3(text_signature = "(self, model_type=ModelType.Auto, labels=None)")]
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct PyTrainer {
     pub trainer: EnumTrainer,
@@ -39,6 +38,7 @@ pub struct PyTrainer {
 #[pymethods]
 impl PyTrainer {
     #[new]
+    #[pyo3(text_signature = "(self, model_type=ModelType.Auto, labels=None)")]
     pub fn new(model_type: ModelType, labels: Option<Vec<String>>) -> PyResult<Self> {
         let trainer = match (model_type, labels) {
             (ModelType::CWS, _) => EnumTrainer::CWS(Default::default()),

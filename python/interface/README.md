@@ -1,7 +1,3 @@
-[![LTP](https://img.shields.io/pypi/v/ltp?label=LTP4%20ALPHA)](https://pypi.org/project/ltp/)
-![VERSION](https://img.shields.io/pypi/pyversions/ltp)
-[![Documentation Status](https://readthedocs.org/projects/ltp/badge/?version=latest)](https://ltp.readthedocs.io/zh_CN/latest/?badge=latest)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/ltp)](https://pypi.python.org/pypi/ltp)
 ![CODE SIZE](https://img.shields.io/github/languages/code-size/HIT-SCIR/ltp)
 ![CONTRIBUTORS](https://img.shields.io/github/contributors/HIT-SCIR/ltp)
 ![LAST COMMIT](https://img.shields.io/github/last-commit/HIT-SCIR/ltp)
@@ -67,7 +63,19 @@ LTP（Language Technology Platform） 提供了一系列中文自然语言处理
 ### [Python](python/interface/README.md)
 
 ```bash
-pip install -U ltp ltp-core ltp-extension -i https://pypi.org/simple # 安装 ltp
+# 方法 1： 使用清华源安装 LTP
+# 1. 安装 PyTorch 和 Transformers 依赖
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple torch transformers
+# 2. 安装 LTP 
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple ltp ltp-core ltp-extension
+
+# 方法 2： 先全局换源，再安装 LTP
+# 1. 全局换 TUNA 源
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# 2. 安装 PyTorch 和 Transformers 依赖
+pip install torch transformers
+# 3. 安装 LTP
+pip install ltp ltp-core ltp-extension
 ```
 
 **注：** 如果遇到任何错误，请尝试使用上述命令重新安装 ltp，如果依然报错，请在 Github issues 中反馈。
@@ -77,6 +85,8 @@ import torch
 from ltp import LTP
 
 ltp = LTP("LTP/small")  # 默认加载 Small 模型
+                        # 也可以传入模型的路径，ltp = LTP("/path/to/your/model")
+                        # /path/to/your/model 应当存在 config.json 和其他模型文件
 
 # 将模型移动到 GPU 上
 if torch.cuda.is_available():
@@ -85,14 +95,14 @@ if torch.cuda.is_available():
 
 output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp"])
 # 使用字典格式作为返回结果
-print(output.cws) # print(output[0]) / print(output['cws']) # 也可以使用下标访问
+print(output.cws)  # print(output[0]) / print(output['cws']) # 也可以使用下标访问
 print(output.pos)
 print(output.sdp)
 
 # 使用感知机算法实现的分词、词性和命名实体识别，速度比较快，但是精度略低
 ltp = LTP("LTP/legacy")
 # cws, pos, ner = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "ner"]).to_tuple() # error: NER 需要 词性标注任务的结果
-cws, pos, ner = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner"]).to_tuple() # to tuple 可以自动转换为元组格式
+cws, pos, ner = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner"]).to_tuple()  # to tuple 可以自动转换为元组格式
 # 使用元组格式作为返回结果
 print(cws, pos, ner)
 ```
@@ -103,60 +113,80 @@ print(cws, pos, ner)
 
 ```rust
 use std::fs::File;
-use apache_avro::Codec;
 use itertools::multizip;
-use ltp::{CWSModel, POSModel, NERModel, ModelSerde, Format};
+use ltp::{CWSModel, POSModel, NERModel, ModelSerde, Format, Codec};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::open("data/legacy-models/cws_model.bin")?;
-    let cws: CWSModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
-    let file = File::open("data/legacy-models/pos_model.bin")?;
-    let pos: POSModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
-    let file = File::open("data/legacy-models/ner_model.bin")?;
-    let ner: NERModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
+  let file = File::open("data/legacy-models/cws_model.bin")?;
+  let cws: CWSModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
+  let file = File::open("data/legacy-models/pos_model.bin")?;
+  let pos: POSModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
+  let file = File::open("data/legacy-models/ner_model.bin")?;
+  let ner: NERModel = ModelSerde::load(file, Format::AVRO(Codec::Deflate))?;
 
-    let words = cws.predict("他叫汤姆去拿外衣。");
-    let pos = pos.predict(&words);
-    let ner = ner.predict((&words, &pos));
+  let words = cws.predict("他叫汤姆去拿外衣。")?;
+  let pos = pos.predict(&words)?;
+  let ner = ner.predict((&words, &pos))?;
 
-    for (w, p, n) in multizip((words, pos, ner)) {
-        println!("{}/{}/{}", w, p, n);
-    }
+  for (w, p, n) in multizip((words, pos, ner)) {
+    println!("{}/{}/{}", w, p, n);
+  }
 
-    Ok(())
+  Ok(())
 }
 ```
 
 ## 模型性能以及下载地址
 
-|                  深度学习模型                   |  分词   |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  | 速度(句/S) |
-| :---------------------------------------: | :---: | :---: | :---: | :---: | :---: | :---: | :-----: |
-|  [Base](https://huggingface.co/LTP/base)  | 98.7  | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |  39.12  |
-| [Base1](https://huggingface.co/LTP/base1) | 99.22 | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |  --.--  |
-| [Base2](https://huggingface.co/LTP/base2) | 99.18 | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |  --.--  |
-| [Small](https://huggingface.co/LTP/small) | 98.4  | 98.2  | 94.3  | 78.4  | 88.3  | 74.7  |  43.13  |
-|  [Tiny](https://huggingface.co/LTP/tiny)  | 96.8  | 97.1  | 91.6  | 70.9  | 83.8  | 70.1  |  53.22  |
+|                  深度学习模型                   |                    直链下载 ｜ 分词                    |  词性   | 命名实体  | 语义角色  | 依存句法  | 语义依存  | 速度(句/S) |
+|:-----------------------------------------:|:-----------------------------------------------:| :---: | :---: | :---: | :---: | :---: | :-----: |
+|  [🤗Base](https://huggingface.co/LTP/base)  |  [🗜Base](http://39.96.43.154/ltp/v4/base.tgz)  |  98.7    | 98.5  | 95.4  | 80.6  | 89.5  | 75.2  |  39.12  |
+| [🤗Base1](https://huggingface.co/LTP/base1) | [🗜Base1](http://39.96.43.154/ltp/v4/base1.tgz) |99.22    | 98.73 | 96.39 | 79.28 | 89.57 | 76.57 |  --.--  |
+| [🤗Base2](https://huggingface.co/LTP/base2) | [🗜Base2](http://39.96.43.154/ltp/v4/base2.tgz) |99.18    | 98.69 | 95.97 | 79.49 | 90.19 | 76.62 |  --.--  |
+| [🤗Small](https://huggingface.co/LTP/small) | [🗜Small](http://39.96.43.154/ltp/v4/small.tgz) | 98.4    | 98.2  | 94.3  | 78.4  | 88.3  | 74.7  |  43.13  |
+|  [🤗Tiny](https://huggingface.co/LTP/tiny)  |  [🗜Tiny](http://39.96.43.154/ltp/v4/tiny.tgz)  | 96.8    | 97.1  | 91.6  | 70.9  | 83.8  | 70.1  |  53.22  |
 
-|                    感知机算法                    |  分词   |  词性   | 命名实体  | 速度(句/s)  |             备注             |
-| :-----------------------------------------: | :---: | :---: | :---: | :------: | :------------------------: |
-| [Legacy](https://huggingface.co/LTP/legacy) | 97.93 | 98.41 | 94.28 | 21581.48 | [性能详情](rust/ltp/README.md) |
+|                    感知机算法                    |                       直链下载                        |  分词  |  词性   | 命名实体  | 速度(句/s)  |             备注             |
+| :-----------------------------------------: |:-------------------------------------------------:|:----------:| :---: | :---: | :------: | :------------------------: |
+| [🤗Legacy](https://huggingface.co/LTP/legacy) | [🗜Legacy](http://39.96.43.154/ltp/v4/legacy.tgz) | 97.93   | 98.41 | 94.28 | 21581.48 | [性能详情](rust/ltp/README.md) |
 
 **注：感知机算法速度为开启16线程速度**
+
+### 如何下载对应的模型
+
+```bash
+# 使用 HTTP 链接下载
+# 确保已安装 git-lfs (https://git-lfs.com)
+git lfs install
+git clone https://huggingface.co/LTP/base
+
+# 使用 ssh 下载
+# 确保已安装 git-lfs (https://git-lfs.com)
+git lfs install
+git clone git@hf.co:LTP/base
+
+# 下载压缩包
+wget http://39.96.43.154/ltp/v4/base.tgz
+tar -zxvf base.tgz -C base
+```
+
+### 如何使用下载的模型
+
+```python
+from ltp import LTP
+
+# 在路径中给出模型下载或解压后的路径
+# 例如：base 模型的文件夹路径为 "path/to/base"
+#      "path/to/base" 下应当存在 "config.json"
+ltp = LTP("path/to/base")
+```
+
 
 ## 构建 Wheel 包
 
 ```shell script
 make bdist
 ```
-
-## 模型算法
-
-- 分词: Electra <sup>[1](#RELTRANS)</sup> + Linear
-- 词性: Electra + Linear
-- 命名实体: Electra + Relative Transformer<sup>[2](#RELTRANS)</sup> + Linear
-- 依存句法: Electra + BiAffine + Eisner<sup>[3](#Eisner)</sup>
-- 语义依存: Electra + BiAffine
-- 语义角色: Electra + BiAffine + CRF
 
 ## 其他语言绑定
 
@@ -182,9 +212,3 @@ make bdist
 3. 凡涉及付费问题，请发邮件到 car@ir.hit.edu.cn 洽商。
 4. 如果您在 LTP 基础上发表论文或取得科研成果，请您在发表论文和申报成果时声明“使用了哈工大社会计算与信息检索研究中心研制的语言技术平台（LTP）”.
    同时，发信给car@ir.hit.edu.cn，说明发表论文或申报成果的题目、出处等。
-
-## 脚注
-
-- <a name="RELTRANS">1</a>:: [Chinese-ELECTRA](https://github.com/ymcui/Chinese-ELECTRA)
-- <a name="RELTRANS">2</a>:: [TENER: Adapting Transformer Encoder for Named Entity Recognition](https://arxiv.org/abs/1911.04474)
-- <a name="Eisner">3</a>:: [A PyTorch implementation of "Deep Biaffine Attention for Neural Dependency Parsing"](https://github.com/yzhangcs/parser)

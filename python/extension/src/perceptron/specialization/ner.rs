@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 pub type Model = Perceptron<Definition>;
 
 #[pyclass(module = "ltp_extension.perceptron", name = "NERModel", subclass)]
-#[pyo3(text_signature = "(self, path)")]
 #[derive(Clone, Serialize, Deserialize, Default, Debug)]
 pub struct PyNERModel {
     pub model: Model,
@@ -20,6 +19,7 @@ impl_model!(PyNERModel);
 #[pymethods]
 impl PyNERModel {
     #[new]
+    #[pyo3(text_signature = "(self, path)")]
     pub fn new(path: &str) -> PyResult<Self> {
         Ok(Self::inner_load(path)?)
     }
@@ -118,7 +118,6 @@ impl PyNERModel {
 }
 
 #[pyclass(module = "ltp_extension.perceptron", name = "NERTrainer", subclass)]
-#[pyo3(text_signature = "(self, labels)")]
 #[derive(Clone, Serialize, Deserialize, Default, Debug)]
 pub struct PyNERTrainer {
     pub trainer: Trainer<Definition>,
@@ -127,6 +126,7 @@ pub struct PyNERTrainer {
 #[pymethods]
 impl PyNERTrainer {
     #[new]
+    #[pyo3(text_signature = "(self, labels)")]
     pub fn new(labels: Vec<String>) -> PyResult<Self> {
         Ok(Self {
             trainer: Trainer::new_with_define(Definition::new(labels)),

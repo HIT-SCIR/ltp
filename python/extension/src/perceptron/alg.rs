@@ -9,7 +9,6 @@ use std::fmt::{Display, Formatter};
 /// AP: average perceptron, param is the threads
 /// PA: parallel average perceptron, param is c(margin)
 #[pyclass(module = "ltp_extension.perceptron", name = "Algorithm", subclass)]
-#[pyo3(text_signature = "(self, algorithm, param = None)")]
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
 pub struct PyAlgorithm {
     pub(crate) algorithm: Algorithm<f64>,
@@ -24,6 +23,7 @@ impl Display for PyAlgorithm {
 #[pymethods]
 impl PyAlgorithm {
     #[new]
+    #[pyo3(text_signature = "(self, algorithm, param = None)")]
     pub fn new(py: Python, algorithm: &str, param: Option<PyObject>) -> PyResult<Self> {
         let algorithm: Algorithm<f64> = match algorithm {
             "AP" => {

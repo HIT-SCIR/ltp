@@ -5,7 +5,6 @@ use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[pyclass(module = "ltp_extension.algorithms", name = "StnSplit", subclass)]
-#[pyo3(text_signature = "(self)")]
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, Eq)]
 pub struct StnSplit {
     pub options: SplitOptions,
@@ -14,6 +13,7 @@ pub struct StnSplit {
 #[pymethods]
 impl StnSplit {
     #[new]
+    #[pyo3(text_signature = "(self)")]
     pub fn new() -> PyResult<Self> {
         Ok(Self {
             options: SplitOptions {

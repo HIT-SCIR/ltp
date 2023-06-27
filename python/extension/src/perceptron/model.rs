@@ -9,7 +9,6 @@ use std::fmt::{Display, Formatter};
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 #[pyclass(module = "ltp_extension.perceptron", name = "ModelType")]
-#[pyo3(text_signature = "(self, model_type=None)")]
 pub enum ModelType {
     Auto,
     CWS,
@@ -20,6 +19,7 @@ pub enum ModelType {
 #[pymethods]
 impl ModelType {
     #[new]
+    #[pyo3(text_signature = "(self, model_type=None)")]
     pub fn new(model_type: Option<&str>) -> PyResult<Self> {
         Ok(match model_type {
             Some("cws") => ModelType::CWS,
@@ -70,7 +70,6 @@ impl Display for EnumModel {
 }
 
 #[pyclass(module = "ltp_extension.perceptron", name = "Model", subclass)]
-#[pyo3(text_signature = "(self, path, model_type=ModelType.Auto)")]
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct PyModel {
     pub model: EnumModel,
@@ -79,6 +78,7 @@ pub struct PyModel {
 #[pymethods]
 impl PyModel {
     #[new]
+    #[pyo3(text_signature = "(self, path, model_type=ModelType.Auto)")]
     pub fn new(path: &str, model_type: ModelType) -> PyResult<Self> {
         Self::load(path, model_type)
     }

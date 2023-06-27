@@ -33,7 +33,7 @@ def LTP(
                         - A string, the `model id` of a pretrained model
                           hosted inside a model repo on huggingface.co.
                           Valid model ids are [`LTP/tiny`, `LTP/small`,
-                          `LTP/base`, `LTP/base1`, `LTP/base1`, `LTP/legacy`
+                          `LTP/base`, `LTP/base1`, `LTP/base2`, `LTP/legacy`
                           ], the legacy model only support cws, pos and ner,
                           but more fast.
                         - You can add `revision` by appending `@` at the end
