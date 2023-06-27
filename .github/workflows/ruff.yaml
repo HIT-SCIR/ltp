@@ -1,0 +1,11 @@
+# Same as `code-quality-pr.yaml` but triggered on commit to main branch
+# and runs on all files (instead of only the changed ones)
+
+name: Ruff
+on: [ push, pull_request ]
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: chartboost/ruff-action@v1

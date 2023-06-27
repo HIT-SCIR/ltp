@@ -1,7 +1,6 @@
 try:
     import torch
     from ltp_extension.algorithms import eisner as rust_eisner
-    from ltp_extension.algorithms import get_entities
 
     def eisner(scores, mask, remove_root=False):
 
@@ -19,6 +18,5 @@ try:
 
         return result
 
-except Exception as e:
-    from .eisner import eisner
-    from .get_entities import get_entities
+except Exception:
+    pass

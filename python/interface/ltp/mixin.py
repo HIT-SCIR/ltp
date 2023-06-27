@@ -1,7 +1,6 @@
 import json
 import os
-from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 
 from ltp.utils import get_pylogger
 

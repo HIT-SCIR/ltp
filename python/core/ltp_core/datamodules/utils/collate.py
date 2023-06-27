@@ -32,7 +32,7 @@ def collate(batch):
                 storage = elem.storage()._new_shared(numel, device=elem.device)
                 out = elem.new(storage).resize_(len(batch), *list(elem.size()))
             return torch.stack(batch, 0, out=out)
-        except Exception as e:
+        except Exception:
             return torch.nn.utils.rnn.pad_sequence(batch, batch_first=True)
     elif (
         elem_type.__module__ == "numpy"

@@ -243,7 +243,7 @@ def main():
     print(metric)
 
     model.on_epoch_end()
-    optimizer = model.configure_optimizers()
+    model.configure_optimizers()
 
 
 if __name__ == "__main__":

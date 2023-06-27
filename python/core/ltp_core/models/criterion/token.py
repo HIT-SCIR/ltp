@@ -5,7 +5,7 @@ from torch import Tensor
 from torch.nn import CrossEntropyLoss, Module
 
 from ltp_core.models.components.token import TokenClassifierResult
-from ltp_core.models.functional.distill import kd_ce_loss, kd_mse_loss
+from ltp_core.models.functional.distill import kd_ce_loss
 
 
 class TokenLoss(Module):

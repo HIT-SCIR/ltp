@@ -70,7 +70,7 @@ def build_vocabs(data_dir, *files, min_freq=5):
                             for dep in values[row]
                         ]
                         counter.update(itertools.chain(*deps))
-                    except Exception as e:
+                    except Exception:
                         counter.update("_")
                 else:
                     counter.update(values[row])

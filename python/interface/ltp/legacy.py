@@ -7,7 +7,7 @@ from typing import Iterable, List, Union
 from ltp.generic import LTPOutput
 from ltp.mixin import ModelHubMixin
 from ltp_extension.algorithms import Hook, get_entities
-from ltp_extension.perceptron import CharacterType, CWSModel, NERModel, POSModel
+from ltp_extension.perceptron import CWSModel, NERModel, POSModel
 
 
 class LTP(ModelHubMixin):

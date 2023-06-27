@@ -165,6 +165,7 @@ impl PyModel {
         Ok(())
     }
 
+    #[pyo3(signature = ( * args, parallelism = true))]
     pub fn __call__(&self, py: Python, args: &PyTuple, parallelism: bool) -> PyResult<PyObject> {
         let first = args.get_item(0)?;
         let is_single = match &self.model {
@@ -205,7 +206,7 @@ impl PyModel {
     }
 
     /// Predict a sentence
-    #[pyo3(text_signature = "(self, *args)")]
+    #[pyo3(text_signature = "(self, *args)", signature = ( * args))]
     pub fn predict(&self, py: Python, args: &PyTuple) -> PyResult<PyObject> {
         Ok(match &self.model {
             EnumModel::CWS(model) => {
@@ -246,7 +247,7 @@ impl PyModel {
     }
 
     /// Predict batched sentences
-    #[pyo3(text_signature = "(self, *args, parallelism = True)")]
+    #[pyo3(text_signature = "(self, *args, parallelism = True)", signature = ( * args, parallelism = true))]
     pub fn batch_predict(
         &self,
         py: Python,
