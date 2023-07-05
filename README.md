@@ -95,6 +95,10 @@ if torch.cuda.is_available():
     # ltp.cuda()
     ltp.to("cuda")
 
+# 自定义词表
+ltp.add_word("汤姆去", freq=2)
+ltp.add_words(["外套", "外衣"], freq=2)
+
 #  分词 cws、词性 pos、命名实体标注 ner、语义角色标注 srl、依存句法分析 dep、语义依存分析树 sdp、语义依存分析图 sdpg
 output = ltp.pipeline(["他叫汤姆去拿外衣。"], tasks=["cws", "pos", "ner", "srl", "dep", "sdp", "sdpg"])
 # 使用字典格式作为返回结果
