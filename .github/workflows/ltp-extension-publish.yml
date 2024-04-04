@@ -45,7 +45,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --manifest-path python/extension/Cargo.toml
+          args: --release --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
           sccache: 'true'
           manylinux: auto
       - name: Upload wheels
@@ -73,7 +73,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --manifest-path python/extension/Cargo.toml
+          args: --release --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
           sccache: 'true'
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -99,7 +99,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --manifest-path python/extension/Cargo.toml
+          args: --release --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
           sccache: 'true'
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -115,7 +115,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist --manifest-path python/extension/Cargo.toml
+          args: --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
@@ -126,7 +126,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [linux, windows, macos, sdist]
+    needs: [ linux, windows, macos, sdist ]
     steps:
       - uses: actions/download-artifact@v4
       - name: Publish to PyPI
