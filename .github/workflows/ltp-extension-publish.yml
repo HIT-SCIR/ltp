@@ -28,6 +28,29 @@ jobs:
             target: x86_64
           - runner: ubuntu-latest
             target: x86
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
+          sccache: 'true'
+          manylinux: auto
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-${{ matrix.platform.target }}
+          path: dist
+
+  linux-cross:
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        platform:
           - runner: ubuntu-latest
             target: aarch64
           - runner: ubuntu-latest
@@ -45,7 +68,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
+          args: --release --out dist --manifest-path python/extension/Cargo.toml
           sccache: 'true'
           manylinux: auto
       - name: Upload wheels
@@ -115,7 +138,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist --manifest-path python/extension/Cargo.toml --features="malloc"
+          args: --out dist --manifest-path python/extension/Cargo.toml
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
