@@ -3,7 +3,7 @@
 #
 #    maturin generate-ci github -m python/extension/Cargo.toml
 #
-name: CI
+name: Upload LTP Extension Python Package
 
 on:
   workflow_dispatch:
