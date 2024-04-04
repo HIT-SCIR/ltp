@@ -28,6 +28,6 @@ impl PyHook {
     /// hook to the new words
     #[pyo3(text_signature = "(self, sentence, words)")]
     pub fn hook<'a>(&self, sentence: &'a str, words: Vec<&str>) -> PyResult<Vec<&'a str>> {
-        Ok(self.hook.hook(sentence, &words))
+        Ok(self.hook.hook(sentence, &words)?)
     }
 }

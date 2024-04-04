@@ -107,7 +107,7 @@ impl PyModel {
                 use ltp::perceptron::Schema;
                 let reader = ltp::perceptron::Reader::new(file).map_err(anyhow::Error::from)?;
                 match reader.writer_schema() {
-                    Schema::Record { name, .. } => match name.name.as_str() {
+                    Schema::Record(record) => match record.name.name.as_str() {
                         "cws" => ModelSerde::load_avro(reader).map(EnumModel::CWS)?,
                         "pos" => ModelSerde::load_avro(reader).map(EnumModel::POS)?,
                         "ner" => ModelSerde::load_avro(reader).map(EnumModel::NER)?,

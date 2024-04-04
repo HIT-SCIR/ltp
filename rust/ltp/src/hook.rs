@@ -1,6 +1,7 @@
 use cedarwood::Cedar;
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use anyhow::{Result, anyhow};
 
 #[derive(Debug, Clone)]
 struct Record {
@@ -71,7 +72,7 @@ impl Hook {
         freq
     }
 
-    fn dag(&self, sentence: &str, words: &[&str], dag: &mut Dag) {
+    fn dag(&self, sentence: &str, words: &[&str], dag: &mut Dag) -> Result<()> {
         let mut byte_start_bias = 0;
         for &word in words {
             let word_len = word.len();
@@ -79,42 +80,46 @@ impl Hook {
             let mut char_indices = word.char_indices().peekable();
             while let Some((byte_start, _)) = char_indices.next() {
                 dag.start(byte_start + byte_start_bias);
-                let haystack = &sentence[byte_start + byte_start_bias..];
-
-                // Char
-                let cur_char_len = char_indices.peek().map(|(next_start, _)| next_start - byte_start);
-                // 外部分词结果
-                let mut nch_flag = cur_char_len.is_none();
-                let mut per_flag = !is_first;
-                for (_, end_index) in self.cedar.common_prefix_iter(haystack) {
-                    let white_space_len = haystack[end_index + 1..].chars().take_while(|ch| ch.is_whitespace()).count();
-                    if is_first && end_index + white_space_len + 1 == word_len {
-                        per_flag = true;
+                // check is valid ?
+                if let Some(haystack) = sentence.get(byte_start + byte_start_bias..) {
+                    // Char
+                    let cur_char_len = char_indices.peek().map(|(next_start, _)| next_start - byte_start);
+                    // 外部分词结果
+                    let mut nch_flag = cur_char_len.is_none();
+                    let mut per_flag = !is_first;
+                    for (_, end_index) in self.cedar.common_prefix_iter(haystack) {
+                        let white_space_len = haystack[end_index + 1..].chars().take_while(|ch| ch.is_whitespace()).count();
+                        if is_first && end_index + white_space_len + 1 == word_len {
+                            per_flag = true;
+                        }
+                        if let Some(char_len) = cur_char_len {
+                            if end_index + white_space_len + 1 == char_len {
+                                nch_flag = true;
+                            }
+                        }
+                        dag.insert(byte_start_bias + byte_start + end_index + white_space_len + 1);
                     }
-                    if let Some(char_len) = cur_char_len {
-                        if end_index + white_space_len + 1 == char_len {
-                            nch_flag = true;
+                    if !nch_flag {
+                        dag.insert(byte_start_bias + byte_start + cur_char_len.unwrap());
+                        if byte_start + cur_char_len.unwrap() == word_len {
+                            per_flag = true;
                         }
                     }
-                    dag.insert(byte_start_bias + byte_start + end_index + white_space_len + 1);
-                }
-                if !nch_flag {
-                    dag.insert(byte_start_bias + byte_start + cur_char_len.unwrap());
-                    if byte_start + cur_char_len.unwrap() == word_len {
-                        per_flag = true;
+                    if is_first && !per_flag {
+                        dag.insert(byte_start_bias + word_len);
                     }
+                    dag.commit();
+                } else {
+                    return Err(anyhow!("Invalid UTF-8 sentence!"));
                 }
-                if is_first && !per_flag {
-                    dag.insert(byte_start_bias + word_len);
-                }
-                dag.commit();
             }
             byte_start_bias += word_len;
         }
+        Ok(())
     }
 
     #[allow(clippy::ptr_arg)]
-    fn calc(&self, sentence: &str, dag: &Dag, route: &mut Vec<(f64, usize)>) {
+    fn calc(&self, sentence: &str, dag: &Dag, route: &mut Vec<(f64, usize)>) -> Result<()> {
         let str_len = sentence.len();
 
         if str_len + 1 > route.len() {
@@ -126,7 +131,7 @@ impl Hook {
         let curr = sentence.char_indices().map(|x| x.0).rev();
         for byte_start in curr {
             let pair = dag
-                .iter_edges(byte_start)
+                .iter_edges(byte_start)?
                 .map(|byte_end| {
                     let wfrag = if byte_end == str_len {
                         &sentence[byte_start..]
@@ -154,15 +159,16 @@ impl Hook {
 
             prev_byte_start = byte_start;
         }
+        Ok(())
     }
 
-    pub fn hook<'a>(&self, sentence: &'a str, cut_words: &[&str]) -> Vec<&'a str> {
+    pub fn hook<'a>(&self, sentence: &'a str, cut_words: &[&str]) -> Result<Vec<&'a str>> {
         let mut hook_words = Vec::with_capacity(cut_words.len());
         let mut route = Vec::with_capacity(cut_words.len());
         let mut dag = Dag::with_size_hint(cut_words.len());
 
-        self.inner_hook(sentence, cut_words, &mut hook_words, &mut route, &mut dag);
-        hook_words
+        self.inner_hook(sentence, cut_words, &mut hook_words, &mut route, &mut dag)?;
+        Ok(hook_words)
     }
 
     fn inner_hook<'a>(
@@ -172,9 +178,9 @@ impl Hook {
         words: &mut Vec<&'a str>,
         route: &mut Vec<(f64, usize)>,
         dag: &mut Dag,
-    ) {
-        self.dag(sentence, cut_words, dag);
-        self.calc(sentence, dag, route);
+    ) -> Result<()> {
+        self.dag(sentence, cut_words, dag)?;
+        self.calc(sentence, dag, route)?;
         let mut x = 0;
         let mut left: Option<usize> = None;
 
@@ -215,6 +221,7 @@ impl Hook {
 
         dag.clear();
         route.clear();
+        Ok(())
     }
 }
 
@@ -275,16 +282,17 @@ impl Dag {
 
     #[inline]
     pub(crate) fn commit(&mut self) {
-        self.size_hint_for_iterator =
-            std::cmp::max(self.curr_insertion_len, self.size_hint_for_iterator);
+        self.size_hint_for_iterator = std::cmp::max(self.curr_insertion_len, self.size_hint_for_iterator);
         self.array.push(0);
     }
 
     #[inline]
-    pub(crate) fn iter_edges(&self, from: usize) -> EdgeIter {
-        let cursor = self.start_pos.get(&from).unwrap().to_owned();
-
-        EdgeIter { dag: self, cursor }
+    pub(crate) fn iter_edges(&self, from: usize) -> Result<EdgeIter> {
+        if let Some(&cursor) = self.start_pos.get(&from) {
+            Ok(EdgeIter { dag: self, cursor })
+        } else {
+            Err(anyhow!("Invalid start position! Maybe invalid UTF-8 sentence!"))
+        }
     }
 
     pub(crate) fn clear(&mut self) {
@@ -298,6 +306,26 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_fatal() {
+        let raw_sentence = vec![194, 40];
+        let word1 = vec![194];
+        let word2 = vec![40];
+        unsafe {
+            let sentence = String::from_utf8_unchecked(raw_sentence);
+            let word1 = String::from_utf8_unchecked(word1);
+            let word2 = String::from_utf8_unchecked(word2);
+            let cut_words: [&str; 2] = [word1.as_ref(), word2.as_ref()];
+            let hook = Hook::new();
+
+            let mut words = Vec::with_capacity(5);
+            let mut route = Vec::with_capacity(5);
+
+            let mut dag = Dag::with_size_hint(5);
+            assert!(hook.inner_hook(&sentence, &cut_words, &mut words, &mut route, &mut dag).is_err());
+        }
+    }
+
+    #[test]
     fn test_hook() {
         let sentence = "他叫汤姆去拿外衣。";
         let cut_words = ["他", "叫", "汤姆", "去", "拿", "外衣", "。"];
@@ -307,7 +335,7 @@ mod tests {
         let mut route = Vec::with_capacity(5);
 
         let mut dag = Dag::with_size_hint(5);
-        hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
+        assert!(hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag).is_ok());
 
         assert_eq!(words, cut_words);
 
@@ -316,7 +344,7 @@ mod tests {
         route.clear();
         dag.clear();
 
-        hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
+        assert!(hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag).is_ok());
         println!("{:?}", words);
         assert_eq!(words, ["他", "叫", "汤", "姆去拿", "外衣", "。"]);
     }
@@ -331,7 +359,7 @@ mod tests {
         let mut route = Vec::with_capacity(5);
 
         let mut dag = Dag::with_size_hint(5);
-        hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
+        assert!(hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag).is_ok());
     }
 
     #[test]
@@ -345,7 +373,7 @@ mod tests {
         let mut route = Vec::with_capacity(5);
 
         let mut dag = Dag::with_size_hint(5);
-        hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag);
+        assert!(hook.inner_hook(sentence, &cut_words, &mut words, &mut route, &mut dag).is_ok());
         println!("{:?}", words);
     }
 

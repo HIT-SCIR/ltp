@@ -1,7 +1,5 @@
-from ltp import LTP
-
-
 def issue590():
+    from ltp import LTP
     ltp = LTP("LTP/tiny")
     ltp.add_words(words=["[ENT]"])
     print(ltp.pipeline(["[ENT] Info"], tasks=["cws"]))
@@ -11,6 +9,7 @@ def issue590():
 
 
 def issue592():
+    from ltp import LTP
     legacy_ltp = LTP("LTP/legacy")
 
     legacy_ltp.add_words(words=["SCSG", "IP地址"])
@@ -24,6 +23,7 @@ def issue592():
 
 
 def issue600():
+    from ltp import LTP
     legacy_ltp = LTP("LTP/legacy")
     print(legacy_ltp.pipeline("他叫汤姆去拿外衣。", tasks=["cws"], return_dict=False))
 
@@ -32,6 +32,7 @@ def issue600():
 
 
 def issue612():
+    from ltp import LTP
     legacy_ltp = LTP("LTP/legacy")
     legacy_ltp.add_words(words=["五星武器"])
     print(legacy_ltp.pipeline("80 抽两五星武器给我吧哥", tasks=["cws"], return_dict=False))
@@ -45,14 +46,13 @@ def issue613():
     import cProfile
     from pstats import SortKey
 
-    cProfile.run('LTP("LTP/legacy", local_files_only=True)', sort=SortKey.CUMULATIVE)
-
-
-from matplotlib import pyplot as plt
-from tqdm import trange
+    cProfile.run('from ltp import LTP;LTP("LTP/legacy", local_files_only=True)', sort=SortKey.CUMULATIVE)
 
 
 def issue623():
+    from ltp import LTP
+    from matplotlib import pyplot as plt
+    from tqdm import trange
     ltp = LTP("LTP/legacy")
 
     def get_current_memory() -> int:
@@ -80,8 +80,19 @@ def issue623():
     plt.show()
 
 
+def issue686():
+    from ltp_extension.algorithms import Hook
+    sentence = b'\xc2\x28'.decode('utf-8', 'replace')
+    hook = Hook()
+    hook.add_word(word="[FAKE]")
+    try:
+        hook.hook(sentence, ['a', 'b'])
+    except Exception as e:
+        print(e)
+
+
 def main():
-    issue623()
+    issue686()
 
 
 if __name__ == "__main__":

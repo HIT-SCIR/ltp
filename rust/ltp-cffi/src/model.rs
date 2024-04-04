@@ -37,7 +37,7 @@ fn rs_model_load(model_path: &str) -> *mut Model {
 
     let model: Result<Box<Model>, _> = {
         match reader.writer_schema() {
-            Schema::Record { name, .. } => match name.name.as_str() {
+            Schema::Record(record) => match record.name.name.as_str() {
                 "cws" => ModelSerde::load_avro(reader)
                     .map(EnumModel::CWS)
                     .map(|model| Box::new(Model { model })),
