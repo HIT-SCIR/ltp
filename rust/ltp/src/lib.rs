@@ -1,9 +1,5 @@
-pub mod eisner;
-pub mod entities;
-pub mod hook;
 pub mod perceptron;
-pub mod stnsplit;
-pub mod viterbi;
+pub mod utils;
 
 pub use perceptron::{
     Algorithm, CWSDefinition, NERDefinition, POSDefinition, PaMode, Perceptron, Trainer,
@@ -18,7 +14,4 @@ pub type POSModel = SerdePOSModel;
 #[cfg(feature = "serialization")]
 pub type NERModel = SerdeNERModel;
 
-pub use eisner::eisner;
-pub use entities::{drop_get_entities, get_entities};
-pub use stnsplit::{stn_split, stn_split_with_options, SplitOptions};
-pub use viterbi::viterbi_decode_postprocessing;
+

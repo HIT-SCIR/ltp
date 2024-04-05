@@ -1,4 +1,4 @@
-use ltp::{drop_get_entities, eisner, viterbi_decode_postprocessing};
+use ltp::utils::{drop_get_entities, eisner, viterbi_decode_postprocessing};
 use pyo3::prelude::*;
 
 /// Convert Tags to Entities

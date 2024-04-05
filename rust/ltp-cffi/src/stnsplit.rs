@@ -1,5 +1,5 @@
 use crate::Callback;
-use ltp::stnsplit::{
+use ltp::utils::stnsplit::{
     stn_split as r_stn_split, stn_split_with_options as r_stn_split_with_options, SplitOptions,
 };
 use std::slice;

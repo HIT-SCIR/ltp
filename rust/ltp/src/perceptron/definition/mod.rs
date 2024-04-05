@@ -7,7 +7,7 @@ use std::collections::HashSet;
 use std::fmt::Debug;
 use std::io::Read;
 
-use crate::get_entities;
+use crate::utils::get_entities;
 use crate::perceptron::Sample;
 pub use cws::CWSDefinition;
 pub use ner::NERDefinition;

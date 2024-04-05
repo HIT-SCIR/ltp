@@ -1,4 +1,4 @@
-use ltp::hook::Hook;
+use ltp::utils::hook::Hook;
 use pyo3::prelude::*;
 
 #[pyclass(module = "ltp_extension.algorithms", name = "Hook", subclass)]

@@ -259,7 +259,7 @@ impl<Feature, ParamStorage, Param> Perceptron<NERDefinition, Feature, ParamStora
     }
 }
 
-use crate::{get_entities, CWSDefinition, NERDefinition, POSDefinition};
+use crate::{utils::get_entities, CWSDefinition, NERDefinition, POSDefinition};
 
 impl<Feature, ParamStorage, Param> Perceptron<CWSDefinition, Feature, ParamStorage, Param>
     where

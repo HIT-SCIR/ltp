@@ -1,4 +1,4 @@
-use ltp::{stn_split_with_options, SplitOptions};
+use ltp::utils::{stn_split_with_options, SplitOptions};
 use pyo3::prelude::*;
 use pyo3::types::{PyList, PyString};
 use rayon::prelude::*;

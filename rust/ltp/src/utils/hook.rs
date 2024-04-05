@@ -378,7 +378,7 @@ mod tests {
     }
 
     #[test]
-    fn test_dag() {
+    fn test_dag() -> Result<()> {
         let mut dag = Dag::with_size_hint(5);
         let mut ans: Vec<Vec<usize>> = vec![Vec::new(); 5];
         for i in 0..=3 {
@@ -394,8 +394,10 @@ mod tests {
         assert_eq!(dag.size_hint_for_iterator, 4);
 
         for i in 0..=3 {
-            let edges: Vec<usize> = dag.iter_edges(i).collect();
+            let edges: Vec<usize> = dag.iter_edges(i)?.collect();
             assert_eq!(ans[i], edges);
         }
+
+        Ok(())
     }
 }
