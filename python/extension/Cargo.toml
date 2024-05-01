@@ -21,7 +21,7 @@ rayon = { version = "1.7" }
 rayon-cond = { version = "0.3" }
 anyhow = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
-pyo3 = { version = "0.20", features = ["extension-module", "anyhow", "serde"] }
+pyo3 = { version = "0.21", features = ["extension-module", "anyhow", "serde"] }
 mimalloc = { version = "0.1", default-features = false, optional = true }
 
 [dependencies.ltp]
