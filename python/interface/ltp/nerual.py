@@ -196,7 +196,7 @@ class LTP(BaseModule, ModelHubMixin):
                         words = sentences[idx]
                         new_store.append(
                             [
-                                (tag, "".join(words[start : end + 1]))
+                                (tag, "".join(words[start : end + 1]), start, end)
                                 for tag, start, end in get_entities(sent)
                             ]
                         )
@@ -209,12 +209,12 @@ class LTP(BaseModule, ModelHubMixin):
 
                         for item, predicate in enumerate(words):
                             arguments = [
-                                (tag, "".join(words[start : end + 1]))
+                                (tag, "".join(words[start : end + 1]), start, end)
                                 for tag, start, end in get_entities(sent[item])
                             ]
                             if arguments:
                                 new_store[-1].append(
-                                    {"predicate": predicate, "arguments": arguments}
+                                    {"index": item, "predicate": predicate, "arguments": arguments}
                                 )
                     store[task] = new_store
 
