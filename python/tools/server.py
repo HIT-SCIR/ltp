@@ -104,14 +104,15 @@ class Server(object):
             start = start + 1
 
 
-        if (not output.ner[0]):
+        if (output.ner[0]):
+            print([sentences, output])	
             # 請提供您嘗試解析的語句供我們改進LTP，謝謝。
             raise Exception("NYI for ner: Please provide the phrases you are trying to parse to improve LTP, thank you.")
 
 
         result = {
             'text': sentences[0],
-            # TODOL add output.ner
+            # TODO: add output.ner
             #'nes': nes,
             'words': words
         }
