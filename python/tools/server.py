@@ -15,6 +15,8 @@ import json
 import logging
 from typing import List
 
+import torch
+
 from tornado import ioloop
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RequestHandler
@@ -54,6 +56,10 @@ class Server(object):
     def __init__(self, path: str = 'base', batch_size: int = 50, device: str = None, onnx: bool = False):
         # 2024/6/1 7:9:45 adapt for "ltp==4.2.13"
         self.ltp = LTP('LTP/base')
+        # 将模型移动到 GPU 上
+        if torch.cuda.is_available():
+            # ltp.cuda()
+            self.ltp.to("cuda")
 
     def _predict(self, sentences: List[str]):
         #result = []
@@ -104,16 +110,19 @@ class Server(object):
             start = start + 1
 
 
-        if (output.ner[0]):
-            print([sentences, output])	
-            # 請提供您嘗試解析的語句供我們改進LTP，謝謝。
-            raise Exception("NYI for ner: Please provide the phrases you are trying to parse to improve LTP, thank you.")
+        nes = []
+        for role, text, start, end in output.ner[0]:
+            nes.append({
+                'text': text,
+                'offset': start,
+                'ne': role.lower(),
+                'length': len(text)
+            })
 
 
         result = {
             'text': sentences[0],
-            # TODO: add output.ner
-            #'nes': nes,
+            'nes': nes,
             'words': words
         }
 
