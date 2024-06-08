@@ -5,8 +5,8 @@
 """
 LTP Server 是对 LTP 的一个简单包装，依赖于 tornado，使用方式如下：
 .. code-block:: bash
-    pip install ltp, tornado
-    python tools/server.py serve
+    pip install fastapi uvicorn
+    uvicorn server:app
 """
 
 from typing import List, Union
