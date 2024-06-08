@@ -3,7 +3,6 @@ try:
     from ltp_extension.algorithms import eisner as rust_eisner
 
     def eisner(scores, mask, remove_root=False):
-
         scores = scores.view(-1).cpu().numpy()
         length = torch.sum(mask, dim=1).cpu().numpy()
 

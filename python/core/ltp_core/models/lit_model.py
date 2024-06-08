@@ -57,9 +57,7 @@ class LTPLitModule(LightningModule):
         metrics = instantiate(metrics)
 
         # must use module dict
-        metrics = ModuleDict(
-            {task: MetricCollection(metric, prefix=f"{task}/") for task, metric in metrics.items()}
-        )
+        metrics = ModuleDict({task: MetricCollection(metric, prefix=f"{task}/") for task, metric in metrics.items()})
         self.train_metrics = metrics
         self.val_metrics = deepcopy(metrics)
         self.test_metrics = deepcopy(metrics)
@@ -216,11 +214,7 @@ class LTPLitModule(LightningModule):
 
         limit_batches = self.trainer.limit_train_batches
         batches = len(self.trainer.datamodule.train_dataloader())
-        batches = (
-            min(batches, limit_batches)
-            if isinstance(limit_batches, int)
-            else int(limit_batches * batches)
-        )
+        batches = min(batches, limit_batches) if isinstance(limit_batches, int) else int(limit_batches * batches)
         num_devices = max(1, self.trainer.num_devices)
         effective_accum = self.trainer.accumulate_grad_batches * num_devices
         return (batches // effective_accum) * self.trainer.max_epochs

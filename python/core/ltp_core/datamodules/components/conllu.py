@@ -66,10 +66,7 @@ def build_vocabs(data_dir, *files, min_freq=5):
                     counter.update(itertools.chain(*values[row]))
                 elif "deps" == name:
                     try:
-                        deps = [
-                            [label.split(":", maxsplit=1)[1] for label in dep.split("|")]
-                            for dep in values[row]
-                        ]
+                        deps = [[label.split(":", maxsplit=1)[1] for label in dep.split("|")] for dep in values[row]]
                         counter.update(itertools.chain(*deps))
                     except Exception:
                         counter.update("_")
@@ -166,17 +163,13 @@ class Conllu(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """We handle string, list and dicts in datafiles."""
         if not self.config.data_files:
-            raise ValueError(
-                f"At least one data file must be specified, but got data_files={self.config.data_files}"
-            )
+            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
         data_files = dl_manager.download_and_extract(self.config.data_files)
         if isinstance(data_files, (str, list, tuple)):
             files = data_files
             if isinstance(files, str):
                 files = [files]
-            return [
-                datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})
-            ]
+            return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
@@ -189,13 +182,9 @@ class Conllu(datasets.GeneratorBasedBuilder):
             logging.info("⏳ Generating examples from = %s", filename)
             for line_num, block in iter_blocks(filename=filename):
                 # last example
-                id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = (
-                    list(value) for value in zip(*block)
-                )
+                id, words, lemma, upos, xpos, feats, head, deprel, deps, misc = (list(value) for value in zip(*block))
                 if self.config.deps:
-                    deps = [
-                        [label.split(":", maxsplit=1) for label in dep.split("|")] for dep in deps
-                    ]
+                    deps = [[label.split(":", maxsplit=1) for label in dep.split("|")] for dep in deps]
                     deps = [
                         [{"id": depid, "head": int(label[0]), "rel": label[-1]} for label in dep]
                         for depid, dep in enumerate(deps)
@@ -204,18 +193,21 @@ class Conllu(datasets.GeneratorBasedBuilder):
                     if any([dep["head"] >= len(words) for dep in deps]):
                         continue
 
-                yield line_num, {
-                    "id": id,
-                    "form": words,
-                    "lemma": lemma,
-                    "upos": upos,
-                    "xpos": xpos,
-                    "feats": feats,
-                    "head": head,
-                    "deprel": deprel,
-                    "deps": deps,
-                    "misc": misc,
-                }
+                yield (
+                    line_num,
+                    {
+                        "id": id,
+                        "form": words,
+                        "lemma": lemma,
+                        "upos": upos,
+                        "xpos": xpos,
+                        "feats": feats,
+                        "head": head,
+                        "deprel": deprel,
+                        "deps": deps,
+                        "misc": misc,
+                    },
+                )
 
 
 def main():

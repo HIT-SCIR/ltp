@@ -73,14 +73,7 @@ class TokenDistillLoss(TokenLoss):
         super().__init__()
         self.temperature_scheduler = temperature_scheduler
 
-    def forward(
-        self,
-        result: TokenClassifierResult,
-        labels: Tensor,
-        targets: Tensor = None,
-        *args,
-        **kwargs
-    ) -> Tensor:
+    def forward(self, result: TokenClassifierResult, labels: Tensor, targets: Tensor = None, *args, **kwargs) -> Tensor:
         loss = super().forward(result, labels, **kwargs)
 
         if targets is not None:
@@ -108,18 +101,10 @@ class SRLDistillLoss(SRLLoss):
         super().__init__()
         self.temperature_scheduler = temperature_scheduler
 
-    def forward(
-        self,
-        result: TokenClassifierResult,
-        labels: Tensor,
-        targets: Tensor = None,
-        *args,
-        **kwargs
-    ) -> Tensor:
+    def forward(self, result: TokenClassifierResult, labels: Tensor, targets: Tensor = None, *args, **kwargs) -> Tensor:
         loss = super().forward(result, labels, **kwargs)
 
         if targets is not None:
-
             crf = result.crf
             logits = result.logits
             num_tags = logits.shape[-1]

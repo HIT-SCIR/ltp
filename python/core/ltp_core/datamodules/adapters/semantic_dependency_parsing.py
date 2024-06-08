@@ -51,9 +51,7 @@ def build_dataset(data_dir, task_name, tokenizer, max_length=512, **kwargs):
 
     os.environ["TOKENIZERS_PARALLELISM"] = "true"
     dataset = load_dataset(Conllu, data_dir=data_dir, cache_dir=data_dir)
-    dataset = dataset.remove_columns(
-        ["id", "lemma", "upos", "xpos", "feats", "head", "deprel", "misc"]
-    )
+    dataset = dataset.remove_columns(["id", "lemma", "upos", "xpos", "feats", "head", "deprel", "misc"])
     dataset = dataset.map(lambda examples: tokenize(examples, tokenizer, max_length), batched=True)
     dataset = dataset.filter(lambda x: not x["overflow"])
     dataset.set_format(

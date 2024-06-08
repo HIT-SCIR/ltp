@@ -51,8 +51,7 @@ class SeqEvalF1(Metric):
 
         labels = labels.cpu().numpy()
         labels = [
-            [self.labels[tag] for tag, mask in zip(tags, masks) if mask]
-            for tags, masks in zip(labels, attention_mask)
+            [self.labels[tag] for tag, mask in zip(tags, masks) if mask] for tags, masks in zip(labels, attention_mask)
         ]
 
         if crf is None:
@@ -109,8 +108,7 @@ class SRLEvalF1(SeqEvalF1):
 
         labels = labels.cpu().numpy()
         labels = [
-            [self.labels[tag] for tag, mask in zip(tags, masks) if mask]
-            for tags, masks in zip(labels, attention_mask)
+            [self.labels[tag] for tag, mask in zip(tags, masks) if mask] for tags, masks in zip(labels, attention_mask)
         ]
 
         if crf is None:

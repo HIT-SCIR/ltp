@@ -91,8 +91,17 @@ def issue686():
         print(e)
 
 
+def issue693():
+    from ltp import LTP
+    ltp = LTP("LTP/tiny")
+    print(ltp.pipeline(
+        ["视觉Transformers通过将图像区域表示为转换后的tokens并通过注意力权重整合它们来提取视觉信息。"],
+        tasks=["cws"])
+    )
+
+
 def main():
-    issue686()
+    issue693()
 
 
 if __name__ == "__main__":

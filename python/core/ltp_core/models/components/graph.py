@@ -38,9 +38,7 @@ class BiaffineClassifier(nn.Module):
         )
 
         self.arc_atten = Biaffine(arc_hidden_size, arc_hidden_size, 1, bias_x=True, bias_y=False)
-        self.rel_atten = Biaffine(
-            rel_hidden_size, rel_hidden_size, num_labels, bias_x=True, bias_y=True
-        )
+        self.rel_atten = Biaffine(rel_hidden_size, rel_hidden_size, num_labels, bias_x=True, bias_y=True)
 
     def forward(self, hidden_states, attention_mask=None):
         bs, seqlen = hidden_states.shape[:2]

@@ -7,14 +7,12 @@ def load_dataset(
     builder_cls: type,
     config_name: Optional[str] = None,
     data_dir: Optional[str] = None,
-    data_files: Optional[
-        Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
-    ] = None,
+    data_files: Optional[Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]] = None,
     split: Optional[Union[str, Split]] = None,
     cache_dir: Optional[str] = None,
     features: Optional[Features] = None,
     save_infos: bool = False,
-    **config_kwargs
+    **config_kwargs,
 ) -> Union[DatasetDict, Dataset]:
     # Instantiate the dataset builder
     builder_instance: DatasetBuilder = builder_cls(

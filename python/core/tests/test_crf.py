@@ -110,8 +110,7 @@ class TestForward:
             emission, tag = emission[:seq_len], tag[:seq_len]
             numerator = compute_score(crf, emission, tag)
             all_scores = [
-                compute_score(crf, emission, t)
-                for t in itertools.product(range(crf.num_tags), repeat=seq_len)
+                compute_score(crf, emission, t) for t in itertools.product(range(crf.num_tags), repeat=seq_len)
             ]
             denominator = math.log(sum(math.exp(s) for s in all_scores))
             manual_llh += numerator - denominator
@@ -180,8 +179,7 @@ class TestForward:
         for emission, tag in zip(emissions, tags):
             numerator = compute_score(crf, emission, tag)
             all_scores = [
-                compute_score(crf, emission, t)
-                for t in itertools.product(range(crf.num_tags), repeat=seq_length)
+                compute_score(crf, emission, t) for t in itertools.product(range(crf.num_tags), repeat=seq_length)
             ]
             denominator = math.log(sum(math.exp(s) for s in all_scores))
             manual_llh.append(numerator - denominator)
@@ -213,8 +211,7 @@ class TestForward:
         for emission, tag in zip(emissions, tags):
             numerator = compute_score(crf, emission, tag)
             all_scores = [
-                compute_score(crf, emission, t)
-                for t in itertools.product(range(crf.num_tags), repeat=seq_length)
+                compute_score(crf, emission, t) for t in itertools.product(range(crf.num_tags), repeat=seq_length)
             ]
             denominator = math.log(sum(math.exp(s) for s in all_scores))
             manual_llh += numerator - denominator
@@ -251,8 +248,7 @@ class TestForward:
             emission, tag = emission[:seq_len], tag[:seq_len]
             numerator = compute_score(crf, emission, tag)
             all_scores = [
-                compute_score(crf, emission, t)
-                for t in itertools.product(range(crf.num_tags), repeat=seq_len)
+                compute_score(crf, emission, t) for t in itertools.product(range(crf.num_tags), repeat=seq_len)
             ]
             denominator = math.log(sum(math.exp(s) for s in all_scores))
             manual_llh += numerator - denominator
@@ -297,8 +293,7 @@ class TestForward:
         llh = crf(emissions, tags, mask=mask)
         llh_scripted = crf_script(emissions, tags, mask=mask)
         assert torch.equal(llh, llh_scripted), (
-            f"scripted crf forward output {llh_scripted} "
-            f"not matching non-scripted forward output {llh}"
+            f"scripted crf forward output {llh_scripted} " f"not matching non-scripted forward output {llh}"
         )
 
         # Test scripted forward works without mask
@@ -312,8 +307,7 @@ class TestForward:
         llh_mask = crf(emissions, tags, mask=torch.ones_like(tags).byte())
         llh_mask_script = crf_script(emissions, tags, mask=torch.ones_like(tags).byte())
         assert torch.equal(llh_mask, llh_mask_script), (
-            f"scripted crf forward output {llh_mask_script} "
-            f"not matching non-scripted forward output {llh_mask}"
+            f"scripted crf forward output {llh_mask_script} " f"not matching non-scripted forward output {llh_mask}"
         )
 
         # Test scripted forward in batched setting
@@ -325,8 +319,7 @@ class TestForward:
         llh = crf(emissions_batch, tags_batch)
         llh_script = crf_script(emissions_batch, tags_batch)
         assert torch.equal(llh_script, llh), (
-            f"scripted crf forward output {llh_script} "
-            f"not matching non-scripted forward output {llh}"
+            f"scripted crf forward output {llh_script} " f"not matching non-scripted forward output {llh}"
         )
 
         # Test scripted forward when reduction is None, mean, token_mean
@@ -337,22 +330,19 @@ class TestForward:
         llh = crf(emissions, tags, reduction="none")
         llh_script = crf_script(emissions, tags, reduction="none")
         assert torch.equal(llh_script, llh), (
-            f"scripted crf forward output {llh_script} "
-            f"not matching non-scripted forward output {llh}"
+            f"scripted crf forward output {llh_script} " f"not matching non-scripted forward output {llh}"
         )
         llh = crf(emissions, tags, reduction="mean")
         llh_script = crf_script(emissions, tags, reduction="mean")
         assert torch.equal(llh_script, llh), (
-            f"scripted crf forward output {llh_script} "
-            f"not matching non-scripted forward output {llh}"
+            f"scripted crf forward output {llh_script} " f"not matching non-scripted forward output {llh}"
         )
 
         mask = torch.tensor([[1, 1, 1], [1, 1, 0]], dtype=torch.uint8).transpose(0, 1)
         llh = crf(emissions, tags, mask=mask, reduction="token_mean")
         llh_script = crf_script(emissions, tags, mask=mask, reduction="token_mean")
         assert torch.equal(llh_script, llh), (
-            f"scripted crf forward output {llh_script} "
-            f"not matching non-scripted forward output {llh}"
+            f"scripted crf forward output {llh_script} " f"not matching non-scripted forward output {llh}"
         )
 
         # Test scripted forward when running batch first mode
@@ -369,8 +359,7 @@ class TestForward:
         llh_bf = crf_bf(emissions, tags)
         llh_bf_script = crf_bf_script(emissions, tags)
         assert torch.equal(llh_bf_script, llh_bf), (
-            f"scripted crf forward output {llh_bf_script} "
-            f"not matching non-scripted forward output {llh_bf}"
+            f"scripted crf forward output {llh_bf_script} " f"not matching non-scripted forward output {llh_bf}"
         )
 
     def test_emissions_has_bad_number_of_dimension(self):
@@ -389,9 +378,9 @@ class TestForward:
 
         with pytest.raises(ValueError) as excinfo:
             crf(emissions, tags)
-        assert (
-            "the first two dimensions of emissions and tags must match, " "got (1, 2) and (2, 2)"
-        ) in str(excinfo.value)
+        assert ("the first two dimensions of emissions and tags must match, " "got (1, 2) and (2, 2)") in str(
+            excinfo.value
+        )
 
     def test_emissions_last_dimension_not_equal_to_number_of_tags(self):
         emissions = torch.randn(1, 2, 3)
@@ -527,8 +516,7 @@ class TestDecode:
         best_tags = crf.decode(emissions, mask=mask)
         best_tags_scripted = crf_script.decode(emissions, mask=mask)
         assert best_tags == best_tags_scripted, (
-            f"scripted decode output {best_tags_scripted} "
-            f"doesn't match non-scripted output {best_tags}"
+            f"scripted decode output {best_tags_scripted} " f"doesn't match non-scripted output {best_tags}"
         )
 
         # Test decoding without a mask
@@ -548,8 +536,7 @@ class TestDecode:
         batched = crf.decode(emissions_batched, mask=mask_batched)
         batched_scripted = crf_script.decode(emissions_batched, mask=mask_batched)
         assert batched == batched_scripted, (
-            f"scripted decode output {batched_scripted} "
-            f"doesn't match non-scripted output {batched}"
+            f"scripted decode output {batched_scripted} " f"doesn't match non-scripted output {batched}"
         )
 
         # Test batch first decode
@@ -565,8 +552,7 @@ class TestDecode:
         best_tags_bf = crf_bf.decode(emissions)
         best_tags_bf_script = crf_bf_script.decode(emissions)
         assert best_tags_bf == best_tags_bf_script, (
-            f"scripted decode output {best_tags_bf_script} "
-            f"doesn't match non-scripted decode output {best_tags_bf}"
+            f"scripted decode output {best_tags_bf_script} " f"doesn't match non-scripted decode output {best_tags_bf}"
         )
 
     def test_emissions_has_bad_number_of_dimension(self):
@@ -592,9 +578,9 @@ class TestDecode:
 
         with pytest.raises(ValueError) as excinfo:
             crf.decode(emissions, mask=mask)
-        assert (
-            "the first two dimensions of emissions and mask must match, " "got (1, 2) and (2, 2)"
-        ) in str(excinfo.value)
+        assert ("the first two dimensions of emissions and mask must match, " "got (1, 2) and (2, 2)") in str(
+            excinfo.value
+        )
 
     def test_first_timestep_mask_is_not_all_on(self):
         emissions = torch.randn(3, 2, 4)

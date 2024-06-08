@@ -101,18 +101,12 @@ class LTP(ModelHubMixin):
                         for idx, sent in enumerate(ner):
                             words = sentences[idx]
                             new_store.append(
-                                [
-                                    (tag, "".join(words[start : end + 1]))
-                                    for tag, start, end in get_entities(sent)
-                                ]
+                                [(tag, "".join(words[start : end + 1])) for tag, start, end in get_entities(sent)]
                             )
                         ner = new_store
                     else:
                         words = args[0]
-                        ner = [
-                            (tag, "".join(words[start : end + 1]))
-                            for tag, start, end in get_entities(ner)
-                        ]
+                        ner = [(tag, "".join(words[start : end + 1])) for tag, start, end in get_entities(ner)]
                 args = (*args, ner)
             else:
                 raise ValueError(f"Invalid task: {task}")
@@ -138,7 +132,6 @@ class LTP(ModelHubMixin):
         cache_dir,
         force_download,
         proxies,
-        resume_download,
         local_files_only,
         use_auth_token,
         **model_kwargs,
@@ -148,8 +141,7 @@ class LTP(ModelHubMixin):
         if os.path.isdir(model_id):
             print("Loading weights from local directory")
             model_files = {
-                task: os.path.join(model_id, model_file)
-                for task, model_file in model_kwargs["config"]["tasks"].items()
+                task: os.path.join(model_id, model_file) for task, model_file in model_kwargs["config"]["tasks"].items()
             }
         else:
             model_files = {
@@ -160,7 +152,6 @@ class LTP(ModelHubMixin):
                     cache_dir=cache_dir,
                     force_download=force_download,
                     proxies=proxies,
-                    resume_download=resume_download,
                     use_auth_token=use_auth_token,
                     local_files_only=local_files_only,
                 )

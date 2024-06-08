@@ -46,9 +46,7 @@ def fn_predicate(obj):
 
 def get_module_members(module, with_module=False):
     if with_module:
-        members = [
-            member for name, member in inspect.getmembers(module) if not name.startswith("_")
-        ]
+        members = [member for name, member in inspect.getmembers(module) if not name.startswith("_")]
     else:
         members = [
             member
@@ -88,7 +86,7 @@ def pyi_file(obj, indent=""):
             body += f"{indent + INDENT}pass\n"
             body += "\n"
 
-        for (name, fn) in fns:
+        for name, fn in fns:
             body += pyi_file(fn, indent=indent)
 
         if not body:
@@ -141,9 +139,7 @@ def do_black(content, is_pyi):
 
 
 def write(module, directory, origin, check=False):
-    submodules = [
-        (name, member) for name, member in inspect.getmembers(module) if inspect.ismodule(member)
-    ]
+    submodules = [(name, member) for name, member in inspect.getmembers(module) if inspect.ismodule(member)]
 
     filename = os.path.join(directory, f"{origin}.pyi")
     pyi_content = pyi_file(module)
@@ -152,9 +148,7 @@ def write(module, directory, origin, check=False):
     if check:
         with open(filename) as f:
             data = f.read()
-            assert (
-                data == pyi_content
-            ), f"The content of {filename} seems outdated, please run `python stub.py`"
+            assert data == pyi_content, f"The content of {filename} seems outdated, please run `python stub.py`"
     else:
         with open(filename, "w") as f:
             f.write(pyi_content)
@@ -177,9 +171,7 @@ def write(module, directory, origin, check=False):
         if check:
             with open(filename) as f:
                 data = f.read()
-                assert (
-                    data == py_content
-                ), f"The content of {filename} seems outdated, please run `python stub.py`"
+                assert data == py_content, f"The content of {filename} seems outdated, please run `python stub.py`"
         else:
             with open(filename, "w") as f:
                 f.write(py_content)

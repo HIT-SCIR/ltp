@@ -30,9 +30,7 @@ def get_layer_lrs_with_crf(
         else:
             raise Exception("Not Recommend!!!")
 
-        if is_transformer and any(
-            x in name for x in ["bias", "LayerNorm.bias", "LayerNorm.weight"]
-        ):
+        if is_transformer and any(x in name for x in ["bias", "LayerNorm.bias", "LayerNorm.weight"]):
             if temp_no_decay_groups[depth] is None:
                 temp_no_decay_groups[depth] = []
             temp_no_decay_groups[depth].append(parameters)

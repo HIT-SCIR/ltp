@@ -46,9 +46,7 @@ class MultiTaskDataModule(LightningDataModule):
 
         # data transformations
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
-        self.datamodules = {
-            task: info.load(tokenizer=self.tokenizer) for task, info in datamodules.items()
-        }
+        self.datamodules = {task: info.load(tokenizer=self.tokenizer) for task, info in datamodules.items()}
         self.data_train: Optional[Dict[str, Dataset]] = {
             name: dataset[datasets.Split.TRAIN] for name, dataset in self.datamodules.items()
         }
@@ -87,14 +85,12 @@ class MultiTaskDataModule(LightningDataModule):
                     dataset=dataset,
                     collate_fn=collate,
                     batch_size=self.hparams.datamodules[name].batch_size,
-                    num_workers=self.hparams.num_workers
-                    or self.hparams.datamodules[name].num_workers,
-                    pin_memory=self.hparams.pin_memory
-                    or self.hparams.datamodules[name].pin_memory,
+                    num_workers=self.hparams.num_workers or self.hparams.datamodules[name].num_workers,
+                    pin_memory=self.hparams.pin_memory or self.hparams.datamodules[name].pin_memory,
                     shuffle=True,
                 )
                 for name, dataset in self.data_train.items()
-            }
+            },
         )
 
     def val_dataloader(self):

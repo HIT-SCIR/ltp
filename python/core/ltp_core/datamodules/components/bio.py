@@ -87,17 +87,13 @@ class Bio(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """We handle string, list and dicts in datafiles."""
         if not self.config.data_files:
-            raise ValueError(
-                f"At least one data file must be specified, but got data_files={self.config.data_files}"
-            )
+            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
         data_files = dl_manager.download_and_extract(self.config.data_files)
         if isinstance(data_files, (str, list, tuple)):
             files = data_files
             if isinstance(files, str):
                 files = [files]
-            return [
-                datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})
-            ]
+            return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):

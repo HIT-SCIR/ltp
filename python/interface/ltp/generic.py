@@ -26,9 +26,7 @@ class ModelOutput(OrderedDict):
         if not len(class_fields):
             raise ValueError(f"{self.__class__.__name__} has no fields.")
         if not all(field.default is None for field in class_fields[1:]):
-            raise ValueError(
-                f"{self.__class__.__name__} should not have more than one required field."
-            )
+            raise ValueError(f"{self.__class__.__name__} should not have more than one required field.")
 
         for field in class_fields:
             v = getattr(self, field.name)

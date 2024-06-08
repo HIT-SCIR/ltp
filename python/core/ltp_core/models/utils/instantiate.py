@@ -30,11 +30,7 @@ def instantiate(config, target="_ltp_target_", partial="_ltp_partial_"):
         target_callable = find_callable(target_path)
 
         is_partial = config.get(partial, False)
-        target_args = {
-            key: instantiate(value)
-            for key, value in config.items()
-            if key not in [target, partial]
-        }
+        target_args = {key: instantiate(value) for key, value in config.items() if key not in [target, partial]}
 
         if is_partial:
             return functools.partial(target_callable, **target_args)
@@ -54,11 +50,7 @@ def instantiate_omega(config, target="_ltp_target_", partial="_ltp_partial_"):
         target_callable = find_callable(target_path)
 
         is_partial = config.get(partial, False)
-        target_args = {
-            key: instantiate_omega(value)
-            for key, value in config.items()
-            if key not in [target, partial]
-        }
+        target_args = {key: instantiate_omega(value) for key, value in config.items() if key not in [target, partial]}
 
         if is_partial:
             return functools.partial(target_callable, **target_args)

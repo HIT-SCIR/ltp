@@ -34,11 +34,7 @@ def collate(batch):
             return torch.stack(batch, 0, out=out)
         except Exception:
             return torch.nn.utils.rnn.pad_sequence(batch, batch_first=True)
-    elif (
-        elem_type.__module__ == "numpy"
-        and elem_type.__name__ != "str_"
-        and elem_type.__name__ != "string_"
-    ):
+    elif elem_type.__module__ == "numpy" and elem_type.__name__ != "str_" and elem_type.__name__ != "string_":
         elem = batch[0]
         if elem_type.__name__ == "ndarray":
             # array of string classes and object

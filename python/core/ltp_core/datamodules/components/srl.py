@@ -107,9 +107,7 @@ class Srl(datasets.GeneratorBasedBuilder):
                 {
                     "form": datasets.Sequence(datasets.Value("string")),
                     "predicate": datasets.Sequence(create_feature(feats["predicate"])),
-                    "arguments": datasets.Sequence(
-                        datasets.Sequence(create_feature(feats["arguments"]))
-                    ),
+                    "arguments": datasets.Sequence(datasets.Sequence(create_feature(feats["arguments"]))),
                 }
             ),
             supervised_keys=None,
@@ -118,17 +116,13 @@ class Srl(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """We handle string, list and dicts in datafiles."""
         if not self.config.data_files:
-            raise ValueError(
-                f"At least one data file must be specified, but got data_files={self.config.data_files}"
-            )
+            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
         data_files = dl_manager.download_and_extract(self.config.data_files)
         if isinstance(data_files, (str, list, tuple)):
             files = data_files
             if isinstance(files, str):
                 files = [files]
-            return [
-                datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})
-            ]
+            return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": files})]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
@@ -143,11 +137,14 @@ class Srl(datasets.GeneratorBasedBuilder):
                 # last example
                 words, predicate, *roles = (list(value) for value in zip(*block))
 
-                yield line_num, {
-                    "form": words,
-                    "predicate": predicate,
-                    "arguments": roles,
-                }
+                yield (
+                    line_num,
+                    {
+                        "form": words,
+                        "predicate": predicate,
+                        "arguments": roles,
+                    },
+                )
 
 
 def main():

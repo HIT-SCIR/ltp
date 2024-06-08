@@ -117,9 +117,7 @@ class CRF(nn.Module):
         return llh.sum() / mask.type_as(emissions).sum()
 
     @torch.jit.export
-    def decode(
-        self, emissions: torch.Tensor, mask: Optional[torch.ByteTensor] = None
-    ) -> List[List[int]]:
+    def decode(self, emissions: torch.Tensor, mask: Optional[torch.ByteTensor] = None) -> List[List[int]]:
         """Find the most likely tag sequence using Viterbi algorithm.
 
         Args:
@@ -150,10 +148,7 @@ class CRF(nn.Module):
         if emissions.dim() != 3:
             raise ValueError(f"emissions must have dimension of 3, got {emissions.dim()}")
         if emissions.size(2) != self.num_tags:
-            raise ValueError(
-                f"expected last dimension of emissions is {self.num_tags}, "
-                f"got {emissions.size(2)}"
-            )
+            raise ValueError(f"expected last dimension of emissions is {self.num_tags}, " f"got {emissions.size(2)}")
 
         if tags is not None:
             if emissions.shape[0] != tags.shape[0] or emissions.shape[1] != tags.shape[1]:
@@ -173,9 +168,7 @@ class CRF(nn.Module):
             if not no_empty_seq and not no_empty_seq_bf:
                 raise ValueError("mask of the first timestep must all be on")
 
-    def _compute_score(
-        self, emissions: torch.Tensor, tags: torch.LongTensor, mask: torch.ByteTensor
-    ) -> torch.Tensor:
+    def _compute_score(self, emissions: torch.Tensor, tags: torch.LongTensor, mask: torch.ByteTensor) -> torch.Tensor:
         # emissions: (seq_length, batch_size, num_tags)
         # tags: (seq_length, batch_size)
         # mask: (seq_length, batch_size)
@@ -262,9 +255,7 @@ class CRF(nn.Module):
         # shape: (batch_size,)
         return torch.logsumexp(score, dim=1)
 
-    def _viterbi_decode(
-        self, emissions: torch.FloatTensor, mask: torch.ByteTensor
-    ) -> List[List[int]]:
+    def _viterbi_decode(self, emissions: torch.FloatTensor, mask: torch.ByteTensor) -> List[List[int]]:
         # emissions: (seq_length, batch_size, num_tags)
         # mask: (seq_length, batch_size)
         assert emissions.dim() == 3 and mask.dim() == 2

@@ -14,9 +14,7 @@ class MultiTaskDataloader:
         self.dataloaders = dataloaders
 
         Z = sum(pow(v, tau) for v in self.dataloader_sizes.values())
-        self.tasknames, self.sampling_weights = zip(
-            *((k, pow(v, tau) / Z) for k, v in self.dataloader_sizes.items())
-        )
+        self.tasknames, self.sampling_weights = zip(*((k, pow(v, tau) / Z) for k, v in self.dataloader_sizes.items()))
         self.dataiters = {k: cycle(v) for k, v in dataloaders.items()}
 
     @property

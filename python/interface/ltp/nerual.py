@@ -196,7 +196,7 @@ class LTP(BaseModule, ModelHubMixin):
                         words = sentences[idx]
                         new_store.append(
                             [
-                                (tag, "".join(words[start : end + 1]))
+                                (tag, "".join(words[start : end + 1]), start, end)
                                 for tag, start, end in get_entities(sent)
                             ]
                         )
@@ -209,13 +209,11 @@ class LTP(BaseModule, ModelHubMixin):
 
                         for item, predicate in enumerate(words):
                             arguments = [
-                                (tag, "".join(words[start : end + 1]))
+                                (tag, "".join(words[start : end + 1]), start, end)
                                 for tag, start, end in get_entities(sent[item])
                             ]
                             if arguments:
-                                new_store[-1].append(
-                                    {"predicate": predicate, "arguments": arguments}
-                                )
+                                new_store[-1].append({"index": item, "predicate": predicate, "arguments": arguments})
                     store[task] = new_store
 
         if is_batch:
@@ -302,10 +300,7 @@ class LTP(BaseModule, ModelHubMixin):
             batch_first=True,
         )
         words_attention_mask = torch.nn.utils.rnn.pad_sequence(
-            [
-                torch.as_tensor([True for e in sent_entities], device=self.device)
-                for sent_entities in entities
-            ],
+            [torch.as_tensor([True for e in sent_entities], device=self.device) for sent_entities in entities],
             batch_first=True,
         )
         hidden["word_index"] = words_idx
@@ -435,10 +430,7 @@ class LTP(BaseModule, ModelHubMixin):
         length = torch.sum(attention_mask, dim=1).view(-1).cpu().numpy() + 1
         arcs = [sequence for sequence in eisner(s_arc.tolist(), length.tolist(), True)]
         rels = torch.argmax(s_rel[:, 1:], dim=-1).cpu().numpy()
-        rels = [
-            [self.dep_vocab[rels[s, t, a]] for t, a in enumerate(arc)]
-            for s, arc in enumerate(arcs)
-        ]
+        rels = [[self.dep_vocab[rels[s, t, a]] for t, a in enumerate(arc)] for s, arc in enumerate(arcs)]
 
         return [{"head": arc, "label": rel} for arc, rel in zip(arcs, rels)]
 
@@ -473,10 +465,7 @@ class LTP(BaseModule, ModelHubMixin):
 
         if tree:
             rels = torch.argmax(s_rel[:, 1:], dim=-1).cpu().numpy()
-            rels = [
-                [self.sdp_vocab[rels[s, t, a]] for t, a in enumerate(arc)]
-                for s, arc in enumerate(e_arcs)
-            ]
+            rels = [[self.sdp_vocab[rels[s, t, a]] for t, a in enumerate(arc)] for s, arc in enumerate(e_arcs)]
             return [{"head": arc, "label": rel} for arc, rel in zip(e_arcs, rels)]
 
         for b, arc in enumerate(e_arcs):
@@ -522,7 +511,6 @@ class LTP(BaseModule, ModelHubMixin):
         cache_dir,
         force_download,
         proxies,
-        resume_download,
         local_files_only,
         use_auth_token,
         map_location="cpu",
@@ -536,9 +524,7 @@ class LTP(BaseModule, ModelHubMixin):
         if os.path.isdir(model_id):
             print("Loading weights from local directory")
             model_file = os.path.join(model_id, PYTORCH_WEIGHTS_NAME)
-            tokenizer = AutoTokenizer.from_pretrained(
-                model_id, config=ltp.model.backbone.config, use_fast=True
-            )
+            tokenizer = AutoTokenizer.from_pretrained(model_id, config=ltp.model.backbone.config, use_fast=True)
         else:
             model_file = cls.download(
                 repo_id=model_id,
@@ -547,7 +533,6 @@ class LTP(BaseModule, ModelHubMixin):
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
-                resume_download=resume_download,
                 use_auth_token=use_auth_token,
                 local_files_only=local_files_only,
             )
@@ -558,7 +543,6 @@ class LTP(BaseModule, ModelHubMixin):
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
-                resume_download=resume_download,
                 use_auth_token=use_auth_token,
                 local_files_only=local_files_only,
                 use_fast=True,

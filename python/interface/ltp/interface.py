@@ -13,7 +13,6 @@ logger = get_pylogger()
 def LTP(
     pretrained_model_name_or_path="LTP/small",
     force_download: bool = False,
-    resume_download: bool = False,
     proxies: Dict = None,
     use_auth_token: Optional[str] = None,
     cache_dir: Optional[str] = None,
@@ -55,9 +54,6 @@ def LTP(
                     Whether to force the (re-)download of the model weights
                     and configuration files, overriding the cached versions
                     if they exist.
-                resume_download (`bool`, *optional*, defaults to `False`):
-                    Whether to delete incompletely received files. Will
-                    attempt to resume the download if such a file exists.
                 proxies (`Dict[str, str]`, *optional*):
                     A dictionary of proxy servers to use by protocol or
                     endpoint, e.g., `{'http': 'foo.bar:3128',
@@ -106,7 +102,6 @@ def LTP(
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
-                resume_download=resume_download,
                 use_auth_token=use_auth_token,
                 local_files_only=local_files_only,
             )
@@ -128,7 +123,6 @@ def LTP(
             cache_dir,
             force_download,
             proxies,
-            resume_download,
             local_files_only,
             use_auth_token,
             **model_kwargs,
@@ -140,7 +134,6 @@ def LTP(
             cache_dir,
             force_download,
             proxies,
-            resume_download,
             local_files_only,
             use_auth_token,
             **model_kwargs,
