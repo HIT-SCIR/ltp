@@ -209,6 +209,7 @@ make bdist
 
 ## 作者信息
 
+- 车万翔 \<\<[car@ir.hit.edu.cn](mailto:car@ir.hit.edu.cn)>>
 - 冯云龙 \<\<[ylfeng@ir.hit.edu.cn](mailto:ylfeng@ir.hit.edu.cn)>>
 
 ## 开源协议
