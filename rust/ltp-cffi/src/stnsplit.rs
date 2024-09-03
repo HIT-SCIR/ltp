@@ -46,7 +46,7 @@ pub extern "C" fn stn_split_with_options(
     for (idx, sentence) in sentences.iter().enumerate() {
         (callback.call)(
             callback.state,
-            text.as_ptr(),
+            sentence.as_ptr(),
             sentence.len(),
             idx,
             sentence.len(),
