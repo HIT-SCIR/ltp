@@ -55,7 +55,7 @@ apache-avro = { version = "0.17.0", optional = true }
 
 # Todo: Nocopy Serialize 更快地加载速度
 compact_str = { version = "0.8", optional = true }
-rkyv = { version = "0.7", optional = true }
+rkyv = { version = "0.8", optional = true }
 
 [features]
 default = []
