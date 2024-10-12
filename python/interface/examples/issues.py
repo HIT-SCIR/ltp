@@ -1,3 +1,6 @@
+from python.interface.examples.simple import stn_split
+
+
 def issue590():
     from ltp import LTP
     ltp = LTP("LTP/tiny")
@@ -100,8 +103,17 @@ def issue693():
     )
 
 
+def issue714():
+    from ltp import StnSplit
+
+    spliter = StnSplit()
+    spliter.use_en = False
+    sents = spliter.split("1.联通华盛电商分公司办公室内的灯火彻夜不熄，这已经成为常态。")
+    print(sents)
+
+
 def main():
-    issue693()
+    issue714()
 
 
 if __name__ == "__main__":

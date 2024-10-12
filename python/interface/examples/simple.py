@@ -5,7 +5,10 @@ from ltp import LTP
 def stn_split():
     from ltp import StnSplit
 
-    sents = StnSplit().split("汤姆生病了。他去了医院。")
+    spliter = StnSplit()
+    spliter.use_en = False # 关闭英文断句
+
+    sents = spliter.split("汤姆生病了。他去了医院。")
     print(sents)
     # [
     #   "汤姆生病了。",
