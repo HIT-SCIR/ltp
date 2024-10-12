@@ -69,4 +69,4 @@ serialization = ["serde", "serde_json", "apache-avro"]
 clap = { version = "4", features = ["derive"] }
 
 ndarray = "0.16"
-ndarray-npy = { version = "0.8", features = ["npz"] }
+ndarray-npy = { version = "0.9", features = ["npz"] }
