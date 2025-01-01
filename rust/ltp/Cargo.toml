@@ -34,7 +34,7 @@ required-features = ["serialization", "parallel"]
 [dependencies]
 anyhow = "1"
 num-traits = "0.2"
-itertools = "0.13"
+itertools = "0.14"
 
 cedarwood = "0.4"
 
