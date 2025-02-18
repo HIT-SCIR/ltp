@@ -85,7 +85,7 @@ def LTP(
     model_id = pretrained_model_name_or_path
 
     revision = None
-    if len(model_id.split("@")) == 2:
+    if isinstance(model_id, str) and len(model_id.split("@")) == 2:
         model_id, revision = model_id.split("@")
 
     if os.path.isdir(model_id) and CONFIG_NAME in os.listdir(model_id):
