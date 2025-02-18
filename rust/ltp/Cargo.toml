@@ -41,7 +41,7 @@ cedarwood = "0.4"
 # 断句避免过多内存申请
 smallvec = { version = "1" }
 # 数据集 shuffle
-rand = { version = "0.8" }
+rand = { version = "0.9" }
 # 特征裁剪
 binary-heap-plus = { version = "0.5" }
 
