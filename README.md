@@ -145,17 +145,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## 模型性能以及下载地址
 
-|                                深度学习模型(🤗HF/🗜 压缩包)                                 | 分词  | 词性  | 命名实体 | 语义角色 | 依存句法 | 语义依存 | 速度(句/S) |
+|                                深度学习模型(🤗HF/🤗HF-mirror)                                 | 分词  | 词性  | 命名实体 | 语义角色 | 依存句法 | 语义依存 | 速度(句/S) |
 | :----------------------------------------------------------------------------------------: | :---: | :---: | :------: | :------: | :------: | :------: | :--------: |
-|   [🤗Base](https://huggingface.co/LTP/base) [🗜Base](http://39.96.43.154/ltp/v4/base.tgz)   | 98.7  | 98.5  |   95.4   |   80.6   |   89.5   |   75.2   |   39.12    |
-| [🤗Base1](https://huggingface.co/LTP/base1) [🗜Base1](http://39.96.43.154/ltp/v4/base1.tgz) | 99.22 | 98.73 |  96.39   |  79.28   |  89.57   |  76.57   |   --.--    |
-| [🤗Base2](https://huggingface.co/LTP/base2) [🗜Base2](http://39.96.43.154/ltp/v4/base2.tgz) | 99.18 | 98.69 |  95.97   |  79.49   |  90.19   |  76.62   |   --.--    |
-| [🤗Small](https://huggingface.co/LTP/small) [🗜Small](http://39.96.43.154/ltp/v4/small.tgz) | 98.4  | 98.2  |   94.3   |   78.4   |   88.3   |   74.7   |   43.13    |
-|   [🤗Tiny](https://huggingface.co/LTP/tiny) [🗜Tiny](http://39.96.43.154/ltp/v4/tiny.tgz)   | 96.8  | 97.1  |   91.6   |   70.9   |   83.8   |   70.1   |   53.22    |
+|   [🤗Base](https://huggingface.co/LTP/base) [🤗Base-mirror](https://hf-mirror.com/LTP/base)   | 98.7  | 98.5  |   95.4   |   80.6   |   89.5   |   75.2   |   39.12    |
+| [🤗Base1](https://huggingface.co/LTP/base1) [🤗Base1-mirror](https://hf-mirror.com/LTP/base1) | 99.22 | 98.73 |  96.39   |  79.28   |  89.57   |  76.57   |   --.--    |
+| [🤗Base2](https://huggingface.co/LTP/base2) [🤗Base2-mirror](https://hf-mirror.com/LTP/base2) | 99.18 | 98.69 |  95.97   |  79.49   |  90.19   |  76.62   |   --.--    |
+| [🤗Small](https://huggingface.co/LTP/small) [🤗Small-mirror](https://hf-mirror.com/LTP/small) | 98.4  | 98.2  |   94.3   |   78.4   |   88.3   |   74.7   |   43.13    |
+|   [🤗Tiny](https://huggingface.co/LTP/tiny) [🤗Tiny-mirror](https://hf-mirror.com/LTP/tiny)   | 96.8  | 97.1  |   91.6   |   70.9   |   83.8   |   70.1   |   53.22    |
 
-|                                 感知机算法模型(🤗HF/🗜 压缩包)                                  | 分词  | 词性  | 命名实体 | 速度(句/s) |              备注              |
+|                                 感知机算法模型(🤗HF/🤗HF-mirror)                                  | 分词  | 词性  | 命名实体 | 速度(句/s) |              备注              |
 | :--------------------------------------------------------------------------------------------: | :---: | :---: | :------: | :--------: | :----------------------------: |
-| [🤗Legacy](https://huggingface.co/LTP/legacy) [🗜Legacy](http://39.96.43.154/ltp/v4/legacy.tgz) | 97.93 | 98.41 |  94.28   |  21581.48  | [性能详情](rust/ltp/README.md) |
+| [🤗Legacy](https://huggingface.co/LTP/legacy) [🤗Legacy-mirror](https://hf-mirror.com/LTP/legacy) | 97.93 | 98.41 |  94.28   |  21581.48  | [性能详情](rust/ltp/README.md) |
 
 **注：感知机算法速度为开启 16 线程速度**
 
