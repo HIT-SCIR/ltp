@@ -18,7 +18,7 @@ crate-type = ["cdylib"]
 [dependencies]
 libc = { version = "0.2" }
 rayon = { version = "1.7" }
-rayon-cond = { version = "0.3" }
+rayon-cond = { version = "0.4" }
 anyhow = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
 pyo3 = { version = "0.23", features = ["extension-module", "anyhow", "serde"] }
