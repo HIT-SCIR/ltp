@@ -171,7 +171,7 @@ impl Hook {
         Ok(hook_words)
     }
 
-    fn inner_hook<'a>(
+    pub fn inner_hook<'a>(
         &self,
         sentence: &'a str,
         cut_words: &[&str],
@@ -226,7 +226,7 @@ impl Hook {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) struct Dag {
+pub struct Dag {
     array: Vec<usize>,
     start_pos: HashMap<usize, usize>,
     size_hint_for_iterator: usize,
@@ -258,7 +258,7 @@ impl<'a> Iterator for EdgeIter<'a> {
 }
 
 impl Dag {
-    pub(crate) fn with_size_hint(hint: usize) -> Self {
+    pub fn with_size_hint(hint: usize) -> Self {
         Dag {
             array: Vec::with_capacity(hint * 5),
             start_pos: HashMap::default(),
@@ -295,7 +295,7 @@ impl Dag {
         }
     }
 
-    pub(crate) fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.array.clear();
         self.start_pos.clear();
     }
