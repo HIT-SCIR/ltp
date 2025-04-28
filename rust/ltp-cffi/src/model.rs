@@ -2,6 +2,8 @@ use crate::{BatchCallback, Callback};
 use ltp::{CWSDefinition, NERDefinition, POSDefinition};
 use rayon::prelude::*;
 use std::{slice, str};
+use ltp::utils::hook::Hook;
+use ltp::utils::hook::Dag;
 
 pub type Perceptron<T> = ltp::perceptron::SerdeModel<T, f64>;
 
@@ -506,3 +508,77 @@ pub extern "C" fn model_ner_batch_predict(
         0
     }
 }
+
+pub struct CHook {
+    inner: Hook,
+}
+
+#[no_mangle]
+pub extern "C" fn hook_new() -> *mut CHook {
+    Box::into_raw(Box::new(CHook { inner: Hook::new() }))
+}
+
+#[no_mangle]
+pub extern "C" fn hook_free(ptr: *mut CHook) {
+    if !ptr.is_null() {
+        unsafe { drop(Box::from_raw(ptr)) };
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn hook_add_word(ptr: *mut CHook, word_ptr: *const u8, word_len: usize, pos: usize) {
+    if ptr.is_null() { return; }
+    let word = unsafe { std::str::from_utf8_unchecked(std::slice::from_raw_parts(word_ptr, word_len)) };
+    unsafe { (*ptr).inner.add_word(word, Some(pos)) };
+}
+
+#[no_mangle]
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "C" fn run_hook_with_custom_word(
+    hook_ptr: *mut CHook,               
+    sentence_ptr: *const u8,
+    sentence_len: usize,
+    words_ptr: *const *const u8,
+    word_lens_ptr: *const usize,
+    word_count: usize,
+    callback: Callback,
+) -> usize {
+    if hook_ptr.is_null() {
+        return 0;
+    }
+
+    let sentence = unsafe { std::str::from_utf8_unchecked(std::slice::from_raw_parts(sentence_ptr, sentence_len)) };
+    let word_ptrs = unsafe { std::slice::from_raw_parts(words_ptr, word_count) };
+    let word_lens = unsafe { std::slice::from_raw_parts(word_lens_ptr, word_count) };
+
+    let cut_words = word_ptrs.iter()
+        .zip(word_lens.iter())
+        .map(|(&ptr, &len)| unsafe {
+            std::str::from_utf8_unchecked(std::slice::from_raw_parts(ptr, len))
+        })
+        .collect::<Vec<&str>>();
+
+    let mut result_words = Vec::with_capacity(word_count);
+    let mut route = Vec::with_capacity(word_count);
+    let mut dag = Dag::with_size_hint(word_count);
+
+    let hook = unsafe { &mut (*hook_ptr).inner };
+    if hook.inner_hook(sentence, &cut_words, &mut result_words, &mut route, &mut dag).is_err() {
+        return 0;
+    }
+
+    for (i, word) in result_words.iter().enumerate() {
+        (callback.call)(
+            callback.state,
+            word.as_ptr(),
+            word.len(),
+            i,
+            result_words.len(),
+        );
+    }
+
+    result_words.len()
+}
+
+    
+
