@@ -512,7 +512,7 @@ class LTP(BaseModule, ModelHubMixin):
         force_download,
         proxies,
         local_files_only,
-        use_auth_token,
+        token,
         map_location="cpu",
         strict=False,
         **model_kwargs,
@@ -533,7 +533,7 @@ class LTP(BaseModule, ModelHubMixin):
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
-                use_auth_token=use_auth_token,
+                token=token,
                 local_files_only=local_files_only,
             )
             tokenizer = AutoTokenizer.from_pretrained(
@@ -543,7 +543,7 @@ class LTP(BaseModule, ModelHubMixin):
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
-                use_auth_token=use_auth_token,
+                token=token,
                 local_files_only=local_files_only,
                 use_fast=True,
             )

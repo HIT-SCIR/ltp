@@ -133,7 +133,7 @@ class LTP(ModelHubMixin):
         force_download,
         proxies,
         local_files_only,
-        use_auth_token,
+        token,
         **model_kwargs,
     ):
         """Overwrite this method in case you wish to initialize your model in a different way."""
@@ -152,7 +152,7 @@ class LTP(ModelHubMixin):
                     cache_dir=cache_dir,
                     force_download=force_download,
                     proxies=proxies,
-                    use_auth_token=use_auth_token,
+                    token=token,
                     local_files_only=local_files_only,
                 )
                 for task, model_file in model_kwargs["config"]["tasks"].items()

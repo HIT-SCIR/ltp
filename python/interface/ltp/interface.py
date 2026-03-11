@@ -14,7 +14,7 @@ def LTP(
     pretrained_model_name_or_path="LTP/small",
     force_download: bool = False,
     proxies: Dict = None,
-    use_auth_token: Optional[str] = None,
+    token: Optional[str] = None,
     cache_dir: Optional[str] = None,
     local_files_only: bool = False,
     **model_kwargs,
@@ -59,7 +59,7 @@ def LTP(
                     endpoint, e.g., `{'http': 'foo.bar:3128',
                     'http://hostname': 'foo.bar:4012'}`. The proxies are
                     used on each request.
-                use_auth_token (`str` or `bool`, *optional*):
+                token (`str` or `bool`, *optional*):
                     The token to use as HTTP bearer authorization for remote
                     files. If `True`, will use the token generated when
                     running `transformers-cli login` (stored in
@@ -77,7 +77,7 @@ def LTP(
 
             <Tip>
 
-            Passing `use_auth_token=True` is required when you want to use a
+            Passing `token=True` is required when you want to use a
             private model.
 
             </Tip>
@@ -102,7 +102,7 @@ def LTP(
                 cache_dir=cache_dir,
                 force_download=force_download,
                 proxies=proxies,
-                use_auth_token=use_auth_token,
+                token=token,
                 local_files_only=local_files_only,
             )
         except RequestException:
@@ -124,7 +124,7 @@ def LTP(
             force_download,
             proxies,
             local_files_only,
-            use_auth_token,
+            token,
             **model_kwargs,
         )
     else:
@@ -135,6 +135,6 @@ def LTP(
             force_download,
             proxies,
             local_files_only,
-            use_auth_token,
+            token,
             **model_kwargs,
         )
